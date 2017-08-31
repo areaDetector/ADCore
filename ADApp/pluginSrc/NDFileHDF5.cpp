@@ -55,6 +55,7 @@ enum HDF5Compression_t {HDF5CompressNone=0, HDF5CompressNumBits, HDF5CompressSZi
 #endif
 
 static const char *driverName = "NDFileHDF5";
+static const char *uniqueIDName = "NDArrayUniqueId";
 
 // Not required if SWMR is not supported
 #if H5_VERSION_GE(1,9,178)
@@ -2604,45 +2605,69 @@ asynStatus NDFileHDF5::writeAttributeDataset(hdf5::When_t whenToSave, int positi
   asynStatus status = asynSuccess;
   NDAttribute *ndAttr = NULL;
   int flush = 0;
+  NDFileHDF5AttributeDataset *uniqueIDNode = NULL;
   static const char *functionName = "writeAttributeDataset";
+
+  // Check if we need to force a flush of the datasets
+  if (checkForSWMRMode()){
+    int numCaptured = 0;
+    this->lock();
+    getIntegerParam(NDFileNumCaptured, &numCaptured);
+    this->unlock();
+    int chunking = 0;
+    int mdchunking[MAXEXTRADIMS];
+    for (int index = 0; index < MAXEXTRADIMS; index++){
+      mdchunking[index] = 0;
+    }
+    // Check the chunking value
+    calculateAttributeChunking(&chunking, mdchunking);
+    // Check if we should flush
+    if ((numCaptured+1) % chunking == 0){
+      // Mark the dataset for flushing
+      flush = 1;
+    }
+  }
 
   for (std::list<NDFileHDF5AttributeDataset*>::iterator it_node = attrList.begin(); it_node != attrList.end(); ++it_node){
     NDFileHDF5AttributeDataset *hdfAttrNode = *it_node;
     // find the named attribute in the NDAttributeList
-    ndAttr = this->pFileAttributes->find(hdfAttrNode->getName().c_str());
-    if (ndAttr == NULL){
-      asynPrint(this->pasynUserSelf, ASYN_TRACE_WARNING,
-        "%s::%s WARNING: NDAttribute named \'%s\' not found\n",
-        driverName, functionName, hdfAttrNode->getName().c_str());
-      continue;
-    }
+    // We do not want to write the unique ID attribute at this stage
+    if (strcmp(uniqueIDName, hdfAttrNode->getName().c_str())){
+      ndAttr = this->pFileAttributes->find(hdfAttrNode->getName().c_str());
+      if (ndAttr == NULL){
+        asynPrint(this->pasynUserSelf, ASYN_TRACE_WARNING,
+          "%s::%s WARNING: NDAttribute named \'%s\' not found\n",
+          driverName, functionName, hdfAttrNode->getName().c_str());
+        continue;
+      }
 
-    // Check if we need to force a flush of the dataset
-    if (checkForSWMRMode()){
-      int numCaptured = 0;
-      this->lock();
-      getIntegerParam(NDFileNumCaptured, &numCaptured);
-      this->unlock();
-      int chunking = 0;
-      int mdchunking[MAXEXTRADIMS];
-      for (int index = 0; index < MAXEXTRADIMS; index++){
-        mdchunking[index] = 0;
+      if (positionMode == 1){
+        int indexValue = isAttributeIndex(hdfAttrNode->getName());
+        hdfAttrNode->writeAttributeDataset(whenToSave, offsets, ndAttr, flush, indexValue);
+      } else {
+        hdfAttrNode->writeAttributeDataset(whenToSave, ndAttr, flush);
       }
-      // Check the chunking value
-      calculateAttributeChunking(&chunking, mdchunking);
-      // Check if we should flush
-      if ((numCaptured+1) % chunking == 0){
-        // Mark the dataset for flushing
-        flush = 1;
-      }
-    }
-    if (positionMode == 1){
-      int indexValue = isAttributeIndex(hdfAttrNode->getName());
-      hdfAttrNode->writeAttributeDataset(whenToSave, offsets, ndAttr, flush, indexValue);
-    } else {
-      hdfAttrNode->writeAttributeDataset(whenToSave, ndAttr, flush);
+    } else{
+      // Keep the unique ID node ready to write it as the last attribute
+      uniqueIDNode = *it_node;
     }
   }
+
+  // Now locate and write the unique ID attribute ensuring it is the last attribute written
+  ndAttr = this->pFileAttributes->find(uniqueIDName);
+  if (ndAttr == NULL || uniqueIDNode == NULL){
+    asynPrint(this->pasynUserSelf, ASYN_TRACE_WARNING,
+      "%s::%s WARNING: NDAttribute named \'NDArrayUniqueId\' not found\n",
+      driverName, functionName);
+  } else {
+    if (positionMode == 1){
+      int indexValue = isAttributeIndex(uniqueIDName);
+      uniqueIDNode->writeAttributeDataset(whenToSave, offsets, ndAttr, flush, indexValue);
+    } else {
+      uniqueIDNode->writeAttributeDataset(whenToSave, ndAttr, flush);
+    }
+  }
+
   return status;
 }
 
