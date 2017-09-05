@@ -1,19 +1,23 @@
 # This file contains the commands to build driver applications using the common set of plugins
 # The variable PROD_NAME must be defined
 
-$(PROD_NAME)_DBD += base.dbd
+ifndef DBD_NAME
+  DBD_NAME = $(PROD_NAME)
+endif
+
+$(DBD_NAME)_DBD += base.dbd
 
 PROD_LIBS        += NDPlugin
-$(PROD_NAME)_DBD += NDPluginSupport.dbd
+$(DBD_NAME)_DBD += NDPluginSupport.dbd
 
 PROD_LIBS        += ADBase
-$(PROD_NAME)_DBD += ADSupport.dbd
+$(DBD_NAME)_DBD += ADSupport.dbd
 
-$(PROD_NAME)_DBD += NDFileNull.dbd
+$(DBD_NAME)_DBD += NDFileNull.dbd
 
 ifeq ($(WITH_EPICS_V4),YES)
-  $(PROD_NAME)_DBD += NDPluginPva.dbd
-  $(PROD_NAME)_DBD += PVAServerRegister.dbd
+  $(DBD_NAME)_DBD += NDPluginPva.dbd
+  $(DBD_NAME)_DBD += PVAServerRegister.dbd
   PROD_LIBS += ntndArrayConverter
   PROD_LIBS += nt
   PROD_LIBS += pvDatabase
@@ -23,7 +27,7 @@ ifeq ($(WITH_EPICS_V4),YES)
 endif
 
 ifeq ($(WITH_NETCDF),YES)
-  $(PROD_NAME)_DBD += NDFileNetCDF.dbd
+  $(DBD_NAME)_DBD += NDFileNetCDF.dbd
   ifeq ($(NETCDF_EXTERNAL),NO)
     PROD_LIBS += netCDF
   else
@@ -37,7 +41,7 @@ ifeq ($(WITH_NETCDF),YES)
 endif
 
 ifeq ($(WITH_GRAPHICSMAGICK), YES)
-  $(PROD_NAME)_DBD += NDFileMagick.dbd
+  $(DBD_NAME)_DBD += NDFileMagick.dbd
   ifeq ($(GRAPHICSMAGICK_EXTERNAL),NO)
     PROD_LIBS               += Magick++ coders Magick jbig jp2 bzlib png webp lcms ttf wmf filters
   else
@@ -55,7 +59,7 @@ ifeq ($(WITH_GRAPHICSMAGICK), YES)
 endif
 
 ifeq ($(WITH_TIFF),YES)
-  $(PROD_NAME)_DBD += NDFileTIFF.dbd
+  $(DBD_NAME)_DBD += NDFileTIFF.dbd
   ifeq ($(TIFF_EXTERNAL),NO)
     PROD_LIBS += tiff
   else
@@ -69,7 +73,7 @@ ifeq ($(WITH_TIFF),YES)
 endif
 
 ifeq ($(WITH_JPEG),YES)
-  $(PROD_NAME)_DBD += NDFileJPEG.dbd
+  $(DBD_NAME)_DBD += NDFileJPEG.dbd
   ifeq ($(JPEG_EXTERNAL),NO)
     PROD_LIBS += jpeg
   else
@@ -94,7 +98,7 @@ else
 endif
 
 ifeq ($(WITH_NEXUS),YES)
-  $(PROD_NAME)_DBD += NDFileNexus.dbd
+  $(DBD_NAME)_DBD += NDFileNexus.dbd
   ifeq ($(NEXUS_EXTERNAL),NO)
     PROD_LIBS += NeXus
   else
@@ -108,7 +112,7 @@ ifeq ($(WITH_NEXUS),YES)
 endif
 
 ifeq ($(WITH_HDF5),YES)
-  $(PROD_NAME)_DBD += NDFileHDF5.dbd
+  $(DBD_NAME)_DBD += NDFileHDF5.dbd
   ifeq ($(HDF5_EXTERNAL),NO)
     PROD_LIBS += hdf5
   else
@@ -168,7 +172,7 @@ ifeq ($(WITH_ZLIB),YES)
 endif
 
 ifdef ADPLUGINEDGE
-  $(PROD_NAME)_DBD  += NDPluginEdge.dbd
+  $(DBD_NAME)_DBD  += NDPluginEdge.dbd
   PROD_LIBS         += NDPluginEdge
   ifdef OPENCV_LIB
     opencv_core_DIR += $(OPENCV_LIB)
@@ -179,7 +183,7 @@ ifdef ADPLUGINEDGE
 endif
 
 # Required modules
-$(PROD_NAME)_DBD   += asyn.dbd
+$(DBD_NAME)_DBD   += asyn.dbd
 PROD_LIBS          += asyn
 
 ifeq ($(EPICS_LIBCOM_ONLY),YES)
@@ -187,32 +191,32 @@ ifeq ($(EPICS_LIBCOM_ONLY),YES)
 else 
   # Optional modules
   ifdef ALIVE
-    $(PROD_NAME)_DBD += aliveSupport.dbd
+    $(DBD_NAME)_DBD += aliveSupport.dbd
     PROD_LIBS        += alive
   endif
 
   ifdef AUTOSAVE
-    $(PROD_NAME)_DBD += asSupport.dbd
+    $(DBD_NAME)_DBD += asSupport.dbd
     PROD_LIBS        += autosave
   endif
 
   ifdef BUSY
-    $(PROD_NAME)_DBD += busySupport.dbd
+    $(DBD_NAME)_DBD += busySupport.dbd
     PROD_LIBS        += busy
   endif
 
   ifdef CALC
-    $(PROD_NAME)_DBD += calcSupport.dbd
+    $(DBD_NAME)_DBD += calcSupport.dbd
     PROD_LIBS        += calc
   endif
 
   ifdef DEVIOCSTATS
-    $(PROD_NAME)_DBD += devIocStats.dbd
+    $(DBD_NAME)_DBD += devIocStats.dbd
     PROD_LIBS        += devIocStats
   endif
 
   ifdef SSCAN
-    $(PROD_NAME)_DBD += sscanSupport.dbd
+    $(DBD_NAME)_DBD += sscanSupport.dbd
     PROD_LIBS        += sscan
   endif
 
