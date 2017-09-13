@@ -65,16 +65,16 @@ ifeq ($(WITH_BOOST),YES)
   # Link order matters when doing a static build
   plugin-test_LIBS += ADTestUtility
 
-  ifdef (HDF5_INCLUDE)
+  ifdef HDF5_INCLUDE
     USR_INCLUDES += -I$(HDF5_INCLUDE)
   endif
-  ifdef (SZIP_INCLUDE)
+  ifdef SZIP_INCLUDE
     USR_INCLUDES += -I$(SZIP_INCLUDE)
   endif
-  ifdef (XML2_INCLUDE)
+  ifdef XML2_INCLUDE
     USR_INCLUDES += -I$(XML2_INCLUDE)
   endif
-  ifdef (BOOST_INCLUDE)
+  ifdef BOOST_INCLUDE
     USR_INCLUDES += -I$(BOOST_INCLUDE)
   endif
   ifeq ($(BOOST_USE_STATIC_LINK),YES)
