@@ -680,7 +680,7 @@ void asynNDArrayDriver::report(FILE *fp, int details)
 asynNDArrayDriver::asynNDArrayDriver(const char *portName, int maxAddr, int maxBuffers,
                                      size_t maxMemory, int interfaceMask, int interruptMask,
                                      int asynFlags, int autoConnect, int priority, int stackSize)
-    : asynPortDriver(portName, maxAddr, 0, 
+    : asynPortDriver(portName, maxAddr, 
                      interfaceMask | asynInt32Mask | asynFloat64Mask | asynOctetMask | asynInt32ArrayMask | asynGenericPointerMask | asynDrvUserMask, 
                      interruptMask | asynInt32Mask | asynFloat64Mask | asynOctetMask | asynInt32ArrayMask | asynGenericPointerMask,
                      asynFlags, autoConnect, priority, stackSize),
