@@ -20,7 +20,7 @@ files respectively, in the configure/ directory of the appropriate release of th
 Release Notes
 =============
 
-R3-2 (July XXX, 2017)
+R3-2 (September XXX, 2017)
 ======================
 ### NDPluginStats
 * Previously the X axis for the histogram plot was just the histogram bin number.
@@ -34,7 +34,10 @@ R3-2 (July XXX, 2017)
   The build flags WITH_BLOSC, BLOSC_EXTERNAL, and BLOSC_LIB have been added, similar to other optional libraries.
   Thanks to Xiaoqiang Wang for this addition.
 * Changed all output records in NDFileHDF.template to have PINI=YES.  This is how other plugins all work.
-
+### NDPluginDriver
+* Force queueSize to be >=1 when creating queues in createCallbackThreads.  Was crashing when autosave value was 0.
+### pluginTests/Makefile
+* Fixed errors with extra parentheses that were preventing include USR_INCLUDES directories from being added.
 
 R3-1 (July 3, 2017)
 ======================
