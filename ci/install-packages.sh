@@ -45,7 +45,7 @@ fi
 
 # Set these flags appropriately
 echo "EPICS_BASE = "     $EPICS_BASE         >  configure/RELEASE.local
-echo "ASYN=`pwd`/external/asyn-R4-31"        >> configure/RELEASE.local
+echo "ASYN=`pwd`/external/asyn-R4-32"        >> configure/RELEASE.local
 echo "ADSUPPORT=`pwd`/external/ADSupport"    >> configure/RELEASE.local
 echo "WITH_BOOST     ="  $WITH_BOOST         >> configure/CONFIG_SITE.linux-x86_64.Common
 echo "BOOST_EXTERNAL ="  $BOOST_EXTERNAL     >> configure/CONFIG_SITE.linux-x86_64.Common
@@ -106,11 +106,11 @@ gem install coveralls-lcov
 cd external
 
 # Install asyn 
-wget -nv https://github.com/epics-modules/asyn/archive/R4-31.tar.gz
-tar -zxf R4-31.tar.gz
-echo "EPICS_BASE="$EPICS_BASE > asyn-R4-31/configure/RELEASE
-#echo "EPICS_LIBCOM_ONLY=YES" >> asyn-R4-31/configure/CONFIG_SITE
-make -sj -C asyn-R4-31/
+wget -nv https://github.com/epics-modules/asyn/archive/R4-32.tar.gz
+tar -zxf R4-32.tar.gz
+echo "EPICS_BASE="$EPICS_BASE > asyn-R4-32/configure/RELEASE
+#echo "EPICS_LIBCOM_ONLY=YES" >> asyn-R4-32/configure/CONFIG_SITE
+make -sj -C asyn-R4-32/
 
 # Install ADSupport
 git clone https://github.com/areaDetector/ADSupport.git
