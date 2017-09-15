@@ -889,6 +889,14 @@ asynStatus NDPluginDriver::createCallbackThreads()
     }
     setIntegerParam(NDPluginDriverNumThreads, numThreads);
     numThreads_ = numThreads;
+    if (queueSize < 1) {
+        asynPrint(pasynUserSelf, ASYN_TRACE_ERROR, 
+            "%s::%s error, queueSize=%d must be >= 1, setting to 1\n",
+            driverName, functionName, queueSize);
+        status = asynError;
+        queueSize = 1;
+        setIntegerParam(NDPluginDriverQueueSize, queueSize);
+    }
   
     pThreads_.resize(numThreads);
 
