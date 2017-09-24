@@ -923,7 +923,7 @@ epicsTimeStamp epicsTS;  /**< The epicsTimeStamp; this is set with
 ### NDPluginROI. 
 * Make 3-D [X, Y, 1] arrays be converted to 2-D even if they are not RGB3. 
 
-###NDPluginStats. 
+### NDPluginStats. 
 * Fixed bug if a dimension was 1; this bug was introduced when changing dimensions to size_t. 
 
 ### NDFileNetCDF. 
