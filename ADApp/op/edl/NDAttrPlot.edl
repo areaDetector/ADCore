@@ -1,0 +1,1649 @@
+4 0 1
+beginScreenProperties
+major 4
+minor 0
+release 1
+x 52
+y 76
+w 390
+h 820
+font "arial-bold-r-12.0"
+ctlFont "arial-bold-r-12.0"
+btnFont "arial-bold-r-12.0"
+fgColor index 14
+bgColor index 3
+textColor index 14
+ctlFgColor1 index 25
+ctlFgColor2 index 25
+ctlBgColor1 index 3
+ctlBgColor2 index 3
+topShadowColor index 1
+botShadowColor index 11
+showGrid
+snapToGrid
+gridSize 5
+endScreenProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 0
+y 385
+w 390
+h 435
+lineColor index 5
+fill
+fillColor index 5
+endObjectProperties
+
+# (Embedded Window)
+object activePipClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 0
+y 0
+w 390
+h 385
+fgColor index 14
+bgColor index 3
+topShadowColor index 1
+botShadowColor index 11
+displaySource "file"
+file "NDPluginBase"
+sizeOfs 5
+numDsps 2
+displayFileName {
+  0 "NDPluginBase"
+  1 "NDPluginBase"
+}
+noScroll
+endObjectProperties
+
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 4
+release 0
+x 5
+y 785
+w 380
+h 25
+fgColor index 43
+bgColor index 3
+topShadowColor index 1
+botShadowColor index 11
+font "helvetica-bold-r-14.0"
+buttonLabel "View Plot"
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "NDAttrPlot_Plot.edl"
+}
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 5
+y 395
+w 380
+h 65
+lineColor index 14
+fill
+fillColor index 3
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 5
+y 390
+w 52
+h 13
+font "arial-medium-r-12.0"
+fgColor index 14
+bgColor index 5
+value {
+  "  Control  "
+}
+autoSize
+border
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 10
+y 405
+w 85
+h 20
+font "arial-bold-r-12.0"
+fgColor index 14
+bgColor index 3
+useDisplayBg
+value {
+  "# Points"
+}
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 95
+y 405
+w 90
+h 20
+controlPv "$(P)$(R)NPts"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "arial-bold-r-12.0"
+endObjectProperties
+
+# (Button)
+object activeButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 195
+y 405
+w 180
+h 20
+fgColor index 25
+onColor index 3
+offColor index 3
+inconsistentColor index 14
+topShadowColor index 1
+botShadowColor index 11
+controlPv "$(P)$(R)Reset"
+onLabel "Reset"
+offLabel "Reset"
+labelType "literal"
+buttonType "push"
+3d
+font "arial-bold-r-12.0"
+objType "controls"
+controlBitPos 0
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 5
+y 475
+w 210
+h 140
+lineColor index 14
+fill
+fillColor index 3
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 95
+y 430
+w 280
+h 20
+
+beginGroup
+
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 4
+release 0
+x 95
+y 430
+w 276
+h 20
+fgColor index 43
+bgColor index 3
+topShadowColor index 1
+botShadowColor index 11
+font "helvetica-bold-r-14.0"
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "NDAttrPlot_Select"
+}
+symbols {
+  0 "AXIS=X,IND=''"
+}
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 97
+y 430
+w 278
+h 20
+controlPv "$(P)$(R)X:DataLabel"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "arial-bold-r-12.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 10
+y 430
+w 85
+h 20
+font "arial-bold-r-12.0"
+fgColor index 14
+bgColor index 3
+useDisplayBg
+value {
+  "X Axis"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 5
+y 470
+w 54
+h 13
+font "arial-medium-r-12.0"
+fgColor index 14
+bgColor index 5
+value {
+  "  Y1 Axis  "
+}
+autoSize
+border
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 15
+y 490
+w 190
+h 27
+
+beginGroup
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 55
+y 490
+w 150
+h 25
+
+beginGroup
+
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 4
+release 0
+x 55
+y 490
+w 148
+h 25
+fgColor index 43
+bgColor index 3
+topShadowColor index 1
+botShadowColor index 11
+font "helvetica-bold-r-14.0"
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "NDAttrPlot_Select"
+}
+symbols {
+  0 "AXIS=Y1,IND=0"
+}
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 56
+y 490
+w 149
+h 25
+controlPv "$(P)$(R)Y1:DataLabel0"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 15
+y 488
+w 35
+h 25
+
+beginGroup
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 16
+y 490
+w 35
+h 25
+lineColor index 14
+fill
+fillColor index 0
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 22
+y 493
+w 25
+h 18
+
+beginGroup
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 21
+y 501
+w 25
+h 5
+lineColor index 30
+fill
+fillColor index 30
+lineWidth 0
+endObjectProperties
+
+# (Lines)
+object activeLineClass
+beginObjectProperties
+major 4
+minor 0
+release 1
+x 24
+y 494
+w 17
+h 18
+lineColor index 30
+fillColor index 3
+lineWidth 3
+closePolygon
+numPoints 4
+xPoints {
+  0 33
+  1 24
+  2 33
+  3 41
+}
+yPoints {
+  0 496
+  1 504
+  2 512
+  3 504
+}
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 15
+y 520
+w 190
+h 27
+
+beginGroup
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 55
+y 520
+w 150
+h 25
+
+beginGroup
+
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 4
+release 0
+x 55
+y 520
+w 148
+h 25
+fgColor index 43
+bgColor index 3
+topShadowColor index 1
+botShadowColor index 11
+font "helvetica-bold-r-14.0"
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "NDAttrPlot_Select"
+}
+symbols {
+  0 "AXIS=Y1,IND=1"
+}
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 56
+y 520
+w 149
+h 25
+controlPv "$(P)$(R)Y1:DataLabel1"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 15
+y 518
+w 35
+h 25
+
+beginGroup
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 16
+y 520
+w 35
+h 25
+lineColor index 14
+fill
+fillColor index 0
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 22
+y 523
+w 25
+h 18
+
+beginGroup
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 21
+y 531
+w 25
+h 5
+lineColor index 20
+fill
+fillColor index 20
+lineWidth 0
+endObjectProperties
+
+# (Lines)
+object activeLineClass
+beginObjectProperties
+major 4
+minor 0
+release 1
+x 24
+y 524
+w 17
+h 18
+lineColor index 20
+fillColor index 3
+lineWidth 3
+closePolygon
+numPoints 4
+xPoints {
+  0 33
+  1 24
+  2 33
+  3 41
+}
+yPoints {
+  0 526
+  1 534
+  2 542
+  3 534
+}
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 15
+y 580
+w 190
+h 27
+
+beginGroup
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 55
+y 580
+w 150
+h 25
+
+beginGroup
+
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 4
+release 0
+x 55
+y 580
+w 148
+h 25
+fgColor index 43
+bgColor index 3
+topShadowColor index 1
+botShadowColor index 11
+font "helvetica-bold-r-14.0"
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "NDAttrPlot_Select"
+}
+symbols {
+  0 "AXIS=Y1,IND=3"
+}
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 56
+y 580
+w 149
+h 25
+controlPv "$(P)$(R)Y1:DataLabel3"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 15
+y 578
+w 35
+h 25
+
+beginGroup
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 16
+y 580
+w 35
+h 25
+lineColor index 14
+fill
+fillColor index 0
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 22
+y 583
+w 25
+h 18
+
+beginGroup
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 21
+y 591
+w 25
+h 5
+lineColor index 40
+fill
+fillColor index 40
+lineWidth 0
+endObjectProperties
+
+# (Lines)
+object activeLineClass
+beginObjectProperties
+major 4
+minor 0
+release 1
+x 24
+y 584
+w 17
+h 18
+lineColor index 40
+fillColor index 3
+lineWidth 3
+closePolygon
+numPoints 4
+xPoints {
+  0 33
+  1 24
+  2 33
+  3 41
+}
+yPoints {
+  0 586
+  1 594
+  2 602
+  3 594
+}
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 15
+y 550
+w 190
+h 27
+
+beginGroup
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 55
+y 550
+w 150
+h 25
+
+beginGroup
+
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 4
+release 0
+x 55
+y 550
+w 148
+h 25
+fgColor index 43
+bgColor index 3
+topShadowColor index 1
+botShadowColor index 11
+font "helvetica-bold-r-14.0"
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "NDAttrPlot_Select"
+}
+symbols {
+  0 "AXIS=Y1,IND=2"
+}
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 56
+y 550
+w 149
+h 25
+controlPv "$(P)$(R)Y1:DataLabel2"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 15
+y 548
+w 35
+h 25
+
+beginGroup
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 16
+y 550
+w 35
+h 25
+lineColor index 14
+fill
+fillColor index 0
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 22
+y 553
+w 25
+h 18
+
+beginGroup
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 21
+y 561
+w 25
+h 5
+lineColor index 15
+fill
+fillColor index 15
+lineWidth 0
+endObjectProperties
+
+# (Lines)
+object activeLineClass
+beginObjectProperties
+major 4
+minor 0
+release 1
+x 24
+y 554
+w 17
+h 18
+lineColor index 15
+fillColor index 3
+lineWidth 3
+closePolygon
+numPoints 4
+xPoints {
+  0 33
+  1 24
+  2 33
+  3 41
+}
+yPoints {
+  0 556
+  1 564
+  2 572
+  3 564
+}
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 5
+y 630
+w 210
+h 140
+lineColor index 14
+fill
+fillColor index 3
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 5
+y 625
+w 54
+h 13
+font "arial-medium-r-12.0"
+fgColor index 14
+bgColor index 5
+value {
+  "  Y2 Axis  "
+}
+autoSize
+border
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 15
+y 645
+w 189
+h 25
+
+beginGroup
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 15
+y 645
+w 35
+h 25
+
+beginGroup
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 15
+y 645
+w 35
+h 25
+lineColor index 14
+fill
+fillColor index 0
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 20
+y 650
+w 25
+h 15
+
+beginGroup
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 20
+y 655
+w 25
+h 5
+lineColor index 25
+fill
+fillColor index 25
+lineWidth 0
+endObjectProperties
+
+# (Circle)
+object activeCircleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 25
+y 650
+w 15
+h 15
+lineColor index 25
+fillColor index 3
+lineWidth 3
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 54
+y 645
+w 150
+h 25
+
+beginGroup
+
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 4
+release 0
+x 54
+y 645
+w 148
+h 25
+fgColor index 43
+bgColor index 3
+topShadowColor index 1
+botShadowColor index 11
+font "helvetica-bold-r-14.0"
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "NDAttrPlot_Select"
+}
+symbols {
+  0 "AXIS=Y2,IND=0"
+}
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 55
+y 645
+w 149
+h 25
+controlPv "$(P)$(R)Y2:DataLabel0"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 15
+y 675
+w 189
+h 25
+
+beginGroup
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 15
+y 675
+w 35
+h 25
+
+beginGroup
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 15
+y 675
+w 35
+h 25
+lineColor index 14
+fill
+fillColor index 0
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 20
+y 680
+w 25
+h 15
+
+beginGroup
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 20
+y 685
+w 25
+h 5
+lineColor index 24
+fill
+fillColor index 24
+lineWidth 0
+endObjectProperties
+
+# (Circle)
+object activeCircleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 25
+y 680
+w 15
+h 15
+lineColor index 24
+fillColor index 3
+lineWidth 3
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 54
+y 675
+w 150
+h 25
+
+beginGroup
+
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 4
+release 0
+x 54
+y 675
+w 148
+h 25
+fgColor index 43
+bgColor index 3
+topShadowColor index 1
+botShadowColor index 11
+font "helvetica-bold-r-14.0"
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "NDAttrPlot_Select"
+}
+symbols {
+  0 "AXIS=Y2,IND=1"
+}
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 55
+y 675
+w 149
+h 25
+controlPv "$(P)$(R)Y2:DataLabel1"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 15
+y 705
+w 189
+h 25
+
+beginGroup
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 15
+y 705
+w 35
+h 25
+
+beginGroup
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 15
+y 705
+w 35
+h 25
+lineColor index 14
+fill
+fillColor index 0
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 20
+y 710
+w 25
+h 15
+
+beginGroup
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 20
+y 715
+w 25
+h 5
+lineColor index 19
+fill
+fillColor index 19
+lineWidth 0
+endObjectProperties
+
+# (Circle)
+object activeCircleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 25
+y 710
+w 15
+h 15
+lineColor index 19
+fillColor index 3
+lineWidth 3
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 54
+y 705
+w 150
+h 25
+
+beginGroup
+
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 4
+release 0
+x 54
+y 705
+w 148
+h 25
+fgColor index 43
+bgColor index 3
+topShadowColor index 1
+botShadowColor index 11
+font "helvetica-bold-r-14.0"
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "NDAttrPlot_Select"
+}
+symbols {
+  0 "AXIS=Y2,IND=2"
+}
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 55
+y 705
+w 149
+h 25
+controlPv "$(P)$(R)Y2:DataLabel2"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 15
+y 735
+w 189
+h 25
+
+beginGroup
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 15
+y 735
+w 35
+h 25
+
+beginGroup
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 15
+y 735
+w 35
+h 25
+lineColor index 14
+fill
+fillColor index 0
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 20
+y 740
+w 25
+h 15
+
+beginGroup
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 20
+y 745
+w 25
+h 5
+lineColor index 37
+fill
+fillColor index 37
+lineWidth 0
+endObjectProperties
+
+# (Circle)
+object activeCircleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 25
+y 740
+w 15
+h 15
+lineColor index 37
+fillColor index 3
+lineWidth 3
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 54
+y 735
+w 150
+h 25
+
+beginGroup
+
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 4
+release 0
+x 54
+y 735
+w 148
+h 25
+fgColor index 43
+bgColor index 3
+topShadowColor index 1
+botShadowColor index 11
+font "helvetica-bold-r-14.0"
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "NDAttrPlot_Select"
+}
+symbols {
+  0 "AXIS=Y2,IND=3"
+}
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 55
+y 735
+w 149
+h 25
+controlPv "$(P)$(R)Y2:DataLabel3"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
