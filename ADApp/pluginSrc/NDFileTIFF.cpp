@@ -68,13 +68,16 @@ asynStatus NDFileTIFF::openFile(const char *fileName, NDFileOpenMode_t openMode,
     /* We don't support opening an existing file for appending yet */
     if (openMode & NDFileModeAppend) return(asynError);
 
-   /* Create the file. */
+    /* Create the file. */
     if ((this->output = TIFFOpen(fileName, "w")) == NULL ) {
         asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, 
         "%s:%s error opening file %s\n",
         driverName, functionName, fileName);
         return(asynError);
     }
+    asynPrint(pasynUserSelf, ASYN_TRACE_FLOW,
+        "%s::%s opened file %s\n", 
+        driverName, functionName, fileName);
     
     /* We do some special treatment based on colorMode */
     pAttribute = pArray->pAttributeList->find("ColorMode");
@@ -220,7 +223,7 @@ asynStatus NDFileTIFF::openFile(const char *fileName, NDFileOpenMode_t openMode,
     int tagId = TIFFTAG_START_;
    
     numAttributes_ = this->pFileAttributes->count();
-    asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW,
+    asynPrint(this->pasynUserSelf, ASYN_TRACEIO_DRIVER,
         "%s:%s this->pFileAttributes->count(): %d\n",
         driverName, functionName, numAttributes_);
 
@@ -232,13 +235,13 @@ asynStatus NDFileTIFF::openFile(const char *fileName, NDFileOpenMode_t openMode,
         return asynError;
     }
     for (int i=0; i<numAttributes_; ++i) {
-        asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW,
+        asynPrint(this->pasynUserSelf, ASYN_TRACEIO_DRIVER,
             "%s:%s Initializing %d fieldInfo_ entry.\n",
             driverName, functionName, i);
         fieldInfo_[i] = NULL;
     }
     
-    asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW,
+    asynPrint(this->pasynUserSelf, ASYN_TRACEIO_DRIVER,
         "%s:%s Looping over attributes...\n",
         driverName, functionName);
 
@@ -248,7 +251,7 @@ asynStatus NDFileTIFF::openFile(const char *fileName, NDFileOpenMode_t openMode,
         //const char *attributeDescription = pAttribute->getDescription();
         const char *attributeSource = pAttribute->getSource();
 
-        asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW,
+        asynPrint(this->pasynUserSelf, ASYN_TRACEIO_DRIVER,
           "%s:%s : attribute: %s, source: %s\n",
           driverName, functionName, attributeName, attributeSource);
 
@@ -296,7 +299,7 @@ asynStatus NDFileTIFF::openFile(const char *fileName, NDFileOpenMode_t openMode,
         }
 
         if (attrDataType != NDAttrUndefined) {
-            asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW,
+            asynPrint(this->pasynUserSelf, ASYN_TRACEIO_DRIVER,
                 "%s:%s : tagId: %d, tagString: %s\n",
                   driverName, functionName, tagId, tagString);
             fieldInfo_[count] = (TIFFFieldInfo*) malloc(sizeof(TIFFFieldInfo));
@@ -363,7 +366,7 @@ asynStatus NDFileTIFF::writeFile(NDArray *pArray)
     static const char *functionName = "writeFile";
 
     asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW,
-              "%s:%s: %lu, %lu\n", 
+              "%s:%s: writing file dimensions=[%lu, %lu]\n", 
               driverName, functionName, (unsigned long)pArray->dims[0].size, (unsigned long)pArray->dims[1].size);
 
     if (this->output == NULL) {
@@ -437,6 +440,9 @@ asynStatus NDFileTIFF::closeFile()
         return(asynError);
     }
 
+    asynPrint(pasynUserSelf, ASYN_TRACE_FLOW,
+        "%s::%s closing file\n", 
+        driverName, functionName);
     TIFFClose(this->output);
 
     for (int i=0; i<numAttributes_; ++i) {
