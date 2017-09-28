@@ -311,6 +311,7 @@ int NDAttrPlotConfig(const char * port, int n_attributes, int cache_size,
             n_selected_blocks, in_port, in_addr, queue_size, blocking_callbacks,
             priority, stackSize);
     initHookRegister(initHooks);
+    plugin->start();
 
     return asynSuccess;
 }
