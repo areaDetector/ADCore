@@ -77,11 +77,6 @@ public:
     void processCallbacks(NDArray *pArray);
     asynStatus writeInt32(asynUser *pasynUser, epicsInt32 value);
 
-    /* These methods are new to this class */
-    template <typename epicsType> void doOverlayT(NDArray *pArray, NDOverlay_t *pOverlay, NDArrayInfo_t *pArrayInfo);
-    int doOverlay(NDArray *pArray, NDOverlay_t *pOverlay, NDArrayInfo_t *pArrayInfo);
-    template <typename epicsType> void setPixel(epicsType *pValue, NDOverlay_t *pOverlay, NDArrayInfo_t *pArrayInfo);
-
 protected:
     int NDPluginOverlayMaxSizeX;
     #define FIRST_NDPLUGIN_OVERLAY_PARAM NDPluginOverlayMaxSizeX
@@ -109,7 +104,10 @@ private:
     int maxOverlays_;
     NDArrayInfo prevArrayInfo_;
     std::vector<NDOverlay_t> prevOverlays_;    /* Vector of NDOverlay structures */
-
+    inline void addPixel(NDOverlay_t *pOverlay, int ix, int iy, NDArrayInfo_t *pArrayInfo);
+    template <typename epicsType> void doOverlayT(NDArray *pArray, NDOverlay_t *pOverlay, NDArrayInfo_t *pArrayInfo);
+    int doOverlay(NDArray *pArray, NDOverlay_t *pOverlay, NDArrayInfo_t *pArrayInfo);
+    template <typename epicsType> void setPixel(epicsType *pValue, NDOverlay_t *pOverlay, NDArrayInfo_t *pArrayInfo);
 };
     
 #endif
