@@ -17,9 +17,15 @@ typedef enum {
     NDOverlayXOR
 } NDOverlayDrawMode_t;
 
+typedef struct {
+    std::vector<int> addressOffset;
+    bool changed;
+    bool freezePositionX;
+    bool freezePositionY;
+} NDOverlayPvt_t;
+
 /** Structure defining an overlay */
 typedef struct NDOverlay {
-    int changed;
     int use;
     int PositionX;
     int PositionY;
@@ -35,7 +41,7 @@ typedef struct NDOverlay {
     char TimeStampFormat[64];
     int Font;
     char DisplayText[256];
-    std::vector<int> addressOffset;
+    NDOverlayPvt_t pvt;
 } NDOverlay_t;
 
 
