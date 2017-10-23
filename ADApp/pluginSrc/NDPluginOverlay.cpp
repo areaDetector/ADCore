@@ -39,9 +39,9 @@ static const char *driverName="NDPluginOverlay";
 
 void NDPluginOverlay::addPixel(NDOverlay_t *pOverlay, int ix, int iy, NDArrayInfo_t *pArrayInfo)
 {
-  if ((ix >= 0) && (ix < (int)pArrayInfo->xSize) && \
-      (iy >= 0) && (iy < (int)pArrayInfo->ySize)) \
-    pOverlay->pvt.addressOffset.push_back(iy*pArrayInfo->yStride + ix*pArrayInfo->xStride); \
+  if ((ix >= 0) && (ix < (int)pArrayInfo->xSize) &&
+      (iy >= 0) && (iy < (int)pArrayInfo->ySize))
+    pOverlay->pvt.addressOffset.push_back(iy*pArrayInfo->yStride + ix*pArrayInfo->xStride);
 }
 
 template <typename epicsType>
