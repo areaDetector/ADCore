@@ -222,7 +222,7 @@ asynStatus NDPluginFile::writeFileBase()
 
     switch(fileWriteMode) {
         case NDFileModeSingle:
-            //setIntegerParam(NDWriteFile, 1);
+            setIntegerParam(NDWriteFile, 1);
             callParamCallbacks();
             // Some file writing plugins (e.g. HDF5) use the value of NDFileNumCaptured 
             // even in single mode
@@ -260,7 +260,7 @@ asynStatus NDPluginFile::writeFileBase()
                 setStringParam(NDFileWriteMessage, "ERROR, no capture buffer present");
                 break;
             }
-            //setIntegerParam(NDWriteFile, 1);
+            setIntegerParam(NDWriteFile, 1);
             callParamCallbacks();
             if (this->supportsMultipleArrays)
                 status = this->openFileBase(NDFileModeWrite | NDFileModeMultiple, pArrayOut);
@@ -478,7 +478,7 @@ asynStatus NDPluginFile::doCapture(int capture)
                 if (this->supportsMultipleArrays && !this->useAttrFilePrefix && !this->lazyOpen)
                     status = this->openFileBase(NDFileModeWrite | NDFileModeMultiple, pArray);
                 setIntegerParam(NDFileNumCaptured, 0);
-                //setIntegerParam(NDWriteFile, 1);
+                setIntegerParam(NDWriteFile, 1);
             } else {
                 /* Streaming was just stopped */
                 if (this->supportsMultipleArrays)
