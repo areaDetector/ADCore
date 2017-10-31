@@ -1,5 +1,5 @@
-In current version of office on my laptop
-Convert to PDF, then save PDF as PNG in Acrobat.  Leads to better resolution
+In current version of office:
+Convert to PDF, then save PDF as PNG in Acrobat.  File/Save As/Image/PNG/Settings to change to 600 DPI.
 
 In older version of office:
 
