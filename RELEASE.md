@@ -20,7 +20,7 @@ files respectively, in the configure/ directory of the appropriate release of th
 Release Notes
 =============
 
-R3-2 (September XXX, 2017)
+R3-2 (November XXX, 2017)
 ======================
 ### NDPluginStats
 * Previously the X axis for the histogram plot was just the histogram bin number.
@@ -34,8 +34,23 @@ R3-2 (September XXX, 2017)
   The build flags WITH_BLOSC, BLOSC_EXTERNAL, and BLOSC_LIB have been added, similar to other optional libraries.
   Thanks to Xiaoqiang Wang for this addition.
 * Changed all output records in NDFileHDF.template to have PINI=YES.  This is how other plugins all work.
+### NDPluginOverlay
+* Improved the behavior when changing the size of an overlay. Previously the Position was always preserved when 
+  the Size was changed. This was not the desired behavior when the user had set the Center rather than Position.
+  Now the code remembers whether Position or Center was last set, and preserves the appropriate value when 
+  the Size is changed.
+* Overlays were previously constrained to fit in image on X=0 and Y=0 edges.  However, the user may want part of 
+  the overlay outside the image area. The location of the overlay can now be set anywhere, including negative positions.
+  Each pixel in the overlay is now only added if it is within the image area.
+* Fixed problems with incorrect drawing and crashing if part of an overlay was outside image area.
+* Removed rounding when setting center from position or position from center.
+  This was causing the location to change when setting the same center or position.
+* Changed cross overlap so that it is drawn symmetrically with the same number of pixels on each side of center.
+  This means the actual size is 2*Size/2 + 1, which will be Size+1 if Size is even.
 ### NDPluginDriver
 * Force queueSize to be >=1 when creating queues in createCallbackThreads.  Was crashing when autosave value was 0.
+### NDScatter.template
+* Removed SCAN=I/O Intr for an output record which was a mistake and could cause crashes.
 ### pluginTests/Makefile
 * Fixed errors with extra parentheses that were preventing include USR_INCLUDES directories from being added.
 
