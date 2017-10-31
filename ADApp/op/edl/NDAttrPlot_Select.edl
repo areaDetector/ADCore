@@ -5,8 +5,8 @@ minor 0
 release 1
 x 1311
 y 232
-w 565
-h 730
+w 1750
+h 726
 font "arial-medium-r-18.0"
 ctlFont "arial-medium-r-18.0"
 btnFont "arial-medium-r-18.0"
@@ -24,99 +24,22 @@ showGrid
 snapToGrid
 gridSize 5
 endScreenProperties
-
-# (Group)
-object activeGroupClass
+# (Textupdate)
+object TextupdateClass
 beginObjectProperties
-major 4
+major 10
 minor 0
 release 0
-x 0
-y 0
-w 570
-h 30
-
-beginGroup
-
-# (Rectangle)
-object activeRectangleClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 0
-y 0
-w 565
+x 35
+y 90
+w 145
 h 25
-lineColor index 1
-fillColor index 0
-endObjectProperties
-
-# (Rectangle)
-object activeRectangleClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 0
-y 1
-w 565
-h 25
-lineColor index 11
-fillColor index 0
-endObjectProperties
-
-# (Related Display)
-object relatedDisplayClass
-beginObjectProperties
-major 4
-minor 4
-release 0
-x 0
-y 1
-w 565
-h 24
-fgColor index 14
-bgColor index 3
-topShadowColor index 0
-botShadowColor index 0
+controlPv "$(P)$(R)Attr0"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
 font "helvetica-bold-r-14.0"
-xPosOffset 5
-yPosOffset 5
-button3Popup
-invisible
-buttonLabel "tooltip"
-numPvs 4
-numDsps 1
-displayFileName {
-  0 "generic-tooltip"
-}
-setPosition {
-  0 "button"
-}
-endObjectProperties
-
-# (Static Text)
-object activeXTextClass
-beginObjectProperties
-major 4
-minor 1
-release 1
-x 0
-y 1
-w 611
-h 25
-font "helvetica-bold-r-14.0"
-fontAlign "center"
-fgColor index 14
-bgColor index 48
-value {
-  "Data Selection - $(AXIS) $(IND)"
-}
-endObjectProperties
-
-endGroup
-
 endObjectProperties
 
 # (Textupdate)
@@ -593,62 +516,6 @@ beginObjectProperties
 major 10
 minor 0
 release 0
-x 35
-y 90
-w 145
-h 25
-controlPv "$(P)$(R)Attr0"
-fgColor index 16
-fgAlarm
-bgColor index 10
-fill
-font "helvetica-bold-r-14.0"
-endObjectProperties
-
-# (Static Text)
-object activeXTextClass
-beginObjectProperties
-major 4
-minor 1
-release 1
-x 35
-y 60
-w 145
-h 25
-font "helvetica-bold-r-14.0"
-fgColor index 14
-bgColor index 0
-useDisplayBg
-value {
-  "Unique ID"
-}
-endObjectProperties
-
-# (Static Text)
-object activeXTextClass
-beginObjectProperties
-major 4
-minor 1
-release 1
-x 35
-y 30
-w 145
-h 25
-font "helvetica-bold-r-14.0"
-fgColor index 14
-bgColor index 0
-useDisplayBg
-value {
-  "None"
-}
-endObjectProperties
-
-# (Textupdate)
-object TextupdateClass
-beginObjectProperties
-major 10
-minor 0
-release 0
 x 230
 y 240
 w 145
@@ -919,7 +786,7 @@ beginObjectProperties
 major 10
 minor 0
 release 0
-x 415
+x 425
 y 30
 w 145
 h 25
@@ -937,7 +804,7 @@ beginObjectProperties
 major 10
 minor 0
 release 0
-x 415
+x 425
 y 60
 w 145
 h 25
@@ -955,7 +822,7 @@ beginObjectProperties
 major 10
 minor 0
 release 0
-x 415
+x 425
 y 90
 w 145
 h 25
@@ -973,7 +840,7 @@ beginObjectProperties
 major 10
 minor 0
 release 0
-x 415
+x 425
 y 120
 w 145
 h 25
@@ -991,7 +858,7 @@ beginObjectProperties
 major 10
 minor 0
 release 0
-x 415
+x 425
 y 150
 w 145
 h 25
@@ -1009,7 +876,7 @@ beginObjectProperties
 major 10
 minor 0
 release 0
-x 415
+x 425
 y 180
 w 145
 h 25
@@ -1027,7 +894,7 @@ beginObjectProperties
 major 10
 minor 0
 release 0
-x 415
+x 425
 y 210
 w 145
 h 25
@@ -1045,7 +912,7 @@ beginObjectProperties
 major 10
 minor 0
 release 0
-x 415
+x 425
 y 240
 w 145
 h 25
@@ -1063,7 +930,7 @@ beginObjectProperties
 major 10
 minor 0
 release 0
-x 415
+x 425
 y 270
 w 145
 h 25
@@ -1081,7 +948,7 @@ beginObjectProperties
 major 10
 minor 0
 release 0
-x 415
+x 425
 y 300
 w 145
 h 25
@@ -1099,7 +966,7 @@ beginObjectProperties
 major 10
 minor 0
 release 0
-x 415
+x 425
 y 330
 w 145
 h 25
@@ -1117,7 +984,7 @@ beginObjectProperties
 major 10
 minor 0
 release 0
-x 415
+x 425
 y 360
 w 145
 h 25
@@ -1135,7 +1002,7 @@ beginObjectProperties
 major 10
 minor 0
 release 0
-x 415
+x 425
 y 390
 w 145
 h 25
@@ -1153,7 +1020,7 @@ beginObjectProperties
 major 10
 minor 0
 release 0
-x 415
+x 425
 y 420
 w 145
 h 25
@@ -1171,7 +1038,7 @@ beginObjectProperties
 major 10
 minor 0
 release 0
-x 415
+x 425
 y 450
 w 145
 h 25
@@ -1189,7 +1056,7 @@ beginObjectProperties
 major 10
 minor 0
 release 0
-x 415
+x 425
 y 480
 w 145
 h 25
@@ -1207,7 +1074,7 @@ beginObjectProperties
 major 10
 minor 0
 release 0
-x 415
+x 425
 y 510
 w 145
 h 25
@@ -1225,7 +1092,7 @@ beginObjectProperties
 major 10
 minor 0
 release 0
-x 415
+x 425
 y 540
 w 145
 h 25
@@ -1243,7 +1110,7 @@ beginObjectProperties
 major 10
 minor 0
 release 0
-x 415
+x 425
 y 570
 w 145
 h 25
@@ -1261,7 +1128,7 @@ beginObjectProperties
 major 10
 minor 0
 release 0
-x 415
+x 425
 y 600
 w 145
 h 25
@@ -1279,7 +1146,7 @@ beginObjectProperties
 major 10
 minor 0
 release 0
-x 415
+x 425
 y 630
 w 145
 h 25
@@ -1297,7 +1164,7 @@ beginObjectProperties
 major 10
 minor 0
 release 0
-x 415
+x 425
 y 660
 w 145
 h 25
@@ -1309,13 +1176,2425 @@ fill
 font "helvetica-bold-r-14.0"
 endObjectProperties
 
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 620
+y 30
+w 145
+h 25
+controlPv "$(P)$(R)Attr64"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 620
+y 60
+w 145
+h 25
+controlPv "$(P)$(R)Attr65"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 620
+y 90
+w 145
+h 25
+controlPv "$(P)$(R)Attr66"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 620
+y 120
+w 145
+h 25
+controlPv "$(P)$(R)Attr67"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 620
+y 150
+w 145
+h 25
+controlPv "$(P)$(R)Attr68"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 620
+y 180
+w 145
+h 25
+controlPv "$(P)$(R)Attr69"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 620
+y 210
+w 145
+h 25
+controlPv "$(P)$(R)Attr70"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 620
+y 240
+w 145
+h 25
+controlPv "$(P)$(R)Attr71"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 620
+y 270
+w 145
+h 25
+controlPv "$(P)$(R)Attr72"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 620
+y 300
+w 145
+h 25
+controlPv "$(P)$(R)Attr73"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 620
+y 330
+w 145
+h 25
+controlPv "$(P)$(R)Attr74"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 620
+y 360
+w 145
+h 25
+controlPv "$(P)$(R)Attr75"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 620
+y 390
+w 145
+h 25
+controlPv "$(P)$(R)Attr76"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 620
+y 420
+w 145
+h 25
+controlPv "$(P)$(R)Attr77"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 620
+y 450
+w 145
+h 25
+controlPv "$(P)$(R)Attr78"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 620
+y 480
+w 145
+h 25
+controlPv "$(P)$(R)Attr79"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 620
+y 510
+w 145
+h 25
+controlPv "$(P)$(R)Attr80"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 620
+y 540
+w 145
+h 25
+controlPv "$(P)$(R)Attr81"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 620
+y 570
+w 145
+h 25
+controlPv "$(P)$(R)Attr82"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 620
+y 600
+w 145
+h 25
+controlPv "$(P)$(R)Attr83"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 620
+y 630
+w 145
+h 25
+controlPv "$(P)$(R)Attr84"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 620
+y 660
+w 145
+h 25
+controlPv "$(P)$(R)Attr85"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 815
+y 30
+w 145
+h 25
+controlPv "$(P)$(R)Attr86"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 815
+y 60
+w 145
+h 25
+controlPv "$(P)$(R)Attr87"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 815
+y 90
+w 145
+h 25
+controlPv "$(P)$(R)Attr88"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 815
+y 120
+w 145
+h 25
+controlPv "$(P)$(R)Attr89"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 815
+y 150
+w 145
+h 25
+controlPv "$(P)$(R)Attr90"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 815
+y 180
+w 145
+h 25
+controlPv "$(P)$(R)Attr91"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 815
+y 210
+w 145
+h 25
+controlPv "$(P)$(R)Attr92"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 815
+y 240
+w 145
+h 25
+controlPv "$(P)$(R)Attr93"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 815
+y 270
+w 145
+h 25
+controlPv "$(P)$(R)Attr94"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 815
+y 300
+w 145
+h 25
+controlPv "$(P)$(R)Attr95"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 815
+y 330
+w 145
+h 25
+controlPv "$(P)$(R)Attr96"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 815
+y 360
+w 145
+h 25
+controlPv "$(P)$(R)Attr97"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 815
+y 390
+w 145
+h 25
+controlPv "$(P)$(R)Attr98"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 815
+y 420
+w 145
+h 25
+controlPv "$(P)$(R)Attr99"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 815
+y 450
+w 145
+h 25
+controlPv "$(P)$(R)Attr100"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 815
+y 480
+w 145
+h 25
+controlPv "$(P)$(R)Attr101"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 815
+y 510
+w 145
+h 25
+controlPv "$(P)$(R)Attr102"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 815
+y 540
+w 145
+h 25
+controlPv "$(P)$(R)Attr103"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 815
+y 570
+w 145
+h 25
+controlPv "$(P)$(R)Attr104"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 815
+y 600
+w 145
+h 25
+controlPv "$(P)$(R)Attr105"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 815
+y 630
+w 145
+h 25
+controlPv "$(P)$(R)Attr106"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 815
+y 660
+w 145
+h 25
+controlPv "$(P)$(R)Attr107"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 1010
+y 30
+w 145
+h 25
+controlPv "$(P)$(R)Attr108"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 1010
+y 60
+w 145
+h 25
+controlPv "$(P)$(R)Attr109"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 1010
+y 90
+w 145
+h 25
+controlPv "$(P)$(R)Attr110"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 1010
+y 120
+w 145
+h 25
+controlPv "$(P)$(R)Attr111"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 1010
+y 150
+w 145
+h 25
+controlPv "$(P)$(R)Attr112"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 1010
+y 180
+w 145
+h 25
+controlPv "$(P)$(R)Attr113"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 1010
+y 210
+w 145
+h 25
+controlPv "$(P)$(R)Attr114"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 1010
+y 240
+w 145
+h 25
+controlPv "$(P)$(R)Attr115"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 1010
+y 270
+w 145
+h 25
+controlPv "$(P)$(R)Attr116"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 1010
+y 300
+w 145
+h 25
+controlPv "$(P)$(R)Attr117"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 1010
+y 330
+w 145
+h 25
+controlPv "$(P)$(R)Attr118"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 1010
+y 360
+w 145
+h 25
+controlPv "$(P)$(R)Attr119"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 1010
+y 390
+w 145
+h 25
+controlPv "$(P)$(R)Attr120"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 1010
+y 420
+w 145
+h 25
+controlPv "$(P)$(R)Attr121"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 1010
+y 450
+w 145
+h 25
+controlPv "$(P)$(R)Attr122"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 1010
+y 480
+w 145
+h 25
+controlPv "$(P)$(R)Attr123"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 1010
+y 510
+w 145
+h 25
+controlPv "$(P)$(R)Attr124"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 1010
+y 540
+w 145
+h 25
+controlPv "$(P)$(R)Attr125"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 1010
+y 570
+w 145
+h 25
+controlPv "$(P)$(R)Attr126"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 1010
+y 600
+w 145
+h 25
+controlPv "$(P)$(R)Attr127"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 1010
+y 630
+w 145
+h 25
+controlPv "$(P)$(R)Attr128"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 1010
+y 660
+w 145
+h 25
+controlPv "$(P)$(R)Attr129"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 1205
+y 30
+w 145
+h 25
+controlPv "$(P)$(R)Attr130"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 1205
+y 60
+w 145
+h 25
+controlPv "$(P)$(R)Attr131"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 1205
+y 90
+w 145
+h 25
+controlPv "$(P)$(R)Attr132"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 1205
+y 120
+w 145
+h 25
+controlPv "$(P)$(R)Attr133"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 1205
+y 150
+w 145
+h 25
+controlPv "$(P)$(R)Attr134"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 1205
+y 180
+w 145
+h 25
+controlPv "$(P)$(R)Attr135"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 1205
+y 210
+w 145
+h 25
+controlPv "$(P)$(R)Attr136"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 1205
+y 240
+w 145
+h 25
+controlPv "$(P)$(R)Attr137"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 1205
+y 270
+w 145
+h 25
+controlPv "$(P)$(R)Attr138"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 1205
+y 300
+w 145
+h 25
+controlPv "$(P)$(R)Attr139"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 1205
+y 330
+w 145
+h 25
+controlPv "$(P)$(R)Attr140"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 1205
+y 360
+w 145
+h 25
+controlPv "$(P)$(R)Attr141"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 1205
+y 390
+w 145
+h 25
+controlPv "$(P)$(R)Attr142"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 1205
+y 420
+w 145
+h 25
+controlPv "$(P)$(R)Attr143"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 1205
+y 450
+w 145
+h 25
+controlPv "$(P)$(R)Attr144"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 1205
+y 480
+w 145
+h 25
+controlPv "$(P)$(R)Attr145"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 1205
+y 510
+w 145
+h 25
+controlPv "$(P)$(R)Attr146"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 1205
+y 540
+w 145
+h 25
+controlPv "$(P)$(R)Attr147"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 1205
+y 570
+w 145
+h 25
+controlPv "$(P)$(R)Attr148"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 1205
+y 600
+w 145
+h 25
+controlPv "$(P)$(R)Attr149"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 1205
+y 630
+w 145
+h 25
+controlPv "$(P)$(R)Attr150"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 1205
+y 660
+w 145
+h 25
+controlPv "$(P)$(R)Attr151"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 1400
+y 30
+w 145
+h 25
+controlPv "$(P)$(R)Attr152"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 1400
+y 60
+w 145
+h 25
+controlPv "$(P)$(R)Attr153"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 1400
+y 90
+w 145
+h 25
+controlPv "$(P)$(R)Attr154"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 1400
+y 120
+w 145
+h 25
+controlPv "$(P)$(R)Attr155"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 1400
+y 150
+w 145
+h 25
+controlPv "$(P)$(R)Attr156"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 1400
+y 180
+w 145
+h 25
+controlPv "$(P)$(R)Attr157"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 1400
+y 210
+w 145
+h 25
+controlPv "$(P)$(R)Attr158"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 1400
+y 240
+w 145
+h 25
+controlPv "$(P)$(R)Attr159"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 1400
+y 270
+w 145
+h 25
+controlPv "$(P)$(R)Attr160"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 1400
+y 300
+w 145
+h 25
+controlPv "$(P)$(R)Attr161"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 1400
+y 330
+w 145
+h 25
+controlPv "$(P)$(R)Attr162"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 1400
+y 360
+w 145
+h 25
+controlPv "$(P)$(R)Attr163"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 1400
+y 390
+w 145
+h 25
+controlPv "$(P)$(R)Attr164"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 1400
+y 420
+w 145
+h 25
+controlPv "$(P)$(R)Attr165"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 1400
+y 450
+w 145
+h 25
+controlPv "$(P)$(R)Attr166"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 1400
+y 480
+w 145
+h 25
+controlPv "$(P)$(R)Attr167"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 1400
+y 510
+w 145
+h 25
+controlPv "$(P)$(R)Attr168"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 1400
+y 540
+w 145
+h 25
+controlPv "$(P)$(R)Attr169"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 1400
+y 570
+w 145
+h 25
+controlPv "$(P)$(R)Attr170"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 1400
+y 600
+w 145
+h 25
+controlPv "$(P)$(R)Attr171"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 1400
+y 630
+w 145
+h 25
+controlPv "$(P)$(R)Attr172"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 1400
+y 660
+w 145
+h 25
+controlPv "$(P)$(R)Attr173"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 1595
+y 30
+w 145
+h 25
+controlPv "$(P)$(R)Attr174"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 1595
+y 60
+w 145
+h 25
+controlPv "$(P)$(R)Attr175"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 1595
+y 90
+w 145
+h 25
+controlPv "$(P)$(R)Attr176"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 1595
+y 120
+w 145
+h 25
+controlPv "$(P)$(R)Attr177"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 1595
+y 150
+w 145
+h 25
+controlPv "$(P)$(R)Attr178"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 1595
+y 180
+w 145
+h 25
+controlPv "$(P)$(R)Attr179"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 1595
+y 210
+w 145
+h 25
+controlPv "$(P)$(R)Attr180"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 1595
+y 240
+w 145
+h 25
+controlPv "$(P)$(R)Attr181"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 1595
+y 270
+w 145
+h 25
+controlPv "$(P)$(R)Attr182"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 1595
+y 300
+w 145
+h 25
+controlPv "$(P)$(R)Attr183"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 1595
+y 330
+w 145
+h 25
+controlPv "$(P)$(R)Attr184"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 1595
+y 360
+w 145
+h 25
+controlPv "$(P)$(R)Attr185"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 1595
+y 390
+w 145
+h 25
+controlPv "$(P)$(R)Attr186"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 1595
+y 420
+w 145
+h 25
+controlPv "$(P)$(R)Attr187"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 1595
+y 450
+w 145
+h 25
+controlPv "$(P)$(R)Attr188"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 1595
+y 480
+w 145
+h 25
+controlPv "$(P)$(R)Attr189"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 1595
+y 510
+w 145
+h 25
+controlPv "$(P)$(R)Attr190"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 1595
+y 540
+w 145
+h 25
+controlPv "$(P)$(R)Attr191"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 1595
+y 570
+w 145
+h 25
+controlPv "$(P)$(R)Attr192"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 1595
+y 600
+w 145
+h 25
+controlPv "$(P)$(R)Attr193"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 1595
+y 630
+w 145
+h 25
+controlPv "$(P)$(R)Attr194"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 1595
+y 660
+w 145
+h 25
+controlPv "$(P)$(R)Attr195"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 35
+y 30
+w 145
+h 25
+font "helvetica-bold-r-14.0"
+fgColor index 14
+bgColor index 0
+useDisplayBg
+value {
+  "None"
+}
+endObjectProperties
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 35
+y 60
+w 145
+h 25
+font "helvetica-bold-r-14.0"
+fgColor index 14
+bgColor index 0
+useDisplayBg
+value {
+  "Unique ID"
+}
+endObjectProperties
 # (Exit Button)
 object activeExitButtonClass
 beginObjectProperties
 major 4
 minor 1
 release 0
-x 465
+x 1650
 y 695
 w 90
 h 25
@@ -1327,7 +3606,6 @@ label "EXIT"
 font "arial-medium-r-18.0"
 3d
 endObjectProperties
-
 # (Group)
 object activeGroupClass
 beginObjectProperties
@@ -1397,7 +3675,6 @@ endObjectProperties
 endGroup
 
 endObjectProperties
-
 # (Group)
 object activeGroupClass
 beginObjectProperties
@@ -1426,9 +3703,11 @@ numStates 3
 minValues {
   0 -1000
   1 -1
+  2 0
 }
 maxValues {
   0 -1
+  1 0
   2 64
 }
 controlPvs {
@@ -1465,7 +3744,6 @@ endObjectProperties
 endGroup
 
 endObjectProperties
-
 # (Group)
 object activeGroupClass
 beginObjectProperties
@@ -1493,9 +3771,11 @@ file "NDAttrPlot_SelectSymbol"
 numStates 3
 minValues {
   0 -1000
+  1 0
   2 1
 }
 maxValues {
+  0 0
   1 1
   2 64
 }
@@ -1533,7 +3813,6 @@ endObjectProperties
 endGroup
 
 endObjectProperties
-
 # (Group)
 object activeGroupClass
 beginObjectProperties
@@ -1603,7 +3882,6 @@ endObjectProperties
 endGroup
 
 endObjectProperties
-
 # (Group)
 object activeGroupClass
 beginObjectProperties
@@ -1673,7 +3951,6 @@ endObjectProperties
 endGroup
 
 endObjectProperties
-
 # (Group)
 object activeGroupClass
 beginObjectProperties
@@ -1743,7 +4020,6 @@ endObjectProperties
 endGroup
 
 endObjectProperties
-
 # (Group)
 object activeGroupClass
 beginObjectProperties
@@ -1813,7 +4089,6 @@ endObjectProperties
 endGroup
 
 endObjectProperties
-
 # (Group)
 object activeGroupClass
 beginObjectProperties
@@ -1883,7 +4158,6 @@ endObjectProperties
 endGroup
 
 endObjectProperties
-
 # (Group)
 object activeGroupClass
 beginObjectProperties
@@ -1953,7 +4227,6 @@ endObjectProperties
 endGroup
 
 endObjectProperties
-
 # (Group)
 object activeGroupClass
 beginObjectProperties
@@ -2023,7 +4296,6 @@ endObjectProperties
 endGroup
 
 endObjectProperties
-
 # (Group)
 object activeGroupClass
 beginObjectProperties
@@ -2093,7 +4365,6 @@ endObjectProperties
 endGroup
 
 endObjectProperties
-
 # (Group)
 object activeGroupClass
 beginObjectProperties
@@ -2163,7 +4434,6 @@ endObjectProperties
 endGroup
 
 endObjectProperties
-
 # (Group)
 object activeGroupClass
 beginObjectProperties
@@ -2233,7 +4503,6 @@ endObjectProperties
 endGroup
 
 endObjectProperties
-
 # (Group)
 object activeGroupClass
 beginObjectProperties
@@ -2303,7 +4572,6 @@ endObjectProperties
 endGroup
 
 endObjectProperties
-
 # (Group)
 object activeGroupClass
 beginObjectProperties
@@ -2373,7 +4641,6 @@ endObjectProperties
 endGroup
 
 endObjectProperties
-
 # (Group)
 object activeGroupClass
 beginObjectProperties
@@ -2443,7 +4710,6 @@ endObjectProperties
 endGroup
 
 endObjectProperties
-
 # (Group)
 object activeGroupClass
 beginObjectProperties
@@ -2513,7 +4779,6 @@ endObjectProperties
 endGroup
 
 endObjectProperties
-
 # (Group)
 object activeGroupClass
 beginObjectProperties
@@ -2583,7 +4848,6 @@ endObjectProperties
 endGroup
 
 endObjectProperties
-
 # (Group)
 object activeGroupClass
 beginObjectProperties
@@ -2653,7 +4917,6 @@ endObjectProperties
 endGroup
 
 endObjectProperties
-
 # (Group)
 object activeGroupClass
 beginObjectProperties
@@ -2723,7 +4986,6 @@ endObjectProperties
 endGroup
 
 endObjectProperties
-
 # (Group)
 object activeGroupClass
 beginObjectProperties
@@ -2793,7 +5055,6 @@ endObjectProperties
 endGroup
 
 endObjectProperties
-
 # (Group)
 object activeGroupClass
 beginObjectProperties
@@ -2863,7 +5124,6 @@ endObjectProperties
 endGroup
 
 endObjectProperties
-
 # (Group)
 object activeGroupClass
 beginObjectProperties
@@ -2933,7 +5193,6 @@ endObjectProperties
 endGroup
 
 endObjectProperties
-
 # (Group)
 object activeGroupClass
 beginObjectProperties
@@ -3003,7 +5262,6 @@ endObjectProperties
 endGroup
 
 endObjectProperties
-
 # (Group)
 object activeGroupClass
 beginObjectProperties
@@ -3073,7 +5331,6 @@ endObjectProperties
 endGroup
 
 endObjectProperties
-
 # (Group)
 object activeGroupClass
 beginObjectProperties
@@ -3143,7 +5400,6 @@ endObjectProperties
 endGroup
 
 endObjectProperties
-
 # (Group)
 object activeGroupClass
 beginObjectProperties
@@ -3213,7 +5469,6 @@ endObjectProperties
 endGroup
 
 endObjectProperties
-
 # (Group)
 object activeGroupClass
 beginObjectProperties
@@ -3283,7 +5538,6 @@ endObjectProperties
 endGroup
 
 endObjectProperties
-
 # (Group)
 object activeGroupClass
 beginObjectProperties
@@ -3353,7 +5607,6 @@ endObjectProperties
 endGroup
 
 endObjectProperties
-
 # (Group)
 object activeGroupClass
 beginObjectProperties
@@ -3423,7 +5676,6 @@ endObjectProperties
 endGroup
 
 endObjectProperties
-
 # (Group)
 object activeGroupClass
 beginObjectProperties
@@ -3493,7 +5745,6 @@ endObjectProperties
 endGroup
 
 endObjectProperties
-
 # (Group)
 object activeGroupClass
 beginObjectProperties
@@ -3563,7 +5814,6 @@ endObjectProperties
 endGroup
 
 endObjectProperties
-
 # (Group)
 object activeGroupClass
 beginObjectProperties
@@ -3633,7 +5883,6 @@ endObjectProperties
 endGroup
 
 endObjectProperties
-
 # (Group)
 object activeGroupClass
 beginObjectProperties
@@ -3703,7 +5952,6 @@ endObjectProperties
 endGroup
 
 endObjectProperties
-
 # (Group)
 object activeGroupClass
 beginObjectProperties
@@ -3773,7 +6021,6 @@ endObjectProperties
 endGroup
 
 endObjectProperties
-
 # (Group)
 object activeGroupClass
 beginObjectProperties
@@ -3843,7 +6090,6 @@ endObjectProperties
 endGroup
 
 endObjectProperties
-
 # (Group)
 object activeGroupClass
 beginObjectProperties
@@ -3913,7 +6159,6 @@ endObjectProperties
 endGroup
 
 endObjectProperties
-
 # (Group)
 object activeGroupClass
 beginObjectProperties
@@ -3983,7 +6228,6 @@ endObjectProperties
 endGroup
 
 endObjectProperties
-
 # (Group)
 object activeGroupClass
 beginObjectProperties
@@ -4053,7 +6297,6 @@ endObjectProperties
 endGroup
 
 endObjectProperties
-
 # (Group)
 object activeGroupClass
 beginObjectProperties
@@ -4123,7 +6366,6 @@ endObjectProperties
 endGroup
 
 endObjectProperties
-
 # (Group)
 object activeGroupClass
 beginObjectProperties
@@ -4193,7 +6435,6 @@ endObjectProperties
 endGroup
 
 endObjectProperties
-
 # (Group)
 object activeGroupClass
 beginObjectProperties
@@ -4263,7 +6504,6 @@ endObjectProperties
 endGroup
 
 endObjectProperties
-
 # (Group)
 object activeGroupClass
 beginObjectProperties
@@ -4333,7 +6573,6 @@ endObjectProperties
 endGroup
 
 endObjectProperties
-
 # (Group)
 object activeGroupClass
 beginObjectProperties
@@ -4403,14 +6642,13 @@ endObjectProperties
 endGroup
 
 endObjectProperties
-
 # (Group)
 object activeGroupClass
 beginObjectProperties
 major 4
 minor 0
 release 0
-x 385
+x 395
 y 30
 w 25
 h 25
@@ -4423,7 +6661,7 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 385
+x 395
 y 30
 w 25
 h 25
@@ -4454,7 +6692,7 @@ beginObjectProperties
 major 4
 minor 1
 release 0
-x 385
+x 395
 y 30
 w 25
 h 25
@@ -4473,14 +6711,13 @@ endObjectProperties
 endGroup
 
 endObjectProperties
-
 # (Group)
 object activeGroupClass
 beginObjectProperties
 major 4
 minor 0
 release 0
-x 385
+x 395
 y 60
 w 25
 h 25
@@ -4493,7 +6730,7 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 385
+x 395
 y 60
 w 25
 h 25
@@ -4524,7 +6761,7 @@ beginObjectProperties
 major 4
 minor 1
 release 0
-x 385
+x 395
 y 60
 w 25
 h 25
@@ -4543,14 +6780,13 @@ endObjectProperties
 endGroup
 
 endObjectProperties
-
 # (Group)
 object activeGroupClass
 beginObjectProperties
 major 4
 minor 0
 release 0
-x 385
+x 395
 y 90
 w 25
 h 25
@@ -4563,7 +6799,7 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 385
+x 395
 y 90
 w 25
 h 25
@@ -4594,7 +6830,7 @@ beginObjectProperties
 major 4
 minor 1
 release 0
-x 385
+x 395
 y 90
 w 25
 h 25
@@ -4613,14 +6849,13 @@ endObjectProperties
 endGroup
 
 endObjectProperties
-
 # (Group)
 object activeGroupClass
 beginObjectProperties
 major 4
 minor 0
 release 0
-x 385
+x 395
 y 120
 w 25
 h 25
@@ -4633,7 +6868,7 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 385
+x 395
 y 120
 w 25
 h 25
@@ -4664,7 +6899,7 @@ beginObjectProperties
 major 4
 minor 1
 release 0
-x 385
+x 395
 y 120
 w 25
 h 25
@@ -4683,14 +6918,13 @@ endObjectProperties
 endGroup
 
 endObjectProperties
-
 # (Group)
 object activeGroupClass
 beginObjectProperties
 major 4
 minor 0
 release 0
-x 385
+x 395
 y 150
 w 25
 h 25
@@ -4703,7 +6937,7 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 385
+x 395
 y 150
 w 25
 h 25
@@ -4734,7 +6968,7 @@ beginObjectProperties
 major 4
 minor 1
 release 0
-x 385
+x 395
 y 150
 w 25
 h 25
@@ -4753,14 +6987,13 @@ endObjectProperties
 endGroup
 
 endObjectProperties
-
 # (Group)
 object activeGroupClass
 beginObjectProperties
 major 4
 minor 0
 release 0
-x 385
+x 395
 y 180
 w 25
 h 25
@@ -4773,7 +7006,7 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 385
+x 395
 y 180
 w 25
 h 25
@@ -4804,7 +7037,7 @@ beginObjectProperties
 major 4
 minor 1
 release 0
-x 385
+x 395
 y 180
 w 25
 h 25
@@ -4823,14 +7056,13 @@ endObjectProperties
 endGroup
 
 endObjectProperties
-
 # (Group)
 object activeGroupClass
 beginObjectProperties
 major 4
 minor 0
 release 0
-x 385
+x 395
 y 210
 w 25
 h 25
@@ -4843,7 +7075,7 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 385
+x 395
 y 210
 w 25
 h 25
@@ -4874,7 +7106,7 @@ beginObjectProperties
 major 4
 minor 1
 release 0
-x 385
+x 395
 y 210
 w 25
 h 25
@@ -4893,14 +7125,13 @@ endObjectProperties
 endGroup
 
 endObjectProperties
-
 # (Group)
 object activeGroupClass
 beginObjectProperties
 major 4
 minor 0
 release 0
-x 385
+x 395
 y 240
 w 25
 h 25
@@ -4913,7 +7144,7 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 385
+x 395
 y 240
 w 25
 h 25
@@ -4944,7 +7175,7 @@ beginObjectProperties
 major 4
 minor 1
 release 0
-x 385
+x 395
 y 240
 w 25
 h 25
@@ -4963,14 +7194,13 @@ endObjectProperties
 endGroup
 
 endObjectProperties
-
 # (Group)
 object activeGroupClass
 beginObjectProperties
 major 4
 minor 0
 release 0
-x 385
+x 395
 y 270
 w 25
 h 25
@@ -4983,7 +7213,7 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 385
+x 395
 y 270
 w 25
 h 25
@@ -5014,7 +7244,7 @@ beginObjectProperties
 major 4
 minor 1
 release 0
-x 385
+x 395
 y 270
 w 25
 h 25
@@ -5033,14 +7263,13 @@ endObjectProperties
 endGroup
 
 endObjectProperties
-
 # (Group)
 object activeGroupClass
 beginObjectProperties
 major 4
 minor 0
 release 0
-x 385
+x 395
 y 300
 w 25
 h 25
@@ -5053,7 +7282,7 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 385
+x 395
 y 300
 w 25
 h 25
@@ -5084,7 +7313,7 @@ beginObjectProperties
 major 4
 minor 1
 release 0
-x 385
+x 395
 y 300
 w 25
 h 25
@@ -5103,14 +7332,13 @@ endObjectProperties
 endGroup
 
 endObjectProperties
-
 # (Group)
 object activeGroupClass
 beginObjectProperties
 major 4
 minor 0
 release 0
-x 385
+x 395
 y 330
 w 25
 h 25
@@ -5123,7 +7351,7 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 385
+x 395
 y 330
 w 25
 h 25
@@ -5154,7 +7382,7 @@ beginObjectProperties
 major 4
 minor 1
 release 0
-x 385
+x 395
 y 330
 w 25
 h 25
@@ -5173,14 +7401,13 @@ endObjectProperties
 endGroup
 
 endObjectProperties
-
 # (Group)
 object activeGroupClass
 beginObjectProperties
 major 4
 minor 0
 release 0
-x 385
+x 395
 y 360
 w 25
 h 25
@@ -5193,7 +7420,7 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 385
+x 395
 y 360
 w 25
 h 25
@@ -5224,7 +7451,7 @@ beginObjectProperties
 major 4
 minor 1
 release 0
-x 385
+x 395
 y 360
 w 25
 h 25
@@ -5243,14 +7470,13 @@ endObjectProperties
 endGroup
 
 endObjectProperties
-
 # (Group)
 object activeGroupClass
 beginObjectProperties
 major 4
 minor 0
 release 0
-x 385
+x 395
 y 390
 w 25
 h 25
@@ -5263,7 +7489,7 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 385
+x 395
 y 390
 w 25
 h 25
@@ -5294,7 +7520,7 @@ beginObjectProperties
 major 4
 minor 1
 release 0
-x 385
+x 395
 y 390
 w 25
 h 25
@@ -5313,14 +7539,13 @@ endObjectProperties
 endGroup
 
 endObjectProperties
-
 # (Group)
 object activeGroupClass
 beginObjectProperties
 major 4
 minor 0
 release 0
-x 385
+x 395
 y 420
 w 25
 h 25
@@ -5333,7 +7558,7 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 385
+x 395
 y 420
 w 25
 h 25
@@ -5364,7 +7589,7 @@ beginObjectProperties
 major 4
 minor 1
 release 0
-x 385
+x 395
 y 420
 w 25
 h 25
@@ -5383,14 +7608,13 @@ endObjectProperties
 endGroup
 
 endObjectProperties
-
 # (Group)
 object activeGroupClass
 beginObjectProperties
 major 4
 minor 0
 release 0
-x 385
+x 395
 y 450
 w 25
 h 25
@@ -5403,7 +7627,7 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 385
+x 395
 y 450
 w 25
 h 25
@@ -5434,7 +7658,7 @@ beginObjectProperties
 major 4
 minor 1
 release 0
-x 385
+x 395
 y 450
 w 25
 h 25
@@ -5453,14 +7677,13 @@ endObjectProperties
 endGroup
 
 endObjectProperties
-
 # (Group)
 object activeGroupClass
 beginObjectProperties
 major 4
 minor 0
 release 0
-x 385
+x 395
 y 480
 w 25
 h 25
@@ -5473,7 +7696,7 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 385
+x 395
 y 480
 w 25
 h 25
@@ -5504,7 +7727,7 @@ beginObjectProperties
 major 4
 minor 1
 release 0
-x 385
+x 395
 y 480
 w 25
 h 25
@@ -5523,14 +7746,13 @@ endObjectProperties
 endGroup
 
 endObjectProperties
-
 # (Group)
 object activeGroupClass
 beginObjectProperties
 major 4
 minor 0
 release 0
-x 385
+x 395
 y 510
 w 25
 h 25
@@ -5543,7 +7765,7 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 385
+x 395
 y 510
 w 25
 h 25
@@ -5574,7 +7796,7 @@ beginObjectProperties
 major 4
 minor 1
 release 0
-x 385
+x 395
 y 510
 w 25
 h 25
@@ -5593,14 +7815,13 @@ endObjectProperties
 endGroup
 
 endObjectProperties
-
 # (Group)
 object activeGroupClass
 beginObjectProperties
 major 4
 minor 0
 release 0
-x 385
+x 395
 y 540
 w 25
 h 25
@@ -5613,7 +7834,7 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 385
+x 395
 y 540
 w 25
 h 25
@@ -5644,7 +7865,7 @@ beginObjectProperties
 major 4
 minor 1
 release 0
-x 385
+x 395
 y 540
 w 25
 h 25
@@ -5663,14 +7884,13 @@ endObjectProperties
 endGroup
 
 endObjectProperties
-
 # (Group)
 object activeGroupClass
 beginObjectProperties
 major 4
 minor 0
 release 0
-x 385
+x 395
 y 570
 w 25
 h 25
@@ -5683,7 +7903,7 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 385
+x 395
 y 570
 w 25
 h 25
@@ -5714,7 +7934,7 @@ beginObjectProperties
 major 4
 minor 1
 release 0
-x 385
+x 395
 y 570
 w 25
 h 25
@@ -5733,14 +7953,13 @@ endObjectProperties
 endGroup
 
 endObjectProperties
-
 # (Group)
 object activeGroupClass
 beginObjectProperties
 major 4
 minor 0
 release 0
-x 385
+x 395
 y 600
 w 25
 h 25
@@ -5753,7 +7972,7 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 385
+x 395
 y 600
 w 25
 h 25
@@ -5784,7 +8003,7 @@ beginObjectProperties
 major 4
 minor 1
 release 0
-x 385
+x 395
 y 600
 w 25
 h 25
@@ -5803,14 +8022,13 @@ endObjectProperties
 endGroup
 
 endObjectProperties
-
 # (Group)
 object activeGroupClass
 beginObjectProperties
 major 4
 minor 0
 release 0
-x 385
+x 395
 y 630
 w 25
 h 25
@@ -5823,7 +8041,7 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 385
+x 395
 y 630
 w 25
 h 25
@@ -5854,7 +8072,7 @@ beginObjectProperties
 major 4
 minor 1
 release 0
-x 385
+x 395
 y 630
 w 25
 h 25
@@ -5873,14 +8091,13 @@ endObjectProperties
 endGroup
 
 endObjectProperties
-
 # (Group)
 object activeGroupClass
 beginObjectProperties
 major 4
 minor 0
 release 0
-x 385
+x 395
 y 660
 w 25
 h 25
@@ -5893,7 +8110,7 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 385
+x 395
 y 660
 w 25
 h 25
@@ -5924,7 +8141,7 @@ beginObjectProperties
 major 4
 minor 1
 release 0
-x 385
+x 395
 y 660
 w 25
 h 25
@@ -5943,4 +8160,9203 @@ endObjectProperties
 endGroup
 
 endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 590
+y 30
+w 25
+h 25
 
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 590
+y 30
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 64
+  2 65
+}
+maxValues {
+  0 64
+  1 65
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 590
+y 30
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "64"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 590
+y 60
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 590
+y 60
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 65
+  2 66
+}
+maxValues {
+  0 65
+  1 66
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 590
+y 60
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "65"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 590
+y 90
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 590
+y 90
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 66
+  2 67
+}
+maxValues {
+  0 66
+  1 67
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 590
+y 90
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "66"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 590
+y 120
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 590
+y 120
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 67
+  2 68
+}
+maxValues {
+  0 67
+  1 68
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 590
+y 120
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "67"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 590
+y 150
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 590
+y 150
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 68
+  2 69
+}
+maxValues {
+  0 68
+  1 69
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 590
+y 150
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "68"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 590
+y 180
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 590
+y 180
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 69
+  2 70
+}
+maxValues {
+  0 69
+  1 70
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 590
+y 180
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "69"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 590
+y 210
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 590
+y 210
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 70
+  2 71
+}
+maxValues {
+  0 70
+  1 71
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 590
+y 210
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "70"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 590
+y 240
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 590
+y 240
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 71
+  2 72
+}
+maxValues {
+  0 71
+  1 72
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 590
+y 240
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "71"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 590
+y 270
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 590
+y 270
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 72
+  2 73
+}
+maxValues {
+  0 72
+  1 73
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 590
+y 270
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "72"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 590
+y 300
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 590
+y 300
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 73
+  2 74
+}
+maxValues {
+  0 73
+  1 74
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 590
+y 300
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "73"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 590
+y 330
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 590
+y 330
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 74
+  2 75
+}
+maxValues {
+  0 74
+  1 75
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 590
+y 330
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "74"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 590
+y 360
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 590
+y 360
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 75
+  2 76
+}
+maxValues {
+  0 75
+  1 76
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 590
+y 360
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "75"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 590
+y 390
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 590
+y 390
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 76
+  2 77
+}
+maxValues {
+  0 76
+  1 77
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 590
+y 390
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "76"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 590
+y 420
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 590
+y 420
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 77
+  2 78
+}
+maxValues {
+  0 77
+  1 78
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 590
+y 420
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "77"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 590
+y 450
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 590
+y 450
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 78
+  2 79
+}
+maxValues {
+  0 78
+  1 79
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 590
+y 450
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "78"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 590
+y 480
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 590
+y 480
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 79
+  2 80
+}
+maxValues {
+  0 79
+  1 80
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 590
+y 480
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "79"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 590
+y 510
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 590
+y 510
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 80
+  2 81
+}
+maxValues {
+  0 80
+  1 81
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 590
+y 510
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "80"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 590
+y 540
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 590
+y 540
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 81
+  2 82
+}
+maxValues {
+  0 81
+  1 82
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 590
+y 540
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "81"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 590
+y 570
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 590
+y 570
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 82
+  2 83
+}
+maxValues {
+  0 82
+  1 83
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 590
+y 570
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "82"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 590
+y 600
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 590
+y 600
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 83
+  2 84
+}
+maxValues {
+  0 83
+  1 84
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 590
+y 600
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "83"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 590
+y 630
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 590
+y 630
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 84
+  2 85
+}
+maxValues {
+  0 84
+  1 85
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 590
+y 630
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "84"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 590
+y 660
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 590
+y 660
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 85
+  2 86
+}
+maxValues {
+  0 85
+  1 86
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 590
+y 660
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "85"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 785
+y 30
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 785
+y 30
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 86
+  2 87
+}
+maxValues {
+  0 86
+  1 87
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 785
+y 30
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "86"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 785
+y 60
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 785
+y 60
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 87
+  2 88
+}
+maxValues {
+  0 87
+  1 88
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 785
+y 60
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "87"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 785
+y 90
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 785
+y 90
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 88
+  2 89
+}
+maxValues {
+  0 88
+  1 89
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 785
+y 90
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "88"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 785
+y 120
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 785
+y 120
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 89
+  2 90
+}
+maxValues {
+  0 89
+  1 90
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 785
+y 120
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "89"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 785
+y 150
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 785
+y 150
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 90
+  2 91
+}
+maxValues {
+  0 90
+  1 91
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 785
+y 150
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "90"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 785
+y 180
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 785
+y 180
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 91
+  2 92
+}
+maxValues {
+  0 91
+  1 92
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 785
+y 180
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "91"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 785
+y 210
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 785
+y 210
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 92
+  2 93
+}
+maxValues {
+  0 92
+  1 93
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 785
+y 210
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "92"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 785
+y 240
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 785
+y 240
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 93
+  2 94
+}
+maxValues {
+  0 93
+  1 94
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 785
+y 240
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "93"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 785
+y 270
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 785
+y 270
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 94
+  2 95
+}
+maxValues {
+  0 94
+  1 95
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 785
+y 270
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "94"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 785
+y 300
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 785
+y 300
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 95
+  2 96
+}
+maxValues {
+  0 95
+  1 96
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 785
+y 300
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "95"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 785
+y 330
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 785
+y 330
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 96
+  2 97
+}
+maxValues {
+  0 96
+  1 97
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 785
+y 330
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "96"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 785
+y 360
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 785
+y 360
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 97
+  2 98
+}
+maxValues {
+  0 97
+  1 98
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 785
+y 360
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "97"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 785
+y 390
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 785
+y 390
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 98
+  2 99
+}
+maxValues {
+  0 98
+  1 99
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 785
+y 390
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "98"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 785
+y 420
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 785
+y 420
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 99
+  2 100
+}
+maxValues {
+  0 99
+  1 100
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 785
+y 420
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "99"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 785
+y 450
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 785
+y 450
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 100
+  2 101
+}
+maxValues {
+  0 100
+  1 101
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 785
+y 450
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "100"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 785
+y 480
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 785
+y 480
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 101
+  2 102
+}
+maxValues {
+  0 101
+  1 102
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 785
+y 480
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "101"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 785
+y 510
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 785
+y 510
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 102
+  2 103
+}
+maxValues {
+  0 102
+  1 103
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 785
+y 510
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "102"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 785
+y 540
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 785
+y 540
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 103
+  2 104
+}
+maxValues {
+  0 103
+  1 104
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 785
+y 540
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "103"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 785
+y 570
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 785
+y 570
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 104
+  2 105
+}
+maxValues {
+  0 104
+  1 105
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 785
+y 570
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "104"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 785
+y 600
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 785
+y 600
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 105
+  2 106
+}
+maxValues {
+  0 105
+  1 106
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 785
+y 600
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "105"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 785
+y 630
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 785
+y 630
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 106
+  2 107
+}
+maxValues {
+  0 106
+  1 107
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 785
+y 630
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "106"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 785
+y 660
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 785
+y 660
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 107
+  2 108
+}
+maxValues {
+  0 107
+  1 108
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 785
+y 660
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "107"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 980
+y 30
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 980
+y 30
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 108
+  2 109
+}
+maxValues {
+  0 108
+  1 109
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 980
+y 30
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "108"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 980
+y 60
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 980
+y 60
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 109
+  2 110
+}
+maxValues {
+  0 109
+  1 110
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 980
+y 60
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "109"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 980
+y 90
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 980
+y 90
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 110
+  2 111
+}
+maxValues {
+  0 110
+  1 111
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 980
+y 90
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "110"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 980
+y 120
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 980
+y 120
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 111
+  2 112
+}
+maxValues {
+  0 111
+  1 112
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 980
+y 120
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "111"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 980
+y 150
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 980
+y 150
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 112
+  2 113
+}
+maxValues {
+  0 112
+  1 113
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 980
+y 150
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "112"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 980
+y 180
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 980
+y 180
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 113
+  2 114
+}
+maxValues {
+  0 113
+  1 114
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 980
+y 180
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "113"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 980
+y 210
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 980
+y 210
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 114
+  2 115
+}
+maxValues {
+  0 114
+  1 115
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 980
+y 210
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "114"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 980
+y 240
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 980
+y 240
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 115
+  2 116
+}
+maxValues {
+  0 115
+  1 116
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 980
+y 240
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "115"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 980
+y 270
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 980
+y 270
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 116
+  2 117
+}
+maxValues {
+  0 116
+  1 117
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 980
+y 270
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "116"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 980
+y 300
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 980
+y 300
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 117
+  2 118
+}
+maxValues {
+  0 117
+  1 118
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 980
+y 300
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "117"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 980
+y 330
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 980
+y 330
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 118
+  2 119
+}
+maxValues {
+  0 118
+  1 119
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 980
+y 330
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "118"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 980
+y 360
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 980
+y 360
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 119
+  2 120
+}
+maxValues {
+  0 119
+  1 120
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 980
+y 360
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "119"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 980
+y 390
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 980
+y 390
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 120
+  2 121
+}
+maxValues {
+  0 120
+  1 121
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 980
+y 390
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "120"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 980
+y 420
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 980
+y 420
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 121
+  2 122
+}
+maxValues {
+  0 121
+  1 122
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 980
+y 420
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "121"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 980
+y 450
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 980
+y 450
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 122
+  2 123
+}
+maxValues {
+  0 122
+  1 123
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 980
+y 450
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "122"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 980
+y 480
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 980
+y 480
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 123
+  2 124
+}
+maxValues {
+  0 123
+  1 124
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 980
+y 480
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "123"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 980
+y 510
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 980
+y 510
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 124
+  2 125
+}
+maxValues {
+  0 124
+  1 125
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 980
+y 510
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "124"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 980
+y 540
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 980
+y 540
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 125
+  2 126
+}
+maxValues {
+  0 125
+  1 126
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 980
+y 540
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "125"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 980
+y 570
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 980
+y 570
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 126
+  2 127
+}
+maxValues {
+  0 126
+  1 127
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 980
+y 570
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "126"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 980
+y 600
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 980
+y 600
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 127
+  2 128
+}
+maxValues {
+  0 127
+  1 128
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 980
+y 600
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "127"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 980
+y 630
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 980
+y 630
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 128
+  2 129
+}
+maxValues {
+  0 128
+  1 129
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 980
+y 630
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "128"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 980
+y 660
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 980
+y 660
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 129
+  2 130
+}
+maxValues {
+  0 129
+  1 130
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 980
+y 660
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "129"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1175
+y 30
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1175
+y 30
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 130
+  2 131
+}
+maxValues {
+  0 130
+  1 131
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 1175
+y 30
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "130"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1175
+y 60
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1175
+y 60
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 131
+  2 132
+}
+maxValues {
+  0 131
+  1 132
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 1175
+y 60
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "131"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1175
+y 90
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1175
+y 90
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 132
+  2 133
+}
+maxValues {
+  0 132
+  1 133
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 1175
+y 90
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "132"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1175
+y 120
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1175
+y 120
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 133
+  2 134
+}
+maxValues {
+  0 133
+  1 134
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 1175
+y 120
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "133"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1175
+y 150
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1175
+y 150
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 134
+  2 135
+}
+maxValues {
+  0 134
+  1 135
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 1175
+y 150
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "134"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1175
+y 180
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1175
+y 180
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 135
+  2 136
+}
+maxValues {
+  0 135
+  1 136
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 1175
+y 180
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "135"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1175
+y 210
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1175
+y 210
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 136
+  2 137
+}
+maxValues {
+  0 136
+  1 137
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 1175
+y 210
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "136"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1175
+y 240
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1175
+y 240
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 137
+  2 138
+}
+maxValues {
+  0 137
+  1 138
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 1175
+y 240
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "137"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1175
+y 270
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1175
+y 270
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 138
+  2 139
+}
+maxValues {
+  0 138
+  1 139
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 1175
+y 270
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "138"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1175
+y 300
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1175
+y 300
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 139
+  2 140
+}
+maxValues {
+  0 139
+  1 140
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 1175
+y 300
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "139"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1175
+y 330
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1175
+y 330
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 140
+  2 141
+}
+maxValues {
+  0 140
+  1 141
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 1175
+y 330
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "140"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1175
+y 360
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1175
+y 360
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 141
+  2 142
+}
+maxValues {
+  0 141
+  1 142
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 1175
+y 360
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "141"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1175
+y 390
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1175
+y 390
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 142
+  2 143
+}
+maxValues {
+  0 142
+  1 143
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 1175
+y 390
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "142"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1175
+y 420
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1175
+y 420
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 143
+  2 144
+}
+maxValues {
+  0 143
+  1 144
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 1175
+y 420
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "143"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1175
+y 450
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1175
+y 450
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 144
+  2 145
+}
+maxValues {
+  0 144
+  1 145
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 1175
+y 450
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "144"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1175
+y 480
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1175
+y 480
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 145
+  2 146
+}
+maxValues {
+  0 145
+  1 146
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 1175
+y 480
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "145"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1175
+y 510
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1175
+y 510
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 146
+  2 147
+}
+maxValues {
+  0 146
+  1 147
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 1175
+y 510
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "146"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1175
+y 540
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1175
+y 540
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 147
+  2 148
+}
+maxValues {
+  0 147
+  1 148
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 1175
+y 540
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "147"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1175
+y 570
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1175
+y 570
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 148
+  2 149
+}
+maxValues {
+  0 148
+  1 149
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 1175
+y 570
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "148"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1175
+y 600
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1175
+y 600
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 149
+  2 150
+}
+maxValues {
+  0 149
+  1 150
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 1175
+y 600
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "149"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1175
+y 630
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1175
+y 630
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 150
+  2 151
+}
+maxValues {
+  0 150
+  1 151
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 1175
+y 630
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "150"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1175
+y 660
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1175
+y 660
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 151
+  2 152
+}
+maxValues {
+  0 151
+  1 152
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 1175
+y 660
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "151"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1370
+y 30
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1370
+y 30
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 152
+  2 153
+}
+maxValues {
+  0 152
+  1 153
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 1370
+y 30
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "152"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1370
+y 60
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1370
+y 60
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 153
+  2 154
+}
+maxValues {
+  0 153
+  1 154
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 1370
+y 60
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "153"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1370
+y 90
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1370
+y 90
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 154
+  2 155
+}
+maxValues {
+  0 154
+  1 155
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 1370
+y 90
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "154"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1370
+y 120
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1370
+y 120
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 155
+  2 156
+}
+maxValues {
+  0 155
+  1 156
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 1370
+y 120
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "155"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1370
+y 150
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1370
+y 150
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 156
+  2 157
+}
+maxValues {
+  0 156
+  1 157
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 1370
+y 150
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "156"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1370
+y 180
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1370
+y 180
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 157
+  2 158
+}
+maxValues {
+  0 157
+  1 158
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 1370
+y 180
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "157"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1370
+y 210
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1370
+y 210
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 158
+  2 159
+}
+maxValues {
+  0 158
+  1 159
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 1370
+y 210
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "158"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1370
+y 240
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1370
+y 240
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 159
+  2 160
+}
+maxValues {
+  0 159
+  1 160
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 1370
+y 240
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "159"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1370
+y 270
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1370
+y 270
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 160
+  2 161
+}
+maxValues {
+  0 160
+  1 161
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 1370
+y 270
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "160"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1370
+y 300
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1370
+y 300
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 161
+  2 162
+}
+maxValues {
+  0 161
+  1 162
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 1370
+y 300
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "161"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1370
+y 330
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1370
+y 330
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 162
+  2 163
+}
+maxValues {
+  0 162
+  1 163
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 1370
+y 330
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "162"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1370
+y 360
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1370
+y 360
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 163
+  2 164
+}
+maxValues {
+  0 163
+  1 164
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 1370
+y 360
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "163"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1370
+y 390
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1370
+y 390
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 164
+  2 165
+}
+maxValues {
+  0 164
+  1 165
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 1370
+y 390
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "164"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1370
+y 420
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1370
+y 420
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 165
+  2 166
+}
+maxValues {
+  0 165
+  1 166
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 1370
+y 420
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "165"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1370
+y 450
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1370
+y 450
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 166
+  2 167
+}
+maxValues {
+  0 166
+  1 167
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 1370
+y 450
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "166"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1370
+y 480
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1370
+y 480
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 167
+  2 168
+}
+maxValues {
+  0 167
+  1 168
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 1370
+y 480
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "167"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1370
+y 510
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1370
+y 510
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 168
+  2 169
+}
+maxValues {
+  0 168
+  1 169
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 1370
+y 510
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "168"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1370
+y 540
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1370
+y 540
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 169
+  2 170
+}
+maxValues {
+  0 169
+  1 170
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 1370
+y 540
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "169"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1370
+y 570
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1370
+y 570
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 170
+  2 171
+}
+maxValues {
+  0 170
+  1 171
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 1370
+y 570
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "170"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1370
+y 600
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1370
+y 600
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 171
+  2 172
+}
+maxValues {
+  0 171
+  1 172
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 1370
+y 600
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "171"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1370
+y 630
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1370
+y 630
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 172
+  2 173
+}
+maxValues {
+  0 172
+  1 173
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 1370
+y 630
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "172"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1370
+y 660
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1370
+y 660
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 173
+  2 174
+}
+maxValues {
+  0 173
+  1 174
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 1370
+y 660
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "173"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1565
+y 30
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1565
+y 30
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 174
+  2 175
+}
+maxValues {
+  0 174
+  1 175
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 1565
+y 30
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "174"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1565
+y 60
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1565
+y 60
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 175
+  2 176
+}
+maxValues {
+  0 175
+  1 176
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 1565
+y 60
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "175"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1565
+y 90
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1565
+y 90
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 176
+  2 177
+}
+maxValues {
+  0 176
+  1 177
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 1565
+y 90
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "176"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1565
+y 120
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1565
+y 120
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 177
+  2 178
+}
+maxValues {
+  0 177
+  1 178
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 1565
+y 120
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "177"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1565
+y 150
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1565
+y 150
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 178
+  2 179
+}
+maxValues {
+  0 178
+  1 179
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 1565
+y 150
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "178"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1565
+y 180
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1565
+y 180
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 179
+  2 180
+}
+maxValues {
+  0 179
+  1 180
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 1565
+y 180
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "179"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1565
+y 210
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1565
+y 210
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 180
+  2 181
+}
+maxValues {
+  0 180
+  1 181
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 1565
+y 210
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "180"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1565
+y 240
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1565
+y 240
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 181
+  2 182
+}
+maxValues {
+  0 181
+  1 182
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 1565
+y 240
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "181"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1565
+y 270
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1565
+y 270
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 182
+  2 183
+}
+maxValues {
+  0 182
+  1 183
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 1565
+y 270
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "182"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1565
+y 300
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1565
+y 300
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 183
+  2 184
+}
+maxValues {
+  0 183
+  1 184
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 1565
+y 300
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "183"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1565
+y 330
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1565
+y 330
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 184
+  2 185
+}
+maxValues {
+  0 184
+  1 185
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 1565
+y 330
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "184"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1565
+y 360
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1565
+y 360
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 185
+  2 186
+}
+maxValues {
+  0 185
+  1 186
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 1565
+y 360
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "185"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1565
+y 390
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1565
+y 390
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 186
+  2 187
+}
+maxValues {
+  0 186
+  1 187
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 1565
+y 390
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "186"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1565
+y 420
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1565
+y 420
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 187
+  2 188
+}
+maxValues {
+  0 187
+  1 188
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 1565
+y 420
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "187"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1565
+y 450
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1565
+y 450
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 188
+  2 189
+}
+maxValues {
+  0 188
+  1 189
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 1565
+y 450
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "188"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1565
+y 480
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1565
+y 480
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 189
+  2 190
+}
+maxValues {
+  0 189
+  1 190
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 1565
+y 480
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "189"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1565
+y 510
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1565
+y 510
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 190
+  2 191
+}
+maxValues {
+  0 190
+  1 191
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 1565
+y 510
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "190"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1565
+y 540
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1565
+y 540
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 191
+  2 192
+}
+maxValues {
+  0 191
+  1 192
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 1565
+y 540
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "191"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1565
+y 570
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1565
+y 570
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 192
+  2 193
+}
+maxValues {
+  0 192
+  1 193
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 1565
+y 570
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "192"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1565
+y 600
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1565
+y 600
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 193
+  2 194
+}
+maxValues {
+  0 193
+  1 194
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 1565
+y 600
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "193"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1565
+y 630
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1565
+y 630
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 194
+  2 195
+}
+maxValues {
+  0 194
+  1 195
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 1565
+y 630
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "194"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1565
+y 660
+w 25
+h 25
+
+beginGroup
+
+# (Symbol)
+object activeSymbolClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1565
+y 660
+w 25
+h 25
+file "NDAttrPlot_SelectSymbol"
+numStates 3
+minValues {
+  0 -1000
+  1 195
+  2 196
+}
+maxValues {
+  0 195
+  1 196
+  2 64
+}
+controlPvs {
+  0 "$(P)$(R)$(AXIS):DataSelect$(IND)_RBV"
+}
+numPvs 1
+useOriginalColors
+fgColor index 14
+bgColor index 0
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 1565
+y 660
+w 25
+h 25
+fgColor index 14
+onColor index 0
+offColor index 0
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)$(AXIS):DataSelect$(IND)"
+pressValue "195"
+3d
+invisible
+font "arial-medium-r-18.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 0
+y 0
+w 1755
+h 30
+beginGroup
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 0
+y 0
+w 1755
+h 25
+lineColor index 1
+fillColor index 0
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 0
+y 1
+w 1755
+h 25
+lineColor index 11
+fillColor index 0
+endObjectProperties
+
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 4
+release 0
+x 0
+y 1
+w 1755
+h 24
+fgColor index 14
+bgColor index 3
+topShadowColor index 0
+botShadowColor index 0
+font "helvetica-bold-r-14.0"
+xPosOffset 5
+yPosOffset 5
+button3Popup
+invisible
+buttonLabel "tooltip"
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "generic-tooltip"
+}
+setPosition {
+  0 "button"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 0
+y 1
+w 1755
+h 25
+font "helvetica-bold-r-14.0"
+fontAlign "center"
+fgColor index 14
+bgColor index 48
+value {
+  "Data Selection - $(AXIS) $(IND)"
+}
+endObjectProperties
+
+endGroup
+
+endObjectProperties
