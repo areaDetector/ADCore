@@ -106,7 +106,7 @@ private:
 public:
     class NDArrayPool *pNDArrayPool; /**< The NDArrayPool object that created this array */
     int           uniqueId;     /**< A number that must be unique for all NDArrays produced by a driver after is has started */
-    double        timeStamp;    /**< The time stamp in seconds for this array; seconds since Epoch (00:00:00 UTC, January 1, 1970)
+    double        timeStamp;    /**< The time stamp in seconds for this array; seconds since EPICS epoch (00:00:00 UTC, January 1, 1990)
                                   * is recommended, but some drivers may use a different start time.*/
     epicsTimeStamp epicsTS;     /**< The epicsTimeStamp; this is set with pasynManager->updateTimeStamp(), 
                                   * and can come from a user-defined timestamp source. */
