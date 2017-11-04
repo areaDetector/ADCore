@@ -297,7 +297,6 @@ asynStatus NDPluginDriver::endProcessCallbacks(NDArray *pArray, bool copyArray, 
             sortedNDArrayList_.insert(*pListElement);
         }
     } else {
-        // See the comments about releasing the lock when calling doCallbacksGenericPointer above
         doCallbacksGenericPointer(pArrayOut, NDArrayData, 0);
         bool orderOK = (pArrayOut->uniqueId == prevUniqueId_)   ||
                        (pArrayOut->uniqueId == prevUniqueId_+1);
@@ -592,14 +591,7 @@ void NDPluginDriver::sortingTask()
             orderOK = (pListElement->pArray_->uniqueId == prevUniqueId_)   ||
                       (pListElement->pArray_->uniqueId == prevUniqueId_+1);
             if ((!firstOutputArray_ && orderOK) || (deltaTime > sortTime)) {
-                // NOTE: we have been releasing the lock before calling doCallbacksGenericPointer because
-                // sometime in the distant past I thought I was getting deadlocks without doing so.
-                // However, releasing the lock here does not work when NumThreads>1 because other threads
-                // can get access to pArrays[0] when the lock is released and cause problems with the NDArrayPool.
-                // Keep the lock for now unless we find deadlock problems.
-                //this->unlock();
                 doCallbacksGenericPointer(pListElement->pArray_, NDArrayData, 0);
-                //this->lock();
                 if (!firstOutputArray_ && !orderOK) {
                     int disorderedArrays;
                     getIntegerParam(NDPluginDriverDisorderedArrays, &disorderedArrays);
