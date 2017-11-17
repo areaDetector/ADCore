@@ -4,10 +4,10 @@
 <widget class="QMainWindow" name="MainWindow">
     <property name="geometry">
         <rect>
-            <x>159</x>
-            <y>196</y>
+            <x>470</x>
+            <y>197</y>
             <width>390</width>
-            <height>575</height>
+            <height>600</height>
         </rect>
     </property>
     <property name="styleSheet">
@@ -85,6 +85,16 @@ caChoice &gt; QPushButton {
       text-align: left;
       padding: 1px;
 }
+
+/* when font specified, no font sizing is done any more,  font: 10pt; is not bad. You could Enable this when you converted from .adl files
+caRelatedDisplay  &gt; QPushButton {
+font: 10pt;
+}
+
+caShellCommand  &gt; QPushButton {
+font: 10pt;
+}
+*/
 
 caSlider::groove:horizontal {
 border: 1px solid #bbb;
@@ -181,20 +191,20 @@ border-radius: 2px;
                 <rect>
                     <x>5</x>
                     <y>40</y>
-                    <width>384</width>
-                    <height>534</height>
+                    <width>382</width>
+                    <height>557</height>
                 </rect>
             </property>
             <property name="geometry">
                 <rect>
                     <x>5</x>
                     <y>40</y>
-                    <width>382</width>
-                    <height>532</height>
+                    <width>380</width>
+                    <height>555</height>
                 </rect>
             </property>
             <property name="filename">
-                <string>NDPluginBase.ui</string>
+                <string>NDPluginBase.adl</string>
             </property>
             <property name="macro">
                 <string></string>
