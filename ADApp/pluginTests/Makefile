@@ -86,7 +86,7 @@ endif
 ## hdf5-1.10.1 seems to have fixed these SWMR problems
 ## We keep the test files but don't  build them for now
 #ifeq ($(WITH_HDF5),YES)
-#  USR_INCLUDES += $(HDF5_INCLUDE)
+#  USR_INCLUDES += -I$(HDF5_INCLUDE)
 #  PROD += test_SWMR_works
 #  PROD += test_SWMR_fail
 #  PROD += test_SWMR_fail_min
