@@ -125,6 +125,7 @@ public:
     /* These are the methods that are new to this class */
     virtual asynStatus createFilePath(const char *path, int pathDepth);
     virtual asynStatus checkPath();
+    virtual bool checkPath(std::string filePath);
     virtual asynStatus createFileName(int maxChars, char *fullFileName);
     virtual asynStatus createFileName(int maxChars, char *filePath, char *fileName);
     virtual asynStatus readNDAttributesFile();
