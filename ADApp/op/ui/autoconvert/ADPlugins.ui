@@ -14,6 +14,105 @@
         <string>
 
 QWidget#centralWidget {background: rgba(187, 187, 187, 255);}
+QPushButton::menu-indicator {image: url(none.png); width: 0}
+
+caTable {
+       font: 10pt;
+       background: cornsilk;
+       alternate-background-color: wheat;
+}
+
+caLineEdit {
+     border-radius: 1px;
+     background: lightyellow;
+     color: black;
+ }
+
+caTextEntry {
+    color: rgb(127, 0, 63);
+    background-color: cornsilk;
+    selection-color: #0a214c;
+    selection-background-color: wheat;
+    border: 1px groove black;
+    border-radius: 1px;
+    padding: 1px;
+}
+
+caTextEntry:focus {
+    padding: 0px;
+    border: 2px groove darkred;
+    border-radius: 1px;
+}
+
+QPushButton {
+      border-color: #00b;
+      border-radius: 2px;
+      padding: 3px;
+      border-width: 1px;
+
+	background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1,
+						   stop:0   rgba(224, 239, 255, 255),
+						   stop:0.5 rgba(199, 215, 230, 255),
+						   stop:1   rgba(184, 214, 236, 255));
+}
+QPushButton:hover {
+	background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1,
+						stop:0   rgba(201, 226, 255, 255),
+						stop:0.5 rgba(177, 204, 230, 255),
+						stop:1   rgba(163, 205, 236, 255));
+}
+QPushButton:pressed {
+	background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1,
+						stop:0   rgba(174, 219, 255, 255),
+						stop:0.5 rgba(165, 199, 230, 255),
+						stop:1   rgba(134, 188, 236, 255));
+}
+
+QPushButton:disabled {
+	background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1,
+						stop:0   rgba(174, 219, 255, 255),
+						stop:0.5 rgba(165, 199, 230, 255),
+						stop:1   rgba(134, 188, 236, 255));
+}
+
+caChoice {
+      background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                  stop: 0 #E1E1E1, stop: 0.4 #DDDDDD,
+                                  stop: 0.5 #D8D8D8, stop: 1.0 #D3D3D3);
+}
+
+caChoice &gt; QPushButton {
+      text-align: left;
+      padding: 1px;
+}
+
+/* when font specified, no font sizing is done any more,  font: 10pt; is not bad. You could Enable this when you converted from .adl files
+caRelatedDisplay  &gt; QPushButton {
+font: 10pt;
+}
+
+caShellCommand  &gt; QPushButton {
+font: 10pt;
+}
+*/
+
+caSlider::groove:horizontal {
+border: 1px solid #bbb;
+background: lightgrey;
+height: 20px;
+border-radius: 4px;
+}
+
+caSlider::handle:horizontal {
+background: red;
+border: 1px solid #777;
+width: 13px;
+margin-top: -2px;
+margin-bottom: -2px;
+border-radius: 2px;
+}
+
+
 
 </string>
     </property>
@@ -226,78 +325,6 @@ QWidget#centralWidget {background: rgba(187, 187, 187, 255);}
                 <set>Qt::AlignAbsolute|Qt::AlignLeft|Qt::AlignVCenter</set>
             </property>
         </widget>
-        <widget class="caLabel" name="caLabel_4">
-            <property name="frameShape">
-                <enum>QFrame::NoFrame</enum>
-            </property>
-            <property name="foreground">
-                <color alpha="255">
-                    <red>0</red>
-                    <green>0</green>
-                    <blue>0</blue>
-                </color>
-            </property>
-            <property name="background">
-                <color alpha="0">
-                    <red>0</red>
-                    <green>0</green>
-                    <blue>0</blue>
-                </color>
-            </property>
-            <property name="text">
-                <string>Stats</string>
-            </property>
-            <property name="fontScaleMode">
-                <enum>ESimpleLabel::WidthAndHeight</enum>
-            </property>
-            <property name="geometry">
-                <rect>
-                    <x>80</x>
-                    <y>55</y>
-                    <width>50</width>
-                    <height>20</height>
-                </rect>
-            </property>
-            <property name="alignment">
-                <set>Qt::AlignAbsolute|Qt::AlignLeft|Qt::AlignVCenter</set>
-            </property>
-        </widget>
-        <widget class="caLabel" name="caLabel_5">
-            <property name="frameShape">
-                <enum>QFrame::NoFrame</enum>
-            </property>
-            <property name="foreground">
-                <color alpha="255">
-                    <red>0</red>
-                    <green>0</green>
-                    <blue>0</blue>
-                </color>
-            </property>
-            <property name="background">
-                <color alpha="0">
-                    <red>0</red>
-                    <green>0</green>
-                    <blue>0</blue>
-                </color>
-            </property>
-            <property name="text">
-                <string>Other</string>
-            </property>
-            <property name="fontScaleMode">
-                <enum>ESimpleLabel::WidthAndHeight</enum>
-            </property>
-            <property name="geometry">
-                <rect>
-                    <x>210</x>
-                    <y>55</y>
-                    <width>50</width>
-                    <height>20</height>
-                </rect>
-            </property>
-            <property name="alignment">
-                <set>Qt::AlignAbsolute|Qt::AlignLeft|Qt::AlignVCenter</set>
-            </property>
-        </widget>
         <widget class="caRelatedDisplay" name="caRelatedDisplay_0">
             <property name="geometry">
                 <rect>
@@ -328,7 +355,7 @@ QWidget#centralWidget {background: rgba(187, 187, 187, 255);}
                 <string>netCDF file #1;TIFF file #1;JPEG file #1;NeXus file #1;Magick file #1;HDF5 file #1;Null file #1</string>
             </property>
             <property name="files">
-                <string>NDFileNetCDF.ui;NDFileTIFF.ui;NDFileJPEG.ui;NDFileNexus.ui;NDFileMagick.ui;NDFileHDF5.ui;NDFileNull.ui</string>
+                <string>NDFileNetCDF.adl;NDFileTIFF.adl;NDFileJPEG.adl;NDFileNexus.adl;NDFileMagick.adl;NDFileHDF5.adl;NDFileNull.adl</string>
             </property>
             <property name="args">
                 <string>P=$(P), R=netCDF1:, EXT=nc;P=$(P), R=TIFF1:, EXT=tif;P=$(P), R=JPEG1:, EXT=jpg;P=$(P), R=Nexus1:, EXT=h5;P=$(P), R=Magick1:, EXT=tif;P=$(P), R=HDF1:, EXT=h5;P=$(P), R=Null1:, EXT=null</string>
@@ -338,45 +365,6 @@ QWidget#centralWidget {background: rgba(187, 187, 187, 255);}
             </property>
         </widget>
         <widget class="caRelatedDisplay" name="caRelatedDisplay_1">
-            <property name="geometry">
-                <rect>
-                    <x>135</x>
-                    <y>55</y>
-                    <width>64</width>
-                    <height>20</height>
-                </rect>
-            </property>
-            <property name="foreground">
-                <color alpha="255">
-                    <red>0</red>
-                    <green>0</green>
-                    <blue>0</blue>
-                </color>
-            </property>
-            <property name="background">
-                <color alpha="255">
-                    <red>115</red>
-                    <green>223</green>
-                    <blue>255</blue>
-                </color>
-            </property>
-            <property name="stackingMode">
-                <enum>Menu</enum>
-            </property>
-            <property name="labels">
-                <string>Statistics #1;Statistics #2;Statistics #3;Statistics #4;Statistics #5;Statistics 1-5</string>
-            </property>
-            <property name="files">
-                <string>NDStats.ui;NDStats.ui;NDStats.ui;NDStats.ui;NDStats.ui;NDStats5.ui</string>
-            </property>
-            <property name="args">
-                <string>P=$(P), R=Stats1:;P=$(P), R=Stats2:;P=$(P), R=Stats3:;P=$(P), R=Stats4:;P=$(P), R=Stats5:;P=$(P), R1=Stats1:,R2=Stats2:,R3=Stats3:,R4=Stats4:,R5=Stats5:</string>
-            </property>
-            <property name="removeParent">
-                <string>false;false;false;false;false;false</string>
-            </property>
-        </widget>
-        <widget class="caRelatedDisplay" name="caRelatedDisplay_2">
             <property name="geometry">
                 <rect>
                     <x>265</x>
@@ -406,7 +394,7 @@ QWidget#centralWidget {background: rgba(187, 187, 187, 255);}
                 <string>ROI #1;ROI #2;ROI #3;ROI #4;ROI 1-4 combined</string>
             </property>
             <property name="files">
-                <string>NDROI.ui;NDROI.ui;NDROI.ui;NDROI.ui;NDROI4.ui</string>
+                <string>NDROI.adl;NDROI.adl;NDROI.adl;NDROI.adl;NDROI4.adl</string>
             </property>
             <property name="args">
                 <string>P=$(P), R=ROI1:;P=$(P), R=ROI2:;P=$(P), R=ROI3:;P=$(P), R=ROI4:;P=$(P), R1=ROI1:,R2=ROI2:, R3=ROI3:,R4=ROI4:</string>
@@ -415,46 +403,7 @@ QWidget#centralWidget {background: rgba(187, 187, 187, 255);}
                 <string>false;false;false;false;false</string>
             </property>
         </widget>
-        <widget class="caRelatedDisplay" name="caRelatedDisplay_3">
-            <property name="geometry">
-                <rect>
-                    <x>265</x>
-                    <y>55</y>
-                    <width>64</width>
-                    <height>20</height>
-                </rect>
-            </property>
-            <property name="foreground">
-                <color alpha="255">
-                    <red>0</red>
-                    <green>0</green>
-                    <blue>0</blue>
-                </color>
-            </property>
-            <property name="background">
-                <color alpha="255">
-                    <red>115</red>
-                    <green>223</green>
-                    <blue>255</blue>
-                </color>
-            </property>
-            <property name="stackingMode">
-                <enum>Menu</enum>
-            </property>
-            <property name="labels">
-                <string>Image #1;Process #1;Transform #1;Color convert #1;Color convert #2;Overlay #1;Overlays 1-8;Circular buffer #1;ROI Statistics #1;Attribute #1;Scan #1;Acquire Sequence;devIocStats</string>
-            </property>
-            <property name="files">
-                <string>NDStdArrays.ui;NDProcess.ui;NDTransform.ui;NDColorConvert.ui;NDColorConvert.ui;NDOverlay.ui;NDOverlay8.ui;NDCircularBuff.ui;NDROIStat.ui;NDPluginAttribute.ui;scan_more.ui;yySseq.ui;ioc_stats_soft.ui</string>
-            </property>
-            <property name="args">
-                <string>P=$(P), R=image1:;P=$(P), R=Proc1:;P=$(P), R=Trans1:;P=$(P), R=CC1:;P=$(P), R=CC2:;P=$(P), R=Over1:;P=$(P), R=Over1:,O1=Over1:1:,O2=Over1:2:,O3=Over1:3:,O4=Over1:4:,O5=Over1:5:,O6=Over1:6:,O7=Over1:7:,O8=Over1:8:;P=$(P), R=CB1:;P=$(P), R=ROIStat1:;P=$(P), R=Attr1:;P=$(P), S=scan1, N=1;P=$(P), S=AcquireSequence;ioc=$(P)</string>
-            </property>
-            <property name="removeParent">
-                <string>false;false;false;false;false;false;false;false;false;false;false;false;false</string>
-            </property>
-        </widget>
-        <widget class="caRelatedDisplay" name="caRelatedDisplay_4">
+        <widget class="caRelatedDisplay" name="caRelatedDisplay_2">
             <property name="geometry">
                 <rect>
                     <x>10</x>
@@ -487,13 +436,172 @@ QWidget#centralWidget {background: rgba(187, 187, 187, 255);}
                 <string>Common plugins</string>
             </property>
             <property name="files">
-                <string>commonPlugins.ui</string>
+                <string>commonPlugins.adl</string>
             </property>
             <property name="args">
                 <string>P=$(P)</string>
             </property>
             <property name="removeParent">
                 <string>false</string>
+            </property>
+        </widget>
+        <widget class="caLabel" name="caLabel_4">
+            <property name="frameShape">
+                <enum>QFrame::NoFrame</enum>
+            </property>
+            <property name="foreground">
+                <color alpha="255">
+                    <red>0</red>
+                    <green>0</green>
+                    <blue>0</blue>
+                </color>
+            </property>
+            <property name="background">
+                <color alpha="0">
+                    <red>0</red>
+                    <green>0</green>
+                    <blue>0</blue>
+                </color>
+            </property>
+            <property name="text">
+                <string>Stats</string>
+            </property>
+            <property name="fontScaleMode">
+                <enum>ESimpleLabel::WidthAndHeight</enum>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>10</x>
+                    <y>55</y>
+                    <width>50</width>
+                    <height>20</height>
+                </rect>
+            </property>
+            <property name="alignment">
+                <set>Qt::AlignAbsolute|Qt::AlignLeft|Qt::AlignVCenter</set>
+            </property>
+        </widget>
+        <widget class="caRelatedDisplay" name="caRelatedDisplay_3">
+            <property name="geometry">
+                <rect>
+                    <x>65</x>
+                    <y>55</y>
+                    <width>64</width>
+                    <height>20</height>
+                </rect>
+            </property>
+            <property name="foreground">
+                <color alpha="255">
+                    <red>0</red>
+                    <green>0</green>
+                    <blue>0</blue>
+                </color>
+            </property>
+            <property name="background">
+                <color alpha="255">
+                    <red>115</red>
+                    <green>223</green>
+                    <blue>255</blue>
+                </color>
+            </property>
+            <property name="stackingMode">
+                <enum>Menu</enum>
+            </property>
+            <property name="labels">
+                <string>Statistics #1;Statistics #2;Statistics #3;Statistics #4;Statistics #5;Statistics 1-5</string>
+            </property>
+            <property name="files">
+                <string>NDStats.adl;NDStats.adl;NDStats.adl;NDStats.adl;NDStats.adl;NDStats5.adl</string>
+            </property>
+            <property name="args">
+                <string>P=$(P), R=Stats1:;P=$(P), R=Stats2:;P=$(P), R=Stats3:;P=$(P), R=Stats4:;P=$(P), R=Stats5:;P=$(P), R1=Stats1:,R2=Stats2:,R3=Stats3:,R4=Stats4:,R5=Stats5:</string>
+            </property>
+            <property name="removeParent">
+                <string>false;false;false;false;false;false</string>
+            </property>
+        </widget>
+        <widget class="caRelatedDisplay" name="caRelatedDisplay_4">
+            <property name="geometry">
+                <rect>
+                    <x>177</x>
+                    <y>55</y>
+                    <width>80</width>
+                    <height>20</height>
+                </rect>
+            </property>
+            <property name="foreground">
+                <color alpha="255">
+                    <red>0</red>
+                    <green>0</green>
+                    <blue>0</blue>
+                </color>
+            </property>
+            <property name="background">
+                <color alpha="255">
+                    <red>115</red>
+                    <green>223</green>
+                    <blue>255</blue>
+                </color>
+            </property>
+            <property name="label">
+                <string>Other #1</string>
+            </property>
+            <property name="stackingMode">
+                <enum>Menu</enum>
+            </property>
+            <property name="labels">
+                <string>Image #1;Image #2;Process #1;Transform #1;Color convert #1;Color convert #2;Overlay #1;Overlays 1-8;Circular buffer #1;ROI Statistics #1;Attribute #1;FFT #1;Scatter #1;Gather #1;Pva</string>
+            </property>
+            <property name="files">
+                <string>NDStdArrays.adl;NDStdArrays.adl;NDProcess.adl;NDTransform.adl;NDColorConvert.adl;NDColorConvert.adl;NDOverlay.adl;NDOverlay8.adl;NDCircularBuff.adl;NDROIStat.adl;NDPluginAttribute.adl;NDFFT.adl;NDScatter.adl;NDGather8.adl;NDPva.adl</string>
+            </property>
+            <property name="args">
+                <string>P=$(P), R=image1:;P=$(P), R=image2:;P=$(P), R=Proc1:;P=$(P), R=Trans1:;P=$(P), R=CC1:;P=$(P), R=CC2:;P=$(P), R=Over1:;P=$(P), R=Over1:,O1=Over1:1:,O2=Over1:2:,O3=Over1:3:,O4=Over1:4:,O5=Over1:5:,O6=Over1:6:,O7=Over1:7:,O8=Over1:8:;P=$(P), R=CB1:;P=$(P), R=ROIStat1:;P=$(P), R=Attr1:;P=$(P), R=FFT1:;P=$(P), R=Scatter1:;P=$(P), R=Gather1:;P=$(P), R=Pva1:</string>
+            </property>
+            <property name="removeParent">
+                <string>false;false;false;false;false;false;false;false;false;false;false;false;false;false;false</string>
+            </property>
+        </widget>
+        <widget class="caRelatedDisplay" name="caRelatedDisplay_5">
+            <property name="geometry">
+                <rect>
+                    <x>264</x>
+                    <y>55</y>
+                    <width>80</width>
+                    <height>20</height>
+                </rect>
+            </property>
+            <property name="foreground">
+                <color alpha="255">
+                    <red>0</red>
+                    <green>0</green>
+                    <blue>0</blue>
+                </color>
+            </property>
+            <property name="background">
+                <color alpha="255">
+                    <red>115</red>
+                    <green>223</green>
+                    <blue>255</blue>
+                </color>
+            </property>
+            <property name="label">
+                <string>Other #2</string>
+            </property>
+            <property name="stackingMode">
+                <enum>Menu</enum>
+            </property>
+            <property name="labels">
+                <string>Scan #1;Acquire Sequence;devIocStats</string>
+            </property>
+            <property name="files">
+                <string>scan_more.adl;yySseq.adl;ioc_stats_soft.adl</string>
+            </property>
+            <property name="args">
+                <string>P=$(P), S=scan1, N=1;P=$(P), S=AcquireSequence;ioc=$(P)</string>
+            </property>
+            <property name="removeParent">
+                <string>false;false;false</string>
             </property>
         </widget>
         <zorder>caLabel_0</zorder>
@@ -503,12 +611,12 @@ QWidget#centralWidget {background: rgba(187, 187, 187, 255);}
         <zorder>caLabel_2</zorder>
         <zorder>caLabel_3</zorder>
         <zorder>caLabel_4</zorder>
-        <zorder>caLabel_5</zorder>
         <zorder>caRelatedDisplay_0</zorder>
         <zorder>caRelatedDisplay_1</zorder>
         <zorder>caRelatedDisplay_2</zorder>
         <zorder>caRelatedDisplay_3</zorder>
         <zorder>caRelatedDisplay_4</zorder>
+        <zorder>caRelatedDisplay_5</zorder>
     </widget>
 </widget>
 </ui>

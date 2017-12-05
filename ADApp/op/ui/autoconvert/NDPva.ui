@@ -4,10 +4,10 @@
 <widget class="QMainWindow" name="MainWindow">
     <property name="geometry">
         <rect>
-            <x>353</x>
-            <y>59</y>
+            <x>460</x>
+            <y>141</y>
             <width>390</width>
-            <height>690</height>
+            <height>665</height>
         </rect>
     </property>
     <property name="styleSheet">
@@ -216,7 +216,7 @@ border-radius: 2px;
                     <x>5</x>
                     <y>600</y>
                     <width>382</width>
-                    <height>87</height>
+                    <height>62</height>
                 </rect>
             </property>
             <widget class="caGraphics" name="caRectangle_1">
@@ -228,7 +228,7 @@ border-radius: 2px;
                         <x>0</x>
                         <y>0</y>
                         <width>380</width>
-                        <height>85</height>
+                        <height>60</height>
                     </rect>
                 </property>
                 <property name="foreground">
@@ -256,48 +256,6 @@ border-radius: 2px;
                     <enum>Solid</enum>
                 </property>
             </widget>
-            <widget class="caRelatedDisplay" name="caRelatedDisplay_0">
-                <property name="geometry">
-                    <rect>
-                        <x>167</x>
-                        <y>30</y>
-                        <width>160</width>
-                        <height>20</height>
-                    </rect>
-                </property>
-                <property name="foreground">
-                    <color alpha="255">
-                        <red>0</red>
-                        <green>0</green>
-                        <blue>0</blue>
-                    </color>
-                </property>
-                <property name="background">
-                    <color alpha="255">
-                        <red>115</red>
-                        <green>223</green>
-                        <blue>255</blue>
-                    </color>
-                </property>
-                <property name="label">
-                    <string>Individual Overlays</string>
-                </property>
-                <property name="stackingMode">
-                    <enum>Menu</enum>
-                </property>
-                <property name="labels">
-                    <string>Overlay 1;Overlay 2;Overlay 3;Overlay 4;Overlay 5;Overlay 6;Overlay 7;Overlay 8</string>
-                </property>
-                <property name="files">
-                    <string>NDOverlayN.adl;NDOverlayN.adl;NDOverlayN.adl;NDOverlayN.adl;NDOverlayN.adl;NDOverlayN.adl;NDOverlayN.adl;NDOverlayN.adl</string>
-                </property>
-                <property name="args">
-                    <string>P=$(P), R=$(R)1:;P=$(P), R=$(R)2:;P=$(P), R=$(R)3:;P=$(P), R=$(R)4:;P=$(P), R=$(R)5:;P=$(P), R=$(R)6:;P=$(P), R=$(R)7:;P=$(P), R=$(R)8:</string>
-                </property>
-                <property name="removeParent">
-                    <string>false;false;false;false;false;false;false;false</string>
-                </property>
-            </widget>
             <widget class="caLabel" name="caLabel_1">
                 <property name="frameShape">
                     <enum>QFrame::NoFrame</enum>
@@ -317,7 +275,7 @@ border-radius: 2px;
                     </color>
                 </property>
                 <property name="text">
-                    <string>Individual 0-7</string>
+                    <string>V4 PV Name</string>
                 </property>
                 <property name="fontScaleMode">
                     <enum>ESimpleLabel::WidthAndHeight</enum>
@@ -332,48 +290,6 @@ border-radius: 2px;
                         <width>140</width>
                         <height>20</height>
                     </rect>
-                </property>
-            </widget>
-            <widget class="caRelatedDisplay" name="caRelatedDisplay_1">
-                <property name="geometry">
-                    <rect>
-                        <x>167</x>
-                        <y>57</y>
-                        <width>160</width>
-                        <height>20</height>
-                    </rect>
-                </property>
-                <property name="foreground">
-                    <color alpha="255">
-                        <red>0</red>
-                        <green>0</green>
-                        <blue>0</blue>
-                    </color>
-                </property>
-                <property name="background">
-                    <color alpha="255">
-                        <red>115</red>
-                        <green>223</green>
-                        <blue>255</blue>
-                    </color>
-                </property>
-                <property name="label">
-                    <string>Combined Overlays</string>
-                </property>
-                <property name="stackingMode">
-                    <enum>Menu</enum>
-                </property>
-                <property name="labels">
-                    <string>Overlays 1-8;Overlays 9-16</string>
-                </property>
-                <property name="files">
-                    <string>NDOverlay8.adl;NDOverlay8.adl</string>
-                </property>
-                <property name="args">
-                    <string>P=$(P),R=$(R),O1=$(R)1:,O2=$(R)2:,O3=$(R)3:,O4=$(R)4:,O5=$(R)5:,O6=$(R)6:,O7=$(R)7:,O8=$(R)8:;P=$(P),R=$(R),O1=$(R)9:,O2=$(R)10:,O3=$(R)11:,O4=$(R)12:,O5=$(R)13:,O6=$(R)14:,O7=$(R)15:,O8=$(R)16:</string>
-                </property>
-                <property name="removeParent">
-                    <string>false;false</string>
                 </property>
             </widget>
             <widget class="caLabel" name="caLabel_2">
@@ -395,7 +311,7 @@ border-radius: 2px;
                     </color>
                 </property>
                 <property name="text">
-                    <string>Overlay definitions</string>
+                    <string>EPICS V4 PV Name</string>
                 </property>
                 <property name="fontScaleMode">
                     <enum>ESimpleLabel::WidthAndHeight</enum>
@@ -405,47 +321,65 @@ border-radius: 2px;
                 </property>
                 <property name="geometry">
                     <rect>
-                        <x>133</x>
+                        <x>110</x>
                         <y>5</y>
-                        <width>150</width>
+                        <width>160</width>
                         <height>20</height>
                     </rect>
                 </property>
             </widget>
-            <widget class="caLabel" name="caLabel_3">
-                <property name="frameShape">
-                    <enum>QFrame::NoFrame</enum>
+            <widget class="caLineEdit" name="caLineEdit_0">
+                <property name="geometry">
+                    <rect>
+                        <x>170</x>
+                        <y>33</y>
+                        <width>200</width>
+                        <height>18</height>
+                    </rect>
+                </property>
+                <property name="fontScaleMode">
+                    <enum>caLineEdit::WidthAndHeight</enum>
+                </property>
+                <property name="channel">
+                    <string>$(P)$(R)PvName_RBV</string>
                 </property>
                 <property name="foreground">
                     <color alpha="255">
-                        <red>0</red>
+                        <red>10</red>
                         <green>0</green>
-                        <blue>0</blue>
+                        <blue>184</blue>
                     </color>
                 </property>
                 <property name="background">
-                    <color alpha="0">
-                        <red>0</red>
-                        <green>0</green>
-                        <blue>0</blue>
+                    <color alpha="255">
+                        <red>187</red>
+                        <green>187</green>
+                        <blue>187</blue>
                     </color>
                 </property>
-                <property name="text">
-                    <string>Combined</string>
+                <property name="limitsMode">
+                    <enum>caLineEdit::Channel</enum>
                 </property>
-                <property name="fontScaleMode">
-                    <enum>ESimpleLabel::WidthAndHeight</enum>
+                <property name="limitsMode">
+                    <enum>caLineEdit::Channel</enum>
+                </property>
+                <property name="precisionMode">
+                    <enum>caLineEdit::Channel</enum>
+                </property>
+                <property name="minValue">
+                    <double>0.0</double>
+                </property>
+                <property name="maxValue">
+                    <double>1.0</double>
                 </property>
                 <property name="alignment">
-                    <set>Qt::AlignAbsolute|Qt::AlignRight|Qt::AlignVCenter</set>
+                    <set>Qt::AlignAbsolute|Qt::AlignLeft|Qt::AlignVCenter</set>
                 </property>
-                <property name="geometry">
-                    <rect>
-                        <x>77</x>
-                        <y>58</y>
-                        <width>80</width>
-                        <height>20</height>
-                    </rect>
+                <property name="formatType">
+                    <enum>string</enum>
+                </property>
+                <property name="colorMode">
+                    <enum>caLineEdit::Static</enum>
                 </property>
             </widget>
         </widget>
@@ -455,10 +389,8 @@ border-radius: 2px;
         <zorder>caRectangle_1</zorder>
         <zorder>caLabel_1</zorder>
         <zorder>caLabel_2</zorder>
-        <zorder>caLabel_3</zorder>
         <zorder>caFrame_1</zorder>
-        <zorder>caRelatedDisplay_0</zorder>
-        <zorder>caRelatedDisplay_1</zorder>
+        <zorder>caLineEdit_0</zorder>
     </widget>
 </widget>
 </ui>
