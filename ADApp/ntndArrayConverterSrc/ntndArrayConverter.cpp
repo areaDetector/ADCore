@@ -494,7 +494,8 @@ void NTNDArrayConverter::fromStringAttribute (PVStructurePtr dest, NDAttribute *
 
 void NTNDArrayConverter::fromUndefinedAttribute (PVStructurePtr dest)
 {
-    dest->getSubField<PVUnion>("value")->get().reset();
+    PVFieldPtr nullPtr;
+    dest->getSubField<PVUnion>("value")->set(nullPtr);
 }
 
 void NTNDArrayConverter::fromAttributes (NDArray *src)
