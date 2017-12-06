@@ -21,9 +21,12 @@ ifeq ($(WITH_EPICS_V4),YES)
   PROD_LIBS += ntndArrayConverter
   PROD_LIBS += nt
   PROD_LIBS += pvDatabase
-  PROD_LIBS += pvAccess
-  PROD_LIBS += pvData
-  PROD_LIBS += ntndArrayConverter
+  ifdef EPICS_BASE_PVA_CORE_LIBS
+    PROD_LIBS += $(EPICS_BASE_PVA_CORE_LIBS)
+  else
+    PROD_LIBS += pvAccess
+    PROD_LIBS += pvData
+  endif
 endif
 
 ifeq ($(WITH_NETCDF),YES)
