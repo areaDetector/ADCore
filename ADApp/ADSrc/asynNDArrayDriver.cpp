@@ -61,10 +61,9 @@ static const char *driverName = "asynNDArrayDriver";
   * It adds a trailing '/' or '\' character to the path if one is not present.
   * It returns true if the directory exists and false if it does not
   */
-bool asynNDArrayDriver::checkPath(std::string filePath)
+bool asynNDArrayDriver::checkPath(std::string &filePath)
 {
     char lastChar;
-    int hasTerminator=0;
     struct stat buff;
     int istat;
     size_t len;
@@ -83,18 +82,14 @@ bool asynNDArrayDriver::checkPath(std::string filePath)
 #endif
     {
         filePath.resize(len-1);
-        len--;
-        hasTerminator=1;
     }
     istat = stat(filePath.c_str(), &buff);
     if (!istat) isDir = (S_IFDIR & buff.st_mode);
     if (!istat && isDir) {
         pathExists = true;
     }
-    /* If the path did not have a trailing terminator then add it */
-    if (!hasTerminator) {
-        filePath.append(delim);
-    }
+    /* Add a terminator even if it did not have one originally */
+    filePath.append(delim);
     return pathExists;   
 }
 
