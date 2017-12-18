@@ -146,7 +146,7 @@ ifeq ($(WITH_TIFF),YES)
   endif
 endif
 
-ifeq ($(WITH_EPICS_V4), YES)
+ifeq ($(WITH_PVA), YES)
   DBD += NDPluginPva.dbd
   INC += NDPluginPva.h
   LIB_SRCS += NDPluginPva.cpp
