@@ -6,7 +6,7 @@ release 0
 x 452
 y 60
 w 755
-h 580
+h 605
 font "helvetica-medium-r-18.0"
 ctlFont "helvetica-medium-r-8.0"
 btnFont "helvetica-medium-r-18.0"
@@ -30,9 +30,9 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 127
+x 0
 y 9
-w 499
+w 754
 h 25
 lineColor index 2
 fill
@@ -46,9 +46,9 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 269
+x 27
 y 10
-w 216
+w 700
 h 25
 font "helvetica-medium-r-8.0"
 fontAlign "center"
@@ -103,97 +103,11 @@ release 0
 x 390
 y 40
 w 360
-h 535
+h 560
 lineColor index 14
 fillColor index 14
 lineWidth 0
 endObjectProperties
-
-# (Rectangle)
-object activeRectangleClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 395
-y 175
-w 350
-h 395
-lineColor index 14
-fillColor index 14
-lineWidth 0
-endObjectProperties
-
-# (Static Text)
-object activeXTextClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 620
-y 181
-w 10
-h 20
-font "helvetica-medium-r-8.0"
-fontAlign "right"
-fgColor index 14
-useDisplayBg
-value {
- "Y"
-}
-endObjectProperties
-
-# (Static Text)
-object activeXTextClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 700
-y 181
-w 10
-h 20
-font "helvetica-medium-r-8.0"
-fontAlign "right"
-fgColor index 14
-useDisplayBg
-value {
- "Z"
-}
-endObjectProperties
-
-# (Static Text)
-object activeXTextClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 540
-y 181
-w 10
-h 20
-font "helvetica-medium-r-8.0"
-fontAlign "right"
-fgColor index 14
-useDisplayBg
-value {
- "X"
-}
-endObjectProperties
-
-# (Group)
-object activeGroupClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 452
-y 95
-w 273
-h 20
-
-beginGroup
-
 
 # (Static Text)
 object activeXTextClass
@@ -238,11 +152,6 @@ useHexPrefix
 objType "controls"
 newPos
 endObjectProperties
-
-endGroup
-
-endObjectProperties
-
 
 # (Static Text)
 object activeXTextClass
@@ -295,54 +204,9 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 452
-y 120
-w 90
-h 20
-font "helvetica-medium-r-8.0"
-fontAlign "right"
-fgColor index 14
-useDisplayBg
-value {
- "Enable scaling"
-}
-endObjectProperties
-
-# (Text Control)
-object activeXTextDspClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 645
-y 121
-w 80
-h 18
-controlPv "$(P)$(R)EnableScale_RBV"
-font "helvetica-medium-r-8.0"
-fontAlign "center"
-smartRefresh
-fastUpdate
-fgColor index 54
-fgAlarm
-bgColor index 12
-autoHeight
-format decimal
-nullColor index 32
-useHexPrefix
-objType "controls"
-newPos
-endObjectProperties
-
-# (Static Text)
-object activeXTextClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 452
+x 412
 y 145
-w 90
+w 130
 h 20
 font "helvetica-medium-r-8.0"
 fontAlign "right"
@@ -413,7 +277,7 @@ release 0
 x 5
 y 40
 w 380
-h 505
+h 555
 
 beginGroup
 
@@ -426,14 +290,14 @@ release 0
 x 5
 y 40
 w 380
-h 505
+h 555
 fgColor index 14
 bgColor index 0
 topShadowColor index 0
 botShadowColor index 14
 noScroll
 displaySource "file"
-file "	composite file NDPluginBase.edl"
+file "NDPluginBase.edl"
 sizeOfs 5
 numDsps 0
 endObjectProperties
@@ -445,6 +309,78 @@ visMin "A"
 visMax "1"
 endObjectProperties
 
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 395
+y 200
+w 350
+h 395
+lineColor index 14
+fillColor index 14
+lineWidth 0
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 620
+y 206
+w 10
+h 20
+font "helvetica-medium-r-8.0"
+fontAlign "right"
+fgColor index 14
+useDisplayBg
+value {
+ "Y"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 700
+y 206
+w 10
+h 20
+font "helvetica-medium-r-8.0"
+fontAlign "right"
+fgColor index 14
+useDisplayBg
+value {
+ "Z"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 540
+y 206
+w 10
+h 20
+font "helvetica-medium-r-8.0"
+fontAlign "right"
+fgColor index 14
+useDisplayBg
+value {
+ "X"
+}
+endObjectProperties
+
 # (Static Text)
 object activeXTextClass
 beginObjectProperties
@@ -452,7 +388,7 @@ major 4
 minor 0
 release 0
 x 432
-y 475
+y 500
 w 70
 h 20
 font "helvetica-medium-r-8.0"
@@ -471,7 +407,7 @@ major 4
 minor 0
 release 0
 x 595
-y 455
+y 480
 w 61
 h 18
 controlPv "$(P)$(R)AutoSizeY_RBV"
@@ -496,7 +432,7 @@ major 4
 minor 0
 release 0
 x 675
-y 455
+y 480
 w 61
 h 18
 controlPv "$(P)$(R)AutoSizeZ_RBV"
@@ -521,7 +457,7 @@ major 4
 minor 0
 release 0
 x 515
-y 455
+y 480
 w 61
 h 18
 controlPv "$(P)$(R)AutoSizeX_RBV"
@@ -546,7 +482,7 @@ major 4
 minor 0
 release 0
 x 402
-y 202
+y 227
 w 334
 h 20
 
@@ -560,7 +496,7 @@ major 4
 minor 0
 release 0
 x 402
-y 202
+y 227
 w 100
 h 20
 font "helvetica-medium-r-8.0"
@@ -579,7 +515,7 @@ major 4
 minor 0
 release 0
 x 515
-y 203
+y 228
 w 61
 h 18
 controlPv "$(P)$(R)MaxSizeX_RBV"
@@ -604,7 +540,7 @@ major 4
 minor 0
 release 0
 x 595
-y 203
+y 228
 w 61
 h 18
 controlPv "$(P)$(R)MaxSizeY_RBV"
@@ -629,7 +565,7 @@ major 4
 minor 0
 release 0
 x 675
-y 203
+y 228
 w 61
 h 18
 controlPv "$(P)$(R)MaxSizeZ_RBV"
@@ -659,7 +595,7 @@ major 4
 minor 0
 release 0
 x 432
-y 247
+y 272
 w 70
 h 20
 font "helvetica-medium-r-8.0"
@@ -678,7 +614,7 @@ major 4
 minor 0
 release 0
 x 596
-y 227
+y 252
 w 61
 h 18
 controlPv "$(P)$(R)EnableY_RBV"
@@ -704,7 +640,7 @@ major 4
 minor 0
 release 0
 x 676
-y 227
+y 252
 w 61
 h 18
 controlPv "$(P)$(R)EnableZ_RBV"
@@ -730,7 +666,7 @@ major 4
 minor 0
 release 0
 x 515
-y 227
+y 252
 w 61
 h 18
 controlPv "$(P)$(R)EnableX_RBV"
@@ -756,7 +692,7 @@ major 4
 minor 0
 release 0
 x 432
-y 272
+y 297
 w 304
 h 40
 
@@ -770,7 +706,7 @@ major 4
 minor 0
 release 0
 x 432
-y 292
+y 317
 w 70
 h 20
 font "helvetica-medium-r-8.0"
@@ -789,7 +725,7 @@ major 4
 minor 0
 release 0
 x 595
-y 292
+y 317
 w 60
 h 20
 controlPv "$(P)$(R)BinY"
@@ -815,7 +751,7 @@ major 4
 minor 0
 release 0
 x 595
-y 272
+y 297
 w 61
 h 18
 controlPv "$(P)$(R)BinY_RBV"
@@ -840,7 +776,7 @@ major 4
 minor 0
 release 0
 x 675
-y 292
+y 317
 w 60
 h 20
 controlPv "$(P)$(R)BinZ"
@@ -866,7 +802,7 @@ major 4
 minor 0
 release 0
 x 675
-y 272
+y 297
 w 61
 h 18
 controlPv "$(P)$(R)BinZ_RBV"
@@ -891,7 +827,7 @@ major 4
 minor 0
 release 0
 x 515
-y 292
+y 317
 w 60
 h 20
 controlPv "$(P)$(R)BinX"
@@ -917,7 +853,7 @@ major 4
 minor 0
 release 0
 x 515
-y 272
+y 297
 w 61
 h 18
 controlPv "$(P)$(R)BinX_RBV"
@@ -947,7 +883,7 @@ major 4
 minor 0
 release 0
 x 452
-y 317
+y 342
 w 284
 h 63
 
@@ -961,7 +897,7 @@ major 4
 minor 0
 release 0
 x 452
-y 337
+y 362
 w 50
 h 20
 font "helvetica-medium-r-8.0"
@@ -980,7 +916,7 @@ major 4
 minor 0
 release 0
 x 595
-y 337
+y 362
 w 60
 h 20
 controlPv "$(P)$(R)MinY"
@@ -1006,7 +942,7 @@ major 4
 minor 0
 release 0
 x 595
-y 317
+y 342
 w 61
 h 18
 controlPv "$(P)$(R)MinY_RBV"
@@ -1031,7 +967,7 @@ major 4
 minor 0
 release 0
 x 675
-y 337
+y 362
 w 60
 h 20
 controlPv "$(P)$(R)MinZ"
@@ -1057,7 +993,7 @@ major 4
 minor 0
 release 0
 x 675
-y 317
+y 342
 w 61
 h 18
 controlPv "$(P)$(R)MinZ_RBV"
@@ -1082,7 +1018,7 @@ major 4
 minor 0
 release 0
 x 515
-y 317
+y 342
 w 61
 h 18
 controlPv "$(P)$(R)MinX_RBV"
@@ -1107,7 +1043,7 @@ major 4
 minor 0
 release 0
 x 515
-y 337
+y 362
 w 60
 h 20
 controlPv "$(P)$(R)MinX"
@@ -1133,7 +1069,7 @@ major 4
 minor 0
 release 0
 x 514
-y 360
+y 385
 w 60
 h 20
 fgColor index 14
@@ -1155,7 +1091,7 @@ major 4
 minor 0
 release 0
 x 594
-y 360
+y 385
 w 60
 h 20
 fgColor index 14
@@ -1177,7 +1113,7 @@ major 4
 minor 0
 release 0
 x 674
-y 360
+y 385
 w 60
 h 20
 fgColor index 14
@@ -1204,7 +1140,7 @@ major 4
 minor 0
 release 0
 x 462
-y 385
+y 410
 w 274
 h 65
 
@@ -1218,7 +1154,7 @@ major 4
 minor 0
 release 0
 x 462
-y 405
+y 430
 w 40
 h 20
 font "helvetica-medium-r-8.0"
@@ -1237,7 +1173,7 @@ major 4
 minor 0
 release 0
 x 595
-y 405
+y 430
 w 60
 h 20
 controlPv "$(P)$(R)SizeY"
@@ -1263,7 +1199,7 @@ major 4
 minor 0
 release 0
 x 595
-y 385
+y 410
 w 61
 h 18
 controlPv "$(P)$(R)SizeY_RBV"
@@ -1288,7 +1224,7 @@ major 4
 minor 0
 release 0
 x 675
-y 405
+y 430
 w 60
 h 20
 controlPv "$(P)$(R)SizeZ"
@@ -1314,7 +1250,7 @@ major 4
 minor 0
 release 0
 x 675
-y 385
+y 410
 w 61
 h 18
 controlPv "$(P)$(R)SizeZ_RBV"
@@ -1339,7 +1275,7 @@ major 4
 minor 0
 release 0
 x 515
-y 405
+y 430
 w 60
 h 20
 controlPv "$(P)$(R)SizeX"
@@ -1365,7 +1301,7 @@ major 4
 minor 0
 release 0
 x 515
-y 385
+y 410
 w 61
 h 18
 controlPv "$(P)$(R)SizeX_RBV"
@@ -1390,7 +1326,7 @@ major 4
 minor 0
 release 0
 x 515
-y 430
+y 455
 w 220
 h 20
 
@@ -1404,7 +1340,7 @@ major 4
 minor 0
 release 0
 x 515
-y 430
+y 455
 w 60
 h 20
 fgColor index 14
@@ -1426,7 +1362,7 @@ major 4
 minor 0
 release 0
 x 595
-y 430
+y 455
 w 60
 h 20
 fgColor index 14
@@ -1448,7 +1384,7 @@ major 4
 minor 0
 release 0
 x 675
-y 430
+y 455
 w 60
 h 20
 fgColor index 14
@@ -1480,7 +1416,7 @@ major 4
 minor 0
 release 0
 x 402
-y 545
+y 570
 w 334
 h 20
 
@@ -1494,7 +1430,7 @@ major 4
 minor 0
 release 0
 x 402
-y 545
+y 570
 w 100
 h 20
 font "helvetica-medium-r-8.0"
@@ -1513,7 +1449,7 @@ major 4
 minor 0
 release 0
 x 595
-y 546
+y 571
 w 61
 h 18
 controlPv "$(P)$(R)ArraySizeY_RBV"
@@ -1538,7 +1474,7 @@ major 4
 minor 0
 release 0
 x 675
-y 546
+y 571
 w 61
 h 18
 controlPv "$(P)$(R)ArraySizeZ_RBV"
@@ -1563,7 +1499,7 @@ major 4
 minor 0
 release 0
 x 515
-y 546
+y 571
 w 61
 h 18
 controlPv "$(P)$(R)ArraySizeX_RBV"
@@ -1593,7 +1529,7 @@ major 4
 minor 0
 release 0
 x 432
-y 500
+y 525
 w 304
 h 40
 
@@ -1607,7 +1543,7 @@ major 4
 minor 0
 release 0
 x 432
-y 520
+y 545
 w 70
 h 20
 font "helvetica-medium-r-8.0"
@@ -1626,7 +1562,7 @@ major 4
 minor 0
 release 0
 x 595
-y 500
+y 525
 w 61
 h 18
 controlPv "$(P)$(R)ReverseY_RBV"
@@ -1651,7 +1587,7 @@ major 4
 minor 0
 release 0
 x 675
-y 500
+y 525
 w 61
 h 18
 controlPv "$(P)$(R)ReverseZ_RBV"
@@ -1676,7 +1612,7 @@ major 4
 minor 0
 release 0
 x 515
-y 500
+y 525
 w 61
 h 18
 controlPv "$(P)$(R)ReverseX_RBV"
@@ -1698,19 +1634,96 @@ endGroup
 
 endObjectProperties
 
-# (Group)
-object activeGroupClass
+
+# (Static Text)
+object activeXTextClass
 beginObjectProperties
 major 4
 minor 0
 release 0
-x 452
-y 95
-w 273
+x 402
+y 120
+w 140
 h 20
+font "helvetica-medium-r-8.0"
+fontAlign "right"
+fgColor index 14
+useDisplayBg
+value {
+ "Enable scaling"
+}
+endObjectProperties
 
-beginGroup
+# (Text Control)
+object activeXTextDspClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 645
+y 121
+w 80
+h 18
+controlPv "$(P)$(R)EnableScale_RBV"
+font "helvetica-medium-r-8.0"
+fontAlign "center"
+smartRefresh
+fastUpdate
+fgColor index 54
+fgAlarm
+bgColor index 12
+autoHeight
+format decimal
+nullColor index 32
+useHexPrefix
+objType "controls"
+newPos
+endObjectProperties
 
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 404
+y 170
+w 140
+h 20
+font "helvetica-medium-r-8.0"
+fontAlign "right"
+fgColor index 14
+useDisplayBg
+value {
+ "Collapse dims"
+}
+endObjectProperties
+
+# (Text Control)
+object activeXTextDspClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 647
+y 171
+w 80
+h 18
+controlPv "$(P)$(R)CollapseDims_RBV"
+font "helvetica-medium-r-8.0"
+fontAlign "center"
+smartRefresh
+fastUpdate
+fgColor index 54
+fgAlarm
+bgColor index 12
+autoHeight
+format decimal
+nullColor index 32
+useHexPrefix
+objType "controls"
+newPos
+endObjectProperties
 
 # (Menu Button)
 object activeMenuButtonClass
@@ -1729,6 +1742,307 @@ topShadowColor index 2
 botShadowColor index 12
 controlPv "$(P)$(R)DataTypeOut"
 indicatorPv "$(P)$(R)DataTypeOut"
+font "helvetica-medium-r-10.0"
+endObjectProperties
+
+# (Menu Button)
+object activeMenuButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 595
+y 500
+w 60
+h 18
+fgColor index 14
+bgColor index 51
+inconsistentColor index 12
+topShadowColor index 2
+botShadowColor index 12
+controlPv "$(P)$(R)AutoSizeY"
+indicatorPv "$(P)$(R)AutoSizeY"
+font "helvetica-medium-r-10.0"
+endObjectProperties
+
+# (Menu Button)
+object activeMenuButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 675
+y 500
+w 60
+h 18
+fgColor index 14
+bgColor index 51
+inconsistentColor index 12
+topShadowColor index 2
+botShadowColor index 12
+controlPv "$(P)$(R)AutoSizeZ"
+indicatorPv "$(P)$(R)AutoSizeZ"
+font "helvetica-medium-r-10.0"
+endObjectProperties
+
+# (Menu Button)
+object activeMenuButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 515
+y 500
+w 60
+h 18
+fgColor index 14
+bgColor index 51
+inconsistentColor index 12
+topShadowColor index 2
+botShadowColor index 12
+controlPv "$(P)$(R)AutoSizeX"
+indicatorPv "$(P)$(R)AutoSizeX"
+font "helvetica-medium-r-10.0"
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 402
+y 227
+w 334
+h 20
+
+beginGroup
+
+
+endGroup
+
+endObjectProperties
+
+
+# (Menu Button)
+object activeMenuButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 591
+y 272
+w 70
+h 18
+fgColor index 14
+bgColor index 51
+inconsistentColor index 12
+topShadowColor index 2
+botShadowColor index 12
+controlPv "$(P)$(R)EnableY"
+indicatorPv "$(P)$(R)EnableY"
+font "helvetica-medium-r-10.0"
+endObjectProperties
+
+# (Menu Button)
+object activeMenuButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 671
+y 272
+w 70
+h 18
+fgColor index 14
+bgColor index 51
+inconsistentColor index 12
+topShadowColor index 2
+botShadowColor index 12
+controlPv "$(P)$(R)EnableZ"
+indicatorPv "$(P)$(R)EnableZ"
+font "helvetica-medium-r-10.0"
+endObjectProperties
+
+# (Menu Button)
+object activeMenuButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 510
+y 272
+w 70
+h 18
+fgColor index 14
+bgColor index 51
+inconsistentColor index 12
+topShadowColor index 2
+botShadowColor index 12
+controlPv "$(P)$(R)EnableX"
+indicatorPv "$(P)$(R)EnableX"
+font "helvetica-medium-r-10.0"
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 432
+y 297
+w 304
+h 40
+
+beginGroup
+
+
+endGroup
+
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 452
+y 342
+w 284
+h 63
+
+beginGroup
+
+
+endGroup
+
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 462
+y 410
+w 274
+h 65
+
+beginGroup
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 515
+y 455
+w 220
+h 20
+
+beginGroup
+
+
+endGroup
+
+endObjectProperties
+
+
+endGroup
+
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 402
+y 570
+w 334
+h 20
+
+beginGroup
+
+
+endGroup
+
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 432
+y 525
+w 304
+h 40
+
+beginGroup
+
+
+# (Menu Button)
+object activeMenuButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 595
+y 545
+w 60
+h 18
+fgColor index 14
+bgColor index 51
+inconsistentColor index 12
+topShadowColor index 2
+botShadowColor index 12
+controlPv "$(P)$(R)ReverseY"
+indicatorPv "$(P)$(R)ReverseY"
+font "helvetica-medium-r-10.0"
+endObjectProperties
+
+# (Menu Button)
+object activeMenuButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 675
+y 545
+w 60
+h 18
+fgColor index 14
+bgColor index 51
+inconsistentColor index 12
+topShadowColor index 2
+botShadowColor index 12
+controlPv "$(P)$(R)ReverseZ"
+indicatorPv "$(P)$(R)ReverseZ"
+font "helvetica-medium-r-10.0"
+endObjectProperties
+
+# (Menu Button)
+object activeMenuButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 515
+y 545
+w 60
+h 18
+fgColor index 14
+bgColor index 51
+inconsistentColor index 12
+topShadowColor index 2
+botShadowColor index 12
+controlPv "$(P)$(R)ReverseX"
+indicatorPv "$(P)$(R)ReverseX"
 font "helvetica-medium-r-10.0"
 endObjectProperties
 
@@ -1763,303 +2077,17 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 595
-y 475
-w 60
+x 557
+y 171
+w 80
 h 18
 fgColor index 14
 bgColor index 51
 inconsistentColor index 12
 topShadowColor index 2
 botShadowColor index 12
-controlPv "$(P)$(R)AutoSizeY"
-indicatorPv "$(P)$(R)AutoSizeY"
+controlPv "$(P)$(R)CollapseDims"
+indicatorPv "$(P)$(R)CollapseDims"
 font "helvetica-medium-r-10.0"
 endObjectProperties
-
-# (Menu Button)
-object activeMenuButtonClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 675
-y 475
-w 60
-h 18
-fgColor index 14
-bgColor index 51
-inconsistentColor index 12
-topShadowColor index 2
-botShadowColor index 12
-controlPv "$(P)$(R)AutoSizeZ"
-indicatorPv "$(P)$(R)AutoSizeZ"
-font "helvetica-medium-r-10.0"
-endObjectProperties
-
-# (Menu Button)
-object activeMenuButtonClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 515
-y 475
-w 60
-h 18
-fgColor index 14
-bgColor index 51
-inconsistentColor index 12
-topShadowColor index 2
-botShadowColor index 12
-controlPv "$(P)$(R)AutoSizeX"
-indicatorPv "$(P)$(R)AutoSizeX"
-font "helvetica-medium-r-10.0"
-endObjectProperties
-# (Group)
-object activeGroupClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 402
-y 202
-w 334
-h 20
-
-beginGroup
-
-
-endGroup
-
-endObjectProperties
-
-
-# (Menu Button)
-object activeMenuButtonClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 591
-y 247
-w 70
-h 18
-fgColor index 14
-bgColor index 51
-inconsistentColor index 12
-topShadowColor index 2
-botShadowColor index 12
-controlPv "$(P)$(R)EnableY"
-indicatorPv "$(P)$(R)EnableY"
-font "helvetica-medium-r-10.0"
-endObjectProperties
-
-# (Menu Button)
-object activeMenuButtonClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 671
-y 247
-w 70
-h 18
-fgColor index 14
-bgColor index 51
-inconsistentColor index 12
-topShadowColor index 2
-botShadowColor index 12
-controlPv "$(P)$(R)EnableZ"
-indicatorPv "$(P)$(R)EnableZ"
-font "helvetica-medium-r-10.0"
-endObjectProperties
-
-# (Menu Button)
-object activeMenuButtonClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 510
-y 247
-w 70
-h 18
-fgColor index 14
-bgColor index 51
-inconsistentColor index 12
-topShadowColor index 2
-botShadowColor index 12
-controlPv "$(P)$(R)EnableX"
-indicatorPv "$(P)$(R)EnableX"
-font "helvetica-medium-r-10.0"
-endObjectProperties
-# (Group)
-object activeGroupClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 432
-y 272
-w 304
-h 40
-
-beginGroup
-
-
-endGroup
-
-endObjectProperties
-
-# (Group)
-object activeGroupClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 452
-y 317
-w 284
-h 63
-
-beginGroup
-
-
-endGroup
-
-endObjectProperties
-
-# (Group)
-object activeGroupClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 462
-y 385
-w 274
-h 65
-
-beginGroup
-
-# (Group)
-object activeGroupClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 515
-y 430
-w 220
-h 20
-
-beginGroup
-
-
-endGroup
-
-endObjectProperties
-
-
-endGroup
-
-endObjectProperties
-
-# (Group)
-object activeGroupClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 402
-y 545
-w 334
-h 20
-
-beginGroup
-
-
-endGroup
-
-endObjectProperties
-
-# (Group)
-object activeGroupClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 432
-y 500
-w 304
-h 40
-
-beginGroup
-
-
-# (Menu Button)
-object activeMenuButtonClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 595
-y 520
-w 60
-h 18
-fgColor index 14
-bgColor index 51
-inconsistentColor index 12
-topShadowColor index 2
-botShadowColor index 12
-controlPv "$(P)$(R)ReverseY"
-indicatorPv "$(P)$(R)ReverseY"
-font "helvetica-medium-r-10.0"
-endObjectProperties
-
-# (Menu Button)
-object activeMenuButtonClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 675
-y 520
-w 60
-h 18
-fgColor index 14
-bgColor index 51
-inconsistentColor index 12
-topShadowColor index 2
-botShadowColor index 12
-controlPv "$(P)$(R)ReverseZ"
-indicatorPv "$(P)$(R)ReverseZ"
-font "helvetica-medium-r-10.0"
-endObjectProperties
-
-# (Menu Button)
-object activeMenuButtonClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 515
-y 520
-w 60
-h 18
-fgColor index 14
-bgColor index 51
-inconsistentColor index 12
-topShadowColor index 2
-botShadowColor index 12
-controlPv "$(P)$(R)ReverseX"
-indicatorPv "$(P)$(R)ReverseX"
-font "helvetica-medium-r-10.0"
-endObjectProperties
-
-endGroup
-
-endObjectProperties
-
 

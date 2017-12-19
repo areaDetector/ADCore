@@ -3,8 +3,8 @@ beginScreenProperties
 major 4
 minor 0
 release 0
-x 193
-y 91
+x 460
+y 141
 w 390
 h 665
 font "helvetica-medium-r-18.0"
@@ -129,19 +129,24 @@ fillColor index 14
 lineWidth 0
 endObjectProperties
 
-# (Group)
-object activeGroupClass
+# (Static Text)
+object activeXTextClass
 beginObjectProperties
 major 4
 minor 0
 release 0
-x 12
-y 608
-w 366
+x 22
+y 630
+w 140
 h 20
-
-beginGroup
-
+font "helvetica-medium-r-8.0"
+fontAlign "right"
+fgColor index 14
+useDisplayBg
+value {
+ "V4 PV Name"
+}
+endObjectProperties
 
 # (Static Text)
 object activeXTextClass
@@ -149,16 +154,16 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 12
-y 608
-w 150
+x 115
+y 605
+w 160
 h 20
 font "helvetica-medium-r-8.0"
 fontAlign "right"
 fgColor index 14
 useDisplayBg
 value {
- "Color mode out"
+ "EPICS V4 PV Name"
 }
 endObjectProperties
 
@@ -168,66 +173,18 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 278
-y 609
-w 100
-h 18
-controlPv "$(P)$(R)ColorModeOut_RBV"
-font "helvetica-medium-r-8.0"
-smartRefresh
-fastUpdate
-fgColor index 54
-bgColor index 4
-autoHeight
-format decimal
-nullColor index 32
-useHexPrefix
-objType "controls"
-newPos
-endObjectProperties
-
-endGroup
-
-endObjectProperties
-
-
-# (Static Text)
-object activeXTextClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 12
+x 175
 y 633
-w 150
-h 20
-font "helvetica-medium-r-8.0"
-fontAlign "right"
-fgColor index 14
-useDisplayBg
-value {
- "False color map"
-}
-endObjectProperties
-
-# (Text Control)
-object activeXTextDspClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 278
-y 634
-w 100
+w 200
 h 18
-controlPv "$(P)$(R)FalseColor_RBV"
+controlPv "$(P)$(R)PvName_RBV"
 font "helvetica-medium-r-8.0"
 smartRefresh
 fastUpdate
 fgColor index 54
 bgColor index 4
 autoHeight
-format decimal
+format "string"
 nullColor index 32
 useHexPrefix
 objType "controls"
@@ -251,64 +208,6 @@ h 60
 
 beginGroup
 
-# (Group)
-object activeGroupClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 12
-y 608
-w 366
-h 20
-
-beginGroup
-
-
-# (Menu Button)
-object activeMenuButtonClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 172
-y 608
-w 100
-h 20
-fgColor index 14
-bgColor index 51
-inconsistentColor index 12
-topShadowColor index 2
-botShadowColor index 12
-controlPv "$(P)$(R)ColorModeOut"
-indicatorPv "$(P)$(R)ColorModeOut"
-font "helvetica-medium-r-10.0"
-endObjectProperties
-
-endGroup
-
-endObjectProperties
-
-
-# (Menu Button)
-object activeMenuButtonClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 172
-y 633
-w 100
-h 20
-fgColor index 14
-bgColor index 51
-inconsistentColor index 12
-topShadowColor index 2
-botShadowColor index 12
-controlPv "$(P)$(R)FalseColor"
-indicatorPv "$(P)$(R)FalseColor"
-font "helvetica-medium-r-10.0"
-endObjectProperties
 
 endGroup
 

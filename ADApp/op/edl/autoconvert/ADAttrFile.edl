@@ -3,10 +3,10 @@ beginScreenProperties
 major 4
 minor 0
 release 0
-x 4
-y 30
+x 214
+y 81
 w 350
-h 60
+h 110
 font "helvetica-medium-r-18.0"
 ctlFont "helvetica-medium-r-8.0"
 btnFont "helvetica-medium-r-18.0"
@@ -22,34 +22,6 @@ botShadowColor index 44
 snapToGrid
 gridSize 5
 endScreenProperties
-
-
-# (Group)
-object activeGroupClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 0
-y 0
-w 350
-h 60
-
-beginGroup
-
-
-# (Group)
-object activeGroupClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 127
-y 2
-w 107
-h 21
-
-beginGroup
 
 
 # (Rectangle)
@@ -68,20 +40,15 @@ fillColor index 2
 lineWidth 0
 endObjectProperties
 
-endGroup
-
-endObjectProperties
-
-
 # (Static Text)
 object activeXTextClass
 beginObjectProperties
 major 4
 minor 0
 release 0
-x 160
+x 130
 y 2
-w 40
+w 100
 h 20
 font "helvetica-medium-r-8.0"
 fontAlign "center"
@@ -101,7 +68,7 @@ release 0
 x 0
 y 0
 w 350
-h 60
+h 110
 lineColor index 14
 fillColor index 14
 lineWidth 0
@@ -113,8 +80,8 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 13
-y 29
+x 25
+y 30
 w 40
 h 20
 font "helvetica-medium-r-8.0"
@@ -132,9 +99,9 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 58
-y 30
-w 280
+x 71
+y 31
+w 275
 h 20
 controlPv "$(P)$(R)NDAttributesFile"
 font "helvetica-medium-r-8.0"
@@ -152,44 +119,92 @@ objType "controls"
 newPos
 endObjectProperties
 
-endGroup
-
-endObjectProperties
-
-# (Group)
-object activeGroupClass
+# (Static Text)
+object activeXTextClass
 beginObjectProperties
 major 4
 minor 0
 release 0
-x 0
-y 0
-w 350
-h 60
+x 5
+y 55
+w 60
+h 20
+font "helvetica-medium-r-8.0"
+fontAlign "right"
+fgColor index 14
+useDisplayBg
+value {
+ "Macros"
+}
+endObjectProperties
 
-beginGroup
-
-# (Group)
-object activeGroupClass
+# (Text Control)
+object activeXTextDspClass
 beginObjectProperties
 major 4
 minor 0
 release 0
-x 127
-y 2
-w 107
-h 21
-
-beginGroup
-
-
-endGroup
-
+x 70
+y 56
+w 275
+h 20
+controlPv "$(P)$(R)NDAttributesMacros"
+font "helvetica-medium-r-8.0"
+smartRefresh
+fastUpdate
+fgColor index 14
+bgColor index 51
+editable
+autoHeight
+format "string"
+motifWidget
+nullColor index 32
+useHexPrefix
+objType "controls"
+newPos
 endObjectProperties
 
-
-endGroup
-
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 5
+y 80
+w 60
+h 20
+font "helvetica-medium-r-8.0"
+fontAlign "right"
+fgColor index 14
+useDisplayBg
+value {
+ "Status"
+}
 endObjectProperties
 
+# (Text Control)
+object activeXTextDspClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 70
+y 81
+w 275
+h 18
+controlPv "$(P)$(R)NDAttributesStatus"
+font "helvetica-medium-r-8.0"
+smartRefresh
+fastUpdate
+fgColor index 14
+fgAlarm
+bgColor index 2
+autoHeight
+format "string"
+nullColor index 32
+useHexPrefix
+objType "controls"
+newPos
+endObjectProperties
 

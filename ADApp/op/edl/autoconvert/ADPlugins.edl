@@ -134,7 +134,7 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 80
+x 10
 y 55
 w 50
 h 20
@@ -146,24 +146,6 @@ value {
 }
 endObjectProperties
 
-# (Static Text)
-object activeXTextClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 210
-y 55
-w 50
-h 20
-font "helvetica-medium-r-8.0"
-fgColor index 14
-useDisplayBg
-value {
- "Other"
-}
-endObjectProperties
-
 # (Related Display)
 object relatedDisplayClass
 beginObjectProperties
@@ -180,78 +162,11 @@ topShadowColor index 2
 botShadowColor index 12
 font "helvetica-medium-r-10.0"
 icon
-numPvs 14
-numDsps 7
+numPvs 0
+numDsps 0
 displayFileName {
-  0 adl/NDFileNetCDF.edl
-  1 adl/NDFileTIFF.edl
-  2 adl/NDFileJPEG.edl
-  3 adl/NDFileNexus.edl
-  4 adl/NDFileMagick.edl
-  5 adl/NDFileHDF5.edl
-  6 adl/NDFileNull.edl
 }
 menuLabel {
-  0 netCDF file #1
-  1 TIFF file #1
-  2 JPEG file #1
-  3 NeXus file #1
-  4 Magick file #1
-  5 HDF5 file #1
-  6 Null file #1
-}
-symbols {
-  0 "P=$(P),R=netCDF1:,EXT=nc"
-  1 "P=$(P),R=TIFF1:,EXT=tif"
-  2 "P=$(P),R=JPEG1:,EXT=jpg"
-  3 "P=$(P),R=Nexus1:,EXT=h5"
-  4 "P=$(P),R=Magick1:,EXT=tif"
-  5 "P=$(P),R=HDF1:,EXT=h5"
-  6 "P=$(P),R=Null1:,EXT=null"
-}
-endObjectProperties
-
-# (Related Display)
-object relatedDisplayClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 135
-y 55
-w 64
-h 20
-fgColor index 14
-bgColor index 51
-topShadowColor index 2
-botShadowColor index 12
-font "helvetica-medium-r-10.0"
-icon
-numPvs 12
-numDsps 6
-displayFileName {
-  0 adl/NDStats.edl
-  1 adl/NDStats.edl
-  2 adl/NDStats.edl
-  3 adl/NDStats.edl
-  4 adl/NDStats.edl
-  5 adl/NDStats5.edl
-}
-menuLabel {
-  0 Statistics #1
-  1 Statistics #2
-  2 Statistics #3
-  3 Statistics #4
-  4 Statistics #5
-  5 Statistics 1-5
-}
-symbols {
-  0 "P=$(P),R=Stats1:"
-  1 "P=$(P),R=Stats2:"
-  2 "P=$(P),R=Stats3:"
-  3 "P=$(P),R=Stats4:"
-  4 "P=$(P),R=Stats5:"
-  5 "P=$(P),R1=Stats1:,R2=Stats2:,R3=Stats3:,R4=Stats4:,R5=Stats5:"
 }
 endObjectProperties
 
@@ -271,93 +186,11 @@ topShadowColor index 2
 botShadowColor index 12
 font "helvetica-medium-r-10.0"
 icon
-numPvs 10
-numDsps 5
+numPvs 0
+numDsps 0
 displayFileName {
-  0 adl/NDROI.edl
-  1 adl/NDROI.edl
-  2 adl/NDROI.edl
-  3 adl/NDROI.edl
-  4 adl/NDROI4.edl
 }
 menuLabel {
-  0 ROI #1
-  1 ROI #2
-  2 ROI #3
-  3 ROI #4
-  4 ROI 1-4 combined
-}
-symbols {
-  0 "P=$(P),R=ROI1:"
-  1 "P=$(P),R=ROI2:"
-  2 "P=$(P),R=ROI3:"
-  3 "P=$(P),R=ROI4:"
-  4 "P=$(P),R1=ROI1:,R2=ROI2:,R3=ROI3:,R4=ROI4:"
-}
-endObjectProperties
-
-# (Related Display)
-object relatedDisplayClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 265
-y 55
-w 64
-h 20
-fgColor index 14
-bgColor index 51
-topShadowColor index 2
-botShadowColor index 12
-font "helvetica-medium-r-10.0"
-icon
-numPvs 26
-numDsps 13
-displayFileName {
-  0 adl/NDStdArrays.edl
-  1 adl/NDProcess.edl
-  2 adl/NDTransform.edl
-  3 adl/NDColorConvert.edl
-  4 adl/NDColorConvert.edl
-  5 adl/NDOverlay.edl
-  6 adl/NDOverlay8.edl
-  7 adl/NDCircularBuff.edl
-  8 adl/NDROIStat.edl
-  9 adl/NDPluginAttribute.edl
-  10 scan_more.adl
-  11 yySseq.adl
-  12 ioc_stats_soft.adl
-}
-menuLabel {
-  0 Image #1
-  1 Process #1
-  2 Transform #1
-  3 Color convert #1
-  4 Color convert #2
-  5 Overlay #1
-  6 Overlays 1-8
-  7 Circular buffer #1
-  8 ROI Statistics #1
-  9 Attribute #1
-  10 Scan #1
-  11 Acquire Sequence
-  12 devIocStats
-}
-symbols {
-  0 "P=$(P),R=image1:"
-  1 "P=$(P),R=Proc1:"
-  2 "P=$(P),R=Trans1:"
-  3 "P=$(P),R=CC1:"
-  4 "P=$(P),R=CC2:"
-  5 "P=$(P),R=Over1:"
-  6 "P=$(P),R=Over1:,O1=Over1:1:,O2=Over1:2:,O3=Over1:3:,O4=Over1:4:,O5=Over1:5:,O6=Over1:6:,O7=Over1:7:,O8=Over1:8:"
-  7 "P=$(P),R=CB1:"
-  8 "P=$(P),R=ROIStat1:"
-  9 "P=$(P),R=Attr1:"
-  10 "P=$(P),S=scan1,N=1"
-  11 "P=$(P),S=AcquireSequence"
-  12 "ioc=$(P)"
 }
 endObjectProperties
 
@@ -377,16 +210,85 @@ topShadowColor index 2
 botShadowColor index 12
 font "helvetica-medium-r-10.0"
 buttonLabel "All"
-numPvs 2
-numDsps 1
+numPvs 0
+numDsps 0
 displayFileName {
-  0 adl/commonPlugins.edl
 }
 menuLabel {
-  0 Common plugins
 }
-symbols {
-  0 "P=$(P)"
+endObjectProperties
+
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 65
+y 55
+w 64
+h 20
+fgColor index 14
+bgColor index 51
+topShadowColor index 2
+botShadowColor index 12
+font "helvetica-medium-r-10.0"
+icon
+numPvs 0
+numDsps 0
+displayFileName {
+}
+menuLabel {
+}
+endObjectProperties
+
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 177
+y 55
+w 80
+h 20
+fgColor index 14
+bgColor index 51
+topShadowColor index 2
+botShadowColor index 12
+font "helvetica-medium-r-10.0"
+icon
+buttonLabel "Other #1"
+numPvs 0
+numDsps 0
+displayFileName {
+}
+menuLabel {
+}
+endObjectProperties
+
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 264
+y 55
+w 80
+h 20
+fgColor index 14
+bgColor index 51
+topShadowColor index 2
+botShadowColor index 12
+font "helvetica-medium-r-10.0"
+icon
+buttonLabel "Other #2"
+numPvs 0
+numDsps 0
+displayFileName {
+}
+menuLabel {
 }
 endObjectProperties
 

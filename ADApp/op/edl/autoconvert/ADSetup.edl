@@ -3,10 +3,10 @@ beginScreenProperties
 major 4
 minor 0
 release 0
-x 251
-y 367
-w 349
-h 215
+x 389
+y 255
+w 350
+h 340
 font "helvetica-medium-r-18.0"
 ctlFont "helvetica-medium-r-8.0"
 btnFont "helvetica-medium-r-18.0"
@@ -23,21 +23,6 @@ snapToGrid
 gridSize 5
 endScreenProperties
 
-
-# (Rectangle)
-object activeRectangleClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 0
-y 0
-w 350
-h 215
-lineColor index 14
-fillColor index 14
-lineWidth 0
-endObjectProperties
 
 # (Rectangle)
 object activeRectangleClass
@@ -64,7 +49,7 @@ release 0
 x 0
 y 0
 w 350
-h 215
+h 340
 lineColor index 14
 fillColor index 14
 lineWidth 0
@@ -89,124 +74,6 @@ value {
 }
 endObjectProperties
 
-# (Group)
-object activeGroupClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 58
-y 59
-w 268
-h 20
-
-beginGroup
-
-
-# (Static Text)
-object activeXTextClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 166
-y 60
-w 160
-h 18
-font "helvetica-medium-r-8.0"
-fgColor index 54
-useDisplayBg
-value {
- "$(P)$(R)"
-}
-endObjectProperties
-
-# (Static Text)
-object activeXTextClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 58
-y 59
-w 100
-h 20
-font "helvetica-medium-r-8.0"
-fontAlign "right"
-fgColor index 14
-useDisplayBg
-value {
- "EPICS name"
-}
-endObjectProperties
-
-endGroup
-
-endObjectProperties
-
-
-# (Group)
-object activeGroupClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 38
-y 84
-w 288
-h 20
-
-beginGroup
-
-
-# (Static Text)
-object activeXTextClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 38
-y 84
-w 120
-h 20
-font "helvetica-medium-r-8.0"
-fontAlign "right"
-fgColor index 14
-useDisplayBg
-value {
- "Manufacturer"
-}
-endObjectProperties
-
-# (Text Control)
-object activeXTextDspClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 166
-y 85
-w 160
-h 18
-controlPv "$(P)$(R)Manufacturer_RBV"
-font "helvetica-medium-r-8.0"
-smartRefresh
-fastUpdate
-fgColor index 54
-bgColor index 4
-autoHeight
-format decimal
-nullColor index 32
-useHexPrefix
-objType "controls"
-newPos
-endObjectProperties
-
-endGroup
-
-endObjectProperties
-
-
 # (Static Text)
 object activeXTextClass
 beginObjectProperties
@@ -214,7 +81,7 @@ major 4
 minor 0
 release 0
 x 68
-y 188
+y 315
 w 90
 h 20
 font "helvetica-medium-r-8.0"
@@ -232,51 +99,8 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 108
-y 109
-w 50
-h 20
-font "helvetica-medium-r-8.0"
-fontAlign "right"
-fgColor index 14
-useDisplayBg
-value {
- "Model"
-}
-endObjectProperties
-
-# (Text Control)
-object activeXTextDspClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 166
-y 110
-w 160
-h 18
-controlPv "$(P)$(R)Model_RBV"
-font "helvetica-medium-r-8.0"
-smartRefresh
-fastUpdate
-fgColor index 54
-bgColor index 4
-autoHeight
-format decimal
-nullColor index 32
-useHexPrefix
-objType "controls"
-newPos
-endObjectProperties
-
-# (Static Text)
-object activeXTextClass
-beginObjectProperties
-major 4
-minor 0
-release 0
 x 58
-y 159
+y 286
 w 100
 h 20
 font "helvetica-medium-r-8.0"
@@ -295,7 +119,7 @@ major 4
 minor 0
 release 0
 x 197
-y 132
+y 259
 w 90
 h 20
 font "helvetica-medium-r-8.0"
@@ -318,7 +142,7 @@ major 4
 minor 0
 release 0
 x 182
-y 132
+y 259
 w 120
 h 20
 font "helvetica-medium-r-8.0"
@@ -339,9 +163,47 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 58
-y 34
+x 70
+y 59
 w 100
+h 20
+font "helvetica-medium-r-8.0"
+fontAlign "right"
+fgColor index 14
+useDisplayBg
+value {
+ "EPICS name"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 50
+y 84
+w 120
+h 20
+font "helvetica-medium-r-8.0"
+fontAlign "right"
+fgColor index 14
+useDisplayBg
+value {
+ "Manufacturer"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 80
+y 34
+w 90
 h 20
 font "helvetica-medium-r-8.0"
 fontAlign "right"
@@ -352,15 +214,171 @@ value {
 }
 endObjectProperties
 
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 120
+y 109
+w 50
+h 20
+font "helvetica-medium-r-8.0"
+fontAlign "right"
+fgColor index 14
+useDisplayBg
+value {
+ "Model"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 40
+y 134
+w 130
+h 20
+font "helvetica-medium-r-8.0"
+fontAlign "right"
+fgColor index 14
+useDisplayBg
+value {
+ "Serial number"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 10
+y 159
+w 160
+h 20
+font "helvetica-medium-r-8.0"
+fontAlign "right"
+fgColor index 14
+useDisplayBg
+value {
+ "Firmware version"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 60
+y 184
+w 110
+h 20
+font "helvetica-medium-r-8.0"
+fontAlign "right"
+fgColor index 14
+useDisplayBg
+value {
+ "SDK version"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 30
+y 209
+w 140
+h 20
+font "helvetica-medium-r-8.0"
+fontAlign "right"
+fgColor index 14
+useDisplayBg
+value {
+ "Driver version"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 30
+y 234
+w 140
+h 20
+font "helvetica-medium-r-8.0"
+fontAlign "right"
+fgColor index 14
+useDisplayBg
+value {
+ "ADCore version"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 175
+y 60
+w 165
+h 18
+font "helvetica-medium-r-8.0"
+fgColor index 54
+useDisplayBg
+value {
+ "$(P)$(R)"
+}
+endObjectProperties
+
 # (Text Control)
 object activeXTextDspClass
 beginObjectProperties
 major 4
 minor 0
 release 0
-x 166
+x 175
+y 85
+w 165
+h 18
+controlPv "$(P)$(R)Manufacturer_RBV"
+font "helvetica-medium-r-8.0"
+smartRefresh
+fastUpdate
+fgColor index 54
+bgColor index 4
+autoHeight
+format "string"
+nullColor index 32
+useHexPrefix
+objType "controls"
+newPos
+endObjectProperties
+
+# (Text Control)
+object activeXTextDspClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 175
 y 35
-w 160
+w 165
 h 18
 controlPv "$(P)$(R)PortName_RBV"
 font "helvetica-medium-r-8.0"
@@ -369,48 +387,156 @@ fastUpdate
 fgColor index 54
 bgColor index 4
 autoHeight
-format decimal
+format "string"
 nullColor index 32
 useHexPrefix
 objType "controls"
 newPos
 endObjectProperties
-# (Group)
-object activeGroupClass
+
+# (Text Control)
+object activeXTextDspClass
 beginObjectProperties
 major 4
 minor 0
 release 0
-x 58
-y 59
-w 268
-h 20
-
-beginGroup
-
-
-endGroup
-
+x 175
+y 110
+w 165
+h 18
+controlPv "$(P)$(R)Model_RBV"
+font "helvetica-medium-r-8.0"
+smartRefresh
+fastUpdate
+fgColor index 54
+bgColor index 4
+autoHeight
+format "string"
+nullColor index 32
+useHexPrefix
+objType "controls"
+newPos
 endObjectProperties
 
-# (Group)
-object activeGroupClass
+# (Text Control)
+object activeXTextDspClass
 beginObjectProperties
 major 4
 minor 0
 release 0
-x 38
-y 84
-w 288
-h 20
-
-beginGroup
-
-
-endGroup
-
+x 175
+y 135
+w 165
+h 18
+controlPv "$(P)$(R)SerialNumber_RBV"
+font "helvetica-medium-r-8.0"
+smartRefresh
+fastUpdate
+fgColor index 54
+bgColor index 4
+autoHeight
+format "string"
+nullColor index 32
+useHexPrefix
+objType "controls"
+newPos
 endObjectProperties
 
+# (Text Control)
+object activeXTextDspClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 175
+y 160
+w 165
+h 18
+controlPv "$(P)$(R)FirmwareVersion_RBV"
+font "helvetica-medium-r-8.0"
+smartRefresh
+fastUpdate
+fgColor index 54
+bgColor index 4
+autoHeight
+format "string"
+nullColor index 32
+useHexPrefix
+objType "controls"
+newPos
+endObjectProperties
+
+# (Text Control)
+object activeXTextDspClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 175
+y 185
+w 165
+h 18
+controlPv "$(P)$(R)SDKVersion_RBV"
+font "helvetica-medium-r-8.0"
+smartRefresh
+fastUpdate
+fgColor index 54
+bgColor index 4
+autoHeight
+format "string"
+nullColor index 32
+useHexPrefix
+objType "controls"
+newPos
+endObjectProperties
+
+# (Text Control)
+object activeXTextDspClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 175
+y 210
+w 165
+h 18
+controlPv "$(P)$(R)DriverVersion_RBV"
+font "helvetica-medium-r-8.0"
+smartRefresh
+fastUpdate
+fgColor index 54
+bgColor index 4
+autoHeight
+format "string"
+nullColor index 32
+useHexPrefix
+objType "controls"
+newPos
+endObjectProperties
+
+# (Text Control)
+object activeXTextDspClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 175
+y 235
+w 165
+h 18
+controlPv "$(P)$(R)ADCoreVersion_RBV"
+font "helvetica-medium-r-8.0"
+smartRefresh
+fastUpdate
+fgColor index 54
+bgColor index 4
+autoHeight
+format "string"
+nullColor index 32
+useHexPrefix
+objType "controls"
+newPos
+endObjectProperties
 
 # (Related Display)
 object relatedDisplayClass
@@ -419,7 +545,7 @@ major 4
 minor 0
 release 0
 x 167
-y 188
+y 315
 w 70
 h 20
 fgColor index 14
@@ -428,19 +554,11 @@ topShadowColor index 2
 botShadowColor index 12
 font "helvetica-medium-r-10.0"
 icon
-numPvs 4
-numDsps 2
+numPvs 0
+numDsps 0
 displayFileName {
-  0 asynRecord.adl
-  1 save_restoreStatus_more.adl
 }
 menuLabel {
-  0 asyn record
-  1 Save restore status
-}
-symbols {
-  0 "P=$(P),R=$(R)AsynIO"
-  1 "P=$(P)"
 }
 endObjectProperties
 
@@ -451,7 +569,7 @@ major 4
 minor 0
 release 0
 x 166
-y 159
+y 286
 w 80
 h 20
 fgColor index 14
@@ -476,7 +594,7 @@ major 4
 minor 0
 release 0
 x 251
-y 159
+y 286
 w 80
 h 20
 fgColor index 14
