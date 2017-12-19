@@ -129,20 +129,6 @@
         </xs:documentation>
       </xs:annotation>
     </xs:attribute>
-    <xs:attribute name="when" use="optional">
-      <xs:annotation>
-        <xs:documentation>
-          Event when the attribute data is updated.
-        </xs:documentation>
-      </xs:annotation>
-      <xs:simpleType>
- 	<xs:restriction base="xs:token">
- 	  <xs:enumeration value="OnFileOpen" />
- 	  <xs:enumeration value="OnFileClose" />
- 	  <xs:enumeration value="OnFileWrite" />
- 	</xs:restriction>
-      </xs:simpleType>
-    </xs:attribute>
   </xs:attributeGroup>
   
   <xs:simpleType name="allowed_datatypes">
