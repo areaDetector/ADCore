@@ -15,7 +15,7 @@ $(DBD_NAME)_DBD += ADSupport.dbd
 
 $(DBD_NAME)_DBD += NDFileNull.dbd
 
-ifeq ($(WITH_EPICS_V4),YES)
+ifeq ($(WITH_PVA),YES)
   $(DBD_NAME)_DBD += NDPluginPva.dbd
   $(DBD_NAME)_DBD += PVAServerRegister.dbd
   PROD_LIBS += ntndArrayConverter
