@@ -4,16 +4,104 @@
 <widget class="QMainWindow" name="MainWindow">
     <property name="geometry">
         <rect>
-            <x>154</x>
-            <y>55</y>
+            <x>353</x>
+            <y>59</y>
             <width>390</width>
-            <height>665</height>
+            <height>690</height>
         </rect>
     </property>
     <property name="styleSheet">
         <string>
 
 QWidget#centralWidget {background: rgba(187, 187, 187, 255);}
+
+caTable {
+       font: 10pt;
+       background: cornsilk;
+       alternate-background-color: wheat;
+}
+
+caLineEdit {
+     border-radius: 1px;
+     background: lightyellow;
+     color: black;
+ }
+
+caTextEntry {
+    color: rgb(127, 0, 63);
+    background-color: cornsilk;
+    selection-color: #0a214c;
+    selection-background-color: wheat;
+    border: 1px groove black;
+    border-radius: 1px;
+    padding: 1px;
+}
+
+caTextEntry:focus {
+    padding: 0px;
+    border: 2px groove darkred;
+    border-radius: 1px;
+}
+
+QPushButton {
+      border-color: #00b;
+      border-radius: 2px;
+      padding: 3px;
+      border-width: 1px;
+
+	background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1,
+						   stop:0   rgba(224, 239, 255, 255),
+						   stop:0.5 rgba(199, 215, 230, 255),
+						   stop:1   rgba(184, 214, 236, 255));
+}
+QPushButton:hover {
+	background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1,
+						stop:0   rgba(201, 226, 255, 255),
+						stop:0.5 rgba(177, 204, 230, 255),
+						stop:1   rgba(163, 205, 236, 255));
+}
+QPushButton:pressed {
+	background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1,
+						stop:0   rgba(174, 219, 255, 255),
+						stop:0.5 rgba(165, 199, 230, 255),
+						stop:1   rgba(134, 188, 236, 255));
+}
+
+QPushButton:disabled {
+	background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1,
+						stop:0   rgba(174, 219, 255, 255),
+						stop:0.5 rgba(165, 199, 230, 255),
+						stop:1   rgba(134, 188, 236, 255));
+}
+
+caChoice {
+      background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                  stop: 0 #E1E1E1, stop: 0.4 #DDDDDD,
+                                  stop: 0.5 #D8D8D8, stop: 1.0 #D3D3D3);
+}
+
+caChoice &gt; QPushButton {
+      text-align: left;
+      padding: 1px;
+}
+
+caSlider::groove:horizontal {
+border: 1px solid #bbb;
+background: lightgrey;
+height: 20px;
+border-radius: 4px;
+}
+
+caSlider::handle:horizontal {
+background: red;
+border: 1px solid #777;
+width: 13px;
+margin-top: -2px;
+margin-bottom: -2px;
+border-radius: 2px;
+}
+
+
 
 </string>
     </property>
@@ -93,7 +181,7 @@ QWidget#centralWidget {background: rgba(187, 187, 187, 255);}
                     <x>5</x>
                     <y>40</y>
                     <width>382</width>
-                    <height>532</height>
+                    <height>557</height>
                 </rect>
             </property>
             <property name="geometry">
@@ -101,11 +189,11 @@ QWidget#centralWidget {background: rgba(187, 187, 187, 255);}
                     <x>5</x>
                     <y>40</y>
                     <width>380</width>
-                    <height>530</height>
+                    <height>555</height>
                 </rect>
             </property>
             <property name="filename">
-                <string>NDPluginBase.ui</string>
+                <string>NDPluginBase.adl</string>
             </property>
             <property name="macro">
                 <string></string>
@@ -115,7 +203,7 @@ QWidget#centralWidget {background: rgba(187, 187, 187, 255);}
             <property name="geometry">
                 <rect>
                     <x>5</x>
-                    <y>575</y>
+                    <y>600</y>
                     <width>382</width>
                     <height>87</height>
                 </rect>
@@ -190,7 +278,7 @@ QWidget#centralWidget {background: rgba(187, 187, 187, 255);}
                     <string>Overlay 1;Overlay 2;Overlay 3;Overlay 4;Overlay 5;Overlay 6;Overlay 7;Overlay 8</string>
                 </property>
                 <property name="files">
-                    <string>NDOverlayN.ui;NDOverlayN.ui;NDOverlayN.ui;NDOverlayN.ui;NDOverlayN.ui;NDOverlayN.ui;NDOverlayN.ui;NDOverlayN.ui</string>
+                    <string>NDOverlayN.adl;NDOverlayN.adl;NDOverlayN.adl;NDOverlayN.adl;NDOverlayN.adl;NDOverlayN.adl;NDOverlayN.adl;NDOverlayN.adl</string>
                 </property>
                 <property name="args">
                     <string>P=$(P), R=$(R)1:;P=$(P), R=$(R)2:;P=$(P), R=$(R)3:;P=$(P), R=$(R)4:;P=$(P), R=$(R)5:;P=$(P), R=$(R)6:;P=$(P), R=$(R)7:;P=$(P), R=$(R)8:</string>
@@ -268,7 +356,7 @@ QWidget#centralWidget {background: rgba(187, 187, 187, 255);}
                     <string>Overlays 1-8;Overlays 9-16</string>
                 </property>
                 <property name="files">
-                    <string>NDOverlay8.ui;NDOverlay8.ui</string>
+                    <string>NDOverlay8.adl;NDOverlay8.adl</string>
                 </property>
                 <property name="args">
                     <string>P=$(P),R=$(R),O1=$(R)1:,O2=$(R)2:,O3=$(R)3:,O4=$(R)4:,O5=$(R)5:,O6=$(R)6:,O7=$(R)7:,O8=$(R)8:;P=$(P),R=$(R),O1=$(R)9:,O2=$(R)10:,O3=$(R)11:,O4=$(R)12:,O5=$(R)13:,O6=$(R)14:,O7=$(R)15:,O8=$(R)16:</string>

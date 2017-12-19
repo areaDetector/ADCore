@@ -4,10 +4,10 @@
 <widget class="QMainWindow" name="MainWindow">
     <property name="geometry">
         <rect>
-            <x>360</x>
-            <y>163</y>
-            <width>1070</width>
-            <height>600</height>
+            <x>1095</x>
+            <y>344</y>
+            <width>400</width>
+            <height>300</height>
         </rect>
     </property>
     <property name="styleSheet">
@@ -106,6 +106,80 @@ border-radius: 2px;
 </string>
     </property>
     <widget class="QWidget" name="centralWidget">
+        <widget class="caCartesianPlot" name="caCartesianPlot_0">
+            <property name="geometry">
+                <rect>
+                    <x>0</x>
+                    <y>30</y>
+                    <width>400</width>
+                    <height>270</height>
+                </rect>
+            </property>
+            <property name="Title">
+                <string>$(TITLE)</string>
+            </property>
+            <property name="TitleX">
+                <string>$(XLABEL)</string>
+            </property>
+            <property name="TitleY">
+                <string>$(YLABEL)</string>
+            </property>
+            <property name="scaleColor">
+                <color alpha="255">
+                    <red>0</red>
+                    <green>0</green>
+                    <blue>0</blue>
+                </color>
+            </property>
+            <property name="foreground">
+                <color alpha="255">
+                    <red>115</red>
+                    <green>223</green>
+                    <blue>255</blue>
+                </color>
+            </property>
+            <property name="background">
+                <color alpha="255">
+                    <red>115</red>
+                    <green>223</green>
+                    <blue>255</blue>
+                </color>
+            </property>
+            <property name="color_1">
+                <color alpha="255">
+                    <red>0</red>
+                    <green>0</green>
+                    <blue>0</blue>
+                </color>
+            </property>
+            <property name="channels_1">
+                <string>$(P)$(R)$(XDATA);$(P)$(R)$(YDATA)</string>
+            </property>
+            <property name="Style_1">
+                <enum>caCartesianPlot::Dots</enum>
+            </property>
+            <property name="Style_2">
+                <enum>caCartesianPlot::Dots</enum>
+            </property>
+            <property name="Style_3">
+                <enum>caCartesianPlot::Dots</enum>
+            </property>
+            <property name="symbol_1">
+                <enum>caCartesianPlot::NoSymbol</enum>
+            </property>
+            <property name="symbol_2">
+                <enum>caCartesianPlot::Rect</enum>
+            </property>
+            <property name="symbol_3">
+                <enum>caCartesianPlot::Triangle</enum>
+            </property>
+            <property name="XaxisScaling">
+                <enum>caCartesianPlot::Channel</enum>
+            </property>
+            <property name="YaxisScaling">
+                <enum>caCartesianPlot::Channel</enum>
+            </property>
+        </widget>
         <widget class="caGraphics" name="caRectangle_0">
             <property name="form">
                 <enum>caGraphics::Rectangle</enum>
@@ -113,8 +187,8 @@ border-radius: 2px;
             <property name="geometry">
                 <rect>
                     <x>0</x>
-                    <y>5</y>
-                    <width>1070</width>
+                    <y>0</y>
+                    <width>400</width>
                     <height>26</height>
                 </rect>
             </property>
@@ -158,7 +232,7 @@ border-radius: 2px;
                 </color>
             </property>
             <property name="text">
-                <string>$(P)$(R)</string>
+                <string>$(P)$(R) $(TITLE)</string>
             </property>
             <property name="fontScaleMode">
                 <enum>ESimpleLabel::WidthAndHeight</enum>
@@ -168,65 +242,16 @@ border-radius: 2px;
             </property>
             <property name="geometry">
                 <rect>
-                    <x>35</x>
-                    <y>6</y>
-                    <width>1000</width>
+                    <x>92</x>
+                    <y>1</y>
+                    <width>216</width>
                     <height>25</height>
                 </rect>
             </property>
         </widget>
-        <widget class="caInclude" name="caInclude_0">
-            <property name="geometry">
-                <rect>
-                    <x>5</x>
-                    <y>40</y>
-                    <width>382</width>
-                    <height>557</height>
-                </rect>
-            </property>
-            <property name="geometry">
-                <rect>
-                    <x>5</x>
-                    <y>40</y>
-                    <width>380</width>
-                    <height>555</height>
-                </rect>
-            </property>
-            <property name="filename">
-                <string>NDPluginBase.adl</string>
-            </property>
-            <property name="macro">
-                <string></string>
-            </property>
-        </widget>
-        <widget class="caInclude" name="caInclude_1">
-            <property name="geometry">
-                <rect>
-                    <x>390</x>
-                    <y>40</y>
-                    <width>677</width>
-                    <height>407</height>
-                </rect>
-            </property>
-            <property name="geometry">
-                <rect>
-                    <x>390</x>
-                    <y>40</y>
-                    <width>675</width>
-                    <height>405</height>
-                </rect>
-            </property>
-            <property name="filename">
-                <string>NDFileBase.adl</string>
-            </property>
-            <property name="macro">
-                <string></string>
-            </property>
-        </widget>
         <zorder>caRectangle_0</zorder>
         <zorder>caLabel_0</zorder>
-        <zorder>caInclude_0</zorder>
-        <zorder>caInclude_1</zorder>
+        <zorder>caCartesianPlot_0</zorder>
     </widget>
 </widget>
 </ui>
