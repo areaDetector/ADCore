@@ -9,7 +9,7 @@
   <background_color>
     <color red="187" green="187" blue="187" />
   </background_color>
-  <boy_version>5.1.0.201712051924</boy_version>
+  <boy_version>5.1.0.201801081728</boy_version>
   <foreground_color>
     <color red="0" green="0" blue="0" />
   </foreground_color>
@@ -28,7 +28,6 @@
   <snap_to_geometry>false</snap_to_geometry>
   <widget_type>Display</widget_type>
   <width>935</width>
-  <wuid>325603b2:160702f1d5d:-7fff</wuid>
   <x>337</x>
   <y>62</y>
   <widget typeId="org.csstudio.opibuilder.widgets.Rectangle" version="1.0.0">
@@ -85,7 +84,6 @@ $(pv_value)</tooltip>
     <visible>true</visible>
     <widget_type>Rectangle</widget_type>
     <width>935</width>
-    <wuid>325603b2:160702f1d5d:-7ffe</wuid>
     <x>0</x>
     <y>5</y>
   </widget>
@@ -126,7 +124,6 @@ $(pv_value)</tooltip>
     <visible>true</visible>
     <widget_type>Grouping Container</widget_type>
     <width>915</width>
-    <wuid>325603b2:160702f1d5d:-7f54</wuid>
     <x>10</x>
     <y>545</y>
     <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0.0">
@@ -177,7 +174,6 @@ $(pv_value)</tooltip>
       <widget_type>Text Update</widget_type>
       <width>110</width>
       <wrap_words>false</wrap_words>
-      <wuid>325603b2:160702f1d5d:-7f53</wuid>
       <x>0</x>
       <y>1</y>
     </widget>
@@ -229,7 +225,6 @@ $(pv_value)</tooltip>
       <widget_type>Text Update</widget_type>
       <width>160</width>
       <wrap_words>false</wrap_words>
-      <wuid>325603b2:160702f1d5d:-7f52</wuid>
       <x>115</x>
       <y>1</y>
     </widget>
@@ -292,7 +287,6 @@ $(pv_value)</tooltip>
       <visible>true</visible>
       <widget_type>Text Input</widget_type>
       <width>60</width>
-      <wuid>325603b2:160702f1d5d:-7f51</wuid>
       <x>280</x>
       <y>0</y>
     </widget>
@@ -337,7 +331,6 @@ $(pv_value)</tooltip>
       <visible>true</visible>
       <widget_type>Menu Button</widget_type>
       <width>80</width>
-      <wuid>325603b2:160702f1d5d:-7f50</wuid>
       <x>345</x>
       <y>0</y>
     </widget>
@@ -389,7 +382,6 @@ $(pv_value)</tooltip>
       <widget_type>Text Update</widget_type>
       <width>80</width>
       <wrap_words>false</wrap_words>
-      <wuid>325603b2:160702f1d5d:-7f4f</wuid>
       <x>430</x>
       <y>1</y>
     </widget>
@@ -434,11 +426,10 @@ $(pv_value)</tooltip>
       <visible>true</visible>
       <widget_type>Menu Button</widget_type>
       <width>80</width>
-      <wuid>325603b2:160702f1d5d:-7f4e</wuid>
       <x>515</x>
       <y>0</y>
     </widget>
-    <widget typeId="org.csstudio.opibuilder.widgets.MenuButton" version="1.0.0">
+    <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
       <actions hook="false" hook_all="false">
         <action type="OPEN_DISPLAY">
           <path>NDCircularBuff.opi</path>
@@ -446,11 +437,10 @@ $(pv_value)</tooltip>
             <include_parent_macros>true</include_parent_macros>
             <R>CB1:</R>
           </macros>
-          <mode>0</mode>
+          <mode>1</mode>
           <description>CB1:</description>
         </action>
       </actions>
-      <actions_from_pv>false</actions_from_pv>
       <alarm_pulsing>false</alarm_pulsing>
       <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
       <background_color>
@@ -460,7 +450,7 @@ $(pv_value)</tooltip>
       <border_color>
         <color red="0" green="128" blue="255" />
       </border_color>
-      <border_style>6</border_style>
+      <border_style>0</border_style>
       <border_width>1</border_width>
       <enabled>true</enabled>
       <font>
@@ -471,8 +461,9 @@ $(pv_value)</tooltip>
         <color red="0" green="0" blue="0" />
       </foreground_color>
       <height>20</height>
-      <label>More</label>
-      <name>Menu Button</name>
+      <image></image>
+      <name>Action Button</name>
+      <push_action_index>0</push_action_index>
       <pv_name></pv_name>
       <pv_value />
       <rules />
@@ -482,14 +473,14 @@ $(pv_value)</tooltip>
         <keep_wh_ratio>false</keep_wh_ratio>
       </scale_options>
       <scripts />
-      <show_down_arrow>false</show_down_arrow>
+      <style>0</style>
+      <text>More</text>
+      <toggle_button>false</toggle_button>
       <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-      <transparent>false</transparent>
       <visible>true</visible>
-      <widget_type>Menu Button</widget_type>
+      <widget_type>Action Button</widget_type>
       <width>60</width>
-      <wuid>325603b2:160702f1d5d:-7f4d</wuid>
       <x>855</x>
       <y>0</y>
     </widget>
@@ -541,7 +532,6 @@ $(pv_value)</tooltip>
       <widget_type>Text Update</widget_type>
       <width>80</width>
       <wrap_words>false</wrap_words>
-      <wuid>325603b2:160702f1d5d:-7f4c</wuid>
       <x>770</x>
       <y>1</y>
     </widget>
@@ -593,7 +583,6 @@ $(pv_value)</tooltip>
       <widget_type>Text Update</widget_type>
       <width>80</width>
       <wrap_words>false</wrap_words>
-      <wuid>325603b2:160702f1d5d:-7f4b</wuid>
       <x>685</x>
       <y>1</y>
     </widget>
@@ -645,7 +634,6 @@ $(pv_value)</tooltip>
       <widget_type>Text Update</widget_type>
       <width>80</width>
       <wrap_words>false</wrap_words>
-      <wuid>325603b2:160702f1d5d:-7f4a</wuid>
       <x>600</x>
       <y>1</y>
     </widget>
@@ -687,7 +675,6 @@ $(pv_value)</tooltip>
     <visible>true</visible>
     <widget_type>Grouping Container</widget_type>
     <width>915</width>
-    <wuid>325603b2:160702f1d5d:-7f49</wuid>
     <x>10</x>
     <y>470</y>
     <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0.0">
@@ -738,7 +725,6 @@ $(pv_value)</tooltip>
       <widget_type>Text Update</widget_type>
       <width>110</width>
       <wrap_words>false</wrap_words>
-      <wuid>325603b2:160702f1d5d:-7f48</wuid>
       <x>0</x>
       <y>1</y>
     </widget>
@@ -790,7 +776,6 @@ $(pv_value)</tooltip>
       <widget_type>Text Update</widget_type>
       <width>160</width>
       <wrap_words>false</wrap_words>
-      <wuid>325603b2:160702f1d5d:-7f47</wuid>
       <x>115</x>
       <y>1</y>
     </widget>
@@ -853,7 +838,6 @@ $(pv_value)</tooltip>
       <visible>true</visible>
       <widget_type>Text Input</widget_type>
       <width>60</width>
-      <wuid>325603b2:160702f1d5d:-7f46</wuid>
       <x>280</x>
       <y>0</y>
     </widget>
@@ -898,7 +882,6 @@ $(pv_value)</tooltip>
       <visible>true</visible>
       <widget_type>Menu Button</widget_type>
       <width>80</width>
-      <wuid>325603b2:160702f1d5d:-7f45</wuid>
       <x>345</x>
       <y>0</y>
     </widget>
@@ -950,7 +933,6 @@ $(pv_value)</tooltip>
       <widget_type>Text Update</widget_type>
       <width>80</width>
       <wrap_words>false</wrap_words>
-      <wuid>325603b2:160702f1d5d:-7f44</wuid>
       <x>430</x>
       <y>1</y>
     </widget>
@@ -995,11 +977,10 @@ $(pv_value)</tooltip>
       <visible>true</visible>
       <widget_type>Menu Button</widget_type>
       <width>80</width>
-      <wuid>325603b2:160702f1d5d:-7f43</wuid>
       <x>515</x>
       <y>0</y>
     </widget>
-    <widget typeId="org.csstudio.opibuilder.widgets.MenuButton" version="1.0.0">
+    <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
       <actions hook="false" hook_all="false">
         <action type="OPEN_DISPLAY">
           <path>NDScatter.opi</path>
@@ -1007,11 +988,10 @@ $(pv_value)</tooltip>
             <include_parent_macros>true</include_parent_macros>
             <R>Scatter1:</R>
           </macros>
-          <mode>0</mode>
+          <mode>1</mode>
           <description>Scatter1:</description>
         </action>
       </actions>
-      <actions_from_pv>false</actions_from_pv>
       <alarm_pulsing>false</alarm_pulsing>
       <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
       <background_color>
@@ -1021,7 +1001,7 @@ $(pv_value)</tooltip>
       <border_color>
         <color red="0" green="128" blue="255" />
       </border_color>
-      <border_style>6</border_style>
+      <border_style>0</border_style>
       <border_width>1</border_width>
       <enabled>true</enabled>
       <font>
@@ -1032,8 +1012,9 @@ $(pv_value)</tooltip>
         <color red="0" green="0" blue="0" />
       </foreground_color>
       <height>20</height>
-      <label>More</label>
-      <name>Menu Button</name>
+      <image></image>
+      <name>Action Button</name>
+      <push_action_index>0</push_action_index>
       <pv_name></pv_name>
       <pv_value />
       <rules />
@@ -1043,14 +1024,14 @@ $(pv_value)</tooltip>
         <keep_wh_ratio>false</keep_wh_ratio>
       </scale_options>
       <scripts />
-      <show_down_arrow>false</show_down_arrow>
+      <style>0</style>
+      <text>More</text>
+      <toggle_button>false</toggle_button>
       <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-      <transparent>false</transparent>
       <visible>true</visible>
-      <widget_type>Menu Button</widget_type>
+      <widget_type>Action Button</widget_type>
       <width>60</width>
-      <wuid>325603b2:160702f1d5d:-7f42</wuid>
       <x>855</x>
       <y>0</y>
     </widget>
@@ -1102,7 +1083,6 @@ $(pv_value)</tooltip>
       <widget_type>Text Update</widget_type>
       <width>80</width>
       <wrap_words>false</wrap_words>
-      <wuid>325603b2:160702f1d5d:-7f41</wuid>
       <x>770</x>
       <y>1</y>
     </widget>
@@ -1154,7 +1134,6 @@ $(pv_value)</tooltip>
       <widget_type>Text Update</widget_type>
       <width>80</width>
       <wrap_words>false</wrap_words>
-      <wuid>325603b2:160702f1d5d:-7f40</wuid>
       <x>685</x>
       <y>1</y>
     </widget>
@@ -1206,7 +1185,6 @@ $(pv_value)</tooltip>
       <widget_type>Text Update</widget_type>
       <width>80</width>
       <wrap_words>false</wrap_words>
-      <wuid>325603b2:160702f1d5d:-7f3f</wuid>
       <x>600</x>
       <y>1</y>
     </widget>
@@ -1248,7 +1226,6 @@ $(pv_value)</tooltip>
     <visible>true</visible>
     <widget_type>Grouping Container</widget_type>
     <width>915</width>
-    <wuid>325603b2:160702f1d5d:-7f3e</wuid>
     <x>10</x>
     <y>495</y>
     <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0.0">
@@ -1299,7 +1276,6 @@ $(pv_value)</tooltip>
       <widget_type>Text Update</widget_type>
       <width>110</width>
       <wrap_words>false</wrap_words>
-      <wuid>325603b2:160702f1d5d:-7f3d</wuid>
       <x>0</x>
       <y>1</y>
     </widget>
@@ -1351,7 +1327,6 @@ $(pv_value)</tooltip>
       <widget_type>Text Update</widget_type>
       <width>160</width>
       <wrap_words>false</wrap_words>
-      <wuid>325603b2:160702f1d5d:-7f3c</wuid>
       <x>115</x>
       <y>1</y>
     </widget>
@@ -1414,7 +1389,6 @@ $(pv_value)</tooltip>
       <visible>true</visible>
       <widget_type>Text Input</widget_type>
       <width>60</width>
-      <wuid>325603b2:160702f1d5d:-7f3b</wuid>
       <x>280</x>
       <y>0</y>
     </widget>
@@ -1459,7 +1433,6 @@ $(pv_value)</tooltip>
       <visible>true</visible>
       <widget_type>Menu Button</widget_type>
       <width>80</width>
-      <wuid>325603b2:160702f1d5d:-7f3a</wuid>
       <x>345</x>
       <y>0</y>
     </widget>
@@ -1511,7 +1484,6 @@ $(pv_value)</tooltip>
       <widget_type>Text Update</widget_type>
       <width>80</width>
       <wrap_words>false</wrap_words>
-      <wuid>325603b2:160702f1d5d:-7f39</wuid>
       <x>430</x>
       <y>1</y>
     </widget>
@@ -1556,11 +1528,10 @@ $(pv_value)</tooltip>
       <visible>true</visible>
       <widget_type>Menu Button</widget_type>
       <width>80</width>
-      <wuid>325603b2:160702f1d5d:-7f38</wuid>
       <x>515</x>
       <y>0</y>
     </widget>
-    <widget typeId="org.csstudio.opibuilder.widgets.MenuButton" version="1.0.0">
+    <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
       <actions hook="false" hook_all="false">
         <action type="OPEN_DISPLAY">
           <path>NDGather8.opi</path>
@@ -1568,11 +1539,10 @@ $(pv_value)</tooltip>
             <include_parent_macros>true</include_parent_macros>
             <R>Gather1:</R>
           </macros>
-          <mode>0</mode>
+          <mode>1</mode>
           <description>Gather1:</description>
         </action>
       </actions>
-      <actions_from_pv>false</actions_from_pv>
       <alarm_pulsing>false</alarm_pulsing>
       <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
       <background_color>
@@ -1582,7 +1552,7 @@ $(pv_value)</tooltip>
       <border_color>
         <color red="0" green="128" blue="255" />
       </border_color>
-      <border_style>6</border_style>
+      <border_style>0</border_style>
       <border_width>1</border_width>
       <enabled>true</enabled>
       <font>
@@ -1593,8 +1563,9 @@ $(pv_value)</tooltip>
         <color red="0" green="0" blue="0" />
       </foreground_color>
       <height>20</height>
-      <label>More</label>
-      <name>Menu Button</name>
+      <image></image>
+      <name>Action Button</name>
+      <push_action_index>0</push_action_index>
       <pv_name></pv_name>
       <pv_value />
       <rules />
@@ -1604,14 +1575,14 @@ $(pv_value)</tooltip>
         <keep_wh_ratio>false</keep_wh_ratio>
       </scale_options>
       <scripts />
-      <show_down_arrow>false</show_down_arrow>
+      <style>0</style>
+      <text>More</text>
+      <toggle_button>false</toggle_button>
       <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-      <transparent>false</transparent>
       <visible>true</visible>
-      <widget_type>Menu Button</widget_type>
+      <widget_type>Action Button</widget_type>
       <width>60</width>
-      <wuid>325603b2:160702f1d5d:-7f37</wuid>
       <x>855</x>
       <y>0</y>
     </widget>
@@ -1663,7 +1634,6 @@ $(pv_value)</tooltip>
       <widget_type>Text Update</widget_type>
       <width>80</width>
       <wrap_words>false</wrap_words>
-      <wuid>325603b2:160702f1d5d:-7f36</wuid>
       <x>770</x>
       <y>1</y>
     </widget>
@@ -1715,7 +1685,6 @@ $(pv_value)</tooltip>
       <widget_type>Text Update</widget_type>
       <width>80</width>
       <wrap_words>false</wrap_words>
-      <wuid>325603b2:160702f1d5d:-7f35</wuid>
       <x>685</x>
       <y>1</y>
     </widget>
@@ -1767,7 +1736,6 @@ $(pv_value)</tooltip>
       <widget_type>Text Update</widget_type>
       <width>80</width>
       <wrap_words>false</wrap_words>
-      <wuid>325603b2:160702f1d5d:-7f34</wuid>
       <x>600</x>
       <y>1</y>
     </widget>
@@ -1809,7 +1777,6 @@ $(pv_value)</tooltip>
     <visible>true</visible>
     <widget_type>Grouping Container</widget_type>
     <width>915</width>
-    <wuid>325603b2:160702f1d5d:-7f33</wuid>
     <x>10</x>
     <y>620</y>
     <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0.0">
@@ -1860,7 +1827,6 @@ $(pv_value)</tooltip>
       <widget_type>Text Update</widget_type>
       <width>110</width>
       <wrap_words>false</wrap_words>
-      <wuid>325603b2:160702f1d5d:-7f32</wuid>
       <x>0</x>
       <y>1</y>
     </widget>
@@ -1912,7 +1878,6 @@ $(pv_value)</tooltip>
       <widget_type>Text Update</widget_type>
       <width>160</width>
       <wrap_words>false</wrap_words>
-      <wuid>325603b2:160702f1d5d:-7f31</wuid>
       <x>115</x>
       <y>1</y>
     </widget>
@@ -1964,7 +1929,6 @@ $(pv_value)</tooltip>
       <widget_type>Text Update</widget_type>
       <width>110</width>
       <wrap_words>false</wrap_words>
-      <wuid>325603b2:160702f1d5d:-7f30</wuid>
       <x>0</x>
       <y>26</y>
     </widget>
@@ -2016,7 +1980,6 @@ $(pv_value)</tooltip>
       <widget_type>Text Update</widget_type>
       <width>160</width>
       <wrap_words>false</wrap_words>
-      <wuid>325603b2:160702f1d5d:-7f2f</wuid>
       <x>115</x>
       <y>26</y>
     </widget>
@@ -2068,7 +2031,6 @@ $(pv_value)</tooltip>
       <widget_type>Text Update</widget_type>
       <width>110</width>
       <wrap_words>false</wrap_words>
-      <wuid>325603b2:160702f1d5d:-7f2e</wuid>
       <x>0</x>
       <y>51</y>
     </widget>
@@ -2120,7 +2082,6 @@ $(pv_value)</tooltip>
       <widget_type>Text Update</widget_type>
       <width>160</width>
       <wrap_words>false</wrap_words>
-      <wuid>325603b2:160702f1d5d:-7f2d</wuid>
       <x>115</x>
       <y>51</y>
     </widget>
@@ -2172,7 +2133,6 @@ $(pv_value)</tooltip>
       <widget_type>Text Update</widget_type>
       <width>110</width>
       <wrap_words>false</wrap_words>
-      <wuid>325603b2:160702f1d5d:-7f2c</wuid>
       <x>0</x>
       <y>76</y>
     </widget>
@@ -2224,7 +2184,6 @@ $(pv_value)</tooltip>
       <widget_type>Text Update</widget_type>
       <width>160</width>
       <wrap_words>false</wrap_words>
-      <wuid>325603b2:160702f1d5d:-7f2b</wuid>
       <x>115</x>
       <y>76</y>
     </widget>
@@ -2276,7 +2235,6 @@ $(pv_value)</tooltip>
       <widget_type>Text Update</widget_type>
       <width>110</width>
       <wrap_words>false</wrap_words>
-      <wuid>325603b2:160702f1d5d:-7f2a</wuid>
       <x>0</x>
       <y>101</y>
     </widget>
@@ -2328,7 +2286,6 @@ $(pv_value)</tooltip>
       <widget_type>Text Update</widget_type>
       <width>160</width>
       <wrap_words>false</wrap_words>
-      <wuid>325603b2:160702f1d5d:-7f29</wuid>
       <x>115</x>
       <y>101</y>
     </widget>
@@ -2391,7 +2348,6 @@ $(pv_value)</tooltip>
       <visible>true</visible>
       <widget_type>Text Input</widget_type>
       <width>60</width>
-      <wuid>325603b2:160702f1d5d:-7f28</wuid>
       <x>280</x>
       <y>0</y>
     </widget>
@@ -2436,7 +2392,6 @@ $(pv_value)</tooltip>
       <visible>true</visible>
       <widget_type>Menu Button</widget_type>
       <width>80</width>
-      <wuid>325603b2:160702f1d5d:-7f27</wuid>
       <x>345</x>
       <y>0</y>
     </widget>
@@ -2488,7 +2443,6 @@ $(pv_value)</tooltip>
       <widget_type>Text Update</widget_type>
       <width>80</width>
       <wrap_words>false</wrap_words>
-      <wuid>325603b2:160702f1d5d:-7f26</wuid>
       <x>430</x>
       <y>1</y>
     </widget>
@@ -2533,7 +2487,6 @@ $(pv_value)</tooltip>
       <visible>true</visible>
       <widget_type>Menu Button</widget_type>
       <width>80</width>
-      <wuid>325603b2:160702f1d5d:-7f25</wuid>
       <x>515</x>
       <y>0</y>
     </widget>
@@ -2596,7 +2549,6 @@ $(pv_value)</tooltip>
       <visible>true</visible>
       <widget_type>Text Input</widget_type>
       <width>60</width>
-      <wuid>325603b2:160702f1d5d:-7f24</wuid>
       <x>280</x>
       <y>25</y>
     </widget>
@@ -2641,7 +2593,6 @@ $(pv_value)</tooltip>
       <visible>true</visible>
       <widget_type>Menu Button</widget_type>
       <width>80</width>
-      <wuid>325603b2:160702f1d5d:-7f23</wuid>
       <x>345</x>
       <y>25</y>
     </widget>
@@ -2693,7 +2644,6 @@ $(pv_value)</tooltip>
       <widget_type>Text Update</widget_type>
       <width>80</width>
       <wrap_words>false</wrap_words>
-      <wuid>325603b2:160702f1d5d:-7f22</wuid>
       <x>430</x>
       <y>26</y>
     </widget>
@@ -2738,7 +2688,6 @@ $(pv_value)</tooltip>
       <visible>true</visible>
       <widget_type>Menu Button</widget_type>
       <width>80</width>
-      <wuid>325603b2:160702f1d5d:-7f21</wuid>
       <x>515</x>
       <y>25</y>
     </widget>
@@ -2801,7 +2750,6 @@ $(pv_value)</tooltip>
       <visible>true</visible>
       <widget_type>Text Input</widget_type>
       <width>60</width>
-      <wuid>325603b2:160702f1d5d:-7f20</wuid>
       <x>280</x>
       <y>50</y>
     </widget>
@@ -2846,7 +2794,6 @@ $(pv_value)</tooltip>
       <visible>true</visible>
       <widget_type>Menu Button</widget_type>
       <width>80</width>
-      <wuid>325603b2:160702f1d5d:-7f1f</wuid>
       <x>345</x>
       <y>50</y>
     </widget>
@@ -2898,7 +2845,6 @@ $(pv_value)</tooltip>
       <widget_type>Text Update</widget_type>
       <width>80</width>
       <wrap_words>false</wrap_words>
-      <wuid>325603b2:160702f1d5d:-7f1e</wuid>
       <x>430</x>
       <y>51</y>
     </widget>
@@ -2943,7 +2889,6 @@ $(pv_value)</tooltip>
       <visible>true</visible>
       <widget_type>Menu Button</widget_type>
       <width>80</width>
-      <wuid>325603b2:160702f1d5d:-7f1d</wuid>
       <x>515</x>
       <y>50</y>
     </widget>
@@ -3006,7 +2951,6 @@ $(pv_value)</tooltip>
       <visible>true</visible>
       <widget_type>Text Input</widget_type>
       <width>60</width>
-      <wuid>325603b2:160702f1d5d:-7f1c</wuid>
       <x>280</x>
       <y>75</y>
     </widget>
@@ -3051,7 +2995,6 @@ $(pv_value)</tooltip>
       <visible>true</visible>
       <widget_type>Menu Button</widget_type>
       <width>80</width>
-      <wuid>325603b2:160702f1d5d:-7f1b</wuid>
       <x>345</x>
       <y>75</y>
     </widget>
@@ -3103,7 +3046,6 @@ $(pv_value)</tooltip>
       <widget_type>Text Update</widget_type>
       <width>80</width>
       <wrap_words>false</wrap_words>
-      <wuid>325603b2:160702f1d5d:-7f1a</wuid>
       <x>430</x>
       <y>76</y>
     </widget>
@@ -3148,7 +3090,6 @@ $(pv_value)</tooltip>
       <visible>true</visible>
       <widget_type>Menu Button</widget_type>
       <width>80</width>
-      <wuid>325603b2:160702f1d5d:-7f19</wuid>
       <x>515</x>
       <y>75</y>
     </widget>
@@ -3211,7 +3152,6 @@ $(pv_value)</tooltip>
       <visible>true</visible>
       <widget_type>Text Input</widget_type>
       <width>60</width>
-      <wuid>325603b2:160702f1d5d:-7f18</wuid>
       <x>280</x>
       <y>100</y>
     </widget>
@@ -3256,7 +3196,6 @@ $(pv_value)</tooltip>
       <visible>true</visible>
       <widget_type>Menu Button</widget_type>
       <width>80</width>
-      <wuid>325603b2:160702f1d5d:-7f17</wuid>
       <x>345</x>
       <y>100</y>
     </widget>
@@ -3308,7 +3247,6 @@ $(pv_value)</tooltip>
       <widget_type>Text Update</widget_type>
       <width>80</width>
       <wrap_words>false</wrap_words>
-      <wuid>325603b2:160702f1d5d:-7f16</wuid>
       <x>430</x>
       <y>101</y>
     </widget>
@@ -3353,11 +3291,10 @@ $(pv_value)</tooltip>
       <visible>true</visible>
       <widget_type>Menu Button</widget_type>
       <width>80</width>
-      <wuid>325603b2:160702f1d5d:-7f15</wuid>
       <x>515</x>
       <y>100</y>
     </widget>
-    <widget typeId="org.csstudio.opibuilder.widgets.MenuButton" version="1.0.0">
+    <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
       <actions hook="false" hook_all="false">
         <action type="OPEN_DISPLAY">
           <path>NDFileNetCDF.opi</path>
@@ -3366,11 +3303,10 @@ $(pv_value)</tooltip>
             <R>netCDF1:</R>
             <EXT>nc</EXT>
           </macros>
-          <mode>0</mode>
+          <mode>1</mode>
           <description>netCDF1:</description>
         </action>
       </actions>
-      <actions_from_pv>false</actions_from_pv>
       <alarm_pulsing>false</alarm_pulsing>
       <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
       <background_color>
@@ -3380,7 +3316,7 @@ $(pv_value)</tooltip>
       <border_color>
         <color red="0" green="128" blue="255" />
       </border_color>
-      <border_style>6</border_style>
+      <border_style>0</border_style>
       <border_width>1</border_width>
       <enabled>true</enabled>
       <font>
@@ -3391,8 +3327,9 @@ $(pv_value)</tooltip>
         <color red="0" green="0" blue="0" />
       </foreground_color>
       <height>20</height>
-      <label>More</label>
-      <name>Menu Button</name>
+      <image></image>
+      <name>Action Button</name>
+      <push_action_index>0</push_action_index>
       <pv_name></pv_name>
       <pv_value />
       <rules />
@@ -3402,14 +3339,14 @@ $(pv_value)</tooltip>
         <keep_wh_ratio>false</keep_wh_ratio>
       </scale_options>
       <scripts />
-      <show_down_arrow>false</show_down_arrow>
+      <style>0</style>
+      <text>More</text>
+      <toggle_button>false</toggle_button>
       <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-      <transparent>false</transparent>
       <visible>true</visible>
-      <widget_type>Menu Button</widget_type>
+      <widget_type>Action Button</widget_type>
       <width>60</width>
-      <wuid>325603b2:160702f1d5d:-7f14</wuid>
       <x>855</x>
       <y>0</y>
     </widget>
@@ -3461,11 +3398,10 @@ $(pv_value)</tooltip>
       <widget_type>Text Update</widget_type>
       <width>80</width>
       <wrap_words>false</wrap_words>
-      <wuid>325603b2:160702f1d5d:-7f13</wuid>
       <x>770</x>
       <y>1</y>
     </widget>
-    <widget typeId="org.csstudio.opibuilder.widgets.MenuButton" version="1.0.0">
+    <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
       <actions hook="false" hook_all="false">
         <action type="OPEN_DISPLAY">
           <path>NDFileTIFF.opi</path>
@@ -3474,11 +3410,10 @@ $(pv_value)</tooltip>
             <R>TIFF1:</R>
             <EXT>tif</EXT>
           </macros>
-          <mode>0</mode>
+          <mode>1</mode>
           <description>TIFF1:</description>
         </action>
       </actions>
-      <actions_from_pv>false</actions_from_pv>
       <alarm_pulsing>false</alarm_pulsing>
       <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
       <background_color>
@@ -3488,7 +3423,7 @@ $(pv_value)</tooltip>
       <border_color>
         <color red="0" green="128" blue="255" />
       </border_color>
-      <border_style>6</border_style>
+      <border_style>0</border_style>
       <border_width>1</border_width>
       <enabled>true</enabled>
       <font>
@@ -3499,8 +3434,9 @@ $(pv_value)</tooltip>
         <color red="0" green="0" blue="0" />
       </foreground_color>
       <height>20</height>
-      <label>More</label>
-      <name>Menu Button</name>
+      <image></image>
+      <name>Action Button</name>
+      <push_action_index>0</push_action_index>
       <pv_name></pv_name>
       <pv_value />
       <rules />
@@ -3510,14 +3446,14 @@ $(pv_value)</tooltip>
         <keep_wh_ratio>false</keep_wh_ratio>
       </scale_options>
       <scripts />
-      <show_down_arrow>false</show_down_arrow>
+      <style>0</style>
+      <text>More</text>
+      <toggle_button>false</toggle_button>
       <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-      <transparent>false</transparent>
       <visible>true</visible>
-      <widget_type>Menu Button</widget_type>
+      <widget_type>Action Button</widget_type>
       <width>60</width>
-      <wuid>325603b2:160702f1d5d:-7f12</wuid>
       <x>855</x>
       <y>25</y>
     </widget>
@@ -3569,11 +3505,10 @@ $(pv_value)</tooltip>
       <widget_type>Text Update</widget_type>
       <width>80</width>
       <wrap_words>false</wrap_words>
-      <wuid>325603b2:160702f1d5d:-7f11</wuid>
       <x>770</x>
       <y>26</y>
     </widget>
-    <widget typeId="org.csstudio.opibuilder.widgets.MenuButton" version="1.0.0">
+    <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
       <actions hook="false" hook_all="false">
         <action type="OPEN_DISPLAY">
           <path>NDFileJPEG.opi</path>
@@ -3582,11 +3517,10 @@ $(pv_value)</tooltip>
             <R>JPEG1:</R>
             <EXT>jpg</EXT>
           </macros>
-          <mode>0</mode>
+          <mode>1</mode>
           <description>JPEG1:</description>
         </action>
       </actions>
-      <actions_from_pv>false</actions_from_pv>
       <alarm_pulsing>false</alarm_pulsing>
       <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
       <background_color>
@@ -3596,7 +3530,7 @@ $(pv_value)</tooltip>
       <border_color>
         <color red="0" green="128" blue="255" />
       </border_color>
-      <border_style>6</border_style>
+      <border_style>0</border_style>
       <border_width>1</border_width>
       <enabled>true</enabled>
       <font>
@@ -3607,8 +3541,9 @@ $(pv_value)</tooltip>
         <color red="0" green="0" blue="0" />
       </foreground_color>
       <height>20</height>
-      <label>More</label>
-      <name>Menu Button</name>
+      <image></image>
+      <name>Action Button</name>
+      <push_action_index>0</push_action_index>
       <pv_name></pv_name>
       <pv_value />
       <rules />
@@ -3618,14 +3553,14 @@ $(pv_value)</tooltip>
         <keep_wh_ratio>false</keep_wh_ratio>
       </scale_options>
       <scripts />
-      <show_down_arrow>false</show_down_arrow>
+      <style>0</style>
+      <text>More</text>
+      <toggle_button>false</toggle_button>
       <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-      <transparent>false</transparent>
       <visible>true</visible>
-      <widget_type>Menu Button</widget_type>
+      <widget_type>Action Button</widget_type>
       <width>60</width>
-      <wuid>325603b2:160702f1d5d:-7f10</wuid>
       <x>855</x>
       <y>50</y>
     </widget>
@@ -3677,11 +3612,10 @@ $(pv_value)</tooltip>
       <widget_type>Text Update</widget_type>
       <width>80</width>
       <wrap_words>false</wrap_words>
-      <wuid>325603b2:160702f1d5d:-7f0f</wuid>
       <x>770</x>
       <y>51</y>
     </widget>
-    <widget typeId="org.csstudio.opibuilder.widgets.MenuButton" version="1.0.0">
+    <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
       <actions hook="false" hook_all="false">
         <action type="OPEN_DISPLAY">
           <path>NDFileNexus.opi</path>
@@ -3690,11 +3624,10 @@ $(pv_value)</tooltip>
             <R>Nexus1:</R>
             <EXT>h5</EXT>
           </macros>
-          <mode>0</mode>
+          <mode>1</mode>
           <description>Nexus1:</description>
         </action>
       </actions>
-      <actions_from_pv>false</actions_from_pv>
       <alarm_pulsing>false</alarm_pulsing>
       <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
       <background_color>
@@ -3704,7 +3637,7 @@ $(pv_value)</tooltip>
       <border_color>
         <color red="0" green="128" blue="255" />
       </border_color>
-      <border_style>6</border_style>
+      <border_style>0</border_style>
       <border_width>1</border_width>
       <enabled>true</enabled>
       <font>
@@ -3715,8 +3648,9 @@ $(pv_value)</tooltip>
         <color red="0" green="0" blue="0" />
       </foreground_color>
       <height>20</height>
-      <label>More</label>
-      <name>Menu Button</name>
+      <image></image>
+      <name>Action Button</name>
+      <push_action_index>0</push_action_index>
       <pv_name></pv_name>
       <pv_value />
       <rules />
@@ -3726,14 +3660,14 @@ $(pv_value)</tooltip>
         <keep_wh_ratio>false</keep_wh_ratio>
       </scale_options>
       <scripts />
-      <show_down_arrow>false</show_down_arrow>
+      <style>0</style>
+      <text>More</text>
+      <toggle_button>false</toggle_button>
       <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-      <transparent>false</transparent>
       <visible>true</visible>
-      <widget_type>Menu Button</widget_type>
+      <widget_type>Action Button</widget_type>
       <width>60</width>
-      <wuid>325603b2:160702f1d5d:-7f0e</wuid>
       <x>855</x>
       <y>75</y>
     </widget>
@@ -3785,11 +3719,10 @@ $(pv_value)</tooltip>
       <widget_type>Text Update</widget_type>
       <width>80</width>
       <wrap_words>false</wrap_words>
-      <wuid>325603b2:160702f1d5d:-7f0d</wuid>
       <x>770</x>
       <y>76</y>
     </widget>
-    <widget typeId="org.csstudio.opibuilder.widgets.MenuButton" version="1.0.0">
+    <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
       <actions hook="false" hook_all="false">
         <action type="OPEN_DISPLAY">
           <path>NDFileMagick.opi</path>
@@ -3798,11 +3731,10 @@ $(pv_value)</tooltip>
             <R>Magick1:</R>
             <EXT>tif</EXT>
           </macros>
-          <mode>0</mode>
+          <mode>1</mode>
           <description>Magick1:</description>
         </action>
       </actions>
-      <actions_from_pv>false</actions_from_pv>
       <alarm_pulsing>false</alarm_pulsing>
       <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
       <background_color>
@@ -3812,7 +3744,7 @@ $(pv_value)</tooltip>
       <border_color>
         <color red="0" green="128" blue="255" />
       </border_color>
-      <border_style>6</border_style>
+      <border_style>0</border_style>
       <border_width>1</border_width>
       <enabled>true</enabled>
       <font>
@@ -3823,8 +3755,9 @@ $(pv_value)</tooltip>
         <color red="0" green="0" blue="0" />
       </foreground_color>
       <height>20</height>
-      <label>More</label>
-      <name>Menu Button</name>
+      <image></image>
+      <name>Action Button</name>
+      <push_action_index>0</push_action_index>
       <pv_name></pv_name>
       <pv_value />
       <rules />
@@ -3834,14 +3767,14 @@ $(pv_value)</tooltip>
         <keep_wh_ratio>false</keep_wh_ratio>
       </scale_options>
       <scripts />
-      <show_down_arrow>false</show_down_arrow>
+      <style>0</style>
+      <text>More</text>
+      <toggle_button>false</toggle_button>
       <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-      <transparent>false</transparent>
       <visible>true</visible>
-      <widget_type>Menu Button</widget_type>
+      <widget_type>Action Button</widget_type>
       <width>60</width>
-      <wuid>325603b2:160702f1d5d:-7f0c</wuid>
       <x>855</x>
       <y>100</y>
     </widget>
@@ -3893,7 +3826,6 @@ $(pv_value)</tooltip>
       <widget_type>Text Update</widget_type>
       <width>80</width>
       <wrap_words>false</wrap_words>
-      <wuid>325603b2:160702f1d5d:-7f0b</wuid>
       <x>770</x>
       <y>101</y>
     </widget>
@@ -3945,7 +3877,6 @@ $(pv_value)</tooltip>
       <widget_type>Text Update</widget_type>
       <width>80</width>
       <wrap_words>false</wrap_words>
-      <wuid>325603b2:160702f1d5d:-7f0a</wuid>
       <x>685</x>
       <y>1</y>
     </widget>
@@ -3997,7 +3928,6 @@ $(pv_value)</tooltip>
       <widget_type>Text Update</widget_type>
       <width>80</width>
       <wrap_words>false</wrap_words>
-      <wuid>325603b2:160702f1d5d:-7f09</wuid>
       <x>685</x>
       <y>26</y>
     </widget>
@@ -4049,7 +3979,6 @@ $(pv_value)</tooltip>
       <widget_type>Text Update</widget_type>
       <width>80</width>
       <wrap_words>false</wrap_words>
-      <wuid>325603b2:160702f1d5d:-7f08</wuid>
       <x>685</x>
       <y>51</y>
     </widget>
@@ -4101,7 +4030,6 @@ $(pv_value)</tooltip>
       <widget_type>Text Update</widget_type>
       <width>80</width>
       <wrap_words>false</wrap_words>
-      <wuid>325603b2:160702f1d5d:-7f07</wuid>
       <x>685</x>
       <y>76</y>
     </widget>
@@ -4153,7 +4081,6 @@ $(pv_value)</tooltip>
       <widget_type>Text Update</widget_type>
       <width>80</width>
       <wrap_words>false</wrap_words>
-      <wuid>325603b2:160702f1d5d:-7f06</wuid>
       <x>685</x>
       <y>101</y>
     </widget>
@@ -4205,7 +4132,6 @@ $(pv_value)</tooltip>
       <widget_type>Text Update</widget_type>
       <width>80</width>
       <wrap_words>false</wrap_words>
-      <wuid>325603b2:160702f1d5d:-7f05</wuid>
       <x>600</x>
       <y>1</y>
     </widget>
@@ -4257,7 +4183,6 @@ $(pv_value)</tooltip>
       <widget_type>Text Update</widget_type>
       <width>80</width>
       <wrap_words>false</wrap_words>
-      <wuid>325603b2:160702f1d5d:-7f04</wuid>
       <x>600</x>
       <y>26</y>
     </widget>
@@ -4309,7 +4234,6 @@ $(pv_value)</tooltip>
       <widget_type>Text Update</widget_type>
       <width>80</width>
       <wrap_words>false</wrap_words>
-      <wuid>325603b2:160702f1d5d:-7f03</wuid>
       <x>600</x>
       <y>51</y>
     </widget>
@@ -4361,7 +4285,6 @@ $(pv_value)</tooltip>
       <widget_type>Text Update</widget_type>
       <width>80</width>
       <wrap_words>false</wrap_words>
-      <wuid>325603b2:160702f1d5d:-7f02</wuid>
       <x>600</x>
       <y>76</y>
     </widget>
@@ -4413,7 +4336,6 @@ $(pv_value)</tooltip>
       <widget_type>Text Update</widget_type>
       <width>80</width>
       <wrap_words>false</wrap_words>
-      <wuid>325603b2:160702f1d5d:-7f01</wuid>
       <x>600</x>
       <y>101</y>
     </widget>
@@ -4465,7 +4387,6 @@ $(pv_value)</tooltip>
       <widget_type>Text Update</widget_type>
       <width>110</width>
       <wrap_words>false</wrap_words>
-      <wuid>325603b2:160702f1d5d:-7f00</wuid>
       <x>0</x>
       <y>126</y>
     </widget>
@@ -4517,7 +4438,6 @@ $(pv_value)</tooltip>
       <widget_type>Text Update</widget_type>
       <width>160</width>
       <wrap_words>false</wrap_words>
-      <wuid>325603b2:160702f1d5d:-7eff</wuid>
       <x>115</x>
       <y>126</y>
     </widget>
@@ -4580,7 +4500,6 @@ $(pv_value)</tooltip>
       <visible>true</visible>
       <widget_type>Text Input</widget_type>
       <width>60</width>
-      <wuid>325603b2:160702f1d5d:-7efe</wuid>
       <x>280</x>
       <y>125</y>
     </widget>
@@ -4625,7 +4544,6 @@ $(pv_value)</tooltip>
       <visible>true</visible>
       <widget_type>Menu Button</widget_type>
       <width>80</width>
-      <wuid>325603b2:160702f1d5d:-7efd</wuid>
       <x>345</x>
       <y>125</y>
     </widget>
@@ -4677,7 +4595,6 @@ $(pv_value)</tooltip>
       <widget_type>Text Update</widget_type>
       <width>80</width>
       <wrap_words>false</wrap_words>
-      <wuid>325603b2:160702f1d5d:-7efc</wuid>
       <x>430</x>
       <y>126</y>
     </widget>
@@ -4722,11 +4639,10 @@ $(pv_value)</tooltip>
       <visible>true</visible>
       <widget_type>Menu Button</widget_type>
       <width>80</width>
-      <wuid>325603b2:160702f1d5d:-7efb</wuid>
       <x>515</x>
       <y>125</y>
     </widget>
-    <widget typeId="org.csstudio.opibuilder.widgets.MenuButton" version="1.0.0">
+    <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
       <actions hook="false" hook_all="false">
         <action type="OPEN_DISPLAY">
           <path>NDFileHDF5.opi</path>
@@ -4735,11 +4651,10 @@ $(pv_value)</tooltip>
             <R>HDF1:</R>
             <EXT>h5</EXT>
           </macros>
-          <mode>0</mode>
+          <mode>1</mode>
           <description>HDF1:</description>
         </action>
       </actions>
-      <actions_from_pv>false</actions_from_pv>
       <alarm_pulsing>false</alarm_pulsing>
       <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
       <background_color>
@@ -4749,7 +4664,7 @@ $(pv_value)</tooltip>
       <border_color>
         <color red="0" green="128" blue="255" />
       </border_color>
-      <border_style>6</border_style>
+      <border_style>0</border_style>
       <border_width>1</border_width>
       <enabled>true</enabled>
       <font>
@@ -4760,8 +4675,9 @@ $(pv_value)</tooltip>
         <color red="0" green="0" blue="0" />
       </foreground_color>
       <height>20</height>
-      <label>More</label>
-      <name>Menu Button</name>
+      <image></image>
+      <name>Action Button</name>
+      <push_action_index>0</push_action_index>
       <pv_name></pv_name>
       <pv_value />
       <rules />
@@ -4771,14 +4687,14 @@ $(pv_value)</tooltip>
         <keep_wh_ratio>false</keep_wh_ratio>
       </scale_options>
       <scripts />
-      <show_down_arrow>false</show_down_arrow>
+      <style>0</style>
+      <text>More</text>
+      <toggle_button>false</toggle_button>
       <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-      <transparent>false</transparent>
       <visible>true</visible>
-      <widget_type>Menu Button</widget_type>
+      <widget_type>Action Button</widget_type>
       <width>60</width>
-      <wuid>325603b2:160702f1d5d:-7efa</wuid>
       <x>855</x>
       <y>125</y>
     </widget>
@@ -4830,7 +4746,6 @@ $(pv_value)</tooltip>
       <widget_type>Text Update</widget_type>
       <width>80</width>
       <wrap_words>false</wrap_words>
-      <wuid>325603b2:160702f1d5d:-7ef9</wuid>
       <x>770</x>
       <y>126</y>
     </widget>
@@ -4882,7 +4797,6 @@ $(pv_value)</tooltip>
       <widget_type>Text Update</widget_type>
       <width>80</width>
       <wrap_words>false</wrap_words>
-      <wuid>325603b2:160702f1d5d:-7ef8</wuid>
       <x>685</x>
       <y>126</y>
     </widget>
@@ -4934,7 +4848,6 @@ $(pv_value)</tooltip>
       <widget_type>Text Update</widget_type>
       <width>80</width>
       <wrap_words>false</wrap_words>
-      <wuid>325603b2:160702f1d5d:-7ef7</wuid>
       <x>600</x>
       <y>126</y>
     </widget>
@@ -4976,7 +4889,6 @@ $(pv_value)</tooltip>
     <visible>true</visible>
     <widget_type>Grouping Container</widget_type>
     <width>915</width>
-    <wuid>325603b2:160702f1d5d:-7eec</wuid>
     <x>10</x>
     <y>570</y>
     <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0.0">
@@ -5027,7 +4939,6 @@ $(pv_value)</tooltip>
       <widget_type>Text Update</widget_type>
       <width>110</width>
       <wrap_words>false</wrap_words>
-      <wuid>325603b2:160702f1d5d:-7eeb</wuid>
       <x>0</x>
       <y>1</y>
     </widget>
@@ -5079,7 +4990,6 @@ $(pv_value)</tooltip>
       <widget_type>Text Update</widget_type>
       <width>160</width>
       <wrap_words>false</wrap_words>
-      <wuid>325603b2:160702f1d5d:-7eea</wuid>
       <x>115</x>
       <y>1</y>
     </widget>
@@ -5142,7 +5052,6 @@ $(pv_value)</tooltip>
       <visible>true</visible>
       <widget_type>Text Input</widget_type>
       <width>60</width>
-      <wuid>325603b2:160702f1d5d:-7ee9</wuid>
       <x>280</x>
       <y>0</y>
     </widget>
@@ -5187,7 +5096,6 @@ $(pv_value)</tooltip>
       <visible>true</visible>
       <widget_type>Menu Button</widget_type>
       <width>80</width>
-      <wuid>325603b2:160702f1d5d:-7ee8</wuid>
       <x>345</x>
       <y>0</y>
     </widget>
@@ -5239,7 +5147,6 @@ $(pv_value)</tooltip>
       <widget_type>Text Update</widget_type>
       <width>80</width>
       <wrap_words>false</wrap_words>
-      <wuid>325603b2:160702f1d5d:-7ee7</wuid>
       <x>430</x>
       <y>1</y>
     </widget>
@@ -5284,7 +5191,6 @@ $(pv_value)</tooltip>
       <visible>true</visible>
       <widget_type>Menu Button</widget_type>
       <width>80</width>
-      <wuid>325603b2:160702f1d5d:-7ee6</wuid>
       <x>515</x>
       <y>0</y>
     </widget>
@@ -5296,7 +5202,7 @@ $(pv_value)</tooltip>
             <include_parent_macros>true</include_parent_macros>
             <R>Attr1:</R>
           </macros>
-          <mode>0</mode>
+          <mode>1</mode>
           <description>Attr1:</description>
         </action>
         <action type="OPEN_DISPLAY">
@@ -5313,7 +5219,7 @@ $(pv_value)</tooltip>
             <A7>7:</A7>
             <A8>8:</A8>
           </macros>
-          <mode>0</mode>
+          <mode>1</mode>
           <description>Attributes 1-8</description>
         </action>
       </actions>
@@ -5338,7 +5244,7 @@ $(pv_value)</tooltip>
         <color red="0" green="0" blue="0" />
       </foreground_color>
       <height>20</height>
-      <label>More</label>
+      <label></label>
       <name>Menu Button</name>
       <pv_name></pv_name>
       <pv_value />
@@ -5356,7 +5262,6 @@ $(pv_value)</tooltip>
       <visible>true</visible>
       <widget_type>Menu Button</widget_type>
       <width>60</width>
-      <wuid>325603b2:160702f1d5d:-7ee5</wuid>
       <x>855</x>
       <y>0</y>
     </widget>
@@ -5408,7 +5313,6 @@ $(pv_value)</tooltip>
       <widget_type>Text Update</widget_type>
       <width>80</width>
       <wrap_words>false</wrap_words>
-      <wuid>325603b2:160702f1d5d:-7ee4</wuid>
       <x>770</x>
       <y>1</y>
     </widget>
@@ -5460,7 +5364,6 @@ $(pv_value)</tooltip>
       <widget_type>Text Update</widget_type>
       <width>80</width>
       <wrap_words>false</wrap_words>
-      <wuid>325603b2:160702f1d5d:-7ee3</wuid>
       <x>685</x>
       <y>1</y>
     </widget>
@@ -5512,7 +5415,6 @@ $(pv_value)</tooltip>
       <widget_type>Text Update</widget_type>
       <width>80</width>
       <wrap_words>false</wrap_words>
-      <wuid>325603b2:160702f1d5d:-7ee2</wuid>
       <x>600</x>
       <y>1</y>
     </widget>
@@ -5554,7 +5456,6 @@ $(pv_value)</tooltip>
     <visible>true</visible>
     <widget_type>Grouping Container</widget_type>
     <width>915</width>
-    <wuid>325603b2:160702f1d5d:-7ee1</wuid>
     <x>10</x>
     <y>95</y>
     <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0.0">
@@ -5605,7 +5506,6 @@ $(pv_value)</tooltip>
       <widget_type>Text Update</widget_type>
       <width>110</width>
       <wrap_words>false</wrap_words>
-      <wuid>325603b2:160702f1d5d:-7ee0</wuid>
       <x>0</x>
       <y>1</y>
     </widget>
@@ -5657,7 +5557,6 @@ $(pv_value)</tooltip>
       <widget_type>Text Update</widget_type>
       <width>160</width>
       <wrap_words>false</wrap_words>
-      <wuid>325603b2:160702f1d5d:-7edf</wuid>
       <x>115</x>
       <y>1</y>
     </widget>
@@ -5720,7 +5619,6 @@ $(pv_value)</tooltip>
       <visible>true</visible>
       <widget_type>Text Input</widget_type>
       <width>60</width>
-      <wuid>325603b2:160702f1d5d:-7ede</wuid>
       <x>280</x>
       <y>0</y>
     </widget>
@@ -5765,7 +5663,6 @@ $(pv_value)</tooltip>
       <visible>true</visible>
       <widget_type>Menu Button</widget_type>
       <width>80</width>
-      <wuid>325603b2:160702f1d5d:-7edd</wuid>
       <x>345</x>
       <y>0</y>
     </widget>
@@ -5817,7 +5714,6 @@ $(pv_value)</tooltip>
       <widget_type>Text Update</widget_type>
       <width>80</width>
       <wrap_words>false</wrap_words>
-      <wuid>325603b2:160702f1d5d:-7edc</wuid>
       <x>430</x>
       <y>1</y>
     </widget>
@@ -5862,11 +5758,10 @@ $(pv_value)</tooltip>
       <visible>true</visible>
       <widget_type>Menu Button</widget_type>
       <width>80</width>
-      <wuid>325603b2:160702f1d5d:-7edb</wuid>
       <x>515</x>
       <y>0</y>
     </widget>
-    <widget typeId="org.csstudio.opibuilder.widgets.MenuButton" version="1.0.0">
+    <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
       <actions hook="false" hook_all="false">
         <action type="OPEN_DISPLAY">
           <path>NDPva.opi</path>
@@ -5875,11 +5770,10 @@ $(pv_value)</tooltip>
             <R>Pva1:</R>
             <EXT>null</EXT>
           </macros>
-          <mode>0</mode>
+          <mode>1</mode>
           <description>Pva1:</description>
         </action>
       </actions>
-      <actions_from_pv>false</actions_from_pv>
       <alarm_pulsing>false</alarm_pulsing>
       <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
       <background_color>
@@ -5889,7 +5783,7 @@ $(pv_value)</tooltip>
       <border_color>
         <color red="0" green="128" blue="255" />
       </border_color>
-      <border_style>6</border_style>
+      <border_style>0</border_style>
       <border_width>1</border_width>
       <enabled>true</enabled>
       <font>
@@ -5900,8 +5794,9 @@ $(pv_value)</tooltip>
         <color red="0" green="0" blue="0" />
       </foreground_color>
       <height>20</height>
-      <label>More</label>
-      <name>Menu Button</name>
+      <image></image>
+      <name>Action Button</name>
+      <push_action_index>0</push_action_index>
       <pv_name></pv_name>
       <pv_value />
       <rules />
@@ -5911,14 +5806,14 @@ $(pv_value)</tooltip>
         <keep_wh_ratio>false</keep_wh_ratio>
       </scale_options>
       <scripts />
-      <show_down_arrow>false</show_down_arrow>
+      <style>0</style>
+      <text>More</text>
+      <toggle_button>false</toggle_button>
       <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-      <transparent>false</transparent>
       <visible>true</visible>
-      <widget_type>Menu Button</widget_type>
+      <widget_type>Action Button</widget_type>
       <width>60</width>
-      <wuid>325603b2:160702f1d5d:-7eda</wuid>
       <x>855</x>
       <y>0</y>
     </widget>
@@ -5970,7 +5865,6 @@ $(pv_value)</tooltip>
       <widget_type>Text Update</widget_type>
       <width>80</width>
       <wrap_words>false</wrap_words>
-      <wuid>325603b2:160702f1d5d:-7ed9</wuid>
       <x>770</x>
       <y>1</y>
     </widget>
@@ -6022,7 +5916,6 @@ $(pv_value)</tooltip>
       <widget_type>Text Update</widget_type>
       <width>80</width>
       <wrap_words>false</wrap_words>
-      <wuid>325603b2:160702f1d5d:-7ed8</wuid>
       <x>685</x>
       <y>1</y>
     </widget>
@@ -6074,7 +5967,6 @@ $(pv_value)</tooltip>
       <widget_type>Text Update</widget_type>
       <width>80</width>
       <wrap_words>false</wrap_words>
-      <wuid>325603b2:160702f1d5d:-7ed7</wuid>
       <x>600</x>
       <y>1</y>
     </widget>
@@ -6116,7 +6008,6 @@ $(pv_value)</tooltip>
     <widget_type>Label</widget_type>
     <width>216</width>
     <wrap_words>false</wrap_words>
-    <wuid>325603b2:160702f1d5d:-7ffd</wuid>
     <x>359</x>
     <y>6</y>
   </widget>
@@ -6157,7 +6048,6 @@ $(pv_value)</tooltip>
     <widget_type>Label</widget_type>
     <width>110</width>
     <wrap_words>false</wrap_words>
-    <wuid>325603b2:160702f1d5d:-7ffc</wuid>
     <x>10</x>
     <y>40</y>
   </widget>
@@ -6198,7 +6088,6 @@ $(pv_value)</tooltip>
     <widget_type>Label</widget_type>
     <width>110</width>
     <wrap_words>false</wrap_words>
-    <wuid>325603b2:160702f1d5d:-7ffb</wuid>
     <x>150</x>
     <y>40</y>
   </widget>
@@ -6250,7 +6139,6 @@ $(pv_value)</tooltip>
     <widget_type>Text Update</widget_type>
     <width>110</width>
     <wrap_words>false</wrap_words>
-    <wuid>325603b2:160702f1d5d:-7ffa</wuid>
     <x>10</x>
     <y>71</y>
   </widget>
@@ -6302,7 +6190,6 @@ $(pv_value)</tooltip>
     <widget_type>Text Update</widget_type>
     <width>160</width>
     <wrap_words>false</wrap_words>
-    <wuid>325603b2:160702f1d5d:-7ff9</wuid>
     <x>125</x>
     <y>71</y>
   </widget>
@@ -6343,7 +6230,6 @@ $(pv_value)</tooltip>
     <widget_type>Label</widget_type>
     <width>40</width>
     <wrap_words>false</wrap_words>
-    <wuid>325603b2:160702f1d5d:-7ff8</wuid>
     <x>300</x>
     <y>40</y>
   </widget>
@@ -6384,7 +6270,6 @@ $(pv_value)</tooltip>
     <widget_type>Label</widget_type>
     <width>60</width>
     <wrap_words>false</wrap_words>
-    <wuid>325603b2:160702f1d5d:-7ff7</wuid>
     <x>407</x>
     <y>40</y>
   </widget>
@@ -6425,7 +6310,6 @@ $(pv_value)</tooltip>
     <widget_type>Label</widget_type>
     <width>80</width>
     <wrap_words>false</wrap_words>
-    <wuid>325603b2:160702f1d5d:-7ff6</wuid>
     <x>525</x>
     <y>40</y>
   </widget>
@@ -6488,7 +6372,6 @@ $(pv_value)</tooltip>
     <visible>true</visible>
     <widget_type>Text Input</widget_type>
     <width>60</width>
-    <wuid>325603b2:160702f1d5d:-7ff5</wuid>
     <x>290</x>
     <y>70</y>
   </widget>
@@ -6533,7 +6416,6 @@ $(pv_value)</tooltip>
     <visible>true</visible>
     <widget_type>Menu Button</widget_type>
     <width>80</width>
-    <wuid>325603b2:160702f1d5d:-7ff4</wuid>
     <x>355</x>
     <y>70</y>
   </widget>
@@ -6585,7 +6467,6 @@ $(pv_value)</tooltip>
     <widget_type>Text Update</widget_type>
     <width>80</width>
     <wrap_words>false</wrap_words>
-    <wuid>325603b2:160702f1d5d:-7ff3</wuid>
     <x>440</x>
     <y>71</y>
   </widget>
@@ -6630,7 +6511,6 @@ $(pv_value)</tooltip>
     <visible>true</visible>
     <widget_type>Menu Button</widget_type>
     <width>80</width>
-    <wuid>325603b2:160702f1d5d:-7ff2</wuid>
     <x>525</x>
     <y>70</y>
   </widget>
@@ -6671,11 +6551,10 @@ $(pv_value)</tooltip>
     <widget_type>Label</widget_type>
     <width>40</width>
     <wrap_words>false</wrap_words>
-    <wuid>325603b2:160702f1d5d:-7ff1</wuid>
     <x>800</x>
     <y>40</y>
   </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.MenuButton" version="1.0.0">
+  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
     <actions hook="false" hook_all="false">
       <action type="OPEN_DISPLAY">
         <path>NDStdArrays.opi</path>
@@ -6683,11 +6562,10 @@ $(pv_value)</tooltip>
           <include_parent_macros>true</include_parent_macros>
           <R>image1:</R>
         </macros>
-        <mode>0</mode>
+        <mode>1</mode>
         <description>image1:</description>
       </action>
     </actions>
-    <actions_from_pv>false</actions_from_pv>
     <alarm_pulsing>false</alarm_pulsing>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <background_color>
@@ -6697,7 +6575,7 @@ $(pv_value)</tooltip>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
-    <border_style>6</border_style>
+    <border_style>0</border_style>
     <border_width>1</border_width>
     <enabled>true</enabled>
     <font>
@@ -6708,8 +6586,9 @@ $(pv_value)</tooltip>
       <color red="0" green="0" blue="0" />
     </foreground_color>
     <height>20</height>
-    <label>More</label>
-    <name>Menu Button</name>
+    <image></image>
+    <name>Action Button</name>
+    <push_action_index>0</push_action_index>
     <pv_name></pv_name>
     <pv_value />
     <rules />
@@ -6719,14 +6598,14 @@ $(pv_value)</tooltip>
       <keep_wh_ratio>false</keep_wh_ratio>
     </scale_options>
     <scripts />
-    <show_down_arrow>false</show_down_arrow>
+    <style>0</style>
+    <text>More</text>
+    <toggle_button>false</toggle_button>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-    <transparent>false</transparent>
     <visible>true</visible>
-    <widget_type>Menu Button</widget_type>
+    <widget_type>Action Button</widget_type>
     <width>60</width>
-    <wuid>325603b2:160702f1d5d:-7ff0</wuid>
     <x>865</x>
     <y>70</y>
   </widget>
@@ -6778,7 +6657,6 @@ $(pv_value)</tooltip>
     <widget_type>Text Update</widget_type>
     <width>80</width>
     <wrap_words>false</wrap_words>
-    <wuid>325603b2:160702f1d5d:-7fef</wuid>
     <x>780</x>
     <y>71</y>
   </widget>
@@ -6819,7 +6697,6 @@ $(pv_value)</tooltip>
     <widget_type>Label</widget_type>
     <width>70</width>
     <wrap_words>false</wrap_words>
-    <wuid>325603b2:160702f1d5d:-7fee</wuid>
     <x>700</x>
     <y>40</y>
   </widget>
@@ -6871,7 +6748,6 @@ $(pv_value)</tooltip>
     <widget_type>Text Update</widget_type>
     <width>80</width>
     <wrap_words>false</wrap_words>
-    <wuid>325603b2:160702f1d5d:-7fed</wuid>
     <x>695</x>
     <y>71</y>
   </widget>
@@ -6912,7 +6788,6 @@ $(pv_value)</tooltip>
     <widget_type>Label</widget_type>
     <width>70</width>
     <wrap_words>false</wrap_words>
-    <wuid>325603b2:160702f1d5d:-7fec</wuid>
     <x>615</x>
     <y>40</y>
   </widget>
@@ -6964,7 +6839,6 @@ $(pv_value)</tooltip>
     <widget_type>Text Update</widget_type>
     <width>80</width>
     <wrap_words>false</wrap_words>
-    <wuid>325603b2:160702f1d5d:-7feb</wuid>
     <x>610</x>
     <y>71</y>
   </widget>
@@ -7016,7 +6890,6 @@ $(pv_value)</tooltip>
     <widget_type>Text Update</widget_type>
     <width>110</width>
     <wrap_words>false</wrap_words>
-    <wuid>325603b2:160702f1d5d:-7fea</wuid>
     <x>10</x>
     <y>121</y>
   </widget>
@@ -7068,7 +6941,6 @@ $(pv_value)</tooltip>
     <widget_type>Text Update</widget_type>
     <width>160</width>
     <wrap_words>false</wrap_words>
-    <wuid>325603b2:160702f1d5d:-7fe9</wuid>
     <x>125</x>
     <y>121</y>
   </widget>
@@ -7120,7 +6992,6 @@ $(pv_value)</tooltip>
     <widget_type>Text Update</widget_type>
     <width>110</width>
     <wrap_words>false</wrap_words>
-    <wuid>325603b2:160702f1d5d:-7fe8</wuid>
     <x>10</x>
     <y>146</y>
   </widget>
@@ -7172,7 +7043,6 @@ $(pv_value)</tooltip>
     <widget_type>Text Update</widget_type>
     <width>160</width>
     <wrap_words>false</wrap_words>
-    <wuid>325603b2:160702f1d5d:-7fe7</wuid>
     <x>125</x>
     <y>146</y>
   </widget>
@@ -7224,7 +7094,6 @@ $(pv_value)</tooltip>
     <widget_type>Text Update</widget_type>
     <width>110</width>
     <wrap_words>false</wrap_words>
-    <wuid>325603b2:160702f1d5d:-7fe6</wuid>
     <x>10</x>
     <y>171</y>
   </widget>
@@ -7276,7 +7145,6 @@ $(pv_value)</tooltip>
     <widget_type>Text Update</widget_type>
     <width>160</width>
     <wrap_words>false</wrap_words>
-    <wuid>325603b2:160702f1d5d:-7fe5</wuid>
     <x>125</x>
     <y>171</y>
   </widget>
@@ -7328,7 +7196,6 @@ $(pv_value)</tooltip>
     <widget_type>Text Update</widget_type>
     <width>110</width>
     <wrap_words>false</wrap_words>
-    <wuid>325603b2:160702f1d5d:-7fe4</wuid>
     <x>10</x>
     <y>196</y>
   </widget>
@@ -7380,7 +7247,6 @@ $(pv_value)</tooltip>
     <widget_type>Text Update</widget_type>
     <width>160</width>
     <wrap_words>false</wrap_words>
-    <wuid>325603b2:160702f1d5d:-7fe3</wuid>
     <x>125</x>
     <y>196</y>
   </widget>
@@ -7432,7 +7298,6 @@ $(pv_value)</tooltip>
     <widget_type>Text Update</widget_type>
     <width>110</width>
     <wrap_words>false</wrap_words>
-    <wuid>325603b2:160702f1d5d:-7fe2</wuid>
     <x>10</x>
     <y>221</y>
   </widget>
@@ -7484,7 +7349,6 @@ $(pv_value)</tooltip>
     <widget_type>Text Update</widget_type>
     <width>160</width>
     <wrap_words>false</wrap_words>
-    <wuid>325603b2:160702f1d5d:-7fe1</wuid>
     <x>125</x>
     <y>221</y>
   </widget>
@@ -7536,7 +7400,6 @@ $(pv_value)</tooltip>
     <widget_type>Text Update</widget_type>
     <width>110</width>
     <wrap_words>false</wrap_words>
-    <wuid>325603b2:160702f1d5d:-7fe0</wuid>
     <x>10</x>
     <y>246</y>
   </widget>
@@ -7588,7 +7451,6 @@ $(pv_value)</tooltip>
     <widget_type>Text Update</widget_type>
     <width>160</width>
     <wrap_words>false</wrap_words>
-    <wuid>325603b2:160702f1d5d:-7fdf</wuid>
     <x>125</x>
     <y>246</y>
   </widget>
@@ -7640,7 +7502,6 @@ $(pv_value)</tooltip>
     <widget_type>Text Update</widget_type>
     <width>110</width>
     <wrap_words>false</wrap_words>
-    <wuid>325603b2:160702f1d5d:-7fde</wuid>
     <x>10</x>
     <y>271</y>
   </widget>
@@ -7692,7 +7553,6 @@ $(pv_value)</tooltip>
     <widget_type>Text Update</widget_type>
     <width>160</width>
     <wrap_words>false</wrap_words>
-    <wuid>325603b2:160702f1d5d:-7fdd</wuid>
     <x>125</x>
     <y>271</y>
   </widget>
@@ -7744,7 +7604,6 @@ $(pv_value)</tooltip>
     <widget_type>Text Update</widget_type>
     <width>110</width>
     <wrap_words>false</wrap_words>
-    <wuid>325603b2:160702f1d5d:-7fdc</wuid>
     <x>10</x>
     <y>296</y>
   </widget>
@@ -7796,7 +7655,6 @@ $(pv_value)</tooltip>
     <widget_type>Text Update</widget_type>
     <width>160</width>
     <wrap_words>false</wrap_words>
-    <wuid>325603b2:160702f1d5d:-7fdb</wuid>
     <x>125</x>
     <y>296</y>
   </widget>
@@ -7848,7 +7706,6 @@ $(pv_value)</tooltip>
     <widget_type>Text Update</widget_type>
     <width>110</width>
     <wrap_words>false</wrap_words>
-    <wuid>325603b2:160702f1d5d:-7fda</wuid>
     <x>10</x>
     <y>321</y>
   </widget>
@@ -7900,7 +7757,6 @@ $(pv_value)</tooltip>
     <widget_type>Text Update</widget_type>
     <width>160</width>
     <wrap_words>false</wrap_words>
-    <wuid>325603b2:160702f1d5d:-7fd9</wuid>
     <x>125</x>
     <y>321</y>
   </widget>
@@ -7952,7 +7808,6 @@ $(pv_value)</tooltip>
     <widget_type>Text Update</widget_type>
     <width>110</width>
     <wrap_words>false</wrap_words>
-    <wuid>325603b2:160702f1d5d:-7fd8</wuid>
     <x>10</x>
     <y>346</y>
   </widget>
@@ -8004,7 +7859,6 @@ $(pv_value)</tooltip>
     <widget_type>Text Update</widget_type>
     <width>160</width>
     <wrap_words>false</wrap_words>
-    <wuid>325603b2:160702f1d5d:-7fd7</wuid>
     <x>125</x>
     <y>346</y>
   </widget>
@@ -8056,7 +7910,6 @@ $(pv_value)</tooltip>
     <widget_type>Text Update</widget_type>
     <width>110</width>
     <wrap_words>false</wrap_words>
-    <wuid>325603b2:160702f1d5d:-7fd6</wuid>
     <x>10</x>
     <y>371</y>
   </widget>
@@ -8108,7 +7961,6 @@ $(pv_value)</tooltip>
     <widget_type>Text Update</widget_type>
     <width>160</width>
     <wrap_words>false</wrap_words>
-    <wuid>325603b2:160702f1d5d:-7fd5</wuid>
     <x>125</x>
     <y>371</y>
   </widget>
@@ -8160,7 +8012,6 @@ $(pv_value)</tooltip>
     <widget_type>Text Update</widget_type>
     <width>110</width>
     <wrap_words>false</wrap_words>
-    <wuid>325603b2:160702f1d5d:-7fd4</wuid>
     <x>10</x>
     <y>396</y>
   </widget>
@@ -8212,7 +8063,6 @@ $(pv_value)</tooltip>
     <widget_type>Text Update</widget_type>
     <width>160</width>
     <wrap_words>false</wrap_words>
-    <wuid>325603b2:160702f1d5d:-7fd3</wuid>
     <x>125</x>
     <y>396</y>
   </widget>
@@ -8264,7 +8114,6 @@ $(pv_value)</tooltip>
     <widget_type>Text Update</widget_type>
     <width>110</width>
     <wrap_words>false</wrap_words>
-    <wuid>325603b2:160702f1d5d:-7fd2</wuid>
     <x>10</x>
     <y>421</y>
   </widget>
@@ -8316,7 +8165,6 @@ $(pv_value)</tooltip>
     <widget_type>Text Update</widget_type>
     <width>160</width>
     <wrap_words>false</wrap_words>
-    <wuid>325603b2:160702f1d5d:-7fd1</wuid>
     <x>125</x>
     <y>421</y>
   </widget>
@@ -8379,7 +8227,6 @@ $(pv_value)</tooltip>
     <visible>true</visible>
     <widget_type>Text Input</widget_type>
     <width>60</width>
-    <wuid>325603b2:160702f1d5d:-7fd0</wuid>
     <x>290</x>
     <y>120</y>
   </widget>
@@ -8424,7 +8271,6 @@ $(pv_value)</tooltip>
     <visible>true</visible>
     <widget_type>Menu Button</widget_type>
     <width>80</width>
-    <wuid>325603b2:160702f1d5d:-7fcf</wuid>
     <x>355</x>
     <y>120</y>
   </widget>
@@ -8476,7 +8322,6 @@ $(pv_value)</tooltip>
     <widget_type>Text Update</widget_type>
     <width>80</width>
     <wrap_words>false</wrap_words>
-    <wuid>325603b2:160702f1d5d:-7fce</wuid>
     <x>440</x>
     <y>121</y>
   </widget>
@@ -8521,7 +8366,6 @@ $(pv_value)</tooltip>
     <visible>true</visible>
     <widget_type>Menu Button</widget_type>
     <width>80</width>
-    <wuid>325603b2:160702f1d5d:-7fcd</wuid>
     <x>525</x>
     <y>120</y>
   </widget>
@@ -8584,7 +8428,6 @@ $(pv_value)</tooltip>
     <visible>true</visible>
     <widget_type>Text Input</widget_type>
     <width>60</width>
-    <wuid>325603b2:160702f1d5d:-7fcc</wuid>
     <x>290</x>
     <y>145</y>
   </widget>
@@ -8629,7 +8472,6 @@ $(pv_value)</tooltip>
     <visible>true</visible>
     <widget_type>Menu Button</widget_type>
     <width>80</width>
-    <wuid>325603b2:160702f1d5d:-7fcb</wuid>
     <x>355</x>
     <y>145</y>
   </widget>
@@ -8681,7 +8523,6 @@ $(pv_value)</tooltip>
     <widget_type>Text Update</widget_type>
     <width>80</width>
     <wrap_words>false</wrap_words>
-    <wuid>325603b2:160702f1d5d:-7fca</wuid>
     <x>440</x>
     <y>146</y>
   </widget>
@@ -8726,7 +8567,6 @@ $(pv_value)</tooltip>
     <visible>true</visible>
     <widget_type>Menu Button</widget_type>
     <width>80</width>
-    <wuid>325603b2:160702f1d5d:-7fc9</wuid>
     <x>525</x>
     <y>145</y>
   </widget>
@@ -8789,7 +8629,6 @@ $(pv_value)</tooltip>
     <visible>true</visible>
     <widget_type>Text Input</widget_type>
     <width>60</width>
-    <wuid>325603b2:160702f1d5d:-7fc8</wuid>
     <x>290</x>
     <y>170</y>
   </widget>
@@ -8834,7 +8673,6 @@ $(pv_value)</tooltip>
     <visible>true</visible>
     <widget_type>Menu Button</widget_type>
     <width>80</width>
-    <wuid>325603b2:160702f1d5d:-7fc7</wuid>
     <x>355</x>
     <y>170</y>
   </widget>
@@ -8886,7 +8724,6 @@ $(pv_value)</tooltip>
     <widget_type>Text Update</widget_type>
     <width>80</width>
     <wrap_words>false</wrap_words>
-    <wuid>325603b2:160702f1d5d:-7fc6</wuid>
     <x>440</x>
     <y>171</y>
   </widget>
@@ -8931,7 +8768,6 @@ $(pv_value)</tooltip>
     <visible>true</visible>
     <widget_type>Menu Button</widget_type>
     <width>80</width>
-    <wuid>325603b2:160702f1d5d:-7fc5</wuid>
     <x>525</x>
     <y>170</y>
   </widget>
@@ -8994,7 +8830,6 @@ $(pv_value)</tooltip>
     <visible>true</visible>
     <widget_type>Text Input</widget_type>
     <width>60</width>
-    <wuid>325603b2:160702f1d5d:-7fc4</wuid>
     <x>290</x>
     <y>195</y>
   </widget>
@@ -9039,7 +8874,6 @@ $(pv_value)</tooltip>
     <visible>true</visible>
     <widget_type>Menu Button</widget_type>
     <width>80</width>
-    <wuid>325603b2:160702f1d5d:-7fc3</wuid>
     <x>355</x>
     <y>195</y>
   </widget>
@@ -9091,7 +8925,6 @@ $(pv_value)</tooltip>
     <widget_type>Text Update</widget_type>
     <width>80</width>
     <wrap_words>false</wrap_words>
-    <wuid>325603b2:160702f1d5d:-7fc2</wuid>
     <x>440</x>
     <y>196</y>
   </widget>
@@ -9136,7 +8969,6 @@ $(pv_value)</tooltip>
     <visible>true</visible>
     <widget_type>Menu Button</widget_type>
     <width>80</width>
-    <wuid>325603b2:160702f1d5d:-7fc1</wuid>
     <x>525</x>
     <y>195</y>
   </widget>
@@ -9199,7 +9031,6 @@ $(pv_value)</tooltip>
     <visible>true</visible>
     <widget_type>Text Input</widget_type>
     <width>60</width>
-    <wuid>325603b2:160702f1d5d:-7fc0</wuid>
     <x>290</x>
     <y>220</y>
   </widget>
@@ -9244,7 +9075,6 @@ $(pv_value)</tooltip>
     <visible>true</visible>
     <widget_type>Menu Button</widget_type>
     <width>80</width>
-    <wuid>325603b2:160702f1d5d:-7fbf</wuid>
     <x>355</x>
     <y>220</y>
   </widget>
@@ -9296,7 +9126,6 @@ $(pv_value)</tooltip>
     <widget_type>Text Update</widget_type>
     <width>80</width>
     <wrap_words>false</wrap_words>
-    <wuid>325603b2:160702f1d5d:-7fbe</wuid>
     <x>440</x>
     <y>221</y>
   </widget>
@@ -9341,7 +9170,6 @@ $(pv_value)</tooltip>
     <visible>true</visible>
     <widget_type>Menu Button</widget_type>
     <width>80</width>
-    <wuid>325603b2:160702f1d5d:-7fbd</wuid>
     <x>525</x>
     <y>220</y>
   </widget>
@@ -9404,7 +9232,6 @@ $(pv_value)</tooltip>
     <visible>true</visible>
     <widget_type>Text Input</widget_type>
     <width>60</width>
-    <wuid>325603b2:160702f1d5d:-7fbc</wuid>
     <x>290</x>
     <y>245</y>
   </widget>
@@ -9449,7 +9276,6 @@ $(pv_value)</tooltip>
     <visible>true</visible>
     <widget_type>Menu Button</widget_type>
     <width>80</width>
-    <wuid>325603b2:160702f1d5d:-7fbb</wuid>
     <x>355</x>
     <y>245</y>
   </widget>
@@ -9501,7 +9327,6 @@ $(pv_value)</tooltip>
     <widget_type>Text Update</widget_type>
     <width>80</width>
     <wrap_words>false</wrap_words>
-    <wuid>325603b2:160702f1d5d:-7fba</wuid>
     <x>440</x>
     <y>246</y>
   </widget>
@@ -9546,7 +9371,6 @@ $(pv_value)</tooltip>
     <visible>true</visible>
     <widget_type>Menu Button</widget_type>
     <width>80</width>
-    <wuid>325603b2:160702f1d5d:-7fb9</wuid>
     <x>525</x>
     <y>245</y>
   </widget>
@@ -9609,7 +9433,6 @@ $(pv_value)</tooltip>
     <visible>true</visible>
     <widget_type>Text Input</widget_type>
     <width>60</width>
-    <wuid>325603b2:160702f1d5d:-7fb8</wuid>
     <x>290</x>
     <y>270</y>
   </widget>
@@ -9654,7 +9477,6 @@ $(pv_value)</tooltip>
     <visible>true</visible>
     <widget_type>Menu Button</widget_type>
     <width>80</width>
-    <wuid>325603b2:160702f1d5d:-7fb7</wuid>
     <x>355</x>
     <y>270</y>
   </widget>
@@ -9706,7 +9528,6 @@ $(pv_value)</tooltip>
     <widget_type>Text Update</widget_type>
     <width>80</width>
     <wrap_words>false</wrap_words>
-    <wuid>325603b2:160702f1d5d:-7fb6</wuid>
     <x>440</x>
     <y>271</y>
   </widget>
@@ -9751,7 +9572,6 @@ $(pv_value)</tooltip>
     <visible>true</visible>
     <widget_type>Menu Button</widget_type>
     <width>80</width>
-    <wuid>325603b2:160702f1d5d:-7fb5</wuid>
     <x>525</x>
     <y>270</y>
   </widget>
@@ -9814,7 +9634,6 @@ $(pv_value)</tooltip>
     <visible>true</visible>
     <widget_type>Text Input</widget_type>
     <width>60</width>
-    <wuid>325603b2:160702f1d5d:-7fb4</wuid>
     <x>290</x>
     <y>295</y>
   </widget>
@@ -9859,7 +9678,6 @@ $(pv_value)</tooltip>
     <visible>true</visible>
     <widget_type>Menu Button</widget_type>
     <width>80</width>
-    <wuid>325603b2:160702f1d5d:-7fb3</wuid>
     <x>355</x>
     <y>295</y>
   </widget>
@@ -9911,7 +9729,6 @@ $(pv_value)</tooltip>
     <widget_type>Text Update</widget_type>
     <width>80</width>
     <wrap_words>false</wrap_words>
-    <wuid>325603b2:160702f1d5d:-7fb2</wuid>
     <x>440</x>
     <y>296</y>
   </widget>
@@ -9956,7 +9773,6 @@ $(pv_value)</tooltip>
     <visible>true</visible>
     <widget_type>Menu Button</widget_type>
     <width>80</width>
-    <wuid>325603b2:160702f1d5d:-7fb1</wuid>
     <x>525</x>
     <y>295</y>
   </widget>
@@ -10019,7 +9835,6 @@ $(pv_value)</tooltip>
     <visible>true</visible>
     <widget_type>Text Input</widget_type>
     <width>60</width>
-    <wuid>325603b2:160702f1d5d:-7fb0</wuid>
     <x>290</x>
     <y>320</y>
   </widget>
@@ -10064,7 +9879,6 @@ $(pv_value)</tooltip>
     <visible>true</visible>
     <widget_type>Menu Button</widget_type>
     <width>80</width>
-    <wuid>325603b2:160702f1d5d:-7faf</wuid>
     <x>355</x>
     <y>320</y>
   </widget>
@@ -10116,7 +9930,6 @@ $(pv_value)</tooltip>
     <widget_type>Text Update</widget_type>
     <width>80</width>
     <wrap_words>false</wrap_words>
-    <wuid>325603b2:160702f1d5d:-7fae</wuid>
     <x>440</x>
     <y>321</y>
   </widget>
@@ -10161,7 +9974,6 @@ $(pv_value)</tooltip>
     <visible>true</visible>
     <widget_type>Menu Button</widget_type>
     <width>80</width>
-    <wuid>325603b2:160702f1d5d:-7fad</wuid>
     <x>525</x>
     <y>320</y>
   </widget>
@@ -10224,7 +10036,6 @@ $(pv_value)</tooltip>
     <visible>true</visible>
     <widget_type>Text Input</widget_type>
     <width>60</width>
-    <wuid>325603b2:160702f1d5d:-7fac</wuid>
     <x>290</x>
     <y>345</y>
   </widget>
@@ -10269,7 +10080,6 @@ $(pv_value)</tooltip>
     <visible>true</visible>
     <widget_type>Menu Button</widget_type>
     <width>80</width>
-    <wuid>325603b2:160702f1d5d:-7fab</wuid>
     <x>355</x>
     <y>345</y>
   </widget>
@@ -10321,7 +10131,6 @@ $(pv_value)</tooltip>
     <widget_type>Text Update</widget_type>
     <width>80</width>
     <wrap_words>false</wrap_words>
-    <wuid>325603b2:160702f1d5d:-7faa</wuid>
     <x>440</x>
     <y>346</y>
   </widget>
@@ -10366,7 +10175,6 @@ $(pv_value)</tooltip>
     <visible>true</visible>
     <widget_type>Menu Button</widget_type>
     <width>80</width>
-    <wuid>325603b2:160702f1d5d:-7fa9</wuid>
     <x>525</x>
     <y>345</y>
   </widget>
@@ -10429,7 +10237,6 @@ $(pv_value)</tooltip>
     <visible>true</visible>
     <widget_type>Text Input</widget_type>
     <width>60</width>
-    <wuid>325603b2:160702f1d5d:-7fa8</wuid>
     <x>290</x>
     <y>370</y>
   </widget>
@@ -10474,7 +10281,6 @@ $(pv_value)</tooltip>
     <visible>true</visible>
     <widget_type>Menu Button</widget_type>
     <width>80</width>
-    <wuid>325603b2:160702f1d5d:-7fa7</wuid>
     <x>355</x>
     <y>370</y>
   </widget>
@@ -10526,7 +10332,6 @@ $(pv_value)</tooltip>
     <widget_type>Text Update</widget_type>
     <width>80</width>
     <wrap_words>false</wrap_words>
-    <wuid>325603b2:160702f1d5d:-7fa6</wuid>
     <x>440</x>
     <y>371</y>
   </widget>
@@ -10571,7 +10376,6 @@ $(pv_value)</tooltip>
     <visible>true</visible>
     <widget_type>Menu Button</widget_type>
     <width>80</width>
-    <wuid>325603b2:160702f1d5d:-7fa5</wuid>
     <x>525</x>
     <y>370</y>
   </widget>
@@ -10634,7 +10438,6 @@ $(pv_value)</tooltip>
     <visible>true</visible>
     <widget_type>Text Input</widget_type>
     <width>60</width>
-    <wuid>325603b2:160702f1d5d:-7fa4</wuid>
     <x>290</x>
     <y>395</y>
   </widget>
@@ -10679,7 +10482,6 @@ $(pv_value)</tooltip>
     <visible>true</visible>
     <widget_type>Menu Button</widget_type>
     <width>80</width>
-    <wuid>325603b2:160702f1d5d:-7fa3</wuid>
     <x>355</x>
     <y>395</y>
   </widget>
@@ -10731,7 +10533,6 @@ $(pv_value)</tooltip>
     <widget_type>Text Update</widget_type>
     <width>80</width>
     <wrap_words>false</wrap_words>
-    <wuid>325603b2:160702f1d5d:-7fa2</wuid>
     <x>440</x>
     <y>396</y>
   </widget>
@@ -10776,7 +10577,6 @@ $(pv_value)</tooltip>
     <visible>true</visible>
     <widget_type>Menu Button</widget_type>
     <width>80</width>
-    <wuid>325603b2:160702f1d5d:-7fa1</wuid>
     <x>525</x>
     <y>395</y>
   </widget>
@@ -10839,7 +10639,6 @@ $(pv_value)</tooltip>
     <visible>true</visible>
     <widget_type>Text Input</widget_type>
     <width>60</width>
-    <wuid>325603b2:160702f1d5d:-7fa0</wuid>
     <x>290</x>
     <y>420</y>
   </widget>
@@ -10884,7 +10683,6 @@ $(pv_value)</tooltip>
     <visible>true</visible>
     <widget_type>Menu Button</widget_type>
     <width>80</width>
-    <wuid>325603b2:160702f1d5d:-7f9f</wuid>
     <x>355</x>
     <y>420</y>
   </widget>
@@ -10936,7 +10734,6 @@ $(pv_value)</tooltip>
     <widget_type>Text Update</widget_type>
     <width>80</width>
     <wrap_words>false</wrap_words>
-    <wuid>325603b2:160702f1d5d:-7f9e</wuid>
     <x>440</x>
     <y>421</y>
   </widget>
@@ -10981,11 +10778,10 @@ $(pv_value)</tooltip>
     <visible>true</visible>
     <widget_type>Menu Button</widget_type>
     <width>80</width>
-    <wuid>325603b2:160702f1d5d:-7f9d</wuid>
     <x>525</x>
     <y>420</y>
   </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.MenuButton" version="1.0.0">
+  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
     <actions hook="false" hook_all="false">
       <action type="OPEN_DISPLAY">
         <path>NDProcess.opi</path>
@@ -10993,11 +10789,10 @@ $(pv_value)</tooltip>
           <include_parent_macros>true</include_parent_macros>
           <R>Proc1:</R>
         </macros>
-        <mode>0</mode>
+        <mode>1</mode>
         <description>Proc1:</description>
       </action>
     </actions>
-    <actions_from_pv>false</actions_from_pv>
     <alarm_pulsing>false</alarm_pulsing>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <background_color>
@@ -11007,7 +10802,7 @@ $(pv_value)</tooltip>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
-    <border_style>6</border_style>
+    <border_style>0</border_style>
     <border_width>1</border_width>
     <enabled>true</enabled>
     <font>
@@ -11018,8 +10813,9 @@ $(pv_value)</tooltip>
       <color red="0" green="0" blue="0" />
     </foreground_color>
     <height>20</height>
-    <label>More</label>
-    <name>Menu Button</name>
+    <image></image>
+    <name>Action Button</name>
+    <push_action_index>0</push_action_index>
     <pv_name></pv_name>
     <pv_value />
     <rules />
@@ -11029,14 +10825,14 @@ $(pv_value)</tooltip>
       <keep_wh_ratio>false</keep_wh_ratio>
     </scale_options>
     <scripts />
-    <show_down_arrow>false</show_down_arrow>
+    <style>0</style>
+    <text>More</text>
+    <toggle_button>false</toggle_button>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-    <transparent>false</transparent>
     <visible>true</visible>
-    <widget_type>Menu Button</widget_type>
+    <widget_type>Action Button</widget_type>
     <width>60</width>
-    <wuid>325603b2:160702f1d5d:-7f9c</wuid>
     <x>865</x>
     <y>120</y>
   </widget>
@@ -11088,11 +10884,10 @@ $(pv_value)</tooltip>
     <widget_type>Text Update</widget_type>
     <width>80</width>
     <wrap_words>false</wrap_words>
-    <wuid>325603b2:160702f1d5d:-7f9b</wuid>
     <x>780</x>
     <y>121</y>
   </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.MenuButton" version="1.0.0">
+  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
     <actions hook="false" hook_all="false">
       <action type="OPEN_DISPLAY">
         <path>NDTransform.opi</path>
@@ -11100,11 +10895,10 @@ $(pv_value)</tooltip>
           <include_parent_macros>true</include_parent_macros>
           <R>Trans1:</R>
         </macros>
-        <mode>0</mode>
+        <mode>1</mode>
         <description>Trans1:</description>
       </action>
     </actions>
-    <actions_from_pv>false</actions_from_pv>
     <alarm_pulsing>false</alarm_pulsing>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <background_color>
@@ -11114,7 +10908,7 @@ $(pv_value)</tooltip>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
-    <border_style>6</border_style>
+    <border_style>0</border_style>
     <border_width>1</border_width>
     <enabled>true</enabled>
     <font>
@@ -11125,8 +10919,9 @@ $(pv_value)</tooltip>
       <color red="0" green="0" blue="0" />
     </foreground_color>
     <height>20</height>
-    <label>More</label>
-    <name>Menu Button</name>
+    <image></image>
+    <name>Action Button</name>
+    <push_action_index>0</push_action_index>
     <pv_name></pv_name>
     <pv_value />
     <rules />
@@ -11136,14 +10931,14 @@ $(pv_value)</tooltip>
       <keep_wh_ratio>false</keep_wh_ratio>
     </scale_options>
     <scripts />
-    <show_down_arrow>false</show_down_arrow>
+    <style>0</style>
+    <text>More</text>
+    <toggle_button>false</toggle_button>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-    <transparent>false</transparent>
     <visible>true</visible>
-    <widget_type>Menu Button</widget_type>
+    <widget_type>Action Button</widget_type>
     <width>60</width>
-    <wuid>325603b2:160702f1d5d:-7f9a</wuid>
     <x>865</x>
     <y>145</y>
   </widget>
@@ -11195,11 +10990,10 @@ $(pv_value)</tooltip>
     <widget_type>Text Update</widget_type>
     <width>80</width>
     <wrap_words>false</wrap_words>
-    <wuid>325603b2:160702f1d5d:-7f99</wuid>
     <x>780</x>
     <y>146</y>
   </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.MenuButton" version="1.0.0">
+  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
     <actions hook="false" hook_all="false">
       <action type="OPEN_DISPLAY">
         <path>NDColorConvert.opi</path>
@@ -11207,11 +11001,10 @@ $(pv_value)</tooltip>
           <include_parent_macros>true</include_parent_macros>
           <R>CC1:</R>
         </macros>
-        <mode>0</mode>
+        <mode>1</mode>
         <description>CC1:</description>
       </action>
     </actions>
-    <actions_from_pv>false</actions_from_pv>
     <alarm_pulsing>false</alarm_pulsing>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <background_color>
@@ -11221,7 +11014,7 @@ $(pv_value)</tooltip>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
-    <border_style>6</border_style>
+    <border_style>0</border_style>
     <border_width>1</border_width>
     <enabled>true</enabled>
     <font>
@@ -11232,8 +11025,9 @@ $(pv_value)</tooltip>
       <color red="0" green="0" blue="0" />
     </foreground_color>
     <height>20</height>
-    <label>More</label>
-    <name>Menu Button</name>
+    <image></image>
+    <name>Action Button</name>
+    <push_action_index>0</push_action_index>
     <pv_name></pv_name>
     <pv_value />
     <rules />
@@ -11243,14 +11037,14 @@ $(pv_value)</tooltip>
       <keep_wh_ratio>false</keep_wh_ratio>
     </scale_options>
     <scripts />
-    <show_down_arrow>false</show_down_arrow>
+    <style>0</style>
+    <text>More</text>
+    <toggle_button>false</toggle_button>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-    <transparent>false</transparent>
     <visible>true</visible>
-    <widget_type>Menu Button</widget_type>
+    <widget_type>Action Button</widget_type>
     <width>60</width>
-    <wuid>325603b2:160702f1d5d:-7f98</wuid>
     <x>865</x>
     <y>170</y>
   </widget>
@@ -11302,11 +11096,10 @@ $(pv_value)</tooltip>
     <widget_type>Text Update</widget_type>
     <width>80</width>
     <wrap_words>false</wrap_words>
-    <wuid>325603b2:160702f1d5d:-7f97</wuid>
     <x>780</x>
     <y>171</y>
   </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.MenuButton" version="1.0.0">
+  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
     <actions hook="false" hook_all="false">
       <action type="OPEN_DISPLAY">
         <path>NDColorConvert.opi</path>
@@ -11314,11 +11107,10 @@ $(pv_value)</tooltip>
           <include_parent_macros>true</include_parent_macros>
           <R>CC2:</R>
         </macros>
-        <mode>0</mode>
+        <mode>1</mode>
         <description>CC2:</description>
       </action>
     </actions>
-    <actions_from_pv>false</actions_from_pv>
     <alarm_pulsing>false</alarm_pulsing>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <background_color>
@@ -11328,7 +11120,7 @@ $(pv_value)</tooltip>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
-    <border_style>6</border_style>
+    <border_style>0</border_style>
     <border_width>1</border_width>
     <enabled>true</enabled>
     <font>
@@ -11339,8 +11131,9 @@ $(pv_value)</tooltip>
       <color red="0" green="0" blue="0" />
     </foreground_color>
     <height>20</height>
-    <label>More</label>
-    <name>Menu Button</name>
+    <image></image>
+    <name>Action Button</name>
+    <push_action_index>0</push_action_index>
     <pv_name></pv_name>
     <pv_value />
     <rules />
@@ -11350,14 +11143,14 @@ $(pv_value)</tooltip>
       <keep_wh_ratio>false</keep_wh_ratio>
     </scale_options>
     <scripts />
-    <show_down_arrow>false</show_down_arrow>
+    <style>0</style>
+    <text>More</text>
+    <toggle_button>false</toggle_button>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-    <transparent>false</transparent>
     <visible>true</visible>
-    <widget_type>Menu Button</widget_type>
+    <widget_type>Action Button</widget_type>
     <width>60</width>
-    <wuid>325603b2:160702f1d5d:-7f96</wuid>
     <x>865</x>
     <y>195</y>
   </widget>
@@ -11409,11 +11202,10 @@ $(pv_value)</tooltip>
     <widget_type>Text Update</widget_type>
     <width>80</width>
     <wrap_words>false</wrap_words>
-    <wuid>325603b2:160702f1d5d:-7f95</wuid>
     <x>780</x>
     <y>196</y>
   </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.MenuButton" version="1.0.0">
+  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
     <actions hook="false" hook_all="false">
       <action type="OPEN_DISPLAY">
         <path>NDOverlay.opi</path>
@@ -11421,11 +11213,10 @@ $(pv_value)</tooltip>
           <include_parent_macros>true</include_parent_macros>
           <R>Over1:</R>
         </macros>
-        <mode>0</mode>
+        <mode>1</mode>
         <description>Over1:</description>
       </action>
     </actions>
-    <actions_from_pv>false</actions_from_pv>
     <alarm_pulsing>false</alarm_pulsing>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <background_color>
@@ -11435,7 +11226,7 @@ $(pv_value)</tooltip>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
-    <border_style>6</border_style>
+    <border_style>0</border_style>
     <border_width>1</border_width>
     <enabled>true</enabled>
     <font>
@@ -11446,8 +11237,9 @@ $(pv_value)</tooltip>
       <color red="0" green="0" blue="0" />
     </foreground_color>
     <height>20</height>
-    <label>More</label>
-    <name>Menu Button</name>
+    <image></image>
+    <name>Action Button</name>
+    <push_action_index>0</push_action_index>
     <pv_name></pv_name>
     <pv_value />
     <rules />
@@ -11457,14 +11249,14 @@ $(pv_value)</tooltip>
       <keep_wh_ratio>false</keep_wh_ratio>
     </scale_options>
     <scripts />
-    <show_down_arrow>false</show_down_arrow>
+    <style>0</style>
+    <text>More</text>
+    <toggle_button>false</toggle_button>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-    <transparent>false</transparent>
     <visible>true</visible>
-    <widget_type>Menu Button</widget_type>
+    <widget_type>Action Button</widget_type>
     <width>60</width>
-    <wuid>325603b2:160702f1d5d:-7f94</wuid>
     <x>865</x>
     <y>220</y>
   </widget>
@@ -11516,11 +11308,10 @@ $(pv_value)</tooltip>
     <widget_type>Text Update</widget_type>
     <width>80</width>
     <wrap_words>false</wrap_words>
-    <wuid>325603b2:160702f1d5d:-7f93</wuid>
     <x>780</x>
     <y>221</y>
   </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.MenuButton" version="1.0.0">
+  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
     <actions hook="false" hook_all="false">
       <action type="OPEN_DISPLAY">
         <path>NDROI.opi</path>
@@ -11528,11 +11319,10 @@ $(pv_value)</tooltip>
           <include_parent_macros>true</include_parent_macros>
           <R>ROI1:</R>
         </macros>
-        <mode>0</mode>
+        <mode>1</mode>
         <description>ROI1:</description>
       </action>
     </actions>
-    <actions_from_pv>false</actions_from_pv>
     <alarm_pulsing>false</alarm_pulsing>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <background_color>
@@ -11542,7 +11332,7 @@ $(pv_value)</tooltip>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
-    <border_style>6</border_style>
+    <border_style>0</border_style>
     <border_width>1</border_width>
     <enabled>true</enabled>
     <font>
@@ -11553,8 +11343,9 @@ $(pv_value)</tooltip>
       <color red="0" green="0" blue="0" />
     </foreground_color>
     <height>20</height>
-    <label>More</label>
-    <name>Menu Button</name>
+    <image></image>
+    <name>Action Button</name>
+    <push_action_index>0</push_action_index>
     <pv_name></pv_name>
     <pv_value />
     <rules />
@@ -11564,14 +11355,14 @@ $(pv_value)</tooltip>
       <keep_wh_ratio>false</keep_wh_ratio>
     </scale_options>
     <scripts />
-    <show_down_arrow>false</show_down_arrow>
+    <style>0</style>
+    <text>More</text>
+    <toggle_button>false</toggle_button>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-    <transparent>false</transparent>
     <visible>true</visible>
-    <widget_type>Menu Button</widget_type>
+    <widget_type>Action Button</widget_type>
     <width>60</width>
-    <wuid>325603b2:160702f1d5d:-7f92</wuid>
     <x>865</x>
     <y>245</y>
   </widget>
@@ -11623,11 +11414,10 @@ $(pv_value)</tooltip>
     <widget_type>Text Update</widget_type>
     <width>80</width>
     <wrap_words>false</wrap_words>
-    <wuid>325603b2:160702f1d5d:-7f91</wuid>
     <x>780</x>
     <y>246</y>
   </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.MenuButton" version="1.0.0">
+  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
     <actions hook="false" hook_all="false">
       <action type="OPEN_DISPLAY">
         <path>NDROI.opi</path>
@@ -11635,11 +11425,10 @@ $(pv_value)</tooltip>
           <include_parent_macros>true</include_parent_macros>
           <R>ROI2:</R>
         </macros>
-        <mode>0</mode>
+        <mode>1</mode>
         <description>ROI2:</description>
       </action>
     </actions>
-    <actions_from_pv>false</actions_from_pv>
     <alarm_pulsing>false</alarm_pulsing>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <background_color>
@@ -11649,7 +11438,7 @@ $(pv_value)</tooltip>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
-    <border_style>6</border_style>
+    <border_style>0</border_style>
     <border_width>1</border_width>
     <enabled>true</enabled>
     <font>
@@ -11660,8 +11449,9 @@ $(pv_value)</tooltip>
       <color red="0" green="0" blue="0" />
     </foreground_color>
     <height>20</height>
-    <label>More</label>
-    <name>Menu Button</name>
+    <image></image>
+    <name>Action Button</name>
+    <push_action_index>0</push_action_index>
     <pv_name></pv_name>
     <pv_value />
     <rules />
@@ -11671,14 +11461,14 @@ $(pv_value)</tooltip>
       <keep_wh_ratio>false</keep_wh_ratio>
     </scale_options>
     <scripts />
-    <show_down_arrow>false</show_down_arrow>
+    <style>0</style>
+    <text>More</text>
+    <toggle_button>false</toggle_button>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-    <transparent>false</transparent>
     <visible>true</visible>
-    <widget_type>Menu Button</widget_type>
+    <widget_type>Action Button</widget_type>
     <width>60</width>
-    <wuid>325603b2:160702f1d5d:-7f90</wuid>
     <x>865</x>
     <y>270</y>
   </widget>
@@ -11730,11 +11520,10 @@ $(pv_value)</tooltip>
     <widget_type>Text Update</widget_type>
     <width>80</width>
     <wrap_words>false</wrap_words>
-    <wuid>325603b2:160702f1d5d:-7f8f</wuid>
     <x>780</x>
     <y>271</y>
   </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.MenuButton" version="1.0.0">
+  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
     <actions hook="false" hook_all="false">
       <action type="OPEN_DISPLAY">
         <path>NDROI.opi</path>
@@ -11742,11 +11531,10 @@ $(pv_value)</tooltip>
           <include_parent_macros>true</include_parent_macros>
           <R>ROI3:</R>
         </macros>
-        <mode>0</mode>
+        <mode>1</mode>
         <description>ROI3:</description>
       </action>
     </actions>
-    <actions_from_pv>false</actions_from_pv>
     <alarm_pulsing>false</alarm_pulsing>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <background_color>
@@ -11756,7 +11544,7 @@ $(pv_value)</tooltip>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
-    <border_style>6</border_style>
+    <border_style>0</border_style>
     <border_width>1</border_width>
     <enabled>true</enabled>
     <font>
@@ -11767,8 +11555,9 @@ $(pv_value)</tooltip>
       <color red="0" green="0" blue="0" />
     </foreground_color>
     <height>20</height>
-    <label>More</label>
-    <name>Menu Button</name>
+    <image></image>
+    <name>Action Button</name>
+    <push_action_index>0</push_action_index>
     <pv_name></pv_name>
     <pv_value />
     <rules />
@@ -11778,14 +11567,14 @@ $(pv_value)</tooltip>
       <keep_wh_ratio>false</keep_wh_ratio>
     </scale_options>
     <scripts />
-    <show_down_arrow>false</show_down_arrow>
+    <style>0</style>
+    <text>More</text>
+    <toggle_button>false</toggle_button>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-    <transparent>false</transparent>
     <visible>true</visible>
-    <widget_type>Menu Button</widget_type>
+    <widget_type>Action Button</widget_type>
     <width>60</width>
-    <wuid>325603b2:160702f1d5d:-7f8e</wuid>
     <x>865</x>
     <y>295</y>
   </widget>
@@ -11837,11 +11626,10 @@ $(pv_value)</tooltip>
     <widget_type>Text Update</widget_type>
     <width>80</width>
     <wrap_words>false</wrap_words>
-    <wuid>325603b2:160702f1d5d:-7f8d</wuid>
     <x>780</x>
     <y>296</y>
   </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.MenuButton" version="1.0.0">
+  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
     <actions hook="false" hook_all="false">
       <action type="OPEN_DISPLAY">
         <path>NDROI.opi</path>
@@ -11849,11 +11637,10 @@ $(pv_value)</tooltip>
           <include_parent_macros>true</include_parent_macros>
           <R>ROI4:</R>
         </macros>
-        <mode>0</mode>
+        <mode>1</mode>
         <description>ROI4:</description>
       </action>
     </actions>
-    <actions_from_pv>false</actions_from_pv>
     <alarm_pulsing>false</alarm_pulsing>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <background_color>
@@ -11863,7 +11650,7 @@ $(pv_value)</tooltip>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
-    <border_style>6</border_style>
+    <border_style>0</border_style>
     <border_width>1</border_width>
     <enabled>true</enabled>
     <font>
@@ -11874,8 +11661,9 @@ $(pv_value)</tooltip>
       <color red="0" green="0" blue="0" />
     </foreground_color>
     <height>20</height>
-    <label>More</label>
-    <name>Menu Button</name>
+    <image></image>
+    <name>Action Button</name>
+    <push_action_index>0</push_action_index>
     <pv_name></pv_name>
     <pv_value />
     <rules />
@@ -11885,14 +11673,14 @@ $(pv_value)</tooltip>
       <keep_wh_ratio>false</keep_wh_ratio>
     </scale_options>
     <scripts />
-    <show_down_arrow>false</show_down_arrow>
+    <style>0</style>
+    <text>More</text>
+    <toggle_button>false</toggle_button>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-    <transparent>false</transparent>
     <visible>true</visible>
-    <widget_type>Menu Button</widget_type>
+    <widget_type>Action Button</widget_type>
     <width>60</width>
-    <wuid>325603b2:160702f1d5d:-7f8c</wuid>
     <x>865</x>
     <y>320</y>
   </widget>
@@ -11944,11 +11732,10 @@ $(pv_value)</tooltip>
     <widget_type>Text Update</widget_type>
     <width>80</width>
     <wrap_words>false</wrap_words>
-    <wuid>325603b2:160702f1d5d:-7f8b</wuid>
     <x>780</x>
     <y>321</y>
   </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.MenuButton" version="1.0.0">
+  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
     <actions hook="false" hook_all="false">
       <action type="OPEN_DISPLAY">
         <path>NDStats.opi</path>
@@ -11956,11 +11743,10 @@ $(pv_value)</tooltip>
           <include_parent_macros>true</include_parent_macros>
           <R>Stats1:</R>
         </macros>
-        <mode>0</mode>
+        <mode>1</mode>
         <description>Stats1:</description>
       </action>
     </actions>
-    <actions_from_pv>false</actions_from_pv>
     <alarm_pulsing>false</alarm_pulsing>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <background_color>
@@ -11970,7 +11756,7 @@ $(pv_value)</tooltip>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
-    <border_style>6</border_style>
+    <border_style>0</border_style>
     <border_width>1</border_width>
     <enabled>true</enabled>
     <font>
@@ -11981,8 +11767,9 @@ $(pv_value)</tooltip>
       <color red="0" green="0" blue="0" />
     </foreground_color>
     <height>20</height>
-    <label>More</label>
-    <name>Menu Button</name>
+    <image></image>
+    <name>Action Button</name>
+    <push_action_index>0</push_action_index>
     <pv_name></pv_name>
     <pv_value />
     <rules />
@@ -11992,14 +11779,14 @@ $(pv_value)</tooltip>
       <keep_wh_ratio>false</keep_wh_ratio>
     </scale_options>
     <scripts />
-    <show_down_arrow>false</show_down_arrow>
+    <style>0</style>
+    <text>More</text>
+    <toggle_button>false</toggle_button>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-    <transparent>false</transparent>
     <visible>true</visible>
-    <widget_type>Menu Button</widget_type>
+    <widget_type>Action Button</widget_type>
     <width>60</width>
-    <wuid>325603b2:160702f1d5d:-7f8a</wuid>
     <x>865</x>
     <y>345</y>
   </widget>
@@ -12051,11 +11838,10 @@ $(pv_value)</tooltip>
     <widget_type>Text Update</widget_type>
     <width>80</width>
     <wrap_words>false</wrap_words>
-    <wuid>325603b2:160702f1d5d:-7f89</wuid>
     <x>780</x>
     <y>346</y>
   </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.MenuButton" version="1.0.0">
+  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
     <actions hook="false" hook_all="false">
       <action type="OPEN_DISPLAY">
         <path>NDStats.opi</path>
@@ -12063,11 +11849,10 @@ $(pv_value)</tooltip>
           <include_parent_macros>true</include_parent_macros>
           <R>Stats2:</R>
         </macros>
-        <mode>0</mode>
+        <mode>1</mode>
         <description>Stats2:</description>
       </action>
     </actions>
-    <actions_from_pv>false</actions_from_pv>
     <alarm_pulsing>false</alarm_pulsing>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <background_color>
@@ -12077,7 +11862,7 @@ $(pv_value)</tooltip>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
-    <border_style>6</border_style>
+    <border_style>0</border_style>
     <border_width>1</border_width>
     <enabled>true</enabled>
     <font>
@@ -12088,8 +11873,9 @@ $(pv_value)</tooltip>
       <color red="0" green="0" blue="0" />
     </foreground_color>
     <height>20</height>
-    <label>More</label>
-    <name>Menu Button</name>
+    <image></image>
+    <name>Action Button</name>
+    <push_action_index>0</push_action_index>
     <pv_name></pv_name>
     <pv_value />
     <rules />
@@ -12099,14 +11885,14 @@ $(pv_value)</tooltip>
       <keep_wh_ratio>false</keep_wh_ratio>
     </scale_options>
     <scripts />
-    <show_down_arrow>false</show_down_arrow>
+    <style>0</style>
+    <text>More</text>
+    <toggle_button>false</toggle_button>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-    <transparent>false</transparent>
     <visible>true</visible>
-    <widget_type>Menu Button</widget_type>
+    <widget_type>Action Button</widget_type>
     <width>60</width>
-    <wuid>325603b2:160702f1d5d:-7f88</wuid>
     <x>865</x>
     <y>370</y>
   </widget>
@@ -12158,11 +11944,10 @@ $(pv_value)</tooltip>
     <widget_type>Text Update</widget_type>
     <width>80</width>
     <wrap_words>false</wrap_words>
-    <wuid>325603b2:160702f1d5d:-7f87</wuid>
     <x>780</x>
     <y>371</y>
   </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.MenuButton" version="1.0.0">
+  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
     <actions hook="false" hook_all="false">
       <action type="OPEN_DISPLAY">
         <path>NDStats.opi</path>
@@ -12170,11 +11955,10 @@ $(pv_value)</tooltip>
           <include_parent_macros>true</include_parent_macros>
           <R>Stats3:</R>
         </macros>
-        <mode>0</mode>
+        <mode>1</mode>
         <description>Stats3:</description>
       </action>
     </actions>
-    <actions_from_pv>false</actions_from_pv>
     <alarm_pulsing>false</alarm_pulsing>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <background_color>
@@ -12184,7 +11968,7 @@ $(pv_value)</tooltip>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
-    <border_style>6</border_style>
+    <border_style>0</border_style>
     <border_width>1</border_width>
     <enabled>true</enabled>
     <font>
@@ -12195,8 +11979,9 @@ $(pv_value)</tooltip>
       <color red="0" green="0" blue="0" />
     </foreground_color>
     <height>20</height>
-    <label>More</label>
-    <name>Menu Button</name>
+    <image></image>
+    <name>Action Button</name>
+    <push_action_index>0</push_action_index>
     <pv_name></pv_name>
     <pv_value />
     <rules />
@@ -12206,14 +11991,14 @@ $(pv_value)</tooltip>
       <keep_wh_ratio>false</keep_wh_ratio>
     </scale_options>
     <scripts />
-    <show_down_arrow>false</show_down_arrow>
+    <style>0</style>
+    <text>More</text>
+    <toggle_button>false</toggle_button>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-    <transparent>false</transparent>
     <visible>true</visible>
-    <widget_type>Menu Button</widget_type>
+    <widget_type>Action Button</widget_type>
     <width>60</width>
-    <wuid>325603b2:160702f1d5d:-7f86</wuid>
     <x>865</x>
     <y>395</y>
   </widget>
@@ -12265,11 +12050,10 @@ $(pv_value)</tooltip>
     <widget_type>Text Update</widget_type>
     <width>80</width>
     <wrap_words>false</wrap_words>
-    <wuid>325603b2:160702f1d5d:-7f85</wuid>
     <x>780</x>
     <y>396</y>
   </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.MenuButton" version="1.0.0">
+  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
     <actions hook="false" hook_all="false">
       <action type="OPEN_DISPLAY">
         <path>NDStats.opi</path>
@@ -12277,11 +12061,10 @@ $(pv_value)</tooltip>
           <include_parent_macros>true</include_parent_macros>
           <R>Stats4:</R>
         </macros>
-        <mode>0</mode>
+        <mode>1</mode>
         <description>Stats4:</description>
       </action>
     </actions>
-    <actions_from_pv>false</actions_from_pv>
     <alarm_pulsing>false</alarm_pulsing>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <background_color>
@@ -12291,7 +12074,7 @@ $(pv_value)</tooltip>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
-    <border_style>6</border_style>
+    <border_style>0</border_style>
     <border_width>1</border_width>
     <enabled>true</enabled>
     <font>
@@ -12302,8 +12085,9 @@ $(pv_value)</tooltip>
       <color red="0" green="0" blue="0" />
     </foreground_color>
     <height>20</height>
-    <label>More</label>
-    <name>Menu Button</name>
+    <image></image>
+    <name>Action Button</name>
+    <push_action_index>0</push_action_index>
     <pv_name></pv_name>
     <pv_value />
     <rules />
@@ -12313,14 +12097,14 @@ $(pv_value)</tooltip>
       <keep_wh_ratio>false</keep_wh_ratio>
     </scale_options>
     <scripts />
-    <show_down_arrow>false</show_down_arrow>
+    <style>0</style>
+    <text>More</text>
+    <toggle_button>false</toggle_button>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-    <transparent>false</transparent>
     <visible>true</visible>
-    <widget_type>Menu Button</widget_type>
+    <widget_type>Action Button</widget_type>
     <width>60</width>
-    <wuid>325603b2:160702f1d5d:-7f84</wuid>
     <x>865</x>
     <y>420</y>
   </widget>
@@ -12372,7 +12156,6 @@ $(pv_value)</tooltip>
     <widget_type>Text Update</widget_type>
     <width>80</width>
     <wrap_words>false</wrap_words>
-    <wuid>325603b2:160702f1d5d:-7f83</wuid>
     <x>780</x>
     <y>421</y>
   </widget>
@@ -12424,7 +12207,6 @@ $(pv_value)</tooltip>
     <widget_type>Text Update</widget_type>
     <width>80</width>
     <wrap_words>false</wrap_words>
-    <wuid>325603b2:160702f1d5d:-7f82</wuid>
     <x>695</x>
     <y>121</y>
   </widget>
@@ -12476,7 +12258,6 @@ $(pv_value)</tooltip>
     <widget_type>Text Update</widget_type>
     <width>80</width>
     <wrap_words>false</wrap_words>
-    <wuid>325603b2:160702f1d5d:-7f81</wuid>
     <x>695</x>
     <y>146</y>
   </widget>
@@ -12528,7 +12309,6 @@ $(pv_value)</tooltip>
     <widget_type>Text Update</widget_type>
     <width>80</width>
     <wrap_words>false</wrap_words>
-    <wuid>325603b2:160702f1d5d:-7f80</wuid>
     <x>695</x>
     <y>171</y>
   </widget>
@@ -12580,7 +12360,6 @@ $(pv_value)</tooltip>
     <widget_type>Text Update</widget_type>
     <width>80</width>
     <wrap_words>false</wrap_words>
-    <wuid>325603b2:160702f1d5d:-7f7f</wuid>
     <x>695</x>
     <y>196</y>
   </widget>
@@ -12632,7 +12411,6 @@ $(pv_value)</tooltip>
     <widget_type>Text Update</widget_type>
     <width>80</width>
     <wrap_words>false</wrap_words>
-    <wuid>325603b2:160702f1d5d:-7f7e</wuid>
     <x>695</x>
     <y>221</y>
   </widget>
@@ -12684,7 +12462,6 @@ $(pv_value)</tooltip>
     <widget_type>Text Update</widget_type>
     <width>80</width>
     <wrap_words>false</wrap_words>
-    <wuid>325603b2:160702f1d5d:-7f7d</wuid>
     <x>695</x>
     <y>246</y>
   </widget>
@@ -12736,7 +12513,6 @@ $(pv_value)</tooltip>
     <widget_type>Text Update</widget_type>
     <width>80</width>
     <wrap_words>false</wrap_words>
-    <wuid>325603b2:160702f1d5d:-7f7c</wuid>
     <x>695</x>
     <y>271</y>
   </widget>
@@ -12788,7 +12564,6 @@ $(pv_value)</tooltip>
     <widget_type>Text Update</widget_type>
     <width>80</width>
     <wrap_words>false</wrap_words>
-    <wuid>325603b2:160702f1d5d:-7f7b</wuid>
     <x>695</x>
     <y>296</y>
   </widget>
@@ -12840,7 +12615,6 @@ $(pv_value)</tooltip>
     <widget_type>Text Update</widget_type>
     <width>80</width>
     <wrap_words>false</wrap_words>
-    <wuid>325603b2:160702f1d5d:-7f7a</wuid>
     <x>695</x>
     <y>321</y>
   </widget>
@@ -12892,7 +12666,6 @@ $(pv_value)</tooltip>
     <widget_type>Text Update</widget_type>
     <width>80</width>
     <wrap_words>false</wrap_words>
-    <wuid>325603b2:160702f1d5d:-7f79</wuid>
     <x>695</x>
     <y>346</y>
   </widget>
@@ -12944,7 +12717,6 @@ $(pv_value)</tooltip>
     <widget_type>Text Update</widget_type>
     <width>80</width>
     <wrap_words>false</wrap_words>
-    <wuid>325603b2:160702f1d5d:-7f78</wuid>
     <x>695</x>
     <y>371</y>
   </widget>
@@ -12996,7 +12768,6 @@ $(pv_value)</tooltip>
     <widget_type>Text Update</widget_type>
     <width>80</width>
     <wrap_words>false</wrap_words>
-    <wuid>325603b2:160702f1d5d:-7f77</wuid>
     <x>695</x>
     <y>396</y>
   </widget>
@@ -13048,7 +12819,6 @@ $(pv_value)</tooltip>
     <widget_type>Text Update</widget_type>
     <width>80</width>
     <wrap_words>false</wrap_words>
-    <wuid>325603b2:160702f1d5d:-7f76</wuid>
     <x>695</x>
     <y>421</y>
   </widget>
@@ -13100,7 +12870,6 @@ $(pv_value)</tooltip>
     <widget_type>Text Update</widget_type>
     <width>80</width>
     <wrap_words>false</wrap_words>
-    <wuid>325603b2:160702f1d5d:-7f75</wuid>
     <x>610</x>
     <y>121</y>
   </widget>
@@ -13152,7 +12921,6 @@ $(pv_value)</tooltip>
     <widget_type>Text Update</widget_type>
     <width>80</width>
     <wrap_words>false</wrap_words>
-    <wuid>325603b2:160702f1d5d:-7f74</wuid>
     <x>610</x>
     <y>146</y>
   </widget>
@@ -13204,7 +12972,6 @@ $(pv_value)</tooltip>
     <widget_type>Text Update</widget_type>
     <width>80</width>
     <wrap_words>false</wrap_words>
-    <wuid>325603b2:160702f1d5d:-7f73</wuid>
     <x>610</x>
     <y>171</y>
   </widget>
@@ -13256,7 +13023,6 @@ $(pv_value)</tooltip>
     <widget_type>Text Update</widget_type>
     <width>80</width>
     <wrap_words>false</wrap_words>
-    <wuid>325603b2:160702f1d5d:-7f72</wuid>
     <x>610</x>
     <y>196</y>
   </widget>
@@ -13308,7 +13074,6 @@ $(pv_value)</tooltip>
     <widget_type>Text Update</widget_type>
     <width>80</width>
     <wrap_words>false</wrap_words>
-    <wuid>325603b2:160702f1d5d:-7f71</wuid>
     <x>610</x>
     <y>221</y>
   </widget>
@@ -13360,7 +13125,6 @@ $(pv_value)</tooltip>
     <widget_type>Text Update</widget_type>
     <width>80</width>
     <wrap_words>false</wrap_words>
-    <wuid>325603b2:160702f1d5d:-7f70</wuid>
     <x>610</x>
     <y>246</y>
   </widget>
@@ -13412,7 +13176,6 @@ $(pv_value)</tooltip>
     <widget_type>Text Update</widget_type>
     <width>80</width>
     <wrap_words>false</wrap_words>
-    <wuid>325603b2:160702f1d5d:-7f6f</wuid>
     <x>610</x>
     <y>271</y>
   </widget>
@@ -13464,7 +13227,6 @@ $(pv_value)</tooltip>
     <widget_type>Text Update</widget_type>
     <width>80</width>
     <wrap_words>false</wrap_words>
-    <wuid>325603b2:160702f1d5d:-7f6e</wuid>
     <x>610</x>
     <y>296</y>
   </widget>
@@ -13516,7 +13278,6 @@ $(pv_value)</tooltip>
     <widget_type>Text Update</widget_type>
     <width>80</width>
     <wrap_words>false</wrap_words>
-    <wuid>325603b2:160702f1d5d:-7f6d</wuid>
     <x>610</x>
     <y>321</y>
   </widget>
@@ -13568,7 +13329,6 @@ $(pv_value)</tooltip>
     <widget_type>Text Update</widget_type>
     <width>80</width>
     <wrap_words>false</wrap_words>
-    <wuid>325603b2:160702f1d5d:-7f6c</wuid>
     <x>610</x>
     <y>346</y>
   </widget>
@@ -13620,7 +13380,6 @@ $(pv_value)</tooltip>
     <widget_type>Text Update</widget_type>
     <width>80</width>
     <wrap_words>false</wrap_words>
-    <wuid>325603b2:160702f1d5d:-7f6b</wuid>
     <x>610</x>
     <y>371</y>
   </widget>
@@ -13672,7 +13431,6 @@ $(pv_value)</tooltip>
     <widget_type>Text Update</widget_type>
     <width>80</width>
     <wrap_words>false</wrap_words>
-    <wuid>325603b2:160702f1d5d:-7f6a</wuid>
     <x>610</x>
     <y>396</y>
   </widget>
@@ -13724,7 +13482,6 @@ $(pv_value)</tooltip>
     <widget_type>Text Update</widget_type>
     <width>80</width>
     <wrap_words>false</wrap_words>
-    <wuid>325603b2:160702f1d5d:-7f69</wuid>
     <x>610</x>
     <y>421</y>
   </widget>
@@ -13776,7 +13533,6 @@ $(pv_value)</tooltip>
     <widget_type>Text Update</widget_type>
     <width>110</width>
     <wrap_words>false</wrap_words>
-    <wuid>325603b2:160702f1d5d:-7f68</wuid>
     <x>10</x>
     <y>446</y>
   </widget>
@@ -13828,7 +13584,6 @@ $(pv_value)</tooltip>
     <widget_type>Text Update</widget_type>
     <width>160</width>
     <wrap_words>false</wrap_words>
-    <wuid>325603b2:160702f1d5d:-7f67</wuid>
     <x>125</x>
     <y>446</y>
   </widget>
@@ -13891,7 +13646,6 @@ $(pv_value)</tooltip>
     <visible>true</visible>
     <widget_type>Text Input</widget_type>
     <width>60</width>
-    <wuid>325603b2:160702f1d5d:-7f66</wuid>
     <x>290</x>
     <y>445</y>
   </widget>
@@ -13936,7 +13690,6 @@ $(pv_value)</tooltip>
     <visible>true</visible>
     <widget_type>Menu Button</widget_type>
     <width>80</width>
-    <wuid>325603b2:160702f1d5d:-7f65</wuid>
     <x>355</x>
     <y>445</y>
   </widget>
@@ -13988,7 +13741,6 @@ $(pv_value)</tooltip>
     <widget_type>Text Update</widget_type>
     <width>80</width>
     <wrap_words>false</wrap_words>
-    <wuid>325603b2:160702f1d5d:-7f64</wuid>
     <x>440</x>
     <y>446</y>
   </widget>
@@ -14033,11 +13785,10 @@ $(pv_value)</tooltip>
     <visible>true</visible>
     <widget_type>Menu Button</widget_type>
     <width>80</width>
-    <wuid>325603b2:160702f1d5d:-7f63</wuid>
     <x>525</x>
     <y>445</y>
   </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.MenuButton" version="1.0.0">
+  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
     <actions hook="false" hook_all="false">
       <action type="OPEN_DISPLAY">
         <path>NDStats.opi</path>
@@ -14045,11 +13796,10 @@ $(pv_value)</tooltip>
           <include_parent_macros>true</include_parent_macros>
           <R>Stats5:</R>
         </macros>
-        <mode>0</mode>
+        <mode>1</mode>
         <description>Stats5:</description>
       </action>
     </actions>
-    <actions_from_pv>false</actions_from_pv>
     <alarm_pulsing>false</alarm_pulsing>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <background_color>
@@ -14059,7 +13809,7 @@ $(pv_value)</tooltip>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
-    <border_style>6</border_style>
+    <border_style>0</border_style>
     <border_width>1</border_width>
     <enabled>true</enabled>
     <font>
@@ -14070,8 +13820,9 @@ $(pv_value)</tooltip>
       <color red="0" green="0" blue="0" />
     </foreground_color>
     <height>20</height>
-    <label>More</label>
-    <name>Menu Button</name>
+    <image></image>
+    <name>Action Button</name>
+    <push_action_index>0</push_action_index>
     <pv_name></pv_name>
     <pv_value />
     <rules />
@@ -14081,14 +13832,14 @@ $(pv_value)</tooltip>
       <keep_wh_ratio>false</keep_wh_ratio>
     </scale_options>
     <scripts />
-    <show_down_arrow>false</show_down_arrow>
+    <style>0</style>
+    <text>More</text>
+    <toggle_button>false</toggle_button>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-    <transparent>false</transparent>
     <visible>true</visible>
-    <widget_type>Menu Button</widget_type>
+    <widget_type>Action Button</widget_type>
     <width>60</width>
-    <wuid>325603b2:160702f1d5d:-7f62</wuid>
     <x>865</x>
     <y>445</y>
   </widget>
@@ -14140,7 +13891,6 @@ $(pv_value)</tooltip>
     <widget_type>Text Update</widget_type>
     <width>80</width>
     <wrap_words>false</wrap_words>
-    <wuid>325603b2:160702f1d5d:-7f61</wuid>
     <x>780</x>
     <y>446</y>
   </widget>
@@ -14192,7 +13942,6 @@ $(pv_value)</tooltip>
     <widget_type>Text Update</widget_type>
     <width>80</width>
     <wrap_words>false</wrap_words>
-    <wuid>325603b2:160702f1d5d:-7f60</wuid>
     <x>695</x>
     <y>446</y>
   </widget>
@@ -14244,7 +13993,6 @@ $(pv_value)</tooltip>
     <widget_type>Text Update</widget_type>
     <width>80</width>
     <wrap_words>false</wrap_words>
-    <wuid>325603b2:160702f1d5d:-7f5f</wuid>
     <x>610</x>
     <y>446</y>
   </widget>
@@ -14296,7 +14044,6 @@ $(pv_value)</tooltip>
     <widget_type>Text Update</widget_type>
     <width>110</width>
     <wrap_words>false</wrap_words>
-    <wuid>325603b2:160702f1d5d:-7f5e</wuid>
     <x>10</x>
     <y>521</y>
   </widget>
@@ -14348,7 +14095,6 @@ $(pv_value)</tooltip>
     <widget_type>Text Update</widget_type>
     <width>160</width>
     <wrap_words>false</wrap_words>
-    <wuid>325603b2:160702f1d5d:-7f5d</wuid>
     <x>125</x>
     <y>521</y>
   </widget>
@@ -14411,7 +14157,6 @@ $(pv_value)</tooltip>
     <visible>true</visible>
     <widget_type>Text Input</widget_type>
     <width>60</width>
-    <wuid>325603b2:160702f1d5d:-7f5c</wuid>
     <x>290</x>
     <y>520</y>
   </widget>
@@ -14456,7 +14201,6 @@ $(pv_value)</tooltip>
     <visible>true</visible>
     <widget_type>Menu Button</widget_type>
     <width>80</width>
-    <wuid>325603b2:160702f1d5d:-7f5b</wuid>
     <x>355</x>
     <y>520</y>
   </widget>
@@ -14508,7 +14252,6 @@ $(pv_value)</tooltip>
     <widget_type>Text Update</widget_type>
     <width>80</width>
     <wrap_words>false</wrap_words>
-    <wuid>325603b2:160702f1d5d:-7f5a</wuid>
     <x>440</x>
     <y>521</y>
   </widget>
@@ -14553,11 +14296,10 @@ $(pv_value)</tooltip>
     <visible>true</visible>
     <widget_type>Menu Button</widget_type>
     <width>80</width>
-    <wuid>325603b2:160702f1d5d:-7f59</wuid>
     <x>525</x>
     <y>520</y>
   </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.MenuButton" version="1.0.0">
+  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
     <actions hook="false" hook_all="false">
       <action type="OPEN_DISPLAY">
         <path>NDROIStat.opi</path>
@@ -14565,11 +14307,10 @@ $(pv_value)</tooltip>
           <include_parent_macros>true</include_parent_macros>
           <R>ROIStat1:</R>
         </macros>
-        <mode>0</mode>
+        <mode>1</mode>
         <description>ROI Statistics #1</description>
       </action>
     </actions>
-    <actions_from_pv>false</actions_from_pv>
     <alarm_pulsing>false</alarm_pulsing>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <background_color>
@@ -14579,7 +14320,7 @@ $(pv_value)</tooltip>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
-    <border_style>6</border_style>
+    <border_style>0</border_style>
     <border_width>1</border_width>
     <enabled>true</enabled>
     <font>
@@ -14590,8 +14331,9 @@ $(pv_value)</tooltip>
       <color red="0" green="0" blue="0" />
     </foreground_color>
     <height>20</height>
-    <label>More</label>
-    <name>Menu Button</name>
+    <image></image>
+    <name>Action Button</name>
+    <push_action_index>0</push_action_index>
     <pv_name></pv_name>
     <pv_value />
     <rules />
@@ -14601,14 +14343,14 @@ $(pv_value)</tooltip>
       <keep_wh_ratio>false</keep_wh_ratio>
     </scale_options>
     <scripts />
-    <show_down_arrow>false</show_down_arrow>
+    <style>0</style>
+    <text>More</text>
+    <toggle_button>false</toggle_button>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-    <transparent>false</transparent>
     <visible>true</visible>
-    <widget_type>Menu Button</widget_type>
+    <widget_type>Action Button</widget_type>
     <width>60</width>
-    <wuid>325603b2:160702f1d5d:-7f58</wuid>
     <x>865</x>
     <y>520</y>
   </widget>
@@ -14660,7 +14402,6 @@ $(pv_value)</tooltip>
     <widget_type>Text Update</widget_type>
     <width>80</width>
     <wrap_words>false</wrap_words>
-    <wuid>325603b2:160702f1d5d:-7f57</wuid>
     <x>780</x>
     <y>521</y>
   </widget>
@@ -14712,7 +14453,6 @@ $(pv_value)</tooltip>
     <widget_type>Text Update</widget_type>
     <width>80</width>
     <wrap_words>false</wrap_words>
-    <wuid>325603b2:160702f1d5d:-7f56</wuid>
     <x>695</x>
     <y>521</y>
   </widget>
@@ -14764,7 +14504,6 @@ $(pv_value)</tooltip>
     <widget_type>Text Update</widget_type>
     <width>80</width>
     <wrap_words>false</wrap_words>
-    <wuid>325603b2:160702f1d5d:-7f55</wuid>
     <x>610</x>
     <y>521</y>
   </widget>
@@ -14816,7 +14555,6 @@ $(pv_value)</tooltip>
     <widget_type>Text Update</widget_type>
     <width>110</width>
     <wrap_words>false</wrap_words>
-    <wuid>325603b2:160702f1d5d:-7ef6</wuid>
     <x>10</x>
     <y>596</y>
   </widget>
@@ -14868,7 +14606,6 @@ $(pv_value)</tooltip>
     <widget_type>Text Update</widget_type>
     <width>160</width>
     <wrap_words>false</wrap_words>
-    <wuid>325603b2:160702f1d5d:-7ef5</wuid>
     <x>125</x>
     <y>596</y>
   </widget>
@@ -14931,7 +14668,6 @@ $(pv_value)</tooltip>
     <visible>true</visible>
     <widget_type>Text Input</widget_type>
     <width>60</width>
-    <wuid>325603b2:160702f1d5d:-7ef4</wuid>
     <x>290</x>
     <y>595</y>
   </widget>
@@ -14976,7 +14712,6 @@ $(pv_value)</tooltip>
     <visible>true</visible>
     <widget_type>Menu Button</widget_type>
     <width>80</width>
-    <wuid>325603b2:160702f1d5d:-7ef3</wuid>
     <x>355</x>
     <y>595</y>
   </widget>
@@ -15028,7 +14763,6 @@ $(pv_value)</tooltip>
     <widget_type>Text Update</widget_type>
     <width>80</width>
     <wrap_words>false</wrap_words>
-    <wuid>325603b2:160702f1d5d:-7ef2</wuid>
     <x>440</x>
     <y>596</y>
   </widget>
@@ -15073,11 +14807,10 @@ $(pv_value)</tooltip>
     <visible>true</visible>
     <widget_type>Menu Button</widget_type>
     <width>80</width>
-    <wuid>325603b2:160702f1d5d:-7ef1</wuid>
     <x>525</x>
     <y>595</y>
   </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.MenuButton" version="1.0.0">
+  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
     <actions hook="false" hook_all="false">
       <action type="OPEN_DISPLAY">
         <path>NDFFT.opi</path>
@@ -15085,11 +14818,10 @@ $(pv_value)</tooltip>
           <include_parent_macros>true</include_parent_macros>
           <R>FFT1:</R>
         </macros>
-        <mode>0</mode>
+        <mode>1</mode>
         <description>FFT1:</description>
       </action>
     </actions>
-    <actions_from_pv>false</actions_from_pv>
     <alarm_pulsing>false</alarm_pulsing>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <background_color>
@@ -15099,7 +14831,7 @@ $(pv_value)</tooltip>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
-    <border_style>6</border_style>
+    <border_style>0</border_style>
     <border_width>1</border_width>
     <enabled>true</enabled>
     <font>
@@ -15110,8 +14842,9 @@ $(pv_value)</tooltip>
       <color red="0" green="0" blue="0" />
     </foreground_color>
     <height>20</height>
-    <label>More</label>
-    <name>Menu Button</name>
+    <image></image>
+    <name>Action Button</name>
+    <push_action_index>0</push_action_index>
     <pv_name></pv_name>
     <pv_value />
     <rules />
@@ -15121,14 +14854,14 @@ $(pv_value)</tooltip>
       <keep_wh_ratio>false</keep_wh_ratio>
     </scale_options>
     <scripts />
-    <show_down_arrow>false</show_down_arrow>
+    <style>0</style>
+    <text>More</text>
+    <toggle_button>false</toggle_button>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-    <transparent>false</transparent>
     <visible>true</visible>
-    <widget_type>Menu Button</widget_type>
+    <widget_type>Action Button</widget_type>
     <width>60</width>
-    <wuid>325603b2:160702f1d5d:-7ef0</wuid>
     <x>865</x>
     <y>595</y>
   </widget>
@@ -15180,7 +14913,6 @@ $(pv_value)</tooltip>
     <widget_type>Text Update</widget_type>
     <width>80</width>
     <wrap_words>false</wrap_words>
-    <wuid>325603b2:160702f1d5d:-7eef</wuid>
     <x>780</x>
     <y>596</y>
   </widget>
@@ -15232,7 +14964,6 @@ $(pv_value)</tooltip>
     <widget_type>Text Update</widget_type>
     <width>80</width>
     <wrap_words>false</wrap_words>
-    <wuid>325603b2:160702f1d5d:-7eee</wuid>
     <x>695</x>
     <y>596</y>
   </widget>
@@ -15284,7 +15015,6 @@ $(pv_value)</tooltip>
     <widget_type>Text Update</widget_type>
     <width>80</width>
     <wrap_words>false</wrap_words>
-    <wuid>325603b2:160702f1d5d:-7eed</wuid>
     <x>610</x>
     <y>596</y>
   </widget>
