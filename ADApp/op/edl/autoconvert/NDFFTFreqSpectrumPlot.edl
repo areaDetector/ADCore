@@ -649,8 +649,7 @@ offLabel "Stop"
 3d
 useEnumNumeric
 font "helvetica-medium-r-10.0"
-endObjectProperties
-# (Group)
+endObjectPropert# (Group)
 object activeGroupClass
 beginObjectProperties
 major 4
@@ -679,8 +678,8 @@ bgColor index 51
 inconsistentColor index 12
 topShadowColor index 2
 botShadowColor index 12
-controlPv "$(P)$(RTS)TSAcquireMode"
-indicatorPv "$(P)$(RTS)TSAcquireMode"
+controlPv "$(P)$(R)TSAcquireMode"
+indicatorPv "$(P)$(R)TSAcquireMode"
 font "helvetica-medium-r-10.0"
 endObjectProperties
 
@@ -699,7 +698,7 @@ onColor index 51
 offColor index 51
 topShadowColor index 0
 botShadowColor index 14
-controlPv "$(P)$(RTS)TSRead"
+controlPv "$(P)$(R)TSRead"
 pressValue "1"
 releaseValue 
 onLabel "Read"
@@ -724,8 +723,8 @@ bgColor index 51
 inconsistentColor index 12
 topShadowColor index 2
 botShadowColor index 12
-controlPv "$(P)$(RTS)TSRead.SCAN"
-indicatorPv "$(P)$(RTS)TSRead.SCAN"
+controlPv "$(P)$(R)TSRead.SCAN"
+indicatorPv "$(P)$(R)TSRead.SCAN"
 font "helvetica-medium-r-10.0"
 endObjectProperties
 
@@ -733,34 +732,32 @@ endGroup
 
 endObjectProperties
 
-# (Group)
-object activeGroupClass
+
+# (Related Display)
+object relatedDisplayClass
 beginObjectProperties
 major 4
 minor 0
 release 0
 x 10
 y 390
-w 305
-h 20
-
-beginGroup
-
-
-# (Menu Button)
-object activeMenuButtonClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 195
-y 390
-w 120
+w 100
 h 20
 fgColor index 14
 bgColor index 51
-inconsistentColor index 12
 topShadowColor index 2
+botShadowColor index 12
+font "helvetica-medium-r-10.0"
+icon
+buttonLabel "More"
+numPvs 0
+numDsps 0
+displayFileName {
+}
+menuLabel {
+}
+endObjectProperties
+ex 2
 botShadowColor index 12
 controlPv "$(P)$(R)FFTSuppressDC"
 indicatorPv "$(P)$(R)FFTSuppressDC"

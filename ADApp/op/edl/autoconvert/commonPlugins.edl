@@ -5319,35 +5319,52 @@ x 355
 y 70
 w 80
 h 20
-fgColor index 14
-bgColor index 51
-inconsistentColor index 12
-topShadowColor index 2
-botShadowColor index 12
-controlPv "$(P)image1:EnableCallbacks"
-indicatorPv "$(P)image1:EnableCallbacks"
-font "helvetica-medium-r-10.0"
+fgC
+endGroup
+
 endObjectProperties
 
-# (Menu Button)
-object activeMenuButtonClass
+# (Group)
+object activeGroupClass
 beginObjectProperties
 major 4
 minor 0
 release 0
-x 525
-y 70
-w 80
+x 23
+y 479
+w 315
+h 20
+
+beginGroup
+
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 23
+y 479
+w 90
 h 20
 fgColor index 14
-bgColor index 51
-inconsistentColor index 12
-topShadowColor index 2
-botShadowColor index 12
-controlPv "$(P)image1:BlockingCallbacks"
-indicatorPv "$(P)image1:BlockingCallbacks"
+onColor index 51
+offColor index 51
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)TSControl"
+pressValue "0"
+releaseValue 
+onLabel "Erase/Start"
+offLabel "Erase/Start"
+3d
+useEnumNumeric
 font "helvetica-medium-r-10.0"
 endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
 
 # (Related Display)
 object relatedDisplayClass
