@@ -764,18 +764,20 @@ plotColor {
   0 index 27
 }
 endObjectProperties
-
-# (Menu Button)
-object activeMenuButtonClass
+# (Group)
+object activeGroupClass
 beginObjectProperties
 major 4
 minor 0
 release 0
-x 355
-y 70
-w 80
-h 20
-fgC
+x 10
+y 40
+w 1415
+h 200
+
+beginGroup
+
+
 endGroup
 
 endObjectProperties
@@ -821,32 +823,28 @@ endObjectProperties
 
 # (Message Button)
 object activeMessageButtonClass
-
-# (Related Display)
-object relatedDisplayClass
 beginObjectProperties
 major 4
 minor 0
 release 0
-x 865
-y 70
+x 118
+y 479
 w 60
 h 20
 fgColor index 14
-bgColor index 51
-topShadowColor index 2
-botShadowColor index 12
+onColor index 51
+offColor index 51
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)TSControl"
+pressValue "2"
+releaseValue 
+onLabel "Stop"
+offLabel "Stop"
+3d
+useEnumNumeric
 font "helvetica-medium-r-10.0"
-icon
-buttonLabel "More"
-numPvs 0
-numDsps 0
-displayFileName {
-}
-menuLabel {
-}
 endObjectProperties
-s
 
 # (Message Button)
 object activeMessageButtonClass

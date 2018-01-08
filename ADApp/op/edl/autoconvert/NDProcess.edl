@@ -2732,6 +2732,32 @@ value {
  "Auto scale/off."
 }
 endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 442
+y 515
+w 280
+h 45
+
+beginGroup
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 473
+y 540
+w 249
+h 20
+
+beginGroup
+
 
 # (Menu Button)
 object activeMenuButtonClass
@@ -2739,31 +2765,99 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 167
-y 154
-w 100
-h 20
+x 574
+y 541
+w 80
+h 18
 fgColor index 14
 bgColor index 51
 inconsistentColor index 12
 topShadowColor index 2
 botShadowColor index 12
-controlPv "$(P)$(R)EnableCallbacks"
-indicatorPv "$(P)$(R)EnableCallbacks"
+controlPv "$(P)$(R)DataTypeOut"
+indicatorPv "$(P)$(R)DataTypeOut"
 font "helvetica-medium-r-10.0"
 endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+
+endGroup
+
+endObjectProperties
+
 # (Group)
 object activeGroupClass
 beginObjectProperties
 major 4
 minor 0
 release 0
-x 57
-y 254
-w 210
-h 20
+x 411
+y 375
+w 319
+h 120
 
 beginGroup
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 411
+y 400
+w 319
+h 95
+
+beginGroup
+
+
+# (Menu Button)
+object activeMenuButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 582
+y 401
+w 80
+h 19
+fgColor index 14
+bgColor index 51
+inconsistentColor index 12
+topShadowColor index 2
+botShadowColor index 12
+controlPv "$(P)$(R)EnableLowClip"
+indicatorPv "$(P)$(R)EnableLowClip"
+font "helvetica-medium-r-10.0"
+endObjectProperties
+
+# (Menu Button)
+object activeMenuButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 582
+y 451
+w 80
+h 19
+fgColor index 14
+bgColor index 51
+inconsistentColor index 12
+topShadowColor index 2
+botShadowColor index 12
+controlPv "$(P)$(R)EnableHighClip"
+indicatorPv "$(P)$(R)EnableHighClip"
+font "helvetica-medium-r-10.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
 
 
 endGroup
@@ -2777,137 +2871,59 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 167
-y 229
-w 100
-h 20
+x 582
+y 161
+w 80
+h 19
 fgColor index 14
 onColor index 51
 offColor index 51
 topShadowColor index 0
 botShadowColor index 14
-controlPv "$(P)$(R)ArrayCounter"
-pressValue "0"
-releaseValue 
-onLabel "Reset to 0"
-offLabel "Reset to 0"
-3d
-useEnumNumeric
-font "helvetica-medium-r-10.0"
-endObjectProperties
-
-# (Message Button)
-object activeMessageButtonClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 167
-y 304
-w 100
-h 20
-fgColor index 14
-onColor index 51
-offColor index 51
-topShadowColor index 0
-botShadowColor index 14
-controlPv "$(P)$(R)DroppedArrays"
-pressValue "0"
-releaseValue 
-onLabel "Reset to 0"
-offLabel "Reset to 0"
-3d
-useEnumNumeric
-font "helvetica-medium-r-10.0"
-endObjectProperties
-# (Group)
-object activeGroupClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 7
-y 204
-w 366
-h 20
-
-beginGroup
-
-
-endGroup
-
-endObjectProperties
-
-
-# (Related Display)
-object relatedDisplayClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 167
-y 529
-w 100
-h 20
-fgColor index 14
-bgColor index 51
-topShadowColor index 2
-botShadowColor index 12
-font "helvetica-medium-r-10.0"
-icon
-numPvs 0
-numDsps 0
-displayFileName {
-}
-menuLabel {
-}
-endObjectProperties
-
-# (Menu Button)
-object activeMenuButtonClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 167
-y 479
-w 100
-h 20
-fgColor index 14
-bgColor index 51
-inconsistentColor index 12
-topShadowColor index 2
-botShadowColor index 12
-controlPv "$(P)$(R)ArrayCallbacks"
-indicatorPv "$(P)$(R)ArrayCallbacks"
-font "helvetica-medium-r-10.0"
-endObjectProperties
-
-# (Message Button)
-object activeMessageButtonClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 167
-y 504
-w 100
-h 20
-fgColor index 14
-onColor index 51
-offColor index 51
-topShadowColor index 0
-botShadowColor index 14
-controlPv "$(P)$(R)ProcessPlugin"
+controlPv "$(P)$(R)SaveFlatField"
 pressValue "1"
 releaseValue 
-onLabel "Process"
-offLabel "Process"
+onLabel "Save"
+offLabel "Save"
 3d
 useEnumNumeric
 font "helvetica-medium-r-10.0"
 endObjectProperties
-Menu Button)
+
+# (Menu Button)
+object activeMenuButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 582
+y 186
+w 80
+h 19
+fgColor index 14
+bgColor index 51
+inconsistentColor index 12
+topShadowColor index 2
+botShadowColor index 12
+controlPv "$(P)$(R)EnableFlatField"
+indicatorPv "$(P)$(R)EnableFlatField"
+font "helvetica-medium-r-10.0"
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 796
+y 70
+w 289
+h 20
+
+beginGroup
+
+
+# (Menu Button)
 object activeMenuButtonClass
 beginObjectProperties
 major 4

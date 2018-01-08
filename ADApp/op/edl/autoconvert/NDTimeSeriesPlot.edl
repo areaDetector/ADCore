@@ -433,7 +433,7 @@ onColor index 51
 offColor index 51
 topShadowColor index 0
 botShadowColor index 14
-controlPv "$(P)$(RTS)TSAcquire"
+controlPv "$(P)$(R)TSAcquire"
 pressValue "1"
 releaseValue 
 onLabel "Erase/Start"
@@ -458,7 +458,7 @@ onColor index 51
 offColor index 51
 topShadowColor index 0
 botShadowColor index 14
-controlPv "$(P)$(RTS)TSAcquire"
+controlPv "$(P)$(R)TSAcquire"
 pressValue "0"
 releaseValue 
 onLabel "Stop"
@@ -466,7 +466,8 @@ offLabel "Stop"
 3d
 useEnumNumeric
 font "helvetica-medium-r-10.0"
-endObjectPropert# (Group)
+endObjectProperties
+# (Group)
 object activeGroupClass
 beginObjectProperties
 major 4
@@ -573,79 +574,5 @@ displayFileName {
 }
 menuLabel {
 }
-endObjectProperties
-ex 2
-botShadowColor index 12
-controlPv "$(P)$(R)FFTSuppressDC"
-indicatorPv "$(P)$(R)FFTSuppressDC"
-font "helvetica-medium-r-10.0"
-endObjectProperties
-
-endGroup
-
-endObjectProperties
-
-
-# (Related Display)
-object relatedDisplayClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 395
-y 439
-w 100
-h 20
-fgColor index 14
-bgColor index 51
-topShadowColor index 2
-botShadowColor index 12
-font "helvetica-medium-r-10.0"
-icon
-buttonLabel "More"
-numPvs 0
-numDsps 0
-displayFileName {
-}
-menuLabel {
-}
-endObjectProperties
-# (Group)
-object activeGroupClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 10
-y 440
-w 255
-h 20
-
-beginGroup
-
-
-# (Message Button)
-object activeMessageButtonClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 145
-y 440
-w 120
-h 20
-fgColor index 14
-onColor index 51
-offColor index 51
-topShadowColor index 0
-botShadowColor index 14
-controlPv "$(P)$(R)FFTResetAverage"
-pressValue "1"
-releaseValue 
-onLabel "Reset average"
-offLabel "Reset average"
-3d
-useEnumNumeric
-font "helvetica-medium-r-10.0"
 endObjectProperties
 
