@@ -1,6 +1,6 @@
 
 file {
-	name="/home/epics/devel/areaDetector-2-6/ADCore/ADApp/op/adl/NDPluginBase.adl"
+	name="/home/epics/devel/areaDetector/ADCore/ADApp/op/adl/NDPluginBase.adl"
 	version=030109
 }
 display {
@@ -243,7 +243,6 @@ text {
 		clr=54
 		bclr=4
 	}
-	format="string"
 	limits {
 	}
 }
@@ -635,43 +634,32 @@ text {
 	textix="Array counter"
 	align="horiz. right"
 }
-composite {
+text {
 	object {
 		x=57
 		y=254
-		width=210
+		width=100
 		height=20
 	}
-	"composite name"=""
-	children {
-		text {
-			object {
-				x=57
-				y=254
-				width=100
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Array rate"
-			align="horiz. right"
-		}
-		"text update" {
-			object {
-				x=167
-				y=255
-				width=100
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)ArrayRate_RBV"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
-		}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Array rate"
+	align="horiz. right"
+}
+"text update" {
+	object {
+		x=167
+		y=255
+		width=100
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)ArrayRate_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
 	}
 }
 text {
@@ -732,59 +720,48 @@ text {
 	label="Reset to 0"
 	press_msg="0"
 }
-composite {
+text {
 	object {
 		x=7
 		y=204
-		width=366
+		width=150
 		height=20
 	}
-	"composite name"=""
-	children {
-		text {
-			object {
-				x=7
-				y=204
-				width=150
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Queue size/free"
-			align="horiz. right"
-		}
-		"text update" {
-			object {
-				x=273
-				y=204
-				width=100
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)QueueFree"
-				clr=54
-				bclr=12
-			}
-			clrmod="alarm"
-			limits {
-			}
-		}
-		"text entry" {
-			object {
-				x=167
-				y=204
-				width=100
-				height=20
-			}
-			control {
-				chan="$(P)$(R)QueueSize"
-				clr=14
-				bclr=51
-			}
-			limits {
-			}
-		}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Queue size/free"
+	align="horiz. right"
+}
+"text update" {
+	object {
+		x=273
+		y=204
+		width=100
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)QueueFree"
+		clr=54
+		bclr=12
+	}
+	clrmod="alarm"
+	limits {
+	}
+}
+"text entry" {
+	object {
+		x=167
+		y=204
+		width=100
+		height=20
+	}
+	control {
+		chan="$(P)$(R)QueueSize"
+		clr=14
+		bclr=51
+	}
+	limits {
 	}
 }
 "text update" {
@@ -850,9 +827,9 @@ text {
 }
 text {
 	object {
-		x=47
+		x=117
 		y=529
-		width=110
+		width=40
 		height=20
 	}
 	"basic attribute" {

@@ -1,7 +1,7 @@
 
 file {
 	name="/home/epics/devel/areaDetector/ADCore/ADApp/op/adl/NDCircularBuffHelp.adl"
-	version=030107
+	version=030109
 }
 display {
 	object {
@@ -91,7 +91,7 @@ text {
 	object {
 		x=10
 		y=5
-		width=480
+		width=400
 		height=25
 	}
 	"basic attribute" {
@@ -123,192 +123,159 @@ text {
 	}
 	textix="Example expressions"
 }
-composite {
+text {
 	object {
 		x=20
 		y=60
 		width=322
-		height=128
+		height=14
 	}
-	"composite name"=""
-	children {
-		text {
-			object {
-				x=20
-				y=60
-				width=322
-				height=14
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="A  The current value of the TriggerA attribute"
-		}
-		text {
-			object {
-				x=20
-				y=79
-				width=322
-				height=14
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="B  The current value of the TriggerB attribute"
-		}
-		text {
-			object {
-				x=20
-				y=98
-				width=245
-				height=14
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="C  The value of the PreCount record"
-		}
-		text {
-			object {
-				x=20
-				y=117
-				width=252
-				height=14
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="D  The value of the PostCount record"
-		}
-		text {
-			object {
-				x=20
-				y=136
-				width=287
-				height=14
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="E  The value of the CurrentQty_RBV record"
-		}
-		text {
-			object {
-				x=20
-				y=155
-				width=315
-				height=14
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="F  The value of the PostTriggerQty_RBV record"
-		}
-		text {
-			object {
-				x=20
-				y=174
-				width=266
-				height=14
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="G  The value of the Trigger_RBV record"
-		}
+	"basic attribute" {
+		clr=14
 	}
+	textix="A  The current value of the TriggerA attribute"
 }
-composite {
+text {
+	object {
+		x=20
+		y=79
+		width=322
+		height=14
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="B  The current value of the TriggerB attribute"
+}
+text {
+	object {
+		x=20
+		y=98
+		width=245
+		height=14
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="C  The value of the PreCount record"
+}
+text {
+	object {
+		x=20
+		y=117
+		width=252
+		height=14
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="D  The value of the PostCount record"
+}
+text {
+	object {
+		x=20
+		y=136
+		width=287
+		height=14
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="E  The value of the CurrentQty_RBV record"
+}
+text {
+	object {
+		x=20
+		y=155
+		width=315
+		height=14
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="F  The value of the PostTriggerQty_RBV record"
+}
+text {
+	object {
+		x=20
+		y=174
+		width=266
+		height=14
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="G  The value of the Trigger_RBV record"
+}
+text {
 	object {
 		x=24
 		y=225
-		width=282
+		width=35
 		height=14
 	}
-	"composite name"=""
-	children {
-		text {
-			object {
-				x=24
-				y=225
-				width=35
-				height=14
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="A<200"
-		}
-		text {
-			object {
-				x=173
-				y=225
-				width=133
-				height=14
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="A is less than 200."
-		}
+	"basic attribute" {
+		clr=14
 	}
+	textix="A<200"
 }
-composite {
+text {
+	object {
+		x=173
+		y=225
+		width=133
+		height=14
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="A is less than 200."
+}
+text {
 	object {
 		x=20
 		y=250
-		width=482
-		height=52
+		width=140
+		height=14
 	}
-	"composite name"=""
-	children {
-		text {
-			object {
-				x=20
-				y=250
-				width=140
-				height=14
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="A>1.5*H && E>50;H:=A"
-		}
-		text {
-			object {
-				x=173
-				y=250
-				width=294
-				height=14
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="A is more than 150% of previous value of A"
-		}
-		text {
-			object {
-				x=173
-				y=269
-				width=329
-				height=14
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="and there are at least 50 images in the buffer."
-		}
-		text {
-			object {
-				x=173
-				y=288
-				width=217
-				height=14
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="H is set to A after evaluation."
-		}
+	"basic attribute" {
+		clr=14
 	}
+	textix="A>1.5*H && E>50;H:=A"
+}
+text {
+	object {
+		x=173
+		y=250
+		width=294
+		height=14
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="A is more than 150% of previous value of A"
+}
+text {
+	object {
+		x=173
+		y=269
+		width=329
+		height=14
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="and there are at least 50 images in the buffer."
+}
+text {
+	object {
+		x=173
+		y=288
+		width=217
+		height=14
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="H is set to A after evaluation."
 }

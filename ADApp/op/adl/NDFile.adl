@@ -1,12 +1,12 @@
 
 file {
-	name="/home/epics/devel/areaDetector-2-1/ADCore/ADApp/op/adl/NDFile.adl"
-	version=030107
+	name="/home/epics/devel/areaDetector/ADCore/ADApp/op/adl/NDFile.adl"
+	version=030109
 }
 display {
 	object {
-		x=558
-		y=129
+		x=266
+		y=132
 		width=685
 		height=500
 	}
@@ -87,91 +87,69 @@ display {
 		1a7309,
 	}
 }
-composite {
+rectangle {
 	object {
-		x=162
+		x=0
 		y=5
-		width=360
+		width=685
 		height=26
 	}
-	"composite name"=""
-	children {
-		rectangle {
-			object {
-				x=162
-				y=5
-				width=360
-				height=26
-			}
-			"basic attribute" {
-				clr=2
-			}
-		}
-		text {
-			object {
-				x=234
-				y=6
-				width=216
-				height=25
-			}
-			"basic attribute" {
-				clr=54
-			}
-			textix="$(P)$(R)"
-			align="horiz. centered"
-		}
+	"basic attribute" {
+		clr=2
 	}
 }
-composite {
+text {
+	object {
+		x=0
+		y=6
+		width=685
+		height=25
+	}
+	"basic attribute" {
+		clr=54
+	}
+	textix="$(P)$(R)"
+	align="horiz. centered"
+}
+text {
 	object {
 		x=185
 		y=458
-		width=300
+		width=110
 		height=20
 	}
-	"composite name"=""
-	children {
-		text {
-			object {
-				x=185
-				y=458
-				width=110
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="File format"
-			align="horiz. right"
-		}
-		"text update" {
-			object {
-				x=405
-				y=459
-				width=80
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)FileFormat_RBV"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
-		}
-		menu {
-			object {
-				x=300
-				y=458
-				width=100
-				height=20
-			}
-			control {
-				chan="$(P)$(R)FileFormat"
-				clr=14
-				bclr=51
-			}
-		}
+	"basic attribute" {
+		clr=14
+	}
+	textix="File format"
+	align="horiz. right"
+}
+"text update" {
+	object {
+		x=405
+		y=459
+		width=80
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)FileFormat_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+menu {
+	object {
+		x=300
+		y=458
+		width=100
+		height=20
+	}
+	control {
+		chan="$(P)$(R)FileFormat"
+		clr=14
+		bclr=51
 	}
 }
 composite {

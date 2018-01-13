@@ -1,12 +1,12 @@
 
 file {
-	name="/home/epics/devel/areaDetector/ADApp/op/adl/NDTimeSeries.adl"
-	version=030105
+	name="/home/epics/devel/areaDetector/ADCore/ADApp/op/adl/NDTimeSeries.adl"
+	version=030109
 }
 display {
 	object {
-		x=647
-		y=505
+		x=930
+		y=345
 		width=500
 		height=355
 	}
@@ -106,6 +106,7 @@ display {
 	trace[0] {
 		ydata="$(P)$(R)$(PLT)"
 		data_clr=27
+		yaxis=0
 	}
 	x_axis {
 		rangeStyle="auto-scale"
@@ -117,239 +118,185 @@ display {
 		rangeStyle="auto-scale"
 	}
 }
-composite {
+text {
 	object {
 		x=255
 		y=65
-		width=225
+		width=130
 		height=20
 	}
-	"composite name"=""
-	children {
-		text {
-			object {
-				x=255
-				y=65
-				width=130
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Current point"
-			align="horiz. right"
-		}
-		"text update" {
-			object {
-				x=390
-				y=66
-				width=90
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)TSCurrentPoint"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
-		}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Current point"
+	align="horiz. right"
+}
+"text update" {
+	object {
+		x=390
+		y=66
+		width=90
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)TSCurrentPoint"
+		clr=54
+		bclr=4
+	}
+	limits {
 	}
 }
-composite {
+menu {
+	object {
+		x=105
+		y=328
+		width=80
+		height=18
+	}
+	control {
+		chan="$(P)$(R)TSRead.SCAN"
+		clr=14
+		bclr=51
+	}
+}
+"message button" {
+	object {
+		x=190
+		y=327
+		width=60
+		height=20
+	}
+	control {
+		chan="$(P)$(R)TSControl"
+		clr=14
+		bclr=51
+	}
+	label="Read"
+	press_msg="3"
+}
+text {
 	object {
 		x=10
 		y=327
-		width=240
+		width=90
 		height=20
 	}
-	"composite name"=""
-	children {
-		menu {
-			object {
-				x=105
-				y=328
-				width=80
-				height=18
-			}
-			control {
-				chan="$(P)$(R)TSRead.SCAN"
-				clr=14
-				bclr=51
-			}
-		}
-		"message button" {
-			object {
-				x=190
-				y=327
-				width=60
-				height=20
-			}
-			control {
-				chan="$(P)$(R)TSControl"
-				clr=14
-				bclr=51
-			}
-			label="Read"
-			press_msg="3"
-		}
-		text {
-			object {
-				x=10
-				y=327
-				width=90
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Read rate"
-		}
+	"basic attribute" {
+		clr=14
 	}
+	textix="Read rate"
 }
-composite {
+"message button" {
 	object {
 		x=10
 		y=40
-		width=315
+		width=90
 		height=20
 	}
-	"composite name"=""
-	children {
-		"message button" {
-			object {
-				x=10
-				y=40
-				width=90
-				height=20
-			}
-			control {
-				chan="$(P)$(R)TSControl"
-				clr=14
-				bclr=51
-			}
-			label="Erase/Start"
-			press_msg="0"
-		}
-		"message button" {
-			object {
-				x=105
-				y=40
-				width=60
-				height=20
-			}
-			control {
-				chan="$(P)$(R)TSControl"
-				clr=14
-				bclr=51
-			}
-			label="Stop"
-			press_msg="2"
-		}
-		"message button" {
-			object {
-				x=170
-				y=40
-				width=60
-				height=20
-			}
-			control {
-				chan="$(P)$(R)TSControl"
-				clr=14
-				bclr=51
-			}
-			label="Start"
-			press_msg="1"
-		}
-		"text update" {
-			object {
-				x=235
-				y=41
-				width=90
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)TSAcquiring"
-				clr=54
-				bclr=12
-			}
-			clrmod="alarm"
-			limits {
-			}
-		}
+	control {
+		chan="$(P)$(R)TSControl"
+		clr=14
+		bclr=51
+	}
+	label="Erase/Start"
+	press_msg="0"
+}
+"message button" {
+	object {
+		x=105
+		y=40
+		width=60
+		height=20
+	}
+	control {
+		chan="$(P)$(R)TSControl"
+		clr=14
+		bclr=51
+	}
+	label="Stop"
+	press_msg="2"
+}
+"message button" {
+	object {
+		x=170
+		y=40
+		width=60
+		height=20
+	}
+	control {
+		chan="$(P)$(R)TSControl"
+		clr=14
+		bclr=51
+	}
+	label="Start"
+	press_msg="1"
+}
+"text update" {
+	object {
+		x=235
+		y=41
+		width=90
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)TSAcquiring"
+		clr=54
+		bclr=12
+	}
+	clrmod="alarm"
+	format="string"
+	limits {
 	}
 }
-composite {
+"text entry" {
+	object {
+		x=175
+		y=66
+		width=60
+		height=19
+	}
+	control {
+		chan="$(P)$(R)TSNumPoints"
+		clr=14
+		bclr=51
+	}
+	limits {
+	}
+}
+text {
 	object {
 		x=10
 		y=65
-		width=225
+		width=160
 		height=20
 	}
-	"composite name"=""
-	children {
-		"text entry" {
-			object {
-				x=175
-				y=66
-				width=60
-				height=19
-			}
-			control {
-				chan="$(P)$(R)TSNumPoints"
-				clr=14
-				bclr=51
-			}
-			limits {
-			}
-		}
-		text {
-			object {
-				x=10
-				y=65
-				width=160
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Number of points"
-			align="horiz. right"
-		}
+	"basic attribute" {
+		clr=14
 	}
+	textix="Number of points"
+	align="horiz. right"
 }
-composite {
+rectangle {
 	object {
-		x=25
+		x=0
 		y=5
-		width=450
+		width=500
 		height=25
 	}
-	"composite name"=""
-	children {
-		rectangle {
-			object {
-				x=25
-				y=5
-				width=450
-				height=25
-			}
-			"basic attribute" {
-				clr=54
-			}
-		}
-		text {
-			object {
-				x=205
-				y=5
-				width=96
-				height=25
-			}
-			"basic attribute" {
-				clr=0
-			}
-			textix="$(P)$(R)$(PLT)"
-			align="horiz. centered"
-		}
+	"basic attribute" {
+		clr=54
 	}
+}
+text {
+	object {
+		x=0
+		y=5
+		width=500
+		height=25
+	}
+	"basic attribute" {
+		clr=0
+	}
+	textix="$(P)$(R)$(PLT)"
+	align="horiz. centered"
 }

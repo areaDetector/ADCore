@@ -1,7 +1,7 @@
 
 file {
-	name="ADDriverFile.adl"
-	version=030102
+	name="/home/epics/devel/areaDetector-3-2/ADCore/ADApp/op/adl/ADDriverFile.adl"
+	version=030109
 }
 display {
 	object {
@@ -89,10 +89,10 @@ display {
 }
 composite {
 	object {
-		x=0
-		y=0
-		width=350
-		height=60
+		x=127
+		y=2
+		width=107
+		height=21
 	}
 	"composite name"=""
 	children {
@@ -105,81 +105,70 @@ composite {
 			}
 			"composite name"=""
 			children {
-				composite {
+				rectangle {
 					object {
 						x=127
 						y=2
 						width=107
 						height=21
 					}
-					"composite name"=""
-					children {
-						rectangle {
-							object {
-								x=127
-								y=2
-								width=107
-								height=21
-							}
-							"basic attribute" {
-								clr=2
-							}
-						}
-					}
-				}
-				text {
-					object {
-						x=160
-						y=2
-						width=40
-						height=20
-					}
 					"basic attribute" {
-						clr=54
+						clr=2
 					}
-					textix="File"
-					align="horiz. centered"
 				}
-			}
-		}
-		rectangle {
-			object {
-				x=0
-				y=0
-				width=350
-				height=60
-			}
-			"basic attribute" {
-				clr=14
-				fill="outline"
 			}
 		}
 		text {
 			object {
-				x=13
-				y=29
-				width=150
+				x=160
+				y=2
+				width=40
 				height=20
 			}
 			"basic attribute" {
-				clr=14
+				clr=54
 			}
-			textix="Driver file I/O"
-			align="horiz. right"
-		}
-		"related display" {
-			object {
-				x=170
-				y=29
-				width=70
-				height=20
-			}
-			display[0] {
-				name="NDFile.adl"
-				args="P=$(P),R=$(R)"
-			}
-			clr=14
-			bclr=51
+			textix="File"
+			align="horiz. centered"
 		}
 	}
+}
+rectangle {
+	object {
+		x=0
+		y=0
+		width=350
+		height=60
+	}
+	"basic attribute" {
+		clr=14
+		fill="outline"
+	}
+}
+text {
+	object {
+		x=13
+		y=29
+		width=150
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Driver file I/O"
+	align="horiz. right"
+}
+"related display" {
+	object {
+		x=170
+		y=29
+		width=70
+		height=20
+	}
+	display[0] {
+		name="NDFile.adl"
+		args="P=$(P),R=$(R)"
+	}
+	clr=14
+	bclr=51
 }

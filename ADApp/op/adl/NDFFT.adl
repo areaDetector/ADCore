@@ -1,6 +1,6 @@
 
 file {
-	name="/home/epics/devel/areaDetector-2-6/ADCore/ADApp/op/adl/NDFFT.adl"
+	name="/home/epics/devel/areaDetector/ADCore/ADApp/op/adl/NDFFT.adl"
 	version=030109
 }
 display {
@@ -100,9 +100,9 @@ rectangle {
 }
 text {
 	object {
-		x=87
+		x=0
 		y=6
-		width=216
+		width=390
 		height=25
 	}
 	"basic attribute" {
@@ -121,314 +121,259 @@ composite {
 	"composite name"=""
 	"composite file"="NDPluginBase.adl"
 }
-composite {
+rectangle {
 	object {
 		x=5
 		y=595
 		width=380
 		height=180
 	}
-	"composite name"=""
-	children {
-		rectangle {
-			object {
-				x=5
-				y=595
-				width=380
-				height=180
-			}
-			"basic attribute" {
-				clr=14
-				fill="outline"
-				width=1
-			}
-		}
-		text {
-			object {
-				x=15
-				y=650
-				width=180
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Suppress DC offset"
-			align="horiz. right"
-		}
-		menu {
-			object {
-				x=200
-				y=650
-				width=120
-				height=20
-			}
-			control {
-				chan="$(P)$(R)FFTSuppressDC"
-				clr=14
-				bclr=51
-			}
-		}
-		"related display" {
-			object {
-				x=200
-				y=675
-				width=120
-				height=20
-			}
-			display[0] {
-				label="Time series"
-				name="NDFFTTimeSeriesPlot.adl"
-				args="P=$(P),RTS=$(RTS),R=$(R)"
-			}
-			display[1] {
-				label="FFT abs. value"
-				name="NDFFTFreqSpectrumPlot.adl"
-				args="P=$(P),RTS=$(RTS),R=$(R),S=FFTAbsValue"
-			}
-			display[2] {
-				label="FFT real"
-				name="NDFFTFreqSpectrumPlot.adl"
-				args="P=$(P),RTS=$(RTS),R=$(R),S=FFTReal"
-			}
-			display[3] {
-				label="FFT Imaginary"
-				name="NDFFTFreqSpectrumPlot.adl"
-				args="P=$(P),RTS=$(RTS),R=$(R),S=FFTImaginary"
-			}
-			display[4] {
-				label="Combined"
-				name="NDFFTPlotAll.adl"
-				args="P=$(P),RTS=$(RTS),R=$(R)"
-			}
-			display[6] {
-				args=" "
-			}
-			display[7] {
-				args=" "
-			}
-			display[8] {
-				args=" "
-			}
-			display[9] {
-				args=" "
-			}
-			display[10] {
-				args=" "
-			}
-			display[11] {
-				args=" "
-			}
-			display[12] {
-				args=" "
-			}
-			display[13] {
-				name="l"
-			}
-			display[14] {
-				args=" "
-			}
-			display[15] {
-				args=" "
-			}
-			clr=14
-			bclr=51
-			label="Plots"
-		}
-		text {
-			object {
-				x=105
-				y=675
-				width=90
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="1-D plots"
-			align="horiz. right"
-		}
-		composite {
-			object {
-				x=65
-				y=625
-				width=255
-				height=20
-			}
-			"composite name"=""
-			children {
-				text {
-					object {
-						x=65
-						y=625
-						width=130
-						height=20
-					}
-					"basic attribute" {
-						clr=14
-					}
-					textix="FFT direction"
-					align="horiz. right"
-				}
-				menu {
-					object {
-						x=200
-						y=625
-						width=120
-						height=20
-					}
-					control {
-						chan="$(P)$(R)FFTDirection"
-						clr=14
-						bclr=51
-					}
-				}
-			}
-		}
-		text {
-			object {
-				x=155
-				y=600
-				width=40
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Name"
-			align="horiz. right"
-		}
-		"text entry" {
-			object {
-				x=200
-				y=600
-				width=120
-				height=20
-			}
-			control {
-				chan="$(P)$(R)Name"
-				clr=14
-				bclr=51
-			}
-			limits {
-			}
-		}
-		composite {
-			object {
-				x=25
-				y=700
-				width=295
-				height=20
-			}
-			"composite name"=""
-			children {
-				text {
-					object {
-						x=25
-						y=700
-						width=170
-						height=20
-					}
-					"basic attribute" {
-						clr=14
-					}
-					textix="Number to average"
-					align="horiz. right"
-				}
-				"text entry" {
-					object {
-						x=200
-						y=700
-						width=120
-						height=20
-					}
-					control {
-						chan="$(P)$(R)FFTNumAverage"
-						clr=14
-						bclr=51
-					}
-					limits {
-					}
-				}
-			}
-		}
-		composite {
-			object {
-				x=45
-				y=725
-				width=275
-				height=20
-			}
-			"composite name"=""
-			children {
-				text {
-					object {
-						x=45
-						y=725
-						width=150
-						height=20
-					}
-					"basic attribute" {
-						clr=14
-					}
-					textix="Number averaged"
-					align="horiz. right"
-				}
-				"text update" {
-					object {
-						x=200
-						y=726
-						width=120
-						height=18
-					}
-					monitor {
-						chan="$(P)$(R)FFTNumAveraged"
-						clr=54
-						bclr=4
-					}
-					limits {
-					}
-				}
-			}
-		}
-		composite {
-			object {
-				x=65
-				y=750
-				width=253
-				height=20
-			}
-			"composite name"=""
-			children {
-				text {
-					object {
-						x=65
-						y=750
-						width=130
-						height=20
-					}
-					"basic attribute" {
-						clr=14
-					}
-					textix="Reset average"
-					align="horiz. right"
-				}
-				"message button" {
-					object {
-						x=200
-						y=750
-						width=118
-						height=20
-					}
-					control {
-						chan="$(P)$(R)FFTResetAverage"
-						clr=14
-						bclr=51
-					}
-					label="Reset average"
-					press_msg="1"
-				}
-			}
-		}
+	"basic attribute" {
+		clr=14
+		fill="outline"
+		width=1
 	}
+}
+text {
+	object {
+		x=15
+		y=650
+		width=180
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Suppress DC offset"
+	align="horiz. right"
+}
+menu {
+	object {
+		x=200
+		y=650
+		width=120
+		height=20
+	}
+	control {
+		chan="$(P)$(R)FFTSuppressDC"
+		clr=14
+		bclr=51
+	}
+}
+"related display" {
+	object {
+		x=200
+		y=675
+		width=120
+		height=20
+	}
+	display[0] {
+		label="Time series"
+		name="NDFFTTimeSeriesPlot.adl"
+		args="P=$(P),RTS=$(RTS),R=$(R)"
+	}
+	display[1] {
+		label="FFT abs. value"
+		name="NDFFTFreqSpectrumPlot.adl"
+		args="P=$(P),RTS=$(RTS),R=$(R),S=FFTAbsValue"
+	}
+	display[2] {
+		label="FFT real"
+		name="NDFFTFreqSpectrumPlot.adl"
+		args="P=$(P),RTS=$(RTS),R=$(R),S=FFTReal"
+	}
+	display[3] {
+		label="FFT Imaginary"
+		name="NDFFTFreqSpectrumPlot.adl"
+		args="P=$(P),RTS=$(RTS),R=$(R),S=FFTImaginary"
+	}
+	display[4] {
+		label="Combined"
+		name="NDFFTPlotAll.adl"
+		args="P=$(P),RTS=$(RTS),R=$(R)"
+	}
+	display[6] {
+		args=" "
+	}
+	display[7] {
+		args=" "
+	}
+	display[8] {
+		args=" "
+	}
+	display[9] {
+		args=" "
+	}
+	display[10] {
+		args=" "
+	}
+	display[11] {
+		args=" "
+	}
+	display[12] {
+		args=" "
+	}
+	display[13] {
+		name="l"
+	}
+	display[14] {
+		args=" "
+	}
+	display[15] {
+		args=" "
+	}
+	clr=14
+	bclr=51
+	label="Plots"
+}
+text {
+	object {
+		x=105
+		y=675
+		width=90
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="1-D plots"
+	align="horiz. right"
+}
+text {
+	object {
+		x=65
+		y=625
+		width=130
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="FFT direction"
+	align="horiz. right"
+}
+menu {
+	object {
+		x=200
+		y=625
+		width=120
+		height=20
+	}
+	control {
+		chan="$(P)$(R)FFTDirection"
+		clr=14
+		bclr=51
+	}
+}
+text {
+	object {
+		x=155
+		y=600
+		width=40
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Name"
+	align="horiz. right"
+}
+"text entry" {
+	object {
+		x=200
+		y=600
+		width=120
+		height=20
+	}
+	control {
+		chan="$(P)$(R)Name"
+		clr=14
+		bclr=51
+	}
+	limits {
+	}
+}
+text {
+	object {
+		x=25
+		y=700
+		width=170
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Number to average"
+	align="horiz. right"
+}
+"text entry" {
+	object {
+		x=200
+		y=700
+		width=120
+		height=20
+	}
+	control {
+		chan="$(P)$(R)FFTNumAverage"
+		clr=14
+		bclr=51
+	}
+	limits {
+	}
+}
+text {
+	object {
+		x=45
+		y=725
+		width=150
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Number averaged"
+	align="horiz. right"
+}
+"text update" {
+	object {
+		x=200
+		y=726
+		width=120
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)FFTNumAveraged"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+text {
+	object {
+		x=65
+		y=750
+		width=130
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Reset average"
+	align="horiz. right"
+}
+"message button" {
+	object {
+		x=200
+		y=750
+		width=118
+		height=20
+	}
+	control {
+		chan="$(P)$(R)FFTResetAverage"
+		clr=14
+		bclr=51
+	}
+	label="Reset average"
+	press_msg="1"
 }

@@ -1,6 +1,6 @@
 
 file {
-	name="/home/epics/devel/areaDetector-2-6/ADCore/ADApp/op/adl/NDPluginBaseFull.adl"
+	name="/home/epics/devel/areaDetector/ADCore/ADApp/op/adl/NDPluginBaseFull.adl"
 	version=030109
 }
 display {
@@ -255,7 +255,6 @@ text {
 		clr=54
 		bclr=4
 	}
-	format="string"
 	limits {
 	}
 }
@@ -431,64 +430,53 @@ text {
 	limits {
 	}
 }
-composite {
+text {
 	object {
 		x=10
 		y=235
-		width=366
+		width=150
 		height=20
 	}
-	"composite name"=""
-	children {
-		text {
-			object {
-				x=10
-				y=235
-				width=150
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Callbacks block"
-			align="horiz. right"
-		}
-		menu {
-			object {
-				x=170
-				y=235
-				width=100
-				height=20
-			}
-			control {
-				chan="$(P)$(R)BlockingCallbacks"
-				clr=14
-				bclr=51
-			}
-		}
-		"text update" {
-			object {
-				x=276
-				y=236
-				width=100
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)BlockingCallbacks_RBV"
-				clr=54
-				bclr=4
-			}
-			format="string"
-			limits {
-			}
-		}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Callbacks block"
+	align="horiz. right"
+}
+menu {
+	object {
+		x=170
+		y=235
+		width=100
+		height=20
+	}
+	control {
+		chan="$(P)$(R)BlockingCallbacks"
+		clr=14
+		bclr=51
+	}
+}
+"text update" {
+	object {
+		x=276
+		y=236
+		width=100
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)BlockingCallbacks_RBV"
+		clr=54
+		bclr=4
+	}
+	format="string"
+	limits {
 	}
 }
 text {
 	object {
-		x=10
+		x=70
 		y=335
-		width=150
+		width=90
 		height=20
 	}
 	"basic attribute" {
@@ -526,59 +514,48 @@ menu {
 	limits {
 	}
 }
-composite {
+"text entry" {
+	object {
+		x=170
+		y=260
+		width=100
+		height=20
+	}
+	control {
+		chan="$(P)$(R)NumThreads"
+		clr=14
+		bclr=51
+	}
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=276
+		y=261
+		width=100
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)NumThreads_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+text {
 	object {
 		x=70
 		y=260
-		width=306
+		width=90
 		height=20
 	}
-	"composite name"=""
-	children {
-		"text entry" {
-			object {
-				x=170
-				y=260
-				width=100
-				height=20
-			}
-			control {
-				chan="$(P)$(R)NumThreads"
-				clr=14
-				bclr=51
-			}
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=276
-				y=261
-				width=100
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)NumThreads_RBV"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
-		}
-		text {
-			object {
-				x=70
-				y=260
-				width=90
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="# threads"
-			align="horiz. right"
-		}
+	"basic attribute" {
+		clr=14
 	}
+	textix="# threads"
+	align="horiz. right"
 }
 "text entry" {
 	object {
@@ -623,66 +600,55 @@ text {
 	textix="Sort time"
 	align="horiz. right"
 }
-composite {
+text {
 	object {
 		x=10
 		y=310
-		width=366
+		width=150
 		height=20
 	}
-	"composite name"=""
-	children {
-		text {
-			object {
-				x=10
-				y=310
-				width=150
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Queue size/free"
-			align="horiz. right"
-		}
-		"text update" {
-			object {
-				x=276
-				y=310
-				width=100
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)QueueFree"
-				clr=54
-				bclr=12
-			}
-			clrmod="alarm"
-			limits {
-			}
-		}
-		"text entry" {
-			object {
-				x=170
-				y=310
-				width=100
-				height=20
-			}
-			control {
-				chan="$(P)$(R)QueueSize"
-				clr=14
-				bclr=51
-			}
-			limits {
-			}
-		}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Queue size/free"
+	align="horiz. right"
+}
+"text update" {
+	object {
+		x=276
+		y=310
+		width=100
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)QueueFree"
+		clr=54
+		bclr=12
+	}
+	clrmod="alarm"
+	limits {
+	}
+}
+"text entry" {
+	object {
+		x=170
+		y=310
+		width=100
+		height=20
+	}
+	control {
+		chan="$(P)$(R)QueueSize"
+		clr=14
+		bclr=51
+	}
+	limits {
 	}
 }
 text {
 	object {
-		x=10
+		x=20
 		y=385
-		width=150
+		width=140
 		height=20
 	}
 	"basic attribute" {
@@ -739,9 +705,9 @@ text {
 }
 text {
 	object {
-		x=30
+		x=40
 		y=410
-		width=130
+		width=120
 		height=20
 	}
 	"basic attribute" {
@@ -791,43 +757,32 @@ text {
 	textix="msec"
 	align="horiz. right"
 }
-composite {
+text {
 	object {
 		x=60
 		y=460
-		width=210
+		width=100
 		height=20
 	}
-	"composite name"=""
-	children {
-		text {
-			object {
-				x=60
-				y=460
-				width=100
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Array rate"
-			align="horiz. right"
-		}
-		"text update" {
-			object {
-				x=170
-				y=461
-				width=100
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)ArrayRate_RBV"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
-		}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Array rate"
+	align="horiz. right"
+}
+"text update" {
+	object {
+		x=170
+		y=461
+		width=100
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)ArrayRate_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
 	}
 }
 "text update" {
@@ -1164,9 +1119,9 @@ text {
 }
 text {
 	object {
-		x=19
+		x=9
 		y=535
-		width=140
+		width=150
 		height=20
 	}
 	"basic attribute" {
@@ -1190,126 +1145,115 @@ text {
 	label="Reset to 0"
 	press_msg="0"
 }
-composite {
+text {
 	object {
 		x=10
 		y=850
-		width=366
-		height=70
+		width=150
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Array callbacks"
+	align="horiz. right"
+}
+composite {
+	object {
+		x=50
+		y=900
+		width=220
+		height=20
 	}
 	"composite name"=""
 	children {
-		text {
+		"related display" {
 			object {
-				x=10
-				y=850
-				width=150
+				x=170
+				y=900
+				width=100
 				height=20
 			}
-			"basic attribute" {
-				clr=14
+			display[0] {
+				label="asynRecord"
+				name="asynRecord.adl"
+				args="P=$(P),R=$(R)AsynIO"
 			}
-			textix="Array callbacks"
-			align="horiz. right"
+			clr=14
+			bclr=51
 		}
-		composite {
+		text {
 			object {
 				x=50
 				y=900
-				width=220
-				height=20
-			}
-			"composite name"=""
-			children {
-				"related display" {
-					object {
-						x=170
-						y=900
-						width=100
-						height=20
-					}
-					display[0] {
-						label="asynRecord"
-						name="asynRecord.adl"
-						args="P=$(P),R=$(R)AsynIO"
-					}
-					clr=14
-					bclr=51
-				}
-				text {
-					object {
-						x=50
-						y=900
-						width=110
-						height=20
-					}
-					"basic attribute" {
-						clr=14
-					}
-					textix="asyn record"
-					align="horiz. right"
-				}
-			}
-		}
-		menu {
-			object {
-				x=170
-				y=850
-				width=100
-				height=20
-			}
-			control {
-				chan="$(P)$(R)ArrayCallbacks"
-				clr=14
-				bclr=51
-			}
-		}
-		"text update" {
-			object {
-				x=276
-				y=851
-				width=100
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)ArrayCallbacks_RBV"
-				clr=54
-				bclr=12
-			}
-			clrmod="alarm"
-			format="string"
-			limits {
-			}
-		}
-		text {
-			object {
-				x=23
-				y=875
-				width=140
+				width=110
 				height=20
 			}
 			"basic attribute" {
 				clr=14
 			}
-			textix="Process plugin"
+			textix="asyn record"
 			align="horiz. right"
 		}
-		"message button" {
-			object {
-				x=170
-				y=875
-				width=100
-				height=20
-			}
-			control {
-				chan="$(P)$(R)ProcessPlugin"
-				clr=14
-				bclr=51
-			}
-			label="Process"
-			press_msg="1"
-		}
 	}
+}
+menu {
+	object {
+		x=170
+		y=850
+		width=100
+		height=20
+	}
+	control {
+		chan="$(P)$(R)ArrayCallbacks"
+		clr=14
+		bclr=51
+	}
+}
+"text update" {
+	object {
+		x=276
+		y=851
+		width=100
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)ArrayCallbacks_RBV"
+		clr=54
+		bclr=12
+	}
+	clrmod="alarm"
+	format="string"
+	limits {
+	}
+}
+text {
+	object {
+		x=23
+		y=875
+		width=140
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Process plugin"
+	align="horiz. right"
+}
+"message button" {
+	object {
+		x=170
+		y=875
+		width=100
+		height=20
+	}
+	control {
+		chan="$(P)$(R)ProcessPlugin"
+		clr=14
+		bclr=51
+	}
+	label="Process"
+	press_msg="1"
 }
 composite {
 	object {
@@ -1321,42 +1265,31 @@ composite {
 	"composite name"=""
 	"composite file"="ADAttrFile.adl"
 }
-composite {
+text {
 	object {
 		x=60
 		y=710
-		width=260
+		width=100
 		height=20
 	}
-	"composite name"=""
-	children {
-		text {
-			object {
-				x=60
-				y=710
-				width=100
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Time stamp"
-			align="horiz. right"
-		}
-		"text update" {
-			object {
-				x=170
-				y=711
-				width=150
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)TimeStamp_RBV"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
-		}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Time stamp"
+	align="horiz. right"
+}
+"text update" {
+	object {
+		x=170
+		y=711
+		width=150
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)TimeStamp_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
 	}
 }

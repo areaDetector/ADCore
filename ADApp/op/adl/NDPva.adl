@@ -1,6 +1,6 @@
 
 file {
-	name="/home/epics/devel/areaDetector-2-6/ADCore/ADApp/op/adl/NDPva.adl"
+	name="/home/epics/devel/areaDetector/ADCore/ADApp/op/adl/NDPva.adl"
 	version=030109
 }
 display {
@@ -121,68 +121,57 @@ composite {
 	"composite name"=""
 	"composite file"="NDPluginBase.adl"
 }
-composite {
+rectangle {
 	object {
 		x=5
 		y=600
 		width=380
 		height=60
 	}
-	"composite name"=""
-	children {
-		rectangle {
-			object {
-				x=5
-				y=600
-				width=380
-				height=60
-			}
-			"basic attribute" {
-				clr=14
-				fill="outline"
-			}
-		}
-		text {
-			object {
-				x=22
-				y=630
-				width=140
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="V4 PV Name"
-			align="horiz. right"
-		}
-		text {
-			object {
-				x=115
-				y=605
-				width=160
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="EPICS V4 PV Name"
-			align="horiz. right"
-		}
-		"text update" {
-			object {
-				x=175
-				y=633
-				width=200
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)PvName_RBV"
-				clr=54
-				bclr=4
-			}
-			format="string"
-			limits {
-			}
-		}
+	"basic attribute" {
+		clr=14
+		fill="outline"
+	}
+}
+text {
+	object {
+		x=62
+		y=630
+		width=100
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="V4 PV Name"
+	align="horiz. right"
+}
+text {
+	object {
+		x=115
+		y=605
+		width=160
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="EPICS V4 PV Name"
+	align="horiz. right"
+}
+"text update" {
+	object {
+		x=175
+		y=633
+		width=200
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)PvName_RBV"
+		clr=54
+		bclr=4
+	}
+	format="string"
+	limits {
 	}
 }

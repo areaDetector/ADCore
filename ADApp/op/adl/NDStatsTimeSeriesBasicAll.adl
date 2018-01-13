@@ -1,12 +1,12 @@
 
 file {
-	name="/home/epics/devel/areaDetector-2-6/ADCore/ADApp/op/adl/NDStatsTimeSeriesBasicAll.adl"
+	name="/home/epics/devel/areaDetector/ADCore/ADApp/op/adl/NDStatsTimeSeriesBasicAll.adl"
 	version=030109
 }
 display {
 	object {
-		x=136
-		y=223
+		x=464
+		y=226
 		width=1435
 		height=655
 	}
@@ -89,9 +89,9 @@ display {
 }
 rectangle {
 	object {
-		x=492
+		x=0
 		y=5
-		width=450
+		width=1435
 		height=25
 	}
 	"basic attribute" {
@@ -100,9 +100,9 @@ rectangle {
 }
 text {
 	object {
-		x=672
+		x=0
 		y=5
-		width=96
+		width=1435
 		height=25
 	}
 	"basic attribute" {
@@ -246,206 +246,163 @@ composite {
 		}
 	}
 }
-composite {
+"message button" {
 	object {
 		x=23
 		y=479
-		width=315
+		width=90
 		height=20
 	}
-	"composite name"=""
-	children {
-		"message button" {
-			object {
-				x=23
-				y=479
-				width=90
-				height=20
-			}
-			control {
-				chan="$(P)$(R)TSControl"
-				clr=14
-				bclr=51
-			}
-			label="Erase/Start"
-			press_msg="0"
-		}
-		"message button" {
-			object {
-				x=118
-				y=479
-				width=60
-				height=20
-			}
-			control {
-				chan="$(P)$(R)TSControl"
-				clr=14
-				bclr=51
-			}
-			label="Stop"
-			press_msg="2"
-		}
-		"message button" {
-			object {
-				x=183
-				y=479
-				width=60
-				height=20
-			}
-			control {
-				chan="$(P)$(R)TSControl"
-				clr=14
-				bclr=51
-			}
-			label="Start"
-			press_msg="1"
-		}
-		"text update" {
-			object {
-				x=248
-				y=480
-				width=90
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)TSAcquiring"
-				clr=54
-				bclr=12
-			}
-			clrmod="alarm"
-			limits {
-			}
-		}
+	control {
+		chan="$(P)$(R)TSControl"
+		clr=14
+		bclr=51
+	}
+	label="Erase/Start"
+	press_msg="0"
+}
+"message button" {
+	object {
+		x=118
+		y=479
+		width=60
+		height=20
+	}
+	control {
+		chan="$(P)$(R)TSControl"
+		clr=14
+		bclr=51
+	}
+	label="Stop"
+	press_msg="2"
+}
+"message button" {
+	object {
+		x=183
+		y=479
+		width=60
+		height=20
+	}
+	control {
+		chan="$(P)$(R)TSControl"
+		clr=14
+		bclr=51
+	}
+	label="Start"
+	press_msg="1"
+}
+"text update" {
+	object {
+		x=248
+		y=480
+		width=90
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)TSAcquiring"
+		clr=54
+		bclr=12
+	}
+	clrmod="alarm"
+	format="string"
+	limits {
 	}
 }
-composite {
+"text entry" {
+	object {
+		x=188
+		y=505
+		width=60
+		height=19
+	}
+	control {
+		chan="$(P)$(R)TSNumPoints"
+		clr=14
+		bclr=51
+	}
+	limits {
+	}
+}
+text {
 	object {
 		x=23
 		y=504
-		width=225
+		width=160
 		height=20
 	}
-	"composite name"=""
-	children {
-		"text entry" {
-			object {
-				x=188
-				y=505
-				width=60
-				height=19
-			}
-			control {
-				chan="$(P)$(R)TSNumPoints"
-				clr=14
-				bclr=51
-			}
-			limits {
-			}
-		}
-		text {
-			object {
-				x=23
-				y=504
-				width=160
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Number of points"
-			align="horiz. right"
-		}
+	"basic attribute" {
+		clr=14
 	}
+	textix="Number of points"
+	align="horiz. right"
 }
-composite {
+text {
 	object {
 		x=23
 		y=529
-		width=225
+		width=130
 		height=20
 	}
-	"composite name"=""
-	children {
-		text {
-			object {
-				x=23
-				y=529
-				width=130
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Current point"
-			align="horiz. right"
-		}
-		"text update" {
-			object {
-				x=158
-				y=530
-				width=90
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)TSCurrentPoint"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
-		}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Current point"
+	align="horiz. right"
+}
+"text update" {
+	object {
+		x=158
+		y=530
+		width=90
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)TSCurrentPoint"
+		clr=54
+		bclr=4
+	}
+	limits {
 	}
 }
-composite {
+menu {
+	object {
+		x=118
+		y=555
+		width=80
+		height=18
+	}
+	control {
+		chan="$(P)$(R)TSRead.SCAN"
+		clr=14
+		bclr=51
+	}
+}
+"message button" {
+	object {
+		x=203
+		y=554
+		width=60
+		height=20
+	}
+	control {
+		chan="$(P)$(R)TSControl"
+		clr=14
+		bclr=51
+	}
+	label="Read"
+	press_msg="3"
+}
+text {
 	object {
 		x=23
 		y=554
-		width=240
+		width=90
 		height=20
 	}
-	"composite name"=""
-	children {
-		menu {
-			object {
-				x=118
-				y=555
-				width=80
-				height=18
-			}
-			control {
-				chan="$(P)$(R)TSRead.SCAN"
-				clr=14
-				bclr=51
-			}
-		}
-		"message button" {
-			object {
-				x=203
-				y=554
-				width=60
-				height=20
-			}
-			control {
-				chan="$(P)$(R)TSControl"
-				clr=14
-				bclr=51
-			}
-			label="Read"
-			press_msg="3"
-		}
-		text {
-			object {
-				x=23
-				y=554
-				width=90
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Read rate"
-		}
+	"basic attribute" {
+		clr=14
 	}
+	textix="Read rate"
 }
 "cartesian plot" {
 	object {

@@ -1,7 +1,7 @@
 
 file {
 	name="/home/epics/devel/areaDetector/ADCore/ADApp/op/adl/NDFileHDF5_ExtraDims.adl"
-	version=030107
+	version=030109
 }
 display {
 	object {
@@ -87,40 +87,29 @@ display {
 		1a7309,
 	}
 }
-composite {
+rectangle {
 	object {
-		x=55
+		x=0
 		y=5
-		width=360
+		width=470
 		height=26
 	}
-	"composite name"=""
-	children {
-		rectangle {
-			object {
-				x=55
-				y=5
-				width=360
-				height=26
-			}
-			"basic attribute" {
-				clr=2
-			}
-		}
-		text {
-			object {
-				x=127
-				y=6
-				width=216
-				height=25
-			}
-			"basic attribute" {
-				clr=54
-			}
-			textix="$(P)$(R)"
-			align="horiz. centered"
-		}
+	"basic attribute" {
+		clr=2
 	}
+}
+text {
+	object {
+		x=0
+		y=6
+		width=470
+		height=25
+	}
+	"basic attribute" {
+		clr=54
+	}
+	textix="$(P)$(R)"
+	align="horiz. centered"
 }
 text {
 	object {
@@ -135,1316 +124,1194 @@ text {
 	textix="Extra dimensions"
 	align="horiz. right"
 }
-composite {
+text {
 	object {
 		x=15
 		y=120
-		width=445
-		height=495
+		width=60
+		height=20
 	}
-	"composite name"=""
-	children {
-		text {
-			object {
-				x=15
-				y=120
-				width=60
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Size N"
-			align="horiz. right"
-		}
-		"text entry" {
-			object {
-				x=80
-				y=120
-				width=60
-				height=20
-			}
-			control {
-				chan="$(P)$(R)ExtraDimSizeN"
-				clr=14
-				bclr=51
-			}
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=145
-				y=121
-				width=80
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)ExtraDimSizeN_RBV"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
-		}
-		text {
-			object {
-				x=15
-				y=145
-				width=60
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Name N"
-			align="horiz. right"
-		}
-		"text update" {
-			object {
-				x=80
-				y=146
-				width=150
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)ExtraDimNameN_RBV"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
-		}
-		text {
-			object {
-				x=15
-				y=170
-				width=60
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Size X"
-			align="horiz. right"
-		}
-		"text entry" {
-			object {
-				x=80
-				y=170
-				width=60
-				height=20
-			}
-			control {
-				chan="$(P)$(R)ExtraDimSizeX"
-				clr=14
-				bclr=51
-			}
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=145
-				y=171
-				width=80
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)ExtraDimSizeX_RBV"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
-		}
-		text {
-			object {
-				x=15
-				y=195
-				width=60
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Name X"
-			align="horiz. right"
-		}
-		"text update" {
-			object {
-				x=80
-				y=196
-				width=150
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)ExtraDimNameX_RBV"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
-		}
-		text {
-			object {
-				x=15
-				y=220
-				width=60
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Size Y"
-			align="horiz. right"
-		}
-		"text entry" {
-			object {
-				x=80
-				y=220
-				width=60
-				height=20
-			}
-			control {
-				chan="$(P)$(R)ExtraDimSizeY"
-				clr=14
-				bclr=51
-			}
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=145
-				y=221
-				width=80
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)ExtraDimSizeY_RBV"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
-		}
-		text {
-			object {
-				x=15
-				y=245
-				width=60
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Name Y"
-			align="horiz. right"
-		}
-		"text update" {
-			object {
-				x=80
-				y=246
-				width=150
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)ExtraDimNameY_RBV"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
-		}
-		text {
-			object {
-				x=15
-				y=270
-				width=60
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Size 3"
-			align="horiz. right"
-		}
-		"text entry" {
-			object {
-				x=80
-				y=270
-				width=60
-				height=20
-			}
-			control {
-				chan="$(P)$(R)ExtraDimSize3"
-				clr=14
-				bclr=51
-			}
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=145
-				y=271
-				width=80
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)ExtraDimSize3_RBV"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
-		}
-		text {
-			object {
-				x=15
-				y=295
-				width=60
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Name 3"
-			align="horiz. right"
-		}
-		"text update" {
-			object {
-				x=80
-				y=296
-				width=150
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)ExtraDimName3_RBV"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
-		}
-		text {
-			object {
-				x=15
-				y=320
-				width=60
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Size 4"
-			align="horiz. right"
-		}
-		"text entry" {
-			object {
-				x=80
-				y=320
-				width=60
-				height=20
-			}
-			control {
-				chan="$(P)$(R)ExtraDimSize4"
-				clr=14
-				bclr=51
-			}
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=145
-				y=321
-				width=80
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)ExtraDimSize4_RBV"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
-		}
-		text {
-			object {
-				x=15
-				y=345
-				width=60
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Name 4"
-			align="horiz. right"
-		}
-		"text update" {
-			object {
-				x=80
-				y=346
-				width=150
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)ExtraDimName4_RBV"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
-		}
-		text {
-			object {
-				x=15
-				y=370
-				width=60
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Size 5"
-			align="horiz. right"
-		}
-		"text entry" {
-			object {
-				x=80
-				y=370
-				width=60
-				height=20
-			}
-			control {
-				chan="$(P)$(R)ExtraDimSize5"
-				clr=14
-				bclr=51
-			}
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=145
-				y=371
-				width=80
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)ExtraDimSize5_RBV"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
-		}
-		text {
-			object {
-				x=15
-				y=395
-				width=60
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Name 5"
-			align="horiz. right"
-		}
-		"text update" {
-			object {
-				x=80
-				y=396
-				width=150
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)ExtraDimName5_RBV"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
-		}
-		text {
-			object {
-				x=15
-				y=420
-				width=60
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Size 6"
-			align="horiz. right"
-		}
-		"text entry" {
-			object {
-				x=80
-				y=420
-				width=60
-				height=20
-			}
-			control {
-				chan="$(P)$(R)ExtraDimSize6"
-				clr=14
-				bclr=51
-			}
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=145
-				y=421
-				width=80
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)ExtraDimSize6_RBV"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
-		}
-		text {
-			object {
-				x=15
-				y=445
-				width=60
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Name 6"
-			align="horiz. right"
-		}
-		"text update" {
-			object {
-				x=80
-				y=446
-				width=150
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)ExtraDimName6_RBV"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
-		}
-		text {
-			object {
-				x=15
-				y=470
-				width=60
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Size 7"
-			align="horiz. right"
-		}
-		"text entry" {
-			object {
-				x=80
-				y=470
-				width=60
-				height=20
-			}
-			control {
-				chan="$(P)$(R)ExtraDimSize7"
-				clr=14
-				bclr=51
-			}
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=145
-				y=471
-				width=80
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)ExtraDimSize7_RBV"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
-		}
-		text {
-			object {
-				x=15
-				y=495
-				width=60
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Name 7"
-			align="horiz. right"
-		}
-		"text update" {
-			object {
-				x=80
-				y=496
-				width=150
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)ExtraDimName7_RBV"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
-		}
-		text {
-			object {
-				x=15
-				y=520
-				width=60
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Size 8"
-			align="horiz. right"
-		}
-		"text entry" {
-			object {
-				x=80
-				y=520
-				width=60
-				height=20
-			}
-			control {
-				chan="$(P)$(R)ExtraDimSize8"
-				clr=14
-				bclr=51
-			}
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=145
-				y=521
-				width=80
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)ExtraDimSize8_RBV"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
-		}
-		text {
-			object {
-				x=15
-				y=545
-				width=60
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Name 8"
-			align="horiz. right"
-		}
-		"text update" {
-			object {
-				x=80
-				y=546
-				width=150
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)ExtraDimName8_RBV"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
-		}
-		text {
-			object {
-				x=15
-				y=570
-				width=60
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Size 9"
-			align="horiz. right"
-		}
-		"text entry" {
-			object {
-				x=80
-				y=570
-				width=60
-				height=20
-			}
-			control {
-				chan="$(P)$(R)ExtraDimSize9"
-				clr=14
-				bclr=51
-			}
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=145
-				y=571
-				width=80
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)ExtraDimSize9_RBV"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
-		}
-		text {
-			object {
-				x=15
-				y=595
-				width=60
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Name 9"
-			align="horiz. right"
-		}
-		"text update" {
-			object {
-				x=80
-				y=596
-				width=150
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)ExtraDimName9_RBV"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
-		}
-		composite {
-			object {
-				x=240
-				y=170
-				width=220
-				height=420
-			}
-			"composite name"=""
-			children {
-				composite {
-					object {
-						x=240
-						y=170
-						width=220
-						height=20
-					}
-					"composite name"=""
-					children {
-						text {
-							object {
-								x=240
-								y=170
-								width=70
-								height=20
-							}
-							"basic attribute" {
-								clr=14
-							}
-							textix="Chunk X"
-							align="horiz. right"
-						}
-						"text entry" {
-							object {
-								x=315
-								y=170
-								width=60
-								height=20
-							}
-							control {
-								chan="$(P)$(R)ExtraDimChunkX"
-								clr=14
-								bclr=51
-							}
-							limits {
-							}
-						}
-						"text update" {
-							object {
-								x=380
-								y=171
-								width=80
-								height=18
-							}
-							monitor {
-								chan="$(P)$(R)ExtraDimChunkX_RBV"
-								clr=54
-								bclr=4
-							}
-							limits {
-							}
-						}
-					}
-				}
-				composite {
-					object {
-						x=240
-						y=220
-						width=220
-						height=20
-					}
-					"composite name"=""
-					children {
-						text {
-							object {
-								x=240
-								y=220
-								width=70
-								height=20
-							}
-							"basic attribute" {
-								clr=14
-							}
-							textix="Chunk Y"
-							align="horiz. right"
-						}
-						"text entry" {
-							object {
-								x=315
-								y=220
-								width=60
-								height=20
-							}
-							control {
-								chan="$(P)$(R)ExtraDimChunkY"
-								clr=14
-								bclr=51
-							}
-							limits {
-							}
-						}
-						"text update" {
-							object {
-								x=380
-								y=221
-								width=80
-								height=18
-							}
-							monitor {
-								chan="$(P)$(R)ExtraDimChunkY_RBV"
-								clr=54
-								bclr=4
-							}
-							limits {
-							}
-						}
-					}
-				}
-				composite {
-					object {
-						x=240
-						y=270
-						width=220
-						height=20
-					}
-					"composite name"=""
-					children {
-						text {
-							object {
-								x=240
-								y=270
-								width=70
-								height=20
-							}
-							"basic attribute" {
-								clr=14
-							}
-							textix="Chunk 3"
-							align="horiz. right"
-						}
-						"text entry" {
-							object {
-								x=315
-								y=270
-								width=60
-								height=20
-							}
-							control {
-								chan="$(P)$(R)ExtraDimChunk3"
-								clr=14
-								bclr=51
-							}
-							limits {
-							}
-						}
-						"text update" {
-							object {
-								x=380
-								y=271
-								width=80
-								height=18
-							}
-							monitor {
-								chan="$(P)$(R)ExtraDimChunk3_RBV"
-								clr=54
-								bclr=4
-							}
-							limits {
-							}
-						}
-					}
-				}
-				composite {
-					object {
-						x=240
-						y=320
-						width=220
-						height=20
-					}
-					"composite name"=""
-					children {
-						text {
-							object {
-								x=240
-								y=320
-								width=70
-								height=20
-							}
-							"basic attribute" {
-								clr=14
-							}
-							textix="Chunk 3"
-							align="horiz. right"
-						}
-						"text entry" {
-							object {
-								x=315
-								y=320
-								width=60
-								height=20
-							}
-							control {
-								chan="$(P)$(R)ExtraDimChunk4"
-								clr=14
-								bclr=51
-							}
-							limits {
-							}
-						}
-						"text update" {
-							object {
-								x=380
-								y=321
-								width=80
-								height=18
-							}
-							monitor {
-								chan="$(P)$(R)ExtraDimChunk4_RBV"
-								clr=54
-								bclr=4
-							}
-							limits {
-							}
-						}
-					}
-				}
-				composite {
-					object {
-						x=240
-						y=370
-						width=220
-						height=20
-					}
-					"composite name"=""
-					children {
-						text {
-							object {
-								x=240
-								y=370
-								width=70
-								height=20
-							}
-							"basic attribute" {
-								clr=14
-							}
-							textix="Chunk 5"
-							align="horiz. right"
-						}
-						"text entry" {
-							object {
-								x=315
-								y=370
-								width=60
-								height=20
-							}
-							control {
-								chan="$(P)$(R)ExtraDimChunk5"
-								clr=14
-								bclr=51
-							}
-							limits {
-							}
-						}
-						"text update" {
-							object {
-								x=380
-								y=371
-								width=80
-								height=18
-							}
-							monitor {
-								chan="$(P)$(R)ExtraDimChunk5_RBV"
-								clr=54
-								bclr=4
-							}
-							limits {
-							}
-						}
-					}
-				}
-				composite {
-					object {
-						x=240
-						y=420
-						width=220
-						height=20
-					}
-					"composite name"=""
-					children {
-						text {
-							object {
-								x=240
-								y=420
-								width=70
-								height=20
-							}
-							"basic attribute" {
-								clr=14
-							}
-							textix="Chunk 6"
-							align="horiz. right"
-						}
-						"text entry" {
-							object {
-								x=315
-								y=420
-								width=60
-								height=20
-							}
-							control {
-								chan="$(P)$(R)ExtraDimChunk6"
-								clr=14
-								bclr=51
-							}
-							limits {
-							}
-						}
-						"text update" {
-							object {
-								x=380
-								y=421
-								width=80
-								height=18
-							}
-							monitor {
-								chan="$(P)$(R)ExtraDimChunk6_RBV"
-								clr=54
-								bclr=4
-							}
-							limits {
-							}
-						}
-					}
-				}
-				composite {
-					object {
-						x=240
-						y=470
-						width=220
-						height=20
-					}
-					"composite name"=""
-					children {
-						text {
-							object {
-								x=240
-								y=470
-								width=70
-								height=20
-							}
-							"basic attribute" {
-								clr=14
-							}
-							textix="Chunk 7"
-							align="horiz. right"
-						}
-						"text entry" {
-							object {
-								x=315
-								y=470
-								width=60
-								height=20
-							}
-							control {
-								chan="$(P)$(R)ExtraDimChunk7"
-								clr=14
-								bclr=51
-							}
-							limits {
-							}
-						}
-						"text update" {
-							object {
-								x=380
-								y=471
-								width=80
-								height=18
-							}
-							monitor {
-								chan="$(P)$(R)ExtraDimChunk7_RBV"
-								clr=54
-								bclr=4
-							}
-							limits {
-							}
-						}
-					}
-				}
-				composite {
-					object {
-						x=240
-						y=520
-						width=220
-						height=20
-					}
-					"composite name"=""
-					children {
-						text {
-							object {
-								x=240
-								y=520
-								width=70
-								height=20
-							}
-							"basic attribute" {
-								clr=14
-							}
-							textix="Chunk 8"
-							align="horiz. right"
-						}
-						"text entry" {
-							object {
-								x=315
-								y=520
-								width=60
-								height=20
-							}
-							control {
-								chan="$(P)$(R)ExtraDimChunk8"
-								clr=14
-								bclr=51
-							}
-							limits {
-							}
-						}
-						"text update" {
-							object {
-								x=380
-								y=521
-								width=80
-								height=18
-							}
-							monitor {
-								chan="$(P)$(R)ExtraDimChunk8_RBV"
-								clr=54
-								bclr=4
-							}
-							limits {
-							}
-						}
-					}
-				}
-				composite {
-					object {
-						x=240
-						y=570
-						width=220
-						height=20
-					}
-					"composite name"=""
-					children {
-						text {
-							object {
-								x=240
-								y=570
-								width=70
-								height=20
-							}
-							"basic attribute" {
-								clr=14
-							}
-							textix="Chunk 9"
-							align="horiz. right"
-						}
-						"text entry" {
-							object {
-								x=315
-								y=570
-								width=60
-								height=20
-							}
-							control {
-								chan="$(P)$(R)ExtraDimChunk9"
-								clr=14
-								bclr=51
-							}
-							limits {
-							}
-						}
-						"text update" {
-							object {
-								x=380
-								y=571
-								width=80
-								height=18
-							}
-							monitor {
-								chan="$(P)$(R)ExtraDimChunk9_RBV"
-								clr=54
-								bclr=4
-							}
-							limits {
-							}
-						}
-					}
-				}
-			}
-		}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Size N"
+	align="horiz. right"
+}
+"text entry" {
+	object {
+		x=80
+		y=120
+		width=60
+		height=20
+	}
+	control {
+		chan="$(P)$(R)ExtraDimSizeN"
+		clr=14
+		bclr=51
+	}
+	limits {
 	}
 }
-composite {
+"text update" {
+	object {
+		x=145
+		y=121
+		width=80
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)ExtraDimSizeN_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+text {
+	object {
+		x=15
+		y=145
+		width=60
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Name N"
+	align="horiz. right"
+}
+"text update" {
+	object {
+		x=80
+		y=146
+		width=150
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)ExtraDimNameN_RBV"
+		clr=54
+		bclr=4
+	}
+	format="string"
+	limits {
+	}
+}
+text {
+	object {
+		x=15
+		y=170
+		width=60
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Size X"
+	align="horiz. right"
+}
+"text entry" {
+	object {
+		x=80
+		y=170
+		width=60
+		height=20
+	}
+	control {
+		chan="$(P)$(R)ExtraDimSizeX"
+		clr=14
+		bclr=51
+	}
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=145
+		y=171
+		width=80
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)ExtraDimSizeX_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+text {
+	object {
+		x=15
+		y=195
+		width=60
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Name X"
+	align="horiz. right"
+}
+"text update" {
+	object {
+		x=80
+		y=196
+		width=150
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)ExtraDimNameX_RBV"
+		clr=54
+		bclr=4
+	}
+	format="string"
+	limits {
+	}
+}
+text {
+	object {
+		x=15
+		y=220
+		width=60
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Size Y"
+	align="horiz. right"
+}
+"text entry" {
+	object {
+		x=80
+		y=220
+		width=60
+		height=20
+	}
+	control {
+		chan="$(P)$(R)ExtraDimSizeY"
+		clr=14
+		bclr=51
+	}
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=145
+		y=221
+		width=80
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)ExtraDimSizeY_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+text {
+	object {
+		x=15
+		y=245
+		width=60
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Name Y"
+	align="horiz. right"
+}
+"text update" {
+	object {
+		x=80
+		y=246
+		width=150
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)ExtraDimNameY_RBV"
+		clr=54
+		bclr=4
+	}
+	format="string"
+	limits {
+	}
+}
+text {
+	object {
+		x=15
+		y=270
+		width=60
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Size 3"
+	align="horiz. right"
+}
+"text entry" {
+	object {
+		x=80
+		y=270
+		width=60
+		height=20
+	}
+	control {
+		chan="$(P)$(R)ExtraDimSize3"
+		clr=14
+		bclr=51
+	}
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=145
+		y=271
+		width=80
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)ExtraDimSize3_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+text {
+	object {
+		x=15
+		y=295
+		width=60
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Name 3"
+	align="horiz. right"
+}
+"text update" {
+	object {
+		x=80
+		y=296
+		width=150
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)ExtraDimName3_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+text {
+	object {
+		x=15
+		y=320
+		width=60
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Size 4"
+	align="horiz. right"
+}
+"text entry" {
+	object {
+		x=80
+		y=320
+		width=60
+		height=20
+	}
+	control {
+		chan="$(P)$(R)ExtraDimSize4"
+		clr=14
+		bclr=51
+	}
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=145
+		y=321
+		width=80
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)ExtraDimSize4_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+text {
+	object {
+		x=15
+		y=345
+		width=60
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Name 4"
+	align="horiz. right"
+}
+"text update" {
+	object {
+		x=80
+		y=346
+		width=150
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)ExtraDimName4_RBV"
+		clr=54
+		bclr=4
+	}
+	format="string"
+	limits {
+	}
+}
+text {
+	object {
+		x=15
+		y=370
+		width=60
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Size 5"
+	align="horiz. right"
+}
+"text entry" {
+	object {
+		x=80
+		y=370
+		width=60
+		height=20
+	}
+	control {
+		chan="$(P)$(R)ExtraDimSize5"
+		clr=14
+		bclr=51
+	}
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=145
+		y=371
+		width=80
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)ExtraDimSize5_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+text {
+	object {
+		x=15
+		y=395
+		width=60
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Name 5"
+	align="horiz. right"
+}
+"text update" {
+	object {
+		x=80
+		y=396
+		width=150
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)ExtraDimName5_RBV"
+		clr=54
+		bclr=4
+	}
+	format="string"
+	limits {
+	}
+}
+text {
+	object {
+		x=15
+		y=420
+		width=60
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Size 6"
+	align="horiz. right"
+}
+"text entry" {
+	object {
+		x=80
+		y=420
+		width=60
+		height=20
+	}
+	control {
+		chan="$(P)$(R)ExtraDimSize6"
+		clr=14
+		bclr=51
+	}
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=145
+		y=421
+		width=80
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)ExtraDimSize6_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+text {
+	object {
+		x=15
+		y=445
+		width=60
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Name 6"
+	align="horiz. right"
+}
+"text update" {
+	object {
+		x=80
+		y=446
+		width=150
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)ExtraDimName6_RBV"
+		clr=54
+		bclr=4
+	}
+	format="string"
+	limits {
+	}
+}
+text {
+	object {
+		x=15
+		y=470
+		width=60
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Size 7"
+	align="horiz. right"
+}
+"text entry" {
+	object {
+		x=80
+		y=470
+		width=60
+		height=20
+	}
+	control {
+		chan="$(P)$(R)ExtraDimSize7"
+		clr=14
+		bclr=51
+	}
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=145
+		y=471
+		width=80
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)ExtraDimSize7_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+text {
+	object {
+		x=15
+		y=495
+		width=60
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Name 7"
+	align="horiz. right"
+}
+"text update" {
+	object {
+		x=80
+		y=496
+		width=150
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)ExtraDimName7_RBV"
+		clr=54
+		bclr=4
+	}
+	format="string"
+	limits {
+	}
+}
+text {
+	object {
+		x=15
+		y=520
+		width=60
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Size 8"
+	align="horiz. right"
+}
+"text entry" {
+	object {
+		x=80
+		y=520
+		width=60
+		height=20
+	}
+	control {
+		chan="$(P)$(R)ExtraDimSize8"
+		clr=14
+		bclr=51
+	}
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=145
+		y=521
+		width=80
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)ExtraDimSize8_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+text {
+	object {
+		x=15
+		y=545
+		width=60
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Name 8"
+	align="horiz. right"
+}
+"text update" {
+	object {
+		x=80
+		y=546
+		width=150
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)ExtraDimName8_RBV"
+		clr=54
+		bclr=4
+	}
+	format="string"
+	limits {
+	}
+}
+text {
+	object {
+		x=15
+		y=570
+		width=60
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Size 9"
+	align="horiz. right"
+}
+"text entry" {
+	object {
+		x=80
+		y=570
+		width=60
+		height=20
+	}
+	control {
+		chan="$(P)$(R)ExtraDimSize9"
+		clr=14
+		bclr=51
+	}
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=145
+		y=571
+		width=80
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)ExtraDimSize9_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+text {
+	object {
+		x=15
+		y=595
+		width=60
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Name 9"
+	align="horiz. right"
+}
+"text update" {
+	object {
+		x=80
+		y=596
+		width=150
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)ExtraDimName9_RBV"
+		clr=54
+		bclr=4
+	}
+	format="string"
+	limits {
+	}
+}
+text {
+	object {
+		x=240
+		y=170
+		width=70
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Chunk X"
+	align="horiz. right"
+}
+"text entry" {
+	object {
+		x=315
+		y=170
+		width=60
+		height=20
+	}
+	control {
+		chan="$(P)$(R)ExtraDimChunkX"
+		clr=14
+		bclr=51
+	}
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=380
+		y=171
+		width=80
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)ExtraDimChunkX_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+text {
+	object {
+		x=240
+		y=220
+		width=70
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Chunk Y"
+	align="horiz. right"
+}
+"text entry" {
+	object {
+		x=315
+		y=220
+		width=60
+		height=20
+	}
+	control {
+		chan="$(P)$(R)ExtraDimChunkY"
+		clr=14
+		bclr=51
+	}
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=380
+		y=221
+		width=80
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)ExtraDimChunkY_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+text {
+	object {
+		x=240
+		y=270
+		width=70
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Chunk 3"
+	align="horiz. right"
+}
+"text entry" {
+	object {
+		x=315
+		y=270
+		width=60
+		height=20
+	}
+	control {
+		chan="$(P)$(R)ExtraDimChunk3"
+		clr=14
+		bclr=51
+	}
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=380
+		y=271
+		width=80
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)ExtraDimChunk3_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+text {
+	object {
+		x=240
+		y=320
+		width=70
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Chunk 3"
+	align="horiz. right"
+}
+"text entry" {
+	object {
+		x=315
+		y=320
+		width=60
+		height=20
+	}
+	control {
+		chan="$(P)$(R)ExtraDimChunk4"
+		clr=14
+		bclr=51
+	}
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=380
+		y=321
+		width=80
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)ExtraDimChunk4_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+text {
+	object {
+		x=240
+		y=370
+		width=70
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Chunk 5"
+	align="horiz. right"
+}
+"text entry" {
+	object {
+		x=315
+		y=370
+		width=60
+		height=20
+	}
+	control {
+		chan="$(P)$(R)ExtraDimChunk5"
+		clr=14
+		bclr=51
+	}
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=380
+		y=371
+		width=80
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)ExtraDimChunk5_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+text {
+	object {
+		x=240
+		y=420
+		width=70
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Chunk 6"
+	align="horiz. right"
+}
+"text entry" {
+	object {
+		x=315
+		y=420
+		width=60
+		height=20
+	}
+	control {
+		chan="$(P)$(R)ExtraDimChunk6"
+		clr=14
+		bclr=51
+	}
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=380
+		y=421
+		width=80
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)ExtraDimChunk6_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+text {
+	object {
+		x=240
+		y=470
+		width=70
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Chunk 7"
+	align="horiz. right"
+}
+"text entry" {
+	object {
+		x=315
+		y=470
+		width=60
+		height=20
+	}
+	control {
+		chan="$(P)$(R)ExtraDimChunk7"
+		clr=14
+		bclr=51
+	}
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=380
+		y=471
+		width=80
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)ExtraDimChunk7_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+text {
+	object {
+		x=240
+		y=520
+		width=70
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Chunk 8"
+	align="horiz. right"
+}
+"text entry" {
+	object {
+		x=315
+		y=520
+		width=60
+		height=20
+	}
+	control {
+		chan="$(P)$(R)ExtraDimChunk8"
+		clr=14
+		bclr=51
+	}
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=380
+		y=521
+		width=80
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)ExtraDimChunk8_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+text {
+	object {
+		x=240
+		y=570
+		width=70
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Chunk 9"
+	align="horiz. right"
+}
+"text entry" {
+	object {
+		x=315
+		y=570
+		width=60
+		height=20
+	}
+	control {
+		chan="$(P)$(R)ExtraDimChunk9"
+		clr=14
+		bclr=51
+	}
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=380
+		y=571
+		width=80
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)ExtraDimChunk9_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+text {
 	object {
 		x=5
-		y=65
-		width=430
-		height=45
+		y=90
+		width=280
+		height=20
 	}
-	"composite name"=""
-	children {
-		text {
-			object {
-				x=5
-				y=90
-				width=280
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Dimension attribute datasets"
-			align="horiz. right"
-		}
-		menu {
-			object {
-				x=290
-				y=89
-				width=60
-				height=20
-			}
-			control {
-				chan="$(P)$(R)DimAttDatasets"
-				clr=14
-				bclr=51
-			}
-		}
-		"text update" {
-			object {
-				x=355
-				y=91
-				width=80
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)DimAttDatasets_RBV"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
-		}
-		text {
-			object {
-				x=215
-				y=65
-				width=70
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="# (0-9)"
-			align="horiz. right"
-		}
-		"text entry" {
-			object {
-				x=290
-				y=65
-				width=60
-				height=20
-			}
-			control {
-				chan="$(P)$(R)NumExtraDims"
-				clr=14
-				bclr=51
-			}
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=355
-				y=66
-				width=80
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)NumExtraDims_RBV"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
-		}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Dimension attribute datasets"
+	align="horiz. right"
+}
+menu {
+	object {
+		x=290
+		y=89
+		width=60
+		height=20
+	}
+	control {
+		chan="$(P)$(R)DimAttDatasets"
+		clr=14
+		bclr=51
+	}
+}
+"text update" {
+	object {
+		x=355
+		y=91
+		width=80
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)DimAttDatasets_RBV"
+		clr=54
+		bclr=4
+	}
+	format="string"
+	limits {
+	}
+}
+text {
+	object {
+		x=215
+		y=65
+		width=70
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="# (0-9)"
+	align="horiz. right"
+}
+"text entry" {
+	object {
+		x=290
+		y=65
+		width=60
+		height=20
+	}
+	control {
+		chan="$(P)$(R)NumExtraDims"
+		clr=14
+		bclr=51
+	}
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=355
+		y=66
+		width=80
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)NumExtraDims_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
 	}
 }

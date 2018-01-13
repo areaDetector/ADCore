@@ -1,6 +1,6 @@
 
 file {
-	name="/home/epics/devel/areaDetector-2-6/ADCore/ADApp/op/adl/NDFileMagick.adl"
+	name="/home/epics/devel/areaDetector/ADCore/ADApp/op/adl/NDFileMagick.adl"
 	version=030109
 }
 display {
@@ -100,9 +100,9 @@ rectangle {
 }
 text {
 	object {
-		x=35
+		x=0
 		y=6
-		width=1000
+		width=1070
 		height=25
 	}
 	"basic attribute" {
@@ -121,174 +121,132 @@ composite {
 	"composite name"=""
 	"composite file"="NDPluginBase.adl"
 }
-composite {
+menu {
+	object {
+		x=565
+		y=507
+		width=80
+		height=20
+	}
+	control {
+		chan="$(P)$(R)BitDepth"
+		clr=14
+		bclr=51
+	}
+}
+menu {
+	object {
+		x=565
+		y=455
+		width=80
+		height=20
+	}
+	control {
+		chan="$(P)$(R)CompressType"
+		clr=14
+		bclr=51
+	}
+}
+"text entry" {
+	object {
+		x=565
+		y=480
+		width=80
+		height=22
+	}
+	control {
+		chan="$(P)$(R)Quality"
+		clr=14
+		bclr=51
+	}
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=650
+		y=508
+		width=80
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)BitDepth_RBV"
+		clr=54
+		bclr=4
+	}
+	format="string"
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=650
+		y=456
+		width=80
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)CompressType_RBV"
+		clr=54
+		bclr=4
+	}
+	format="string"
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=650
+		y=482
+		width=80
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)Quality_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+text {
+	object {
+		x=470
+		y=507
+		width=90
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Bit depth"
+	align="horiz. right"
+}
+text {
 	object {
 		x=450
 		y=455
-		width=280
-		height=72
+		width=110
+		height=20
 	}
-	"composite name"=""
-	children {
-		composite {
-			object {
-				x=565
-				y=455
-				width=80
-				height=72
-			}
-			"composite name"=""
-			children {
-				menu {
-					object {
-						x=565
-						y=507
-						width=80
-						height=20
-					}
-					control {
-						chan="$(P)$(R)BitDepth"
-						clr=14
-						bclr=51
-					}
-				}
-				menu {
-					object {
-						x=565
-						y=455
-						width=80
-						height=20
-					}
-					control {
-						chan="$(P)$(R)CompressType"
-						clr=14
-						bclr=51
-					}
-				}
-				"text entry" {
-					object {
-						x=565
-						y=480
-						width=80
-						height=22
-					}
-					control {
-						chan="$(P)$(R)Quality"
-						clr=14
-						bclr=51
-					}
-					limits {
-					}
-				}
-			}
-		}
-		composite {
-			object {
-				x=650
-				y=456
-				width=80
-				height=70
-			}
-			"composite name"=""
-			children {
-				"text update" {
-					object {
-						x=650
-						y=508
-						width=80
-						height=18
-					}
-					monitor {
-						chan="$(P)$(R)BitDepth_RBV"
-						clr=54
-						bclr=4
-					}
-					limits {
-					}
-				}
-				"text update" {
-					object {
-						x=650
-						y=456
-						width=80
-						height=18
-					}
-					monitor {
-						chan="$(P)$(R)CompressType_RBV"
-						clr=54
-						bclr=4
-					}
-					limits {
-					}
-				}
-				"text update" {
-					object {
-						x=650
-						y=482
-						width=80
-						height=18
-					}
-					monitor {
-						chan="$(P)$(R)Quality_RBV"
-						clr=54
-						bclr=4
-					}
-					limits {
-					}
-				}
-			}
-		}
-		composite {
-			object {
-				x=450
-				y=455
-				width=110
-				height=72
-			}
-			"composite name"=""
-			children {
-				text {
-					object {
-						x=470
-						y=507
-						width=90
-						height=20
-					}
-					"basic attribute" {
-						clr=14
-					}
-					textix="Bit depth"
-					align="horiz. right"
-				}
-				text {
-					object {
-						x=450
-						y=455
-						width=110
-						height=20
-					}
-					"basic attribute" {
-						clr=14
-					}
-					textix="Compression"
-					align="horiz. right"
-				}
-				text {
-					object {
-						x=490
-						y=481
-						width=70
-						height=20
-					}
-					"basic attribute" {
-						clr=14
-					}
-					textix="Quality"
-					align="horiz. right"
-				}
-			}
-		}
+	"basic attribute" {
+		clr=14
 	}
+	textix="Compression"
+	align="horiz. right"
+}
+text {
+	object {
+		x=490
+		y=481
+		width=70
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Quality"
+	align="horiz. right"
 }
 composite {
 	object {

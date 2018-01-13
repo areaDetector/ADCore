@@ -1,12 +1,12 @@
 
 file {
-	name="/home/epics/devel/areaDetector-2-4/ADCore/ADApp/op/adl/NDPluginTimeSeriesN.adl"
-	version=030107
+	name="/home/epics/devel/areaDetector-3-2/ADCore/ADApp/op/adl/NDPluginTimeSeriesN.adl"
+	version=030109
 }
 display {
 	object {
-		x=249
-		y=77
+		x=768
+		y=83
 		width=340
 		height=290
 	}
@@ -123,9 +123,9 @@ rectangle {
 }
 text {
 	object {
-		x=62
+		x=0
 		y=10
-		width=216
+		width=340
 		height=25
 	}
 	"basic attribute" {
@@ -134,44 +134,34 @@ text {
 	textix="$(P)$(R)$(SIGNAL)"
 	align="horiz. centered"
 }
-composite {
+menu {
 	object {
 		x=175
 		y=72
-		width=126
+		width=60
 		height=18
 	}
-	"composite name"=""
-	children {
-		menu {
-			object {
-				x=175
-				y=72
-				width=60
-				height=18
-			}
-			control {
-				chan="$(P)$(R)$(ROI)Use"
-				clr=14
-				bclr=51
-			}
-		}
-		"text update" {
-			object {
-				x=240
-				y=72
-				width=61
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)$(ROI)Use_RBV"
-				clr=54
-				bclr=4
-			}
-			align="horiz. centered"
-			limits {
-			}
-		}
+	control {
+		chan="$(P)$(R)$(ROI)Use"
+		clr=14
+		bclr=51
+	}
+}
+"text update" {
+	object {
+		x=240
+		y=72
+		width=61
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)$(ROI)Use_RBV"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
+	format="string"
+	limits {
 	}
 }
 "text entry" {
@@ -264,43 +254,32 @@ text {
 	textix="Time Series"
 	align="horiz. centered"
 }
-composite {
+text {
 	object {
 		x=49
 		y=212
-		width=225
+		width=130
 		height=20
 	}
-	"composite name"=""
-	children {
-		text {
-			object {
-				x=49
-				y=212
-				width=130
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Current point"
-			align="horiz. right"
-		}
-		"text update" {
-			object {
-				x=184
-				y=213
-				width=90
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)TSCurrentPoint"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
-		}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Current point"
+	align="horiz. right"
+}
+"text update" {
+	object {
+		x=184
+		y=213
+		width=90
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)TSCurrentPoint"
+		clr=54
+		bclr=4
+	}
+	limits {
 	}
 }
 menu {
@@ -401,47 +380,37 @@ text {
 		bclr=12
 	}
 	clrmod="alarm"
+	format="string"
 	limits {
 	}
 }
-composite {
+"text entry" {
+	object {
+		x=184
+		y=188
+		width=60
+		height=19
+	}
+	control {
+		chan="$(P)$(R)TSNumPoints"
+		clr=14
+		bclr=51
+	}
+	limits {
+	}
+}
+text {
 	object {
 		x=19
 		y=187
-		width=225
+		width=160
 		height=20
 	}
-	"composite name"=""
-	children {
-		"text entry" {
-			object {
-				x=184
-				y=188
-				width=60
-				height=19
-			}
-			control {
-				chan="$(P)$(R)TSNumPoints"
-				clr=14
-				bclr=51
-			}
-			limits {
-			}
-		}
-		text {
-			object {
-				x=19
-				y=187
-				width=160
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Number of points"
-			align="horiz. right"
-		}
+	"basic attribute" {
+		clr=14
 	}
+	textix="Number of points"
+	align="horiz. right"
 }
 text {
 	object {

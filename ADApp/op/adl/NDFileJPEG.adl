@@ -1,6 +1,6 @@
 
 file {
-	name="/home/epics/devel/areaDetector-2-6/ADCore/ADApp/op/adl/NDFileJPEG.adl"
+	name="/home/epics/devel/areaDetector/ADCore/ADApp/op/adl/NDFileJPEG.adl"
 	version=030109
 }
 display {
@@ -100,9 +100,9 @@ rectangle {
 }
 text {
 	object {
-		x=35
+		x=0
 		y=6
-		width=1000
+		width=1070
 		height=25
 	}
 	"basic attribute" {
@@ -121,62 +121,47 @@ composite {
 	"composite name"=""
 	"composite file"="NDPluginBase.adl"
 }
-composite {
+text {
 	object {
 		x=565
+		y=461
+		width=120
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="JPEG Quality"
+	align="horiz. right"
+}
+"text entry" {
+	object {
+		x=694
 		y=460
-		width=274
+		width=60
 		height=22
 	}
-	"composite name"=""
-	children {
-		text {
-			object {
-				x=565
-				y=461
-				width=120
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="JPEG Quality"
-			align="horiz. right"
-		}
-		"text entry" {
-			object {
-				x=694
-				y=460
-				width=60
-				height=22
-			}
-			control {
-				chan="$(P)$(R)JPEGQuality"
-				clr=14
-				bclr=51
-			}
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=759
-				y=462
-				width=80
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)JPEGQuality_RBV"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
-		}
+	control {
+		chan="$(P)$(R)JPEGQuality"
+		clr=14
+		bclr=51
 	}
-	"dynamic attribute" {
-		calc="A=JPEG"
-		chan="$(P)$(R)FileFormat"
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=759
+		y=462
+		width=80
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)JPEGQuality_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
 	}
 }
 composite {
