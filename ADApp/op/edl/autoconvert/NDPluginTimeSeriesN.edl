@@ -3,8 +3,8 @@ beginScreenProperties
 major 4
 minor 0
 release 0
-x 249
-y 77
+x 768
+y 83
 w 340
 h 290
 font "helvetica-medium-r-18.0"
@@ -77,9 +77,9 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 62
+x 0
 y 10
-w 216
+w 340
 h 25
 font "helvetica-medium-r-8.0"
 fontAlign "center"
@@ -89,20 +89,6 @@ value {
  "$(P)$(R)$(SIGNAL)"
 }
 endObjectProperties
-
-# (Group)
-object activeGroupClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 175
-y 72
-w 126
-h 18
-
-beginGroup
-
 
 # (Text Control)
 object activeXTextDspClass
@@ -122,17 +108,12 @@ fastUpdate
 fgColor index 54
 bgColor index 4
 autoHeight
-format decimal
+format "string"
 nullColor index 32
 useHexPrefix
 objType "controls"
 newPos
 endObjectProperties
-
-endGroup
-
-endObjectProperties
-
 
 # (Text Control)
 object activeXTextDspClass
@@ -267,20 +248,6 @@ value {
 }
 endObjectProperties
 
-# (Group)
-object activeGroupClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 49
-y 212
-w 225
-h 20
-
-beginGroup
-
-
 # (Static Text)
 object activeXTextClass
 beginObjectProperties
@@ -324,11 +291,6 @@ objType "controls"
 newPos
 endObjectProperties
 
-endGroup
-
-endObjectProperties
-
-
 # (Static Text)
 object activeXTextClass
 beginObjectProperties
@@ -365,26 +327,12 @@ fgColor index 54
 fgAlarm
 bgColor index 12
 autoHeight
-format decimal
+format "string"
 nullColor index 32
 useHexPrefix
 objType "controls"
 newPos
 endObjectProperties
-
-# (Group)
-object activeGroupClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 19
-y 187
-w 225
-h 20
-
-beginGroup
-
 
 # (Text Control)
 object activeXTextDspClass
@@ -431,11 +379,6 @@ value {
 }
 endObjectProperties
 
-endGroup
-
-endObjectProperties
-
-
 # (Static Text)
 object activeXTextClass
 beginObjectProperties
@@ -454,19 +397,6 @@ value {
  "Plot"
 }
 endObjectProperties
-# (Group)
-object activeGroupClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 175
-y 72
-w 126
-h 18
-
-beginGroup
-
 
 # (Menu Button)
 object activeMenuButtonClass
@@ -487,29 +417,6 @@ controlPv "$(P)$(R)$(ROI)Use"
 indicatorPv "$(P)$(R)$(ROI)Use"
 font "helvetica-medium-r-10.0"
 endObjectProperties
-
-endGroup
-
-endObjectProperties
-
-# (Group)
-object activeGroupClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 49
-y 212
-w 225
-h 20
-
-beginGroup
-
-
-endGroup
-
-endObjectProperties
-
 
 # (Menu Button)
 object activeMenuButtonClass
@@ -630,24 +537,6 @@ offLabel "Start"
 useEnumNumeric
 font "helvetica-medium-r-10.0"
 endObjectProperties
-# (Group)
-object activeGroupClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 19
-y 187
-w 225
-h 20
-
-beginGroup
-
-
-endGroup
-
-endObjectProperties
-
 
 # (Related Display)
 object relatedDisplayClass
