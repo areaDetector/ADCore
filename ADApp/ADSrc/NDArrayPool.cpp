@@ -7,6 +7,7 @@
  */
 
 #include <stdlib.h>
+#include <stdint.h>
 
 #include <cantProceed.h>
 #include <epicsExport.h>
@@ -69,9 +70,9 @@ NDArray* NDArrayPool::alloc(int ndims, size_t *dims, NDDataType_t dataType, size
   epicsMutexLock(listLock_);
 
   /* Find a free image */
-  pArray = (NDArray *)ellFirst(&freeList_);
+  NDArray* freeArray = (NDArray *)ellFirst(&freeList_);
 
-  if (!pArray) {
+  if (!freeArray) {
     /* We did not find a free image.
      * Allocate a new one if we have not exceeded the limit */
     if ((maxBuffers_ > 0) && (numBuffers_ >= maxBuffers_)) {
@@ -82,6 +83,50 @@ NDArray* NDArrayPool::alloc(int ndims, size_t *dims, NDDataType_t dataType, size
       pArray = new NDArray;
       ellAdd(&freeList_, &pArray->node);
       numFree_++;
+    }
+  }
+
+  size_t thresholdSize = dataSize + dataSize / 2;
+  // sanity check for case of overflow when calculating thresholdSize
+  thresholdSize = (thresholdSize < dataSize) ? SIZE_MAX : thresholdSize;
+  if (freeArray) {
+    pArray = freeArray;
+    if (pArray->dataSize != dataSize) {
+      size_t diffSize = (pArray->dataSize > dataSize) ? pArray->dataSize - dataSize : dataSize - pArray->dataSize;
+      NDArray* nextArray = (NDArray *)ellNext(&freeArray->node);
+      NDArray* closestArray = NULL;
+      NDArray* threshArray = NULL;
+      while(nextArray) {
+        if (nextArray->dataSize == dataSize) {
+          threshArray = nextArray;
+          break;
+        }
+        if (nextArray->dataSize > dataSize) {
+          if ((nextArray->dataSize - dataSize) < thresholdSize) {
+            if (threshArray) {
+              if (threshArray->dataSize > nextArray->dataSize) {
+                threshArray = nextArray;
+              }
+            } else {
+              threshArray = nextArray;
+            }
+          }
+        }
+        if (!threshArray) {
+          size_t ndiffSize = (nextArray->dataSize > dataSize) ? nextArray->dataSize - dataSize : dataSize - nextArray->dataSize;
+          if(ndiffSize < diffSize) {
+            diffSize = ndiffSize;
+            closestArray = nextArray;
+          }
+        }
+        nextArray = (NDArray *)ellNext(&nextArray->node);
+      }
+      if (threshArray) {
+        pArray = threshArray;
+      } else {
+        if (closestArray)
+          pArray = closestArray;
+      }
     }
   }
 
@@ -100,30 +145,36 @@ NDArray* NDArrayPool::alloc(int ndims, size_t *dims, NDDataType_t dataType, size
     }
     /* Erase the attributes if that global flag is set */
     if (eraseNDAttributes) pArray->pAttributeList->clear();
+    // calcs totalBytes
     pArray->getInfo(&arrayInfo);
     if (dataSize == 0) dataSize = arrayInfo.totalBytes;
-    if (arrayInfo.totalBytes > dataSize) {
-      printf("%s: ERROR: required size=%d passed size=%d is too small\n",
-      functionName, (int)arrayInfo.totalBytes, (int)dataSize);
-      pArray=NULL;
+    if (!freeArray) {
+      if (arrayInfo.totalBytes > dataSize) {
+        // we have a passed array, check size
+        printf("%s: ERROR: required size=%d passed size=%d is too small\n",
+        functionName, (int)arrayInfo.totalBytes, (int)dataSize);
+        pArray=NULL;
+      }
     }
   }
 
   if (pArray) {
-    /* If the caller passed a valid buffer use that, trust that its size is correct */
+    /* If the caller passed a valid buffer use that, trust that its allocated size is correct */
     if (pData) {
       pArray->pData = pData;
     } else {
       /* See if the current buffer is big enough */
-      if (pArray->dataSize < dataSize) {
+      if (pArray->pData) {
+        if ((pArray->dataSize < dataSize) || (pArray->dataSize > thresholdSize)) {
         /* No, we need to free the current buffer and allocate a new one */
         /* See if there is enough room */
-        if (pArray->pData) {
           memorySize_ -= pArray->dataSize;
           free(pArray->pData);
           pArray->pData = NULL;
           pArray->dataSize = 0;
         }
+      }
+      if (!pArray->pData) {
         if ((maxMemory_ > 0) && ((memorySize_ + dataSize) > maxMemory_)) {
           // We don't have enough memory to allocate the array
           // See if we can get memory by deleting arrays
