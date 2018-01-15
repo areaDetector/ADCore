@@ -35,7 +35,7 @@ if [[ $USE_EPICS_DEV == "YES" ]]; then
   EPICS_BASE=/usr/lib/epics
 else
   cd external
-  wget -nv https://www.aps.anl.gov/epics/download/base/base-3.15.5.tar.gz
+  wget -nv https://epics.anl.gov/download/base/base-3.15.5.tar.gz
   tar -zxf base-3.15.5.tar.gz
   ln -s base-3.15.5 epics_base
   make -sj -C epics_base/
