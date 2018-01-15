@@ -695,7 +695,18 @@ int NDArrayPool::report(FILE *fp, int details)
         (long)memorySize_, (long)maxMemory_);
   fprintf(fp, "  numFree=%d\n",
          numFree_);
-      
+  if(details > 0)
+  {
+    NDArray* freeArray = (NDArray *)ellFirst(&freeList_);
+    unsigned i = 0;
+    while(freeArray)
+    {
+      fprintf(fp, "Free Array %d:\n", i);
+      freeArray->report(fp, details);
+      freeArray = (NDArray *)ellNext(&freeArray->node);
+      i++;
+    }
+  }
   return ND_SUCCESS;
 }
 
