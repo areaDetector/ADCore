@@ -1,14 +1,14 @@
 
 file {
 	name="/home/epics/devel/areaDetector/ADCore/ADApp/op/adl/ADBase.adl"
-	version=030107
+	version=030109
 }
 display {
 	object {
-		x=125
-		y=48
+		x=670
+		y=172
 		width=715
-		height=885
+		height=935
 	}
 	clr=14
 	bclr=4
@@ -87,39 +87,15 @@ display {
 		1a7309,
 	}
 }
-composite {
+rectangle {
 	object {
-		x=100
+		x=0
 		y=4
-		width=500
-		height=26
+		width=950
+		height=25
 	}
-	"composite name"=""
-	children {
-		rectangle {
-			object {
-				x=100
-				y=4
-				width=500
-				height=25
-			}
-			"basic attribute" {
-				clr=2
-			}
-		}
-		text {
-			object {
-				x=158
-				y=5
-				width=384
-				height=25
-			}
-			"basic attribute" {
-				clr=54
-			}
-			textix="Area Detector Control - $(P)$(R)"
-			align="horiz. centered"
-		}
+	"basic attribute" {
+		clr=2
 	}
 }
 composite {
@@ -147,7 +123,7 @@ composite {
 		x=360
 		y=820
 		width=350
-		height=60
+		height=110
 	}
 	"composite name"=""
 	"composite file"="ADAttrFile.adl"
@@ -201,4 +177,17 @@ composite {
 	}
 	"composite name"=""
 	"composite file"="ADBuffers.adl"
+}
+text {
+	object {
+		x=0
+		y=5
+		width=715
+		height=25
+	}
+	"basic attribute" {
+		clr=54
+	}
+	textix="Area Detector Control - $(P)$(R)"
+	align="horiz. centered"
 }
