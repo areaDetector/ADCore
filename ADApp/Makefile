@@ -18,5 +18,7 @@ ifeq ($(WITH_PVA), YES)
   pluginSrc_DEPEND_DIRS += ntndArrayConverterSrc
 endif
 
+DIRS += op
+
 include $(TOP)/configure/RULES_DIRS
 
