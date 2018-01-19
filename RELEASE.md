@@ -28,12 +28,13 @@ R3-2 (February XXX, 2018)
   contains the intensity values for the X axis of the histogram plot.
   This uses a new NDPlotXY.adl medm screen which accepts both X and Y waveform records to plot.
 ### NDPluginFile
-* Changed the was that capture is implemented.  Previously it created NumCapture NDArrays using the "new" operator.
+* Changed the way that capture mode is implemented.
+  Previously it created NumCapture NDArrays using the "new" operator.
   As NDArrays arrived it copied the data and attributes into these arrays.
   This had several problems:
   - The NDArrays were not allocated from the NDArrayPool, so memory limits were not enforced.
   - Because they were not allocated from the NDArrayPool if they were passed to other functions
-    or plugins there would be problems with attempts to called NDArray::reserve() or release().
+    or plugins there would be problems with attempts to call NDArray::reserve() or release().
   - The copy operation is inefficient and not a good idea.
 
   The change was to simply allocate an array of NumCapture pointers.  As NDArrays arrive
@@ -55,18 +56,18 @@ R3-2 (February XXX, 2018)
   the Size was changed. This was not the desired behavior when the user had set the Center rather than Position.
   Now the code remembers whether Position or Center was last set, and preserves the appropriate value when 
   the Size is changed.
-* Overlays were previously constrained to fit in image on X=0 and Y=0 edges.  However, the user may want part of 
-  the overlay outside the image area. The location of the overlay can now be set anywhere, including negative positions.
+* Overlays were previously constrained to fit insize the image on X=0 and Y=0 edges.  However, the user may want part of 
+  the overlay to be outside the image area. The location of the overlay can now be set anywhere, including negative positions.
   Each pixel in the overlay is now only added if it is within the image area.
-* Fixed problems with incorrect drawing and crashing if part of an overlay was outside image area.
-* Removed rounding when setting center from position or position from center.
+* Fixed problems with incorrect drawing and crashing if part of an overlay was outside the image area.
+* Removed rounding when setting the center from the position or the position from the center.
   This was causing the location to change when setting the same center or position.
-* Changed cross overlap so that it is drawn symmetrically with the same number of pixels on each side of center.
+* Changed the cross overlay so that it is drawn symmetrically with the same number of pixels on each side of the center.
   This means the actual size is 2*Size/2 + 1, which will be Size+1 if Size is even.
 ### asynNDArrayDriver
-* Added a second checkPath() method which takes and std::string argument for the path to check.
+* Added a second checkPath() method which takes an std::string argument for the path to check.
   It adds the  appropriate terminator if not present, but does not set the NDFilePath parameter.
-  This new method is now used by the existing checkPath() method.
+  This new method is now used by the existing checkPath() method, but can also be used by other code.
 ### Operator displays (medm, edm, caQtDM, CSS-BOY)
 * Fixed medm files in several ways:
   - Text graphics widget sizes are set to the actual size of the text.  medm will display text outside the widget if it
@@ -85,7 +86,7 @@ R3-2 (February XXX, 2018)
 ```
    css -nosplash -application org.csstudio.opibuilder.adl2boy.application
 ```
-* The edl/autoconvert, ui/autoconvert, and opi/autoconvert contain new conversions of all of the medm files.
+* The edl/autoconvert, ui/autoconvert, and opi/autoconvert directories contain new conversions of all of the medm files.
 * The edl, ui, and opi directories are intended to contain manually tweaked versions of the files.  Many of the
   files in these directories have been removed, either because they were actually old autoconverted files, or because
   they are obsolete and the new autoconverted files are better.
@@ -102,7 +103,7 @@ R3-2 (February XXX, 2018)
 ### pluginTests/Makefile
 * Fixed errors with extra parentheses that were preventing include USR_INCLUDES directories from being added.
 ### EPICS V4
-* Changed the flag name from WITH_EPICS_V4 to WITH_PVA.
+* Changed the Makefile variable from WITH_EPICS_V4 to WITH_PVA.
  
 R3-1 (July 3, 2017)
 ======================
