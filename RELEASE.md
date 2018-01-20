@@ -1,4 +1,4 @@
-ADCore Releases
+-ADCore Releases
 ===============
 
 The latest untagged master branch can be obtained at
@@ -90,21 +90,31 @@ R3-2 (February XXX, 2018)
 * The edl, ui, and opi directories are intended to contain manually tweaked versions of the files.  Many of the
   files in these directories have been removed, either because they were actually old autoconverted files, or because
   they are obsolete and the new autoconverted files are better.
+### commonDriverMakefile
+* The variable PROD_NAME has been replaced with DBD_NAME.  This makes it clear that this variable is used to
+  specify the name of the application DBD file.  It allows different architectures to use different DBD file 
+  names.  For backwards compatibility if PROD_NAME is specified and DBD_NAME is not then DBD_NAME will be
+  set to PROD_NAME.
 ### NDFileTIFF
 * Improved asynTrace debugging.
 ### NDPluginAttrPlot
 * Bug fix, start the plugin in the constructor.
 ### NDPluginROIStat
 * Fixed array delete at end of processCallbacks().
+### ntndArrayConvert.cpp
+* Minor fix to work with EPICS 7.
 ### NDPluginDriver
 * Force queueSize to be >=1 when creating queues in createCallbackThreads.  Was crashing when autosave value was 0.
 ### NDScatter.template
 * Removed SCAN=I/O Intr for an output record which was a mistake and could cause crashes.
 ### pluginTests/Makefile
 * Fixed errors with extra parentheses that were preventing include USR_INCLUDES directories from being added.
-### EPICS V4
-* Changed the Makefile variable from WITH_EPICS_V4 to WITH_PVA.
- 
+### XML_schema/NDAttributes.xsd
+* Removed the "when" attribute, this is not supported in NDAttributes XML files, only in NDFileHDF5 layout XML files.
+### EPICS V4 (pvAccess)
+* Changed the Makefile variable from WITH_EPICS_V4 to WITH_PVA.  This is more consistent with the EPICS 7
+  release, where the V4 name is no longer used.
+
 R3-1 (July 3, 2017)
 ======================
 ### GraphicsMagick
