@@ -169,11 +169,11 @@ fontAlign "center"
 font "helvetica-bold-r-12.0"
 endObjectProperties
 
-# (Textupdate)
-object TextupdateClass
+# (Text Monitor)
+object activeXTextDspClass:noedit
 beginObjectProperties
-major 10
-minor 0
+major 4
+minor 5
 release 0
 x 140
 y 690
@@ -182,8 +182,15 @@ h 20
 controlPv "$(P)$(R)JPEGQuality_RBV"
 fgColor index 16
 fgAlarm
-bgColor index 10
-fill
+bgColor index 12
+objType "monitors"
+fgAlarm
+limitsFromDb
+nullColor index 40
+smartRefresh
+useHexPrefix
+newPos
+fontAlign "center"
 font "helvetica-bold-r-12.0"
 fontAlign "center"
 endObjectProperties
