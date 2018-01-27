@@ -3,15 +3,15 @@ beginScreenProperties
 major 4
 minor 0
 release 1
-x 1381
-y 310
+x 1385
+y 256
 w 391
 h 820
 font "helvetica-bold-r-12.0"
 ctlFont "helvetica-bold-r-12.0"
 btnFont "helvetica-bold-r-12.0"
 fgColor index 14
-bgColor index 3
+bgColor index 6
 textColor index 14
 ctlFgColor1 index 25
 ctlFgColor2 index 25
@@ -23,21 +23,6 @@ showGrid
 snapToGrid
 gridSize 4
 endScreenProperties
-
-# (Rectangle)
-object activeRectangleClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 0
-y 665
-w 390
-h 155
-lineColor index 5
-fill
-fillColor index 5
-endObjectProperties
 
 # (Embedded Window)
 object activePipClass
@@ -109,11 +94,11 @@ object activeXTextClass
 beginObjectProperties
 major 4
 minor 1
-release 0
+release 1
 x 5
 y 670
-w 37
-h 15
+w 41
+h 14
 font "helvetica-medium-r-12.0"
 fgColor index 14
 bgColor index 5
@@ -128,26 +113,24 @@ endObjectProperties
 object activeXTextDspClass:noedit
 beginObjectProperties
 major 4
-minor 5
+minor 7
 release 0
 x 260
 y 700
 w 100
 h 20
 controlPv "$(P)$(R)Compression_RBV"
+font "helvetica-medium-r-12.0"
+fontAlign "center"
 fgColor index 16
 fgAlarm
 bgColor index 12
-objType "monitors"
-fgAlarm
 limitsFromDb
 nullColor index 40
 smartRefresh
 useHexPrefix
 newPos
-fontAlign "center"
-font "helvetica-medium-r-12.0"
-fontAlign "center"
+objType "monitors"
 endObjectProperties
 
 # (Menu Button)
@@ -175,7 +158,7 @@ object activeXTextClass
 beginObjectProperties
 major 4
 minor 1
-release 0
+release 1
 x 15
 y 700
 w 165

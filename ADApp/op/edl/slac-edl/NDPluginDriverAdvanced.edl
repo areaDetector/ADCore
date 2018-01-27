@@ -3,8 +3,8 @@ beginScreenProperties
 major 4
 minor 0
 release 1
-x 919
-y 368
+x 923
+y 392
 w 605
 h 215
 font "helvetica-bold-r-12.0"
@@ -64,10 +64,10 @@ object activeXTextClass
 beginObjectProperties
 major 4
 minor 1
-release 0
+release 1
 x 5
 y 50
-w 63
+w 68
 h 14
 font "helvetica-medium-r-12.0"
 fgColor index 14
@@ -84,7 +84,7 @@ object activeXTextClass
 beginObjectProperties
 major 4
 minor 1
-release 0
+release 1
 x 10
 y 65
 w 90
@@ -103,7 +103,7 @@ endObjectProperties
 object activeXTextDspClass
 beginObjectProperties
 major 4
-minor 5
+minor 7
 release 0
 x 105
 y 65
@@ -145,10 +145,10 @@ object activeXTextClass
 beginObjectProperties
 major 4
 minor 1
-release 0
+release 1
 x 5
 y 100
-w 96
+w 99
 h 14
 font "helvetica-medium-r-12.0"
 fgColor index 14
@@ -164,50 +164,48 @@ endObjectProperties
 object activeXTextDspClass:noedit
 beginObjectProperties
 major 4
-minor 5
+minor 7
 release 0
 x 235
 y 125
 w 75
 h 20
 controlPv "$(P)$(R)PoolMaxMem"
+font "helvetica-bold-r-12.0"
+fontAlign "center"
 fgColor index 16
-bgColor index 12
-objType "monitors"
 fgAlarm
+bgColor index 12
 limitsFromDb
 nullColor index 40
 smartRefresh
 useHexPrefix
 newPos
-fontAlign "center"
-font "helvetica-bold-r-12.0"
-fontAlign "center"
+objType "monitors"
 endObjectProperties
 
 # (Text Monitor)
 object activeXTextDspClass:noedit
 beginObjectProperties
 major 4
-minor 5
+minor 7
 release 0
 x 145
 y 125
 w 75
 h 20
 controlPv "$(P)$(R)PoolUsedMem"
+font "helvetica-bold-r-12.0"
+fontAlign "center"
 fgColor index 16
-bgColor index 12
-objType "monitors"
 fgAlarm
+bgColor index 12
 limitsFromDb
 nullColor index 40
 smartRefresh
 useHexPrefix
 newPos
-fontAlign "center"
-font "helvetica-bold-r-12.0"
-fontAlign "center"
+objType "monitors"
 endObjectProperties
 
 # (Static Text)
@@ -215,7 +213,7 @@ object activeXTextClass
 beginObjectProperties
 major 4
 minor 1
-release 0
+release 1
 x 15
 y 125
 w 120
@@ -233,50 +231,48 @@ endObjectProperties
 object activeXTextDspClass:noedit
 beginObjectProperties
 major 4
-minor 5
+minor 7
 release 0
 x 235
 y 150
 w 75
 h 20
 controlPv "$(P)$(R)PoolMaxBuffers"
+font "helvetica-bold-r-12.0"
+fontAlign "center"
 fgColor index 16
-bgColor index 12
-objType "monitors"
 fgAlarm
+bgColor index 12
 limitsFromDb
 nullColor index 40
 smartRefresh
 useHexPrefix
 newPos
-fontAlign "center"
-font "helvetica-bold-r-12.0"
-fontAlign "center"
+objType "monitors"
 endObjectProperties
 
 # (Text Monitor)
 object activeXTextDspClass:noedit
 beginObjectProperties
 major 4
-minor 5
+minor 7
 release 0
 x 145
 y 150
 w 75
 h 20
 controlPv "$(P)$(R)PoolAllocBuffers"
+font "helvetica-bold-r-12.0"
+fontAlign "center"
 fgColor index 16
-bgColor index 12
-objType "monitors"
 fgAlarm
+bgColor index 12
 limitsFromDb
 nullColor index 40
 smartRefresh
 useHexPrefix
 newPos
-fontAlign "center"
-font "helvetica-bold-r-12.0"
-fontAlign "center"
+objType "monitors"
 endObjectProperties
 
 # (Static Text)
@@ -284,7 +280,7 @@ object activeXTextClass
 beginObjectProperties
 major 4
 minor 1
-release 0
+release 1
 x 15
 y 150
 w 120
@@ -302,26 +298,24 @@ endObjectProperties
 object activeXTextDspClass:noedit
 beginObjectProperties
 major 4
-minor 5
+minor 7
 release 0
 x 145
 y 175
 w 75
 h 20
 controlPv "$(P)$(R)PoolFreeBuffers"
+font "helvetica-bold-r-12.0"
+fontAlign "center"
 fgColor index 16
 fgAlarm
 bgColor index 12
-objType "monitors"
-fgAlarm
 limitsFromDb
 nullColor index 40
 smartRefresh
 useHexPrefix
 newPos
-fontAlign "center"
-font "helvetica-bold-r-12.0"
-fontAlign "center"
+objType "monitors"
 endObjectProperties
 
 # (Static Text)
@@ -329,7 +323,7 @@ object activeXTextClass
 beginObjectProperties
 major 4
 minor 1
-release 0
+release 1
 x 15
 y 175
 w 120
@@ -347,24 +341,23 @@ endObjectProperties
 object activeBarClass
 beginObjectProperties
 major 4
-minor 0
-release 0
+minor 1
+release 1
 x 325
 y 125
 w 25
 h 70
-indicatorColour index 16
+indicatorColor index 0
 indicatorAlarm
-fgColour index 14
-bgColour index 3
+fgColor index 0
+bgColor index 0
 indicatorPv "$(P)$(R)PoolUsedBuffers"
-maxPv "$(P)$(R)PoolMaxBuffers"
 font "helvetica-medium-r-12.0"
-labelTicks 10
-majorTicks 20
-minorTicks 2
+labelTicks "10"
+majorTicks "20"
+minorTicks "2"
 border
-precision 0
+precision "0"
 scaleFormat "FFloat"
 orientation "vertical"
 endObjectProperties
@@ -373,7 +366,7 @@ endObjectProperties
 object relatedDisplayClass
 beginObjectProperties
 major 4
-minor 2
+minor 4
 release 0
 x 485
 y 145
@@ -411,7 +404,7 @@ object activeXTextClass
 beginObjectProperties
 major 4
 minor 1
-release 0
+release 1
 x 0
 y 0
 w 605

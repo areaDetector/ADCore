@@ -3,15 +3,15 @@ beginScreenProperties
 major 4
 minor 0
 release 1
-x 1355
-y 274
+x 1359
+y 256
 w 390
 h 820
 font "helvetica-bold-r-12.0"
 ctlFont "helvetica-bold-r-12.0"
 btnFont "helvetica-bold-r-12.0"
 fgColor index 14
-bgColor index 3
+bgColor index 6
 textColor index 14
 ctlFgColor1 index 25
 ctlFgColor2 index 25
@@ -23,21 +23,6 @@ showGrid
 snapToGrid
 gridSize 4
 endScreenProperties
-
-# (Rectangle)
-object activeRectangleClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 0
-y 665
-w 390
-h 155
-lineColor index 5
-fill
-fillColor index 5
-endObjectProperties
 
 # (Embedded Window)
 object activePipClass
@@ -109,11 +94,11 @@ object activeXTextClass
 beginObjectProperties
 major 4
 minor 1
-release 0
+release 1
 x 5
 y 670
-w 49
-h 15
+w 53
+h 14
 font "helvetica-medium-r-12.0"
 fgColor index 14
 bgColor index 5
@@ -129,7 +114,7 @@ object activeXTextClass
 beginObjectProperties
 major 4
 minor 1
-release 0
+release 1
 x 10
 y 690
 w 70
@@ -147,52 +132,49 @@ endObjectProperties
 object activeXTextDspClass
 beginObjectProperties
 major 4
-minor 5
+minor 7
 release 0
 x 90
 y 690
 w 45
 h 20
 controlPv "$(P)$(R)Quality"
+font "helvetica-bold-r-12.0"
+fontAlign "center"
 fgColor index 25
 fgAlarm
 bgColor index 5
 editable
 motifWidget
-fgAlarm
 limitsFromDb
 nullColor index 40
 smartRefresh
 useHexPrefix
 newPos
-fontAlign "center"
-font "helvetica-bold-r-12.0"
 endObjectProperties
 
 # (Text Monitor)
 object activeXTextDspClass:noedit
 beginObjectProperties
 major 4
-minor 5
+minor 7
 release 0
 x 140
 y 690
 w 45
 h 20
 controlPv "$(P)$(R)Quality_RBV"
+font "helvetica-bold-r-12.0"
+fontAlign "center"
 fgColor index 16
 fgAlarm
 bgColor index 12
-objType "monitors"
-fgAlarm
 limitsFromDb
 nullColor index 40
 smartRefresh
 useHexPrefix
 newPos
-fontAlign "center"
-font "helvetica-bold-r-12.0"
-fontAlign "center"
+objType "monitors"
 endObjectProperties
 
 # (Static Text)
@@ -200,7 +182,7 @@ object activeXTextClass
 beginObjectProperties
 major 4
 minor 1
-release 0
+release 1
 x 10
 y 720
 w 90
@@ -259,7 +241,7 @@ object activeXTextClass
 beginObjectProperties
 major 4
 minor 1
-release 0
+release 1
 x 10
 y 750
 w 90
@@ -277,7 +259,7 @@ endObjectProperties
 object shellCmdClass
 beginObjectProperties
 major 4
-minor 2
+minor 3
 release 0
 x 5
 y 790
