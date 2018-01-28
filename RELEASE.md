@@ -20,7 +20,7 @@ files respectively, in the configure/ directory of the appropriate release of th
 Release Notes
 =============
 
-R3-2 (February XXX, 2018)
+R3-2 (January 28, 2018)
 ======================
 ### NDPluginStats
 * Previously the X axis for the histogram plot was just the histogram bin number.
