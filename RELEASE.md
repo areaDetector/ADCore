@@ -56,7 +56,7 @@ R3-2 (January 28, 2018)
   the Size was changed. This was not the desired behavior when the user had set the Center rather than Position.
   Now the code remembers whether Position or Center was last set, and preserves the appropriate value when 
   the Size is changed.
-* Overlays were previously constrained to fit insize the image on X=0 and Y=0 edges.  However, the user may want part of 
+* Overlays were previously constrained to fit inside the image on X=0 and Y=0 edges.  However, the user may want part of 
   the overlay to be outside the image area. The location of the overlay can now be set anywhere, including negative positions.
   Each pixel in the overlay is now only added if it is within the image area.
 * Fixed problems with incorrect drawing and crashing if part of an overlay was outside the image area.
