@@ -423,8 +423,12 @@ asynStatus NDPluginFile::doCapture(int capture)
     switch(fileWriteMode) {
         case NDFileModeSingle:
             /* It is an error to set capture=1 in this mode, set to 0 */
+            asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
+                "%s:%s ERROR: capture not supported in Single mode\n",
+                driverName, functionName);
+            setStringParam(NDFileWriteMessage, "ERROR: capture not supported in Single mode");
             setIntegerParam(NDFileCapture, 0);
-            break;
+            return(asynError);
         case NDFileModeCapture:
             if (capture) {
                 /* Capturing was just started */
