@@ -9,7 +9,15 @@
 #define DRV_NDFileJPEG_H
 
 #include "NDPluginFile.h"
+
+#ifdef __cplusplus
+// Force C interface for jpeg functions
+extern "C" {
+#endif
 #include "jpeglib.h"
+#ifdef __cplusplus
+}
+#endif
 
 #define JPEG_BUF_SIZE 4096 /* choose an efficiently fwrite'able size */
 
