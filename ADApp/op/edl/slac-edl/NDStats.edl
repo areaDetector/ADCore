@@ -3,10 +3,10 @@ beginScreenProperties
 major 4
 minor 0
 release 1
-x 425
-y 183
-w 390
-h 820
+x 518
+y 1384
+w 420
+h 860
 font "helvetica-bold-r-12.0"
 ctlFont "helvetica-bold-r-12.0"
 btnFont "helvetica-bold-r-12.0"
@@ -31,9 +31,9 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 5
-y 400
-w 185
+x 4
+y 416
+w 196
 h 160
 lineColor index 14
 fill
@@ -48,15 +48,14 @@ minor 1
 release 0
 x 0
 y 0
-w 390
-h 385
+w 412
+h 388
 fgColor index 14
 bgColor index 3
 topShadowColor index 1
 botShadowColor index 11
 displaySource "file"
 file "areaDetectorScreens/NDPluginBase.edl"
-sizeOfs 5
 numDsps 1
 displayFileName {
   0 "areaDetectorScreens/NDPluginBase.edl"
@@ -70,8 +69,8 @@ beginObjectProperties
 major 4
 minor 1
 release 1
-x 5
-y 390
+x 4
+y 408
 w 65
 h 14
 font "helvetica-medium-r-12.0"
@@ -90,9 +89,9 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 10
-y 410
-w 175
+x 8
+y 428
+w 180
 h 20
 fgColor index 25
 bgColor index 3
@@ -110,11 +109,11 @@ beginObjectProperties
 major 4
 minor 1
 release 1
-x 10
-y 430
-w 75
-h 30
-font "helvetica-bold-r-12.0"
+x 8
+y 448
+w 76
+h 28
+font "helvetica-bold-r-10.0"
 fgColor index 14
 bgColor index 3
 useDisplayBg
@@ -130,9 +129,9 @@ beginObjectProperties
 major 4
 minor 7
 release 0
-x 140
-y 435
-w 45
+x 144
+y 452
+w 52
 h 20
 controlPv "$(P)$(R)BgdWidth_RBV"
 font "helvetica-bold-r-12.0"
@@ -154,23 +153,22 @@ beginObjectProperties
 major 4
 minor 7
 release 0
-x 90
-y 435
+x 92
+y 452
 w 45
 h 20
 controlPv "$(P)$(R)BgdWidth"
 font "helvetica-bold-r-12.0"
 fontAlign "center"
 fgColor index 25
-fgAlarm
 bgColor index 5
 editable
 motifWidget
 limitsFromDb
 nullColor index 40
 smartRefresh
-useHexPrefix
 newPos
+noExecuteClipMask
 endObjectProperties
 
 # (Text Monitor)
@@ -179,9 +177,9 @@ beginObjectProperties
 major 4
 minor 7
 release 0
-x 50
-y 485
-w 35
+x 48
+y 500
+w 40
 h 20
 controlPv "$(P)$(R)MaxValue_RBV"
 font "helvetica-bold-r-12.0"
@@ -203,9 +201,9 @@ beginObjectProperties
 major 4
 minor 7
 release 0
-x 50
-y 460
-w 35
+x 48
+y 476
+w 40
 h 20
 controlPv "$(P)$(R)MinValue_RBV"
 font "helvetica-bold-r-12.0"
@@ -227,11 +225,12 @@ beginObjectProperties
 major 4
 minor 7
 release 0
-x 110
-y 535
-w 75
+x 132
+y 552
+w 64
 h 20
 controlPv "$(P)$(R)Net_RBV"
+format "exponential"
 font "helvetica-bold-r-12.0"
 fontAlign "center"
 fgColor index 16
@@ -251,11 +250,12 @@ beginObjectProperties
 major 4
 minor 7
 release 0
-x 110
-y 510
-w 75
+x 132
+y 528
+w 64
 h 20
 controlPv "$(P)$(R)Total_RBV"
+format "exponential"
 font "helvetica-bold-r-12.0"
 fontAlign "center"
 fgColor index 16
@@ -275,9 +275,9 @@ beginObjectProperties
 major 4
 minor 7
 release 0
-x 50
-y 510
-w 35
+x 48
+y 528
+w 56
 h 20
 controlPv "$(P)$(R)MeanValue_RBV"
 font "helvetica-bold-r-12.0"
@@ -299,9 +299,9 @@ beginObjectProperties
 major 4
 minor 7
 release 0
-x 50
-y 535
-w 35
+x 48
+y 552
+w 56
 h 20
 controlPv "$(P)$(R)Sigma_RBV"
 font "helvetica-bold-r-12.0"
@@ -323,10 +323,10 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 200
-y 400
-w 185
-h 135
+x 208
+y 416
+w 204
+h 136
 lineColor index 14
 fill
 fillColor index 3
@@ -338,8 +338,8 @@ beginObjectProperties
 major 4
 minor 1
 release 1
-x 200
-y 390
+x 208
+y 408
 w 63
 h 14
 font "helvetica-medium-r-12.0"
@@ -358,9 +358,9 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 205
-y 410
-w 175
+x 212
+y 428
+w 192
 h 20
 fgColor index 25
 bgColor index 3
@@ -378,8 +378,8 @@ beginObjectProperties
 major 4
 minor 1
 release 1
-x 205
-y 430
+x 212
+y 448
 w 70
 h 30
 font "helvetica-bold-r-12.0"
@@ -397,9 +397,9 @@ beginObjectProperties
 major 4
 minor 7
 release 0
-x 335
-y 435
-w 45
+x 352
+y 452
+w 52
 h 20
 controlPv "$(P)$(R)CentroidThreshold_RBV"
 font "helvetica-bold-r-12.0"
@@ -421,23 +421,22 @@ beginObjectProperties
 major 4
 minor 7
 release 0
-x 285
-y 435
-w 45
+x 296
+y 452
+w 52
 h 20
 controlPv "$(P)$(R)CentroidThreshold"
 font "helvetica-bold-r-12.0"
 fontAlign "center"
 fgColor index 25
-fgAlarm
 bgColor index 5
 editable
 motifWidget
 limitsFromDb
 nullColor index 40
 smartRefresh
-useHexPrefix
 newPos
+noExecuteClipMask
 endObjectProperties
 
 # (Text Monitor)
@@ -446,9 +445,9 @@ beginObjectProperties
 major 4
 minor 7
 release 0
-x 335
-y 460
-w 45
+x 352
+y 476
+w 52
 h 20
 controlPv "$(P)$(R)SigmaX_RBV"
 font "helvetica-bold-r-12.0"
@@ -470,9 +469,9 @@ beginObjectProperties
 major 4
 minor 7
 release 0
-x 235
-y 460
-w 45
+x 240
+y 476
+w 56
 h 20
 controlPv "$(P)$(R)CentroidX_RBV"
 font "helvetica-bold-r-12.0"
@@ -494,9 +493,9 @@ beginObjectProperties
 major 4
 minor 7
 release 0
-x 335
-y 485
-w 45
+x 352
+y 500
+w 52
 h 20
 controlPv "$(P)$(R)SigmaY_RBV"
 font "helvetica-bold-r-12.0"
@@ -518,9 +517,9 @@ beginObjectProperties
 major 4
 minor 7
 release 0
-x 235
-y 485
-w 45
+x 240
+y 500
+w 56
 h 20
 controlPv "$(P)$(R)CentroidY_RBV"
 font "helvetica-bold-r-12.0"
@@ -542,9 +541,9 @@ beginObjectProperties
 major 4
 minor 7
 release 0
-x 335
-y 510
-w 45
+x 352
+y 528
+w 52
 h 20
 controlPv "$(P)$(R)SigmaXY_RBV"
 font "helvetica-bold-r-12.0"
@@ -566,10 +565,10 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 5
-y 580
-w 185
-h 135
+x 4
+y 592
+w 196
+h 140
 lineColor index 14
 fill
 fillColor index 3
@@ -581,8 +580,8 @@ beginObjectProperties
 major 4
 minor 1
 release 1
-x 5
-y 570
+x 4
+y 584
 w 71
 h 14
 font "helvetica-medium-r-12.0"
@@ -601,9 +600,9 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 10
-y 590
-w 175
+x 8
+y 604
+w 188
 h 20
 fgColor index 25
 bgColor index 3
@@ -621,9 +620,9 @@ beginObjectProperties
 major 4
 minor 1
 release 1
-x 10
-y 615
-w 45
+x 8
+y 632
+w 56
 h 20
 font "helvetica-bold-r-12.0"
 fgColor index 14
@@ -640,9 +639,9 @@ beginObjectProperties
 major 4
 minor 7
 release 0
-x 130
-y 615
-w 55
+x 132
+y 632
+w 64
 h 20
 controlPv "$(P)$(R)HistSize_RBV"
 font "helvetica-bold-r-12.0"
@@ -664,23 +663,22 @@ beginObjectProperties
 major 4
 minor 7
 release 0
-x 70
-y 615
-w 55
+x 64
+y 632
+w 64
 h 20
 controlPv "$(P)$(R)HistSize"
 font "helvetica-bold-r-12.0"
 fontAlign "center"
 fgColor index 25
-fgAlarm
 bgColor index 5
 editable
 motifWidget
 limitsFromDb
 nullColor index 40
 smartRefresh
-useHexPrefix
 newPos
+noExecuteClipMask
 endObjectProperties
 
 # (Static Text)
@@ -689,9 +687,9 @@ beginObjectProperties
 major 4
 minor 1
 release 1
-x 10
-y 690
-w 55
+x 8
+y 708
+w 56
 h 20
 font "helvetica-bold-r-12.0"
 fgColor index 14
@@ -708,9 +706,9 @@ beginObjectProperties
 major 4
 minor 7
 release 0
-x 70
-y 690
-w 55
+x 64
+y 708
+w 64
 h 20
 controlPv "$(P)$(R)HistEntropy_RBV"
 font "helvetica-bold-r-12.0"
@@ -732,9 +730,9 @@ beginObjectProperties
 major 4
 minor 7
 release 0
-x 130
-y 640
-w 55
+x 132
+y 656
+w 64
 h 20
 controlPv "$(P)$(R)HistMin_RBV"
 font "helvetica-bold-r-12.0"
@@ -756,23 +754,22 @@ beginObjectProperties
 major 4
 minor 7
 release 0
-x 70
-y 640
-w 55
+x 64
+y 656
+w 64
 h 20
 controlPv "$(P)$(R)HistMin"
 font "helvetica-bold-r-12.0"
 fontAlign "center"
 fgColor index 25
-fgAlarm
 bgColor index 5
 editable
 motifWidget
 limitsFromDb
 nullColor index 40
 smartRefresh
-useHexPrefix
 newPos
+noExecuteClipMask
 endObjectProperties
 
 # (Text Monitor)
@@ -781,9 +778,9 @@ beginObjectProperties
 major 4
 minor 7
 release 0
-x 130
-y 665
-w 55
+x 132
+y 680
+w 64
 h 20
 controlPv "$(P)$(R)HistMax_RBV"
 font "helvetica-bold-r-12.0"
@@ -805,23 +802,22 @@ beginObjectProperties
 major 4
 minor 7
 release 0
-x 70
-y 665
-w 55
+x 64
+y 680
+w 64
 h 20
 controlPv "$(P)$(R)HistMax"
 font "helvetica-bold-r-12.0"
 fontAlign "center"
 fgColor index 25
-fgAlarm
 bgColor index 5
 editable
 motifWidget
 limitsFromDb
 nullColor index 40
 smartRefresh
-useHexPrefix
 newPos
+noExecuteClipMask
 endObjectProperties
 
 # (Static Text)
@@ -830,9 +826,9 @@ beginObjectProperties
 major 4
 minor 1
 release 1
-x 10
-y 640
-w 45
+x 8
+y 656
+w 56
 h 20
 font "helvetica-bold-r-12.0"
 fgColor index 14
@@ -849,9 +845,9 @@ beginObjectProperties
 major 4
 minor 1
 release 1
-x 10
-y 665
-w 45
+x 8
+y 680
+w 56
 h 20
 font "helvetica-bold-r-12.0"
 fgColor index 14
@@ -868,9 +864,9 @@ beginObjectProperties
 major 4
 minor 4
 release 0
-x 130
-y 690
-w 55
+x 132
+y 708
+w 64
 h 20
 fgColor index 43
 bgColor index 3
@@ -894,10 +890,10 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 200
-y 560
-w 185
-h 225
+x 208
+y 568
+w 200
+h 232
 lineColor index 14
 fill
 fillColor index 3
@@ -909,8 +905,8 @@ beginObjectProperties
 major 4
 minor 1
 release 1
-x 200
-y 550
+x 208
+y 560
 w 57
 h 14
 font "helvetica-medium-r-12.0"
@@ -929,9 +925,9 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 205
-y 570
-w 175
+x 212
+y 584
+w 192
 h 20
 fgColor index 25
 bgColor index 3
@@ -949,16 +945,16 @@ beginObjectProperties
 major 4
 minor 1
 release 1
-x 205
-y 595
+x 212
+y 612
 w 50
 h 20
-font "helvetica-bold-r-12.0"
+font "helvetica-bold-r-10.0"
 fgColor index 14
 bgColor index 3
 useDisplayBg
 value {
-  "CursorX"
+  "Cursor X"
 }
 endObjectProperties
 
@@ -968,9 +964,9 @@ beginObjectProperties
 major 4
 minor 7
 release 0
-x 325
-y 595
-w 55
+x 340
+y 612
+w 64
 h 20
 controlPv "$(P)$(R)CursorX_RBV"
 font "helvetica-bold-r-12.0"
@@ -992,23 +988,22 @@ beginObjectProperties
 major 4
 minor 7
 release 0
-x 260
-y 595
-w 55
+x 272
+y 612
+w 64
 h 20
 controlPv "$(P)$(R)CursorX"
 font "helvetica-bold-r-12.0"
 fontAlign "center"
 fgColor index 25
-fgAlarm
 bgColor index 5
 editable
 motifWidget
 limitsFromDb
 nullColor index 40
 smartRefresh
-useHexPrefix
 newPos
+noExecuteClipMask
 endObjectProperties
 
 # (Static Text)
@@ -1017,11 +1012,11 @@ beginObjectProperties
 major 4
 minor 1
 release 1
-x 205
-y 645
-w 55
+x 212
+y 660
+w 50
 h 20
-font "helvetica-bold-r-12.0"
+font "helvetica-bold-r-10.0"
 fgColor index 14
 bgColor index 3
 useDisplayBg
@@ -1036,9 +1031,9 @@ beginObjectProperties
 major 4
 minor 7
 release 0
-x 260
-y 645
-w 55
+x 272
+y 660
+w 64
 h 20
 controlPv "$(P)$(R)ProfileSizeX_RBV"
 font "helvetica-bold-r-12.0"
@@ -1060,8 +1055,8 @@ beginObjectProperties
 major 4
 minor 4
 release 0
-x 320
-y 670
+x 340
+y 688
 w 30
 h 20
 fgColor index 43
@@ -1086,16 +1081,16 @@ beginObjectProperties
 major 4
 minor 1
 release 1
-x 205
-y 620
+x 212
+y 636
 w 50
 h 20
-font "helvetica-bold-r-12.0"
+font "helvetica-bold-r-10.0"
 fgColor index 14
 bgColor index 3
 useDisplayBg
 value {
-  "CursorY"
+  "Cursor Y"
 }
 endObjectProperties
 
@@ -1105,23 +1100,22 @@ beginObjectProperties
 major 4
 minor 7
 release 0
-x 260
-y 620
-w 55
+x 272
+y 636
+w 64
 h 20
 controlPv "$(P)$(R)CursorY"
 font "helvetica-bold-r-12.0"
 fontAlign "center"
 fgColor index 25
-fgAlarm
 bgColor index 5
 editable
 motifWidget
 limitsFromDb
 nullColor index 40
 smartRefresh
-useHexPrefix
 newPos
+noExecuteClipMask
 endObjectProperties
 
 # (Text Monitor)
@@ -1130,9 +1124,9 @@ beginObjectProperties
 major 4
 minor 7
 release 0
-x 325
-y 620
-w 55
+x 340
+y 636
+w 64
 h 20
 controlPv "$(P)$(R)CursorY_RBV"
 font "helvetica-bold-r-12.0"
@@ -1154,9 +1148,9 @@ beginObjectProperties
 major 4
 minor 7
 release 0
-x 325
-y 645
-w 55
+x 340
+y 660
+w 64
 h 20
 controlPv "$(P)$(R)ProfileSizeY_RBV"
 font "helvetica-bold-r-12.0"
@@ -1178,8 +1172,8 @@ beginObjectProperties
 major 4
 minor 4
 release 0
-x 350
-y 670
+x 374
+y 688
 w 30
 h 20
 fgColor index 43
@@ -1204,8 +1198,8 @@ beginObjectProperties
 major 4
 minor 4
 release 0
-x 320
-y 695
+x 340
+y 712
 w 30
 h 20
 fgColor index 43
@@ -1230,8 +1224,8 @@ beginObjectProperties
 major 4
 minor 4
 release 0
-x 350
-y 695
+x 374
+y 712
 w 30
 h 20
 fgColor index 43
@@ -1256,8 +1250,8 @@ beginObjectProperties
 major 4
 minor 4
 release 0
-x 320
-y 735
+x 340
+y 752
 w 30
 h 20
 fgColor index 43
@@ -1282,8 +1276,8 @@ beginObjectProperties
 major 4
 minor 4
 release 0
-x 350
-y 735
+x 374
+y 752
 w 30
 h 20
 fgColor index 43
@@ -1308,8 +1302,8 @@ beginObjectProperties
 major 4
 minor 4
 release 0
-x 320
-y 760
+x 340
+y 776
 w 30
 h 20
 fgColor index 43
@@ -1334,8 +1328,8 @@ beginObjectProperties
 major 4
 minor 4
 release 0
-x 350
-y 760
+x 374
+y 776
 w 30
 h 20
 fgColor index 43
@@ -1360,9 +1354,9 @@ beginObjectProperties
 major 4
 minor 1
 release 1
-x 205
-y 670
-w 115
+x 212
+y 688
+w 124
 h 20
 font "helvetica-bold-r-12.0"
 fgColor index 14
@@ -1379,9 +1373,9 @@ beginObjectProperties
 major 4
 minor 1
 release 1
-x 205
-y 695
-w 115
+x 212
+y 712
+w 124
 h 20
 font "helvetica-bold-r-12.0"
 fgColor index 14
@@ -1398,9 +1392,9 @@ beginObjectProperties
 major 4
 minor 1
 release 1
-x 205
-y 735
-w 115
+x 212
+y 752
+w 124
 h 20
 font "helvetica-bold-r-12.0"
 fgColor index 14
@@ -1417,9 +1411,9 @@ beginObjectProperties
 major 4
 minor 1
 release 1
-x 205
-y 760
-w 115
+x 212
+y 776
+w 124
 h 20
 font "helvetica-bold-r-12.0"
 fgColor index 14
@@ -1436,10 +1430,10 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 5
-y 735
-w 185
-h 80
+x 4
+y 752
+w 196
+h 96
 lineColor index 14
 fill
 fillColor index 3
@@ -1451,8 +1445,8 @@ beginObjectProperties
 major 4
 minor 1
 release 1
-x 5
-y 725
+x 4
+y 744
 w 149
 h 14
 font "helvetica-medium-r-12.0"
@@ -1471,8 +1465,8 @@ beginObjectProperties
 major 4
 minor 1
 release 1
-x 205
-y 715
+x 212
+y 732
 w 175
 h 20
 font "helvetica-medium-r-12.0"
@@ -1490,8 +1484,8 @@ beginObjectProperties
 major 4
 minor 3
 release 0
-x 200
-y 790
+x 216
+y 808
 w 90
 h 25
 fgColor index 14
@@ -1512,9 +1506,9 @@ beginObjectProperties
 major 4
 minor 1
 release 1
-x 10
-y 765
-w 55
+x 12
+y 788
+w 60
 h 20
 font "helvetica-bold-r-12.0"
 fgColor index 14
@@ -1531,23 +1525,22 @@ beginObjectProperties
 major 4
 minor 7
 release 0
-x 130
-y 765
-w 55
+x 140
+y 788
+w 56
 h 20
 controlPv "$(P)$(R)TSNumPoints"
 font "helvetica-bold-r-12.0"
 fontAlign "center"
 fgColor index 25
-fgAlarm
 bgColor index 5
 editable
 motifWidget
 limitsFromDb
 nullColor index 40
 smartRefresh
-useHexPrefix
 newPos
+noExecuteClipMask
 endObjectProperties
 
 # (Text Monitor)
@@ -1556,9 +1549,9 @@ beginObjectProperties
 major 4
 minor 7
 release 0
-x 70
-y 765
-w 55
+x 72
+y 788
+w 48
 h 20
 controlPv "$(P)$(R)TSCurrentPoint"
 font "helvetica-bold-r-12.0"
@@ -1580,11 +1573,11 @@ beginObjectProperties
 major 4
 minor 1
 release 1
-x 125
-y 765
-w 5
+x 126
+y 788
+w 6
 h 20
-font "helvetica-bold-r-12.0"
+font "helvetica-bold-r-18.0"
 fgColor index 14
 bgColor index 3
 useDisplayBg
@@ -1599,9 +1592,9 @@ beginObjectProperties
 major 4
 minor 1
 release 0
-x 125
-y 740
-w 35
+x 132
+y 764
+w 40
 h 20
 fgColor index 21
 onColor index 4
@@ -1623,9 +1616,9 @@ beginObjectProperties
 major 4
 minor 1
 release 0
-x 85
-y 740
-w 35
+x 88
+y 764
+w 44
 h 20
 fgColor index 19
 onColor index 4
@@ -1647,8 +1640,8 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 165
-y 740
+x 178
+y 764
 w 18
 h 18
 controlPv "$(P)$(R)TSAcquiring"
@@ -1665,9 +1658,9 @@ beginObjectProperties
 major 4
 minor 1
 release 0
-x 10
-y 740
-w 70
+x 8
+y 764
+w 80
 h 20
 fgColor index 19
 onColor index 4
@@ -1689,15 +1682,15 @@ beginObjectProperties
 major 4
 minor 4
 release 0
-x 10
-y 460
-w 40
+x 8
+y 476
+w 36
 h 20
 fgColor index 43
 bgColor index 3
 topShadowColor index 1
 botShadowColor index 11
-font "helvetica-bold-r-12.0"
+font "helvetica-bold-r-10.0"
 buttonLabel "Min"
 numPvs 4
 numDsps 1
@@ -1715,15 +1708,15 @@ beginObjectProperties
 major 4
 minor 4
 release 0
-x 10
-y 485
-w 40
+x 8
+y 500
+w 36
 h 20
 fgColor index 43
 bgColor index 3
 topShadowColor index 1
 botShadowColor index 11
-font "helvetica-bold-r-12.0"
+font "helvetica-bold-r-10.0"
 buttonLabel "Max"
 numPvs 4
 numDsps 1
@@ -1741,15 +1734,15 @@ beginObjectProperties
 major 4
 minor 4
 release 0
-x 10
-y 510
+x 8
+y 528
 w 40
 h 20
 fgColor index 43
 bgColor index 3
 topShadowColor index 1
 botShadowColor index 11
-font "helvetica-bold-r-12.0"
+font "helvetica-bold-r-10.0"
 buttonLabel "Mean"
 numPvs 4
 numDsps 1
@@ -1767,15 +1760,15 @@ beginObjectProperties
 major 4
 minor 4
 release 0
-x 10
-y 535
+x 8
+y 552
 w 40
 h 20
 fgColor index 43
 bgColor index 3
 topShadowColor index 1
 botShadowColor index 11
-font "helvetica-bold-r-12.0"
+font "helvetica-bold-r-10.0"
 buttonLabel "Sigma"
 numPvs 4
 numDsps 1
@@ -1793,15 +1786,15 @@ beginObjectProperties
 major 4
 minor 4
 release 0
-x 85
-y 510
-w 25
+x 104
+y 528
+w 28
 h 20
 fgColor index 43
 bgColor index 3
 topShadowColor index 1
 botShadowColor index 11
-font "helvetica-bold-r-12.0"
+font "helvetica-bold-r-10.0"
 buttonLabel "Tot"
 numPvs 4
 numDsps 1
@@ -1819,15 +1812,15 @@ beginObjectProperties
 major 4
 minor 4
 release 0
-x 85
-y 535
-w 25
+x 104
+y 552
+w 28
 h 20
 fgColor index 43
 bgColor index 3
 topShadowColor index 1
 botShadowColor index 11
-font "helvetica-bold-r-12.0"
+font "helvetica-bold-r-10.0"
 buttonLabel "Net"
 numPvs 4
 numDsps 1
@@ -1845,15 +1838,15 @@ beginObjectProperties
 major 4
 minor 4
 release 0
-x 205
-y 460
-w 30
+x 212
+y 476
+w 24
 h 20
 fgColor index 43
 bgColor index 3
 topShadowColor index 1
 botShadowColor index 11
-font "helvetica-bold-r-12.0"
+font "helvetica-bold-r-10.0"
 buttonLabel "X"
 numPvs 4
 numDsps 1
@@ -1871,15 +1864,15 @@ beginObjectProperties
 major 4
 minor 4
 release 0
-x 205
-y 485
-w 30
+x 212
+y 500
+w 24
 h 20
 fgColor index 43
 bgColor index 3
 topShadowColor index 1
 botShadowColor index 11
-font "helvetica-bold-r-12.0"
+font "helvetica-bold-r-10.0"
 buttonLabel "Y"
 numPvs 4
 numDsps 1
@@ -1897,15 +1890,15 @@ beginObjectProperties
 major 4
 minor 4
 release 0
-x 285
-y 460
-w 50
+x 300
+y 476
+w 52
 h 20
 fgColor index 43
 bgColor index 3
 topShadowColor index 1
 botShadowColor index 11
-font "helvetica-bold-r-12.0"
+font "helvetica-bold-r-10.0"
 buttonLabel "SigmaX"
 numPvs 4
 numDsps 1
@@ -1923,15 +1916,15 @@ beginObjectProperties
 major 4
 minor 4
 release 0
-x 285
-y 485
-w 50
+x 300
+y 500
+w 52
 h 20
 fgColor index 43
 bgColor index 3
 topShadowColor index 1
 botShadowColor index 11
-font "helvetica-bold-r-12.0"
+font "helvetica-bold-r-10.0"
 buttonLabel "SigmaY"
 numPvs 4
 numDsps 1
@@ -1949,15 +1942,15 @@ beginObjectProperties
 major 4
 minor 4
 release 0
-x 275
-y 510
-w 60
+x 288
+y 528
+w 68
 h 20
 fgColor index 43
 bgColor index 3
 topShadowColor index 1
 botShadowColor index 11
-font "helvetica-bold-r-12.0"
+font "helvetica-bold-r-10.0"
 buttonLabel "SigmaXY"
 numPvs 4
 numDsps 1
@@ -1975,15 +1968,15 @@ beginObjectProperties
 major 4
 minor 4
 release 0
-x 85
-y 460
-w 20
+x 88
+y 476
+w 16
 h 20
 fgColor index 43
 bgColor index 3
 topShadowColor index 1
 botShadowColor index 11
-font "helvetica-bold-r-12.0"
+font "helvetica-bold-r-10.0"
 buttonLabel "X"
 numPvs 4
 numDsps 1
@@ -2001,9 +1994,9 @@ beginObjectProperties
 major 4
 minor 7
 release 0
-x 105
-y 460
-w 30
+x 104
+y 476
+w 36
 h 20
 controlPv "$(P)$(R)MinX_RBV"
 font "helvetica-bold-r-12.0"
@@ -2025,15 +2018,15 @@ beginObjectProperties
 major 4
 minor 4
 release 0
-x 135
-y 460
+x 140
+y 476
 w 20
 h 20
 fgColor index 43
 bgColor index 3
 topShadowColor index 1
 botShadowColor index 11
-font "helvetica-bold-r-12.0"
+font "helvetica-bold-r-10.0"
 buttonLabel "Y"
 numPvs 4
 numDsps 1
@@ -2051,9 +2044,9 @@ beginObjectProperties
 major 4
 minor 7
 release 0
-x 155
-y 460
-w 30
+x 160
+y 476
+w 36
 h 20
 controlPv "$(P)$(R)MinY_RBV"
 font "helvetica-bold-r-12.0"
@@ -2075,9 +2068,9 @@ beginObjectProperties
 major 4
 minor 7
 release 0
-x 155
-y 485
-w 30
+x 160
+y 500
+w 36
 h 20
 controlPv "$(P)$(R)MaxY_RBV"
 font "helvetica-bold-r-12.0"
@@ -2099,15 +2092,15 @@ beginObjectProperties
 major 4
 minor 4
 release 0
-x 135
-y 485
+x 140
+y 500
 w 20
 h 20
 fgColor index 43
 bgColor index 3
 topShadowColor index 1
 botShadowColor index 11
-font "helvetica-bold-r-12.0"
+font "helvetica-bold-r-10.0"
 buttonLabel "Y"
 numPvs 4
 numDsps 1
@@ -2125,9 +2118,9 @@ beginObjectProperties
 major 4
 minor 7
 release 0
-x 105
-y 485
-w 30
+x 104
+y 500
+w 36
 h 20
 controlPv "$(P)$(R)MaxX_RBV"
 font "helvetica-bold-r-12.0"
@@ -2149,15 +2142,15 @@ beginObjectProperties
 major 4
 minor 4
 release 0
-x 85
-y 485
-w 20
+x 88
+y 500
+w 16
 h 20
 fgColor index 43
 bgColor index 3
 topShadowColor index 1
 botShadowColor index 11
-font "helvetica-bold-r-12.0"
+font "helvetica-bold-r-10.0"
 buttonLabel "X"
 numPvs 4
 numDsps 1
@@ -2175,8 +2168,8 @@ beginObjectProperties
 major 4
 minor 1
 release 1
-x 10
-y 790
+x 12
+y 816
 w 55
 h 20
 font "helvetica-bold-r-12.0"
@@ -2194,9 +2187,9 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 70
-y 790
-w 115
+x 72
+y 816
+w 124
 h 20
 fgColor index 25
 bgColor index 3
@@ -2213,8 +2206,8 @@ beginObjectProperties
 major 4
 minor 4
 release 0
-x 295
-y 790
+x 312
+y 808
 w 90
 h 25
 fgColor index 43
