@@ -212,7 +212,7 @@ void NDPluginROIStat::processCallbacks(NDArray *pArray)
   int TSAcquiring;
   const char* functionName = "NDPluginROIStat::processCallbacks";
   NDROI_t *pROIs = new NDROI[maxROIs_];
-  if(!pROIs) {cantProceed(functionName);}
+  if(!pROIs) {cantProceed("%s",functionName);}
 
   /* Call the base class method */
   NDPluginDriver::beginProcessCallbacks(pArray);
