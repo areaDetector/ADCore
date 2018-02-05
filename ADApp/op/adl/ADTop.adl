@@ -8,7 +8,7 @@ display {
 		x=171
 		y=78
 		width=225
-		height=640
+		height=675
 	}
 	clr=14
 	bclr=4
@@ -753,39 +753,6 @@ text {
 "related display" {
 	object {
 		x=145
-		y=610
-		width=64
-		height=20
-	}
-	display[0] {
-		label="URL #1 general"
-		name="ADBase.adl"
-		args="P=13URL1:, R=cam1: "
-	}
-	display[1] {
-		label="URL #1 specific"
-		name="URLDriver.adl"
-		args="P=13URL1:, R=cam1:"
-	}
-	clr=14
-	bclr=51
-}
-text {
-	object {
-		x=110
-		y=610
-		width=30
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="URL"
-	align="horiz. right"
-}
-"related display" {
-	object {
-		x=145
 		y=535
 		width=64
 		height=20
@@ -911,6 +878,72 @@ text {
 		label="Photon II #1 specific"
 		name="PhotonII.adl"
 		args="P=13PII_1:, R=cam1:"
+	}
+	clr=14
+	bclr=51
+}
+text {
+	object {
+		x=110
+		y=635
+		width=30
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="URL"
+	align="horiz. right"
+}
+"related display" {
+	object {
+		x=145
+		y=635
+		width=64
+		height=20
+	}
+	display[0] {
+		label="URL #1 general"
+		name="ADBase.adl"
+		args="P=13URL1:, R=cam1: "
+	}
+	display[1] {
+		label="URL #1 specific"
+		name="URLDriver.adl"
+		args="P=13URL1:, R=cam1:"
+	}
+	clr=14
+	bclr=51
+}
+text {
+	object {
+		x=50
+		y=610
+		width=90
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Spinnaker"
+	align="horiz. right"
+}
+"related display" {
+	object {
+		x=145
+		y=610
+		width=64
+		height=20
+	}
+	display[0] {
+		label="Spinnaker #1 general"
+		name="ADBase.adl"
+		args="P=13SP1:, R=cam1: "
+	}
+	display[1] {
+		label="Spinnaker #1 specific"
+		name="ADSpinnaker.adl"
+		args="P=13SP1:, R=cam1:"
 	}
 	clr=14
 	bclr=51
