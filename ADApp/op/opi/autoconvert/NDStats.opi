@@ -9,7 +9,7 @@
   <background_color>
     <color red="187" green="187" blue="187" />
   </background_color>
-  <boy_version>5.1.0.201801081728</boy_version>
+  <boy_version>5.1.0.201802091122</boy_version>
   <foreground_color>
     <color red="0" green="0" blue="0" />
   </foreground_color>
@@ -779,7 +779,7 @@ $(pv_value)</tooltip>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
-    <border_style>3</border_style>
+    <border_style>0</border_style>
     <border_width>1</border_width>
     <enabled>true</enabled>
     <font>
@@ -795,7 +795,7 @@ $(pv_value)</tooltip>
     </macros>
     <name>Linking Container</name>
     <opi_file>NDPluginBase.opi</opi_file>
-    <resize_behaviour>0</resize_behaviour>
+    <resize_behaviour>2</resize_behaviour>
     <rules />
     <scale_options>
       <width_scalable>true</width_scalable>
@@ -942,7 +942,7 @@ $(pv_value)</tooltip>
     <background_color>
       <color red="70" green="70" blue="70" />
     </background_color>
-    <border_alarm_sensitive>true</border_alarm_sensitive>
+    <border_alarm_sensitive>false</border_alarm_sensitive>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
@@ -954,7 +954,7 @@ $(pv_value)</tooltip>
     </font>
     <forecolor_alarm_sensitive>true</forecolor_alarm_sensitive>
     <foreground_color>
-      <color red="10" green="0" blue="184" />
+      <color name="OK" red="0" green="255" blue="0" />
     </foreground_color>
     <format_type>4</format_type>
     <height>18</height>
@@ -1004,7 +1004,7 @@ $(pv_value)</tooltip>
       <color red="0" green="0" blue="0" />
     </foreground_color>
     <height>20</height>
-    <horizontal_alignment>0</horizontal_alignment>
+    <horizontal_alignment>2</horizontal_alignment>
     <name>Label</name>
     <rules />
     <scale_options>
@@ -1044,7 +1044,7 @@ $(pv_value)</tooltip>
       <color red="0" green="0" blue="0" />
     </foreground_color>
     <height>20</height>
-    <horizontal_alignment>1</horizontal_alignment>
+    <horizontal_alignment>2</horizontal_alignment>
     <name>Label</name>
     <rules />
     <scale_options>
@@ -1197,7 +1197,7 @@ $(pv_value)</tooltip>
       <color red="0" green="0" blue="0" />
     </foreground_color>
     <height>20</height>
-    <horizontal_alignment>1</horizontal_alignment>
+    <horizontal_alignment>2</horizontal_alignment>
     <name>Label</name>
     <rules />
     <scale_options>
@@ -1218,39 +1218,21 @@ $(pv_value)</tooltip>
     <x>860</x>
     <y>143</y>
   </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.scaledslider" version="1.0.0">
+  <widget typeId="org.csstudio.opibuilder.widgets.scrollbar" version="1.0.0">
     <actions hook="false" hook_all="false" />
     <alarm_pulsing>false</alarm_pulsing>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <background_color>
       <color red="115" green="223" blue="255" />
     </background_color>
+    <bar_length>1.0</bar_length>
     <border_alarm_sensitive>true</border_alarm_sensitive>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
     <border_style>0</border_style>
     <border_width>1</border_width>
-    <color_fillbackground>
-      <color red="200" green="200" blue="200" />
-    </color_fillbackground>
-    <color_hi>
-      <color red="255" green="128" blue="0" />
-    </color_hi>
-    <color_hihi>
-      <color red="255" green="0" blue="0" />
-    </color_hihi>
-    <color_lo>
-      <color red="255" green="128" blue="0" />
-    </color_lo>
-    <color_lolo>
-      <color red="255" green="0" blue="0" />
-    </color_lolo>
-    <effect_3d>true</effect_3d>
     <enabled>true</enabled>
-    <fill_color>
-      <color red="0" green="0" blue="255" />
-    </fill_color>
     <font>
       <opifont.name fontName="Sans" height="10" style="0" pixels="false">Default</opifont.name>
     </font>
@@ -1259,48 +1241,27 @@ $(pv_value)</tooltip>
       <color red="10" green="0" blue="184" />
     </foreground_color>
     <height>20</height>
-    <horizontal>false</horizontal>
-    <level_hi>80.0</level_hi>
-    <level_hihi>90.0</level_hihi>
-    <level_lo>20.0</level_lo>
-    <level_lolo>10.0</level_lolo>
+    <horizontal>true</horizontal>
     <limits_from_pv>true</limits_from_pv>
-    <log_scale>false</log_scale>
-    <major_tick_step_hint>50</major_tick_step_hint>
     <maximum>100.0</maximum>
     <minimum>0.0</minimum>
-    <name>Scaled Slider</name>
-    <page_increment>10.0</page_increment>
+    <name>Scrollbar</name>
+    <page_increment>1.0</page_increment>
     <pv_name>$(P)$(R)CursorX</pv_name>
     <pv_value />
     <rules />
-    <scale_font>
-      <opifont.name fontName="Sans" height="10" style="0" pixels="false">Default</opifont.name>
-    </scale_font>
-    <scale_format></scale_format>
     <scale_options>
       <width_scalable>true</width_scalable>
       <height_scalable>true</height_scalable>
       <keep_wh_ratio>false</keep_wh_ratio>
     </scale_options>
     <scripts />
-    <show_hi>true</show_hi>
-    <show_hihi>true</show_hihi>
-    <show_lo>true</show_lo>
-    <show_lolo>true</show_lolo>
-    <show_markers>true</show_markers>
-    <show_minor_ticks>true</show_minor_ticks>
-    <show_scale>true</show_scale>
+    <show_value_tip>true</show_value_tip>
     <step_increment>1.0</step_increment>
-    <thumb_color>
-      <color red="172" green="172" blue="172" />
-    </thumb_color>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-    <transparent_background>true</transparent_background>
-    <value_label_format></value_label_format>
     <visible>true</visible>
-    <widget_type>Scaled Slider</widget_type>
+    <widget_type>Scrollbar</widget_type>
     <width>160</width>
     <x>949</x>
     <y>143</y>
@@ -1437,7 +1398,7 @@ $(pv_value)</tooltip>
       <color red="0" green="0" blue="0" />
     </foreground_color>
     <height>20</height>
-    <horizontal_alignment>1</horizontal_alignment>
+    <horizontal_alignment>2</horizontal_alignment>
     <name>Label</name>
     <rules />
     <scale_options>
@@ -1458,39 +1419,21 @@ $(pv_value)</tooltip>
     <x>860</x>
     <y>188</y>
   </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.scaledslider" version="1.0.0">
+  <widget typeId="org.csstudio.opibuilder.widgets.scrollbar" version="1.0.0">
     <actions hook="false" hook_all="false" />
     <alarm_pulsing>false</alarm_pulsing>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <background_color>
       <color red="115" green="223" blue="255" />
     </background_color>
+    <bar_length>1.0</bar_length>
     <border_alarm_sensitive>true</border_alarm_sensitive>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
     <border_style>0</border_style>
     <border_width>1</border_width>
-    <color_fillbackground>
-      <color red="200" green="200" blue="200" />
-    </color_fillbackground>
-    <color_hi>
-      <color red="255" green="128" blue="0" />
-    </color_hi>
-    <color_hihi>
-      <color red="255" green="0" blue="0" />
-    </color_hihi>
-    <color_lo>
-      <color red="255" green="128" blue="0" />
-    </color_lo>
-    <color_lolo>
-      <color red="255" green="0" blue="0" />
-    </color_lolo>
-    <effect_3d>true</effect_3d>
     <enabled>true</enabled>
-    <fill_color>
-      <color red="0" green="0" blue="255" />
-    </fill_color>
     <font>
       <opifont.name fontName="Sans" height="10" style="0" pixels="false">Default</opifont.name>
     </font>
@@ -1499,48 +1442,27 @@ $(pv_value)</tooltip>
       <color red="10" green="0" blue="184" />
     </foreground_color>
     <height>20</height>
-    <horizontal>false</horizontal>
-    <level_hi>80.0</level_hi>
-    <level_hihi>90.0</level_hihi>
-    <level_lo>20.0</level_lo>
-    <level_lolo>10.0</level_lolo>
+    <horizontal>true</horizontal>
     <limits_from_pv>true</limits_from_pv>
-    <log_scale>false</log_scale>
-    <major_tick_step_hint>50</major_tick_step_hint>
     <maximum>100.0</maximum>
     <minimum>0.0</minimum>
-    <name>Scaled Slider</name>
-    <page_increment>10.0</page_increment>
+    <name>Scrollbar</name>
+    <page_increment>1.0</page_increment>
     <pv_name>$(P)$(R)CursorY</pv_name>
     <pv_value />
     <rules />
-    <scale_font>
-      <opifont.name fontName="Sans" height="10" style="0" pixels="false">Default</opifont.name>
-    </scale_font>
-    <scale_format></scale_format>
     <scale_options>
       <width_scalable>true</width_scalable>
       <height_scalable>true</height_scalable>
       <keep_wh_ratio>false</keep_wh_ratio>
     </scale_options>
     <scripts />
-    <show_hi>true</show_hi>
-    <show_hihi>true</show_hihi>
-    <show_lo>true</show_lo>
-    <show_lolo>true</show_lolo>
-    <show_markers>true</show_markers>
-    <show_minor_ticks>true</show_minor_ticks>
-    <show_scale>true</show_scale>
+    <show_value_tip>true</show_value_tip>
     <step_increment>1.0</step_increment>
-    <thumb_color>
-      <color red="172" green="172" blue="172" />
-    </thumb_color>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-    <transparent_background>true</transparent_background>
-    <value_label_format></value_label_format>
     <visible>true</visible>
-    <widget_type>Scaled Slider</widget_type>
+    <widget_type>Scrollbar</widget_type>
     <width>160</width>
     <x>949</x>
     <y>188</y>
@@ -1710,7 +1632,7 @@ $(pv_value)</tooltip>
     <background_color>
       <color red="70" green="70" blue="70" />
     </background_color>
-    <border_alarm_sensitive>true</border_alarm_sensitive>
+    <border_alarm_sensitive>false</border_alarm_sensitive>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
@@ -1722,7 +1644,7 @@ $(pv_value)</tooltip>
     </font>
     <forecolor_alarm_sensitive>true</forecolor_alarm_sensitive>
     <foreground_color>
-      <color red="10" green="0" blue="184" />
+      <color name="OK" red="0" green="255" blue="0" />
     </foreground_color>
     <format_type>4</format_type>
     <height>18</height>
@@ -1772,7 +1694,7 @@ $(pv_value)</tooltip>
       <color red="0" green="0" blue="0" />
     </foreground_color>
     <height>20</height>
-    <horizontal_alignment>1</horizontal_alignment>
+    <horizontal_alignment>2</horizontal_alignment>
     <name>Label</name>
     <rules />
     <scale_options>
@@ -1812,7 +1734,7 @@ $(pv_value)</tooltip>
       <color red="0" green="0" blue="0" />
     </foreground_color>
     <height>20</height>
-    <horizontal_alignment>1</horizontal_alignment>
+    <horizontal_alignment>2</horizontal_alignment>
     <name>Label</name>
     <rules />
     <scale_options>
@@ -1954,7 +1876,7 @@ $(pv_value)</tooltip>
       <color red="0" green="0" blue="0" />
     </foreground_color>
     <height>20</height>
-    <horizontal_alignment>1</horizontal_alignment>
+    <horizontal_alignment>2</horizontal_alignment>
     <name>Label</name>
     <rules />
     <scale_options>
@@ -2175,7 +2097,7 @@ $(pv_value)</tooltip>
       <color red="0" green="0" blue="0" />
     </foreground_color>
     <height>20</height>
-    <horizontal_alignment>0</horizontal_alignment>
+    <horizontal_alignment>2</horizontal_alignment>
     <name>Label</name>
     <rules />
     <scale_options>
@@ -2255,7 +2177,7 @@ $(pv_value)</tooltip>
       <color red="0" green="0" blue="0" />
     </foreground_color>
     <height>20</height>
-    <horizontal_alignment>1</horizontal_alignment>
+    <horizontal_alignment>2</horizontal_alignment>
     <name>Label</name>
     <rules />
     <scale_options>
@@ -2443,7 +2365,7 @@ $(pv_value)</tooltip>
       <color red="0" green="0" blue="0" />
     </foreground_color>
     <height>20</height>
-    <horizontal_alignment>0</horizontal_alignment>
+    <horizontal_alignment>2</horizontal_alignment>
     <name>Label</name>
     <rules />
     <scale_options>
@@ -2631,7 +2553,7 @@ $(pv_value)</tooltip>
     <background_color>
       <color red="70" green="70" blue="70" />
     </background_color>
-    <border_alarm_sensitive>true</border_alarm_sensitive>
+    <border_alarm_sensitive>false</border_alarm_sensitive>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
@@ -2643,7 +2565,7 @@ $(pv_value)</tooltip>
     </font>
     <forecolor_alarm_sensitive>true</forecolor_alarm_sensitive>
     <foreground_color>
-      <color red="10" green="0" blue="184" />
+      <color name="OK" red="0" green="255" blue="0" />
     </foreground_color>
     <format_type>4</format_type>
     <height>18</height>
@@ -2755,7 +2677,7 @@ $(pv_value)</tooltip>
       <color red="0" green="0" blue="0" />
     </foreground_color>
     <height>20</height>
-    <horizontal_alignment>1</horizontal_alignment>
+    <horizontal_alignment>2</horizontal_alignment>
     <name>Label</name>
     <rules />
     <scale_options>
@@ -2795,7 +2717,7 @@ $(pv_value)</tooltip>
       <color red="0" green="0" blue="0" />
     </foreground_color>
     <height>20</height>
-    <horizontal_alignment>1</horizontal_alignment>
+    <horizontal_alignment>2</horizontal_alignment>
     <name>Label</name>
     <rules />
     <scale_options>
@@ -2886,7 +2808,7 @@ $(pv_value)</tooltip>
       <color red="0" green="0" blue="0" />
     </foreground_color>
     <height>20</height>
-    <horizontal_alignment>1</horizontal_alignment>
+    <horizontal_alignment>2</horizontal_alignment>
     <name>Label</name>
     <rules />
     <scale_options>
@@ -2977,7 +2899,7 @@ $(pv_value)</tooltip>
       <color red="0" green="0" blue="0" />
     </foreground_color>
     <height>20</height>
-    <horizontal_alignment>1</horizontal_alignment>
+    <horizontal_alignment>2</horizontal_alignment>
     <name>Label</name>
     <rules />
     <scale_options>
@@ -3068,7 +2990,7 @@ $(pv_value)</tooltip>
       <color red="0" green="0" blue="0" />
     </foreground_color>
     <height>20</height>
-    <horizontal_alignment>1</horizontal_alignment>
+    <horizontal_alignment>2</horizontal_alignment>
     <name>Label</name>
     <rules />
     <scale_options>
@@ -3159,7 +3081,7 @@ $(pv_value)</tooltip>
       <color red="0" green="0" blue="0" />
     </foreground_color>
     <height>20</height>
-    <horizontal_alignment>1</horizontal_alignment>
+    <horizontal_alignment>2</horizontal_alignment>
     <name>Label</name>
     <rules />
     <scale_options>
@@ -3250,7 +3172,7 @@ $(pv_value)</tooltip>
       <color red="0" green="0" blue="0" />
     </foreground_color>
     <height>20</height>
-    <horizontal_alignment>1</horizontal_alignment>
+    <horizontal_alignment>2</horizontal_alignment>
     <name>Label</name>
     <rules />
     <scale_options>
@@ -3341,7 +3263,7 @@ $(pv_value)</tooltip>
       <color red="0" green="0" blue="0" />
     </foreground_color>
     <height>20</height>
-    <horizontal_alignment>1</horizontal_alignment>
+    <horizontal_alignment>2</horizontal_alignment>
     <name>Label</name>
     <rules />
     <scale_options>
@@ -3432,7 +3354,7 @@ $(pv_value)</tooltip>
       <color red="0" green="0" blue="0" />
     </foreground_color>
     <height>20</height>
-    <horizontal_alignment>1</horizontal_alignment>
+    <horizontal_alignment>2</horizontal_alignment>
     <name>Label</name>
     <rules />
     <scale_options>
@@ -3523,7 +3445,7 @@ $(pv_value)</tooltip>
       <color red="0" green="0" blue="0" />
     </foreground_color>
     <height>20</height>
-    <horizontal_alignment>1</horizontal_alignment>
+    <horizontal_alignment>2</horizontal_alignment>
     <name>Label</name>
     <rules />
     <scale_options>
@@ -3614,7 +3536,7 @@ $(pv_value)</tooltip>
       <color red="0" green="0" blue="0" />
     </foreground_color>
     <height>20</height>
-    <horizontal_alignment>1</horizontal_alignment>
+    <horizontal_alignment>2</horizontal_alignment>
     <name>Label</name>
     <rules />
     <scale_options>
@@ -3848,7 +3770,7 @@ $(pv_value)</tooltip>
       <color red="0" green="0" blue="0" />
     </foreground_color>
     <height>20</height>
-    <horizontal_alignment>0</horizontal_alignment>
+    <horizontal_alignment>2</horizontal_alignment>
     <name>Label</name>
     <rules />
     <scale_options>
@@ -3921,7 +3843,7 @@ $(pv_value)</tooltip>
     <background_color>
       <color red="70" green="70" blue="70" />
     </background_color>
-    <border_alarm_sensitive>true</border_alarm_sensitive>
+    <border_alarm_sensitive>false</border_alarm_sensitive>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
@@ -3933,7 +3855,7 @@ $(pv_value)</tooltip>
     </font>
     <forecolor_alarm_sensitive>true</forecolor_alarm_sensitive>
     <foreground_color>
-      <color red="10" green="0" blue="184" />
+      <color name="OK" red="0" green="255" blue="0" />
     </foreground_color>
     <format_type>4</format_type>
     <height>18</height>
@@ -3983,7 +3905,7 @@ $(pv_value)</tooltip>
       <color red="0" green="0" blue="0" />
     </foreground_color>
     <height>20</height>
-    <horizontal_alignment>1</horizontal_alignment>
+    <horizontal_alignment>2</horizontal_alignment>
     <name>Label</name>
     <rules />
     <scale_options>
@@ -4063,7 +3985,7 @@ $(pv_value)</tooltip>
       <color red="0" green="0" blue="0" />
     </foreground_color>
     <height>20</height>
-    <horizontal_alignment>1</horizontal_alignment>
+    <horizontal_alignment>2</horizontal_alignment>
     <name>Label</name>
     <rules />
     <scale_options>
@@ -4300,7 +4222,7 @@ $(pv_value)</tooltip>
       <color red="0" green="0" blue="0" />
     </foreground_color>
     <height>20</height>
-    <horizontal_alignment>1</horizontal_alignment>
+    <horizontal_alignment>2</horizontal_alignment>
     <name>Label</name>
     <rules />
     <scale_options>
@@ -4402,7 +4324,7 @@ $(pv_value)</tooltip>
       <color red="0" green="0" blue="0" />
     </foreground_color>
     <height>20</height>
-    <horizontal_alignment>1</horizontal_alignment>
+    <horizontal_alignment>2</horizontal_alignment>
     <name>Label</name>
     <rules />
     <scale_options>
@@ -4504,7 +4426,7 @@ $(pv_value)</tooltip>
       <color red="0" green="0" blue="0" />
     </foreground_color>
     <height>20</height>
-    <horizontal_alignment>1</horizontal_alignment>
+    <horizontal_alignment>2</horizontal_alignment>
     <name>Label</name>
     <rules />
     <scale_options>
@@ -4606,7 +4528,7 @@ $(pv_value)</tooltip>
       <color red="0" green="0" blue="0" />
     </foreground_color>
     <height>20</height>
-    <horizontal_alignment>1</horizontal_alignment>
+    <horizontal_alignment>2</horizontal_alignment>
     <name>Label</name>
     <rules />
     <scale_options>
@@ -4635,7 +4557,7 @@ $(pv_value)</tooltip>
     <background_color>
       <color red="70" green="70" blue="70" />
     </background_color>
-    <border_alarm_sensitive>true</border_alarm_sensitive>
+    <border_alarm_sensitive>false</border_alarm_sensitive>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
@@ -4647,7 +4569,7 @@ $(pv_value)</tooltip>
     </font>
     <forecolor_alarm_sensitive>true</forecolor_alarm_sensitive>
     <foreground_color>
-      <color red="10" green="0" blue="184" />
+      <color name="OK" red="0" green="255" blue="0" />
     </foreground_color>
     <format_type>4</format_type>
     <height>18</height>
@@ -4850,7 +4772,7 @@ $(pv_value)</tooltip>
       <color red="0" green="0" blue="0" />
     </foreground_color>
     <height>20</height>
-    <horizontal_alignment>1</horizontal_alignment>
+    <horizontal_alignment>2</horizontal_alignment>
     <name>Label</name>
     <rules />
     <scale_options>
@@ -4992,7 +4914,7 @@ $(pv_value)</tooltip>
       <color red="0" green="0" blue="0" />
     </foreground_color>
     <height>20</height>
-    <horizontal_alignment>1</horizontal_alignment>
+    <horizontal_alignment>2</horizontal_alignment>
     <name>Label</name>
     <rules />
     <scale_options>
@@ -5032,7 +4954,7 @@ $(pv_value)</tooltip>
       <color red="0" green="0" blue="0" />
     </foreground_color>
     <height>20</height>
-    <horizontal_alignment>1</horizontal_alignment>
+    <horizontal_alignment>2</horizontal_alignment>
     <name>Label</name>
     <rules />
     <scale_options>
@@ -5174,7 +5096,7 @@ $(pv_value)</tooltip>
       <color red="0" green="0" blue="0" />
     </foreground_color>
     <height>20</height>
-    <horizontal_alignment>1</horizontal_alignment>
+    <horizontal_alignment>2</horizontal_alignment>
     <name>Label</name>
     <rules />
     <scale_options>
@@ -5265,7 +5187,7 @@ $(pv_value)</tooltip>
       <color red="0" green="0" blue="0" />
     </foreground_color>
     <height>20</height>
-    <horizontal_alignment>1</horizontal_alignment>
+    <horizontal_alignment>2</horizontal_alignment>
     <name>Label</name>
     <rules />
     <scale_options>
@@ -5356,7 +5278,7 @@ $(pv_value)</tooltip>
       <color red="0" green="0" blue="0" />
     </foreground_color>
     <height>20</height>
-    <horizontal_alignment>1</horizontal_alignment>
+    <horizontal_alignment>2</horizontal_alignment>
     <name>Label</name>
     <rules />
     <scale_options>
@@ -5447,7 +5369,7 @@ $(pv_value)</tooltip>
       <color red="0" green="0" blue="0" />
     </foreground_color>
     <height>20</height>
-    <horizontal_alignment>1</horizontal_alignment>
+    <horizontal_alignment>2</horizontal_alignment>
     <name>Label</name>
     <rules />
     <scale_options>
@@ -5538,7 +5460,7 @@ $(pv_value)</tooltip>
       <color red="0" green="0" blue="0" />
     </foreground_color>
     <height>20</height>
-    <horizontal_alignment>1</horizontal_alignment>
+    <horizontal_alignment>2</horizontal_alignment>
     <name>Label</name>
     <rules />
     <scale_options>
@@ -5629,7 +5551,7 @@ $(pv_value)</tooltip>
       <color red="0" green="0" blue="0" />
     </foreground_color>
     <height>20</height>
-    <horizontal_alignment>1</horizontal_alignment>
+    <horizontal_alignment>2</horizontal_alignment>
     <name>Label</name>
     <rules />
     <scale_options>
@@ -5720,7 +5642,7 @@ $(pv_value)</tooltip>
       <color red="0" green="0" blue="0" />
     </foreground_color>
     <height>20</height>
-    <horizontal_alignment>1</horizontal_alignment>
+    <horizontal_alignment>2</horizontal_alignment>
     <name>Label</name>
     <rules />
     <scale_options>
@@ -5921,7 +5843,7 @@ $(pv_value)</tooltip>
       <color red="0" green="0" blue="0" />
     </foreground_color>
     <height>20</height>
-    <horizontal_alignment>0</horizontal_alignment>
+    <horizontal_alignment>2</horizontal_alignment>
     <name>Label</name>
     <rules />
     <scale_options>
@@ -6012,7 +5934,7 @@ $(pv_value)</tooltip>
       <color red="0" green="0" blue="0" />
     </foreground_color>
     <height>20</height>
-    <horizontal_alignment>1</horizontal_alignment>
+    <horizontal_alignment>2</horizontal_alignment>
     <name>Label</name>
     <rules />
     <scale_options>
@@ -6103,7 +6025,7 @@ $(pv_value)</tooltip>
       <color red="0" green="0" blue="0" />
     </foreground_color>
     <height>20</height>
-    <horizontal_alignment>1</horizontal_alignment>
+    <horizontal_alignment>2</horizontal_alignment>
     <name>Label</name>
     <rules />
     <scale_options>
@@ -6183,7 +6105,7 @@ $(pv_value)</tooltip>
       <color red="0" green="0" blue="0" />
     </foreground_color>
     <height>20</height>
-    <horizontal_alignment>1</horizontal_alignment>
+    <horizontal_alignment>2</horizontal_alignment>
     <name>Label</name>
     <rules />
     <scale_options>
@@ -6295,7 +6217,7 @@ $(pv_value)</tooltip>
       <color red="0" green="0" blue="0" />
     </foreground_color>
     <height>20</height>
-    <horizontal_alignment>1</horizontal_alignment>
+    <horizontal_alignment>2</horizontal_alignment>
     <name>Label</name>
     <rules />
     <scale_options>
@@ -6439,7 +6361,7 @@ $(pv_value)</tooltip>
       <color red="0" green="0" blue="0" />
     </foreground_color>
     <height>20</height>
-    <horizontal_alignment>1</horizontal_alignment>
+    <horizontal_alignment>2</horizontal_alignment>
     <name>Label</name>
     <rules />
     <scale_options>
@@ -6530,7 +6452,7 @@ $(pv_value)</tooltip>
       <color red="0" green="0" blue="0" />
     </foreground_color>
     <height>20</height>
-    <horizontal_alignment>1</horizontal_alignment>
+    <horizontal_alignment>2</horizontal_alignment>
     <name>Label</name>
     <rules />
     <scale_options>
@@ -6621,7 +6543,7 @@ $(pv_value)</tooltip>
       <color red="0" green="0" blue="0" />
     </foreground_color>
     <height>20</height>
-    <horizontal_alignment>1</horizontal_alignment>
+    <horizontal_alignment>2</horizontal_alignment>
     <name>Label</name>
     <rules />
     <scale_options>
@@ -6720,7 +6642,7 @@ $(pv_value)</tooltip>
       <color red="0" green="0" blue="0" />
     </foreground_color>
     <height>20</height>
-    <horizontal_alignment>0</horizontal_alignment>
+    <horizontal_alignment>2</horizontal_alignment>
     <name>Label</name>
     <rules />
     <scale_options>
