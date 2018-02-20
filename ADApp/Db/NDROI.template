@@ -13,14 +13,14 @@ record(stringout, "$(P)$(R)Name")
 {
    field(PINI, "YES")
    field(DTYP, "asynOctetWrite")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NAME")
+   field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))NAME")
    info(autosaveFields, "VAL")
 }
 
 record(stringin, "$(P)$(R)Name_RBV")
 {
    field(DTYP, "asynOctetRead")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NAME")
+   field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))NAME")
    field(SCAN, "I/O Intr")
 }
 
@@ -33,7 +33,7 @@ record(longout, "$(P)$(R)BinX")
 {
    field(PINI, "YES")
    field(DTYP, "asynInt32")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM0_BIN")
+   field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))DIM0_BIN")
    field(VAL,  "1")
    info(autosaveFields, "VAL")
 }
@@ -41,7 +41,7 @@ record(longout, "$(P)$(R)BinX")
 record(longin, "$(P)$(R)BinX_RBV")
 {
    field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM0_BIN")
+   field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))DIM0_BIN")
    field(SCAN, "I/O Intr")
 }
 
@@ -49,7 +49,7 @@ record(longout, "$(P)$(R)BinY")
 {
    field(PINI, "YES")
    field(DTYP, "asynInt32")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM1_BIN")
+   field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))DIM1_BIN")
    field(VAL,  "1")
    info(autosaveFields, "VAL")
 }
@@ -57,7 +57,7 @@ record(longout, "$(P)$(R)BinY")
 record(longin, "$(P)$(R)BinY_RBV")
 {
    field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM1_BIN")
+   field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))DIM1_BIN")
    field(SCAN, "I/O Intr")
 }
 
@@ -65,7 +65,7 @@ record(longout, "$(P)$(R)BinZ")
 {
    field(PINI, "YES")
    field(DTYP, "asynInt32")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM2_BIN")
+   field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))DIM2_BIN")
    field(VAL,  "1")
    info(autosaveFields, "VAL")
 }
@@ -73,7 +73,7 @@ record(longout, "$(P)$(R)BinZ")
 record(longin, "$(P)$(R)BinZ_RBV")
 {
    field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM2_BIN")
+   field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))DIM2_BIN")
    field(SCAN, "I/O Intr")
 }
 
@@ -81,7 +81,7 @@ record(longout, "$(P)$(R)MinX")
 {
    field(PINI, "YES")
    field(DTYP, "asynInt32")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM0_MIN")
+   field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))DIM0_MIN")
    field(LOPR, "0")
    field(VAL,  "0")
    info(autosaveFields, "VAL")
@@ -90,7 +90,7 @@ record(longout, "$(P)$(R)MinX")
 record(longin, "$(P)$(R)MinX_RBV")
 {
    field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM0_MIN")
+   field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))DIM0_MIN")
    field(SCAN, "I/O Intr")
 }
 
@@ -98,7 +98,7 @@ record(longout, "$(P)$(R)MinY")
 {
    field(PINI, "YES")
    field(DTYP, "asynInt32")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM1_MIN")
+   field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))DIM1_MIN")
    field(LOPR, "0")
    field(VAL,  "0")
    info(autosaveFields, "VAL")
@@ -107,7 +107,7 @@ record(longout, "$(P)$(R)MinY")
 record(longin, "$(P)$(R)MinY_RBV")
 {
    field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM1_MIN")
+   field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))DIM1_MIN")
    field(SCAN, "I/O Intr")
 }
 
@@ -115,7 +115,7 @@ record(longout, "$(P)$(R)MinZ")
 {
    field(PINI, "YES")
    field(DTYP, "asynInt32")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM2_MIN")
+   field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))DIM2_MIN")
    field(LOPR, "1")
    field(VAL,  "0")
    info(autosaveFields, "VAL")
@@ -124,7 +124,7 @@ record(longout, "$(P)$(R)MinZ")
 record(longin, "$(P)$(R)MinZ_RBV")
 {
    field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM2_MIN")
+   field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))DIM2_MIN")
    field(SCAN, "I/O Intr")
 }
 
@@ -132,7 +132,7 @@ record(longout, "$(P)$(R)SizeX")
 {
    field(PINI, "YES")
    field(DTYP, "asynInt32")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM0_SIZE")
+   field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))DIM0_SIZE")
    field(VAL,  "1000000")
    info(autosaveFields, "VAL")
 }
@@ -140,7 +140,7 @@ record(longout, "$(P)$(R)SizeX")
 record(longin, "$(P)$(R)SizeX_RBV")
 {
    field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM0_SIZE")
+   field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))DIM0_SIZE")
    field(SCAN, "I/O Intr")
 }
 
@@ -148,7 +148,7 @@ record(longout, "$(P)$(R)SizeY")
 {
    field(PINI, "YES")
    field(DTYP, "asynInt32")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM1_SIZE")
+   field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))DIM1_SIZE")
    field(VAL,  "1000000")
    info(autosaveFields, "VAL")
 }
@@ -156,7 +156,7 @@ record(longout, "$(P)$(R)SizeY")
 record(longin, "$(P)$(R)SizeY_RBV")
 {
    field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM1_SIZE")
+   field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))DIM1_SIZE")
    field(SCAN, "I/O Intr")
 }
 
@@ -164,7 +164,7 @@ record(longout, "$(P)$(R)SizeZ")
 {
    field(PINI, "YES")
    field(DTYP, "asynInt32")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM2_SIZE")
+   field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))DIM2_SIZE")
    field(VAL,  "1000000")
    info(autosaveFields, "VAL")
 }
@@ -172,7 +172,7 @@ record(longout, "$(P)$(R)SizeZ")
 record(longin, "$(P)$(R)SizeZ_RBV")
 {
    field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM2_SIZE")
+   field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))DIM2_SIZE")
    field(SCAN, "I/O Intr")
 }
 
@@ -180,7 +180,7 @@ record(bo, "$(P)$(R)AutoSizeX")
 {
    field(PINI, "YES")
    field(DTYP, "asynInt32")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM0_AUTO_SIZE")
+   field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))DIM0_AUTO_SIZE")
    field(VAL,  "0")
    field(ZNAM, "No")
    field(ONAM, "Yes")
@@ -190,7 +190,7 @@ record(bo, "$(P)$(R)AutoSizeX")
 record(bi, "$(P)$(R)AutoSizeX_RBV")
 {
    field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM0_AUTO_SIZE")
+   field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))DIM0_AUTO_SIZE")
    field(ZNAM, "No")
    field(ONAM, "Yes")
    field(SCAN, "I/O Intr")
@@ -200,7 +200,7 @@ record(bo, "$(P)$(R)AutoSizeY")
 {
    field(PINI, "YES")
    field(DTYP, "asynInt32")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM1_AUTO_SIZE")
+   field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))DIM1_AUTO_SIZE")
    field(VAL,  "0")
    field(ZNAM, "No")
    field(ONAM, "Yes")
@@ -210,7 +210,7 @@ record(bo, "$(P)$(R)AutoSizeY")
 record(bi, "$(P)$(R)AutoSizeY_RBV")
 {
    field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM1_AUTO_SIZE")
+   field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))DIM1_AUTO_SIZE")
    field(ZNAM, "No")
    field(ONAM, "Yes")
    field(SCAN, "I/O Intr")
@@ -220,7 +220,7 @@ record(bo, "$(P)$(R)AutoSizeZ")
 {
    field(PINI, "YES")
    field(DTYP, "asynInt32")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM2_AUTO_SIZE")
+   field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))DIM2_AUTO_SIZE")
    field(VAL,  "0")
    field(ZNAM, "No")
    field(ONAM, "Yes")
@@ -230,7 +230,7 @@ record(bo, "$(P)$(R)AutoSizeZ")
 record(bi, "$(P)$(R)AutoSizeZ_RBV")
 {
    field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM2_AUTO_SIZE")
+   field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))DIM2_AUTO_SIZE")
    field(ZNAM, "No")
    field(ONAM, "Yes")
    field(SCAN, "I/O Intr")
@@ -239,21 +239,21 @@ record(bi, "$(P)$(R)AutoSizeZ_RBV")
 record(longin, "$(P)$(R)MaxSizeX_RBV")
 {
    field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM0_MAX_SIZE")
+   field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))DIM0_MAX_SIZE")
    field(SCAN, "I/O Intr")
 }
 
 record(longin, "$(P)$(R)MaxSizeY_RBV")
 {
    field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM1_MAX_SIZE")
+   field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))DIM1_MAX_SIZE")
    field(SCAN, "I/O Intr")
 }
 
 record(longin, "$(P)$(R)MaxSizeZ_RBV")
 {
    field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM2_MAX_SIZE")
+   field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))DIM2_MAX_SIZE")
    field(SCAN, "I/O Intr")
 }
 
@@ -261,7 +261,7 @@ record(bo, "$(P)$(R)ReverseX")
 {
    field(PINI, "YES")
    field(DTYP, "asynInt32")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM0_REVERSE")
+   field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))DIM0_REVERSE")
    field(VAL,  "0")
    field(ZNAM, "No")
    field(ONAM, "Yes")
@@ -271,7 +271,7 @@ record(bo, "$(P)$(R)ReverseX")
 record(bi, "$(P)$(R)ReverseX_RBV")
 {
    field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM0_REVERSE")
+   field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))DIM0_REVERSE")
    field(ZNAM, "No")
    field(ONAM, "Yes")
    field(SCAN, "I/O Intr")
@@ -281,7 +281,7 @@ record(bo, "$(P)$(R)ReverseY")
 {
    field(PINI, "YES")
    field(DTYP, "asynInt32")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM1_REVERSE")
+   field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))DIM1_REVERSE")
    field(VAL,  "0")
    field(ZNAM, "No")
    field(ONAM, "Yes")
@@ -291,7 +291,7 @@ record(bo, "$(P)$(R)ReverseY")
 record(bi, "$(P)$(R)ReverseY_RBV")
 {
    field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM1_REVERSE")
+   field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))DIM1_REVERSE")
    field(ZNAM, "No")
    field(ONAM, "Yes")
    field(SCAN, "I/O Intr")
@@ -301,7 +301,7 @@ record(bo, "$(P)$(R)ReverseZ")
 {
    field(PINI, "YES")
    field(DTYP, "asynInt32")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM2_REVERSE")
+   field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))DIM2_REVERSE")
    field(VAL,  "0")
    field(ZNAM, "No")
    field(ONAM, "Yes")
@@ -311,7 +311,7 @@ record(bo, "$(P)$(R)ReverseZ")
 record(bi, "$(P)$(R)ReverseZ_RBV")
 {
    field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM2_REVERSE")
+   field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))DIM2_REVERSE")
    field(ZNAM, "No")
    field(ONAM, "Yes")
    field(SCAN, "I/O Intr")
@@ -320,21 +320,21 @@ record(bi, "$(P)$(R)ReverseZ_RBV")
 record(longin, "$(P)$(R)ArraySizeX_RBV")
 {
    field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ARRAY_SIZE_X")
+   field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))ARRAY_SIZE_X")
    field(SCAN, "I/O Intr")
 }
 
 record(longin, "$(P)$(R)ArraySizeY_RBV")
 {
    field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ARRAY_SIZE_Y")
+   field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))ARRAY_SIZE_Y")
    field(SCAN, "I/O Intr")
 }
 
 record(longin, "$(P)$(R)ArraySizeZ_RBV")
 {
    field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ARRAY_SIZE_Z")
+   field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))ARRAY_SIZE_Z")
    field(SCAN, "I/O Intr")
 }
 
@@ -342,7 +342,7 @@ record(bo, "$(P)$(R)EnableX")
 {
    field(PINI, "YES")
    field(DTYP, "asynInt32")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM0_ENABLE")
+   field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))DIM0_ENABLE")
    field(VAL,  "1")
    field(ZNAM, "Disable")
    field(ONAM, "Enable")
@@ -352,7 +352,7 @@ record(bo, "$(P)$(R)EnableX")
 record(bi, "$(P)$(R)EnableX_RBV")
 {
    field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM0_ENABLE")
+   field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))DIM0_ENABLE")
    field(ZNAM, "Disable")
    field(ONAM, "Enable")
    field(ZSV,  "NO_ALARM")
@@ -364,7 +364,7 @@ record(bo, "$(P)$(R)EnableY")
 {
    field(PINI, "YES")
    field(DTYP, "asynInt32")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM1_ENABLE")
+   field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))DIM1_ENABLE")
    field(VAL,  "1")
    field(ZNAM, "Disable")
    field(ONAM, "Enable")
@@ -374,7 +374,7 @@ record(bo, "$(P)$(R)EnableY")
 record(bi, "$(P)$(R)EnableY_RBV")
 {
    field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM1_ENABLE")
+   field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))DIM1_ENABLE")
    field(ZNAM, "Disable")
    field(ONAM, "Enable")
    field(ZSV,  "NO_ALARM")
@@ -386,7 +386,7 @@ record(bo, "$(P)$(R)EnableZ")
 {
    field(PINI, "YES")
    field(DTYP, "asynInt32")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM2_ENABLE")
+   field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))DIM2_ENABLE")
    field(VAL,  "1")
    field(ZNAM, "Disable")
    field(ONAM, "Enable")
@@ -396,7 +396,7 @@ record(bo, "$(P)$(R)EnableZ")
 record(bi, "$(P)$(R)EnableZ_RBV")
 {
    field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM2_ENABLE")
+   field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))DIM2_ENABLE")
    field(ZNAM, "Disable")
    field(ONAM, "Enable")
    field(ZSV,  "NO_ALARM")
@@ -414,7 +414,7 @@ record(bo, "$(P)$(R)EnableScale")
 {
    field(PINI, "YES")
    field(DTYP, "asynInt32")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ENABLE_SCALE")
+   field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))ENABLE_SCALE")
    field(VAL,  "0")
    field(ZNAM, "Disable")
    field(ONAM, "Enable")
@@ -424,7 +424,7 @@ record(bo, "$(P)$(R)EnableScale")
 record(bi, "$(P)$(R)EnableScale_RBV")
 {
    field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ENABLE_SCALE")
+   field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))ENABLE_SCALE")
    field(ZNAM, "Disable")
    field(ONAM, "Enable")
    field(ZSV,  "NO_ALARM")
@@ -436,7 +436,7 @@ record(ao, "$(P)$(R)Scale")
 {
    field(PINI, "YES")
    field(DTYP, "asynFloat64")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SCALE_VALUE")
+   field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))SCALE_VALUE")
    field(VAL,  "1")
    info(autosaveFields, "VAL")
 }
@@ -444,7 +444,7 @@ record(ao, "$(P)$(R)Scale")
 record(ai, "$(P)$(R)Scale_RBV")
 {
    field(DTYP, "asynFloat64")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SCALE_VALUE")
+   field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))SCALE_VALUE")
    field(SCAN, "I/O Intr")
 }
 
@@ -459,7 +459,7 @@ record(mbbo, "$(P)$(R)DataTypeOut")
 {
    field(PINI, "YES")
    field(DTYP, "asynInt32")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ROI_DATA_TYPE")
+   field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))ROI_DATA_TYPE")
    field(ZRST, "Int8")
    field(ZRVL, "0")
    field(ONST, "UInt8")
@@ -485,7 +485,7 @@ record(mbbo, "$(P)$(R)DataTypeOut")
 record(mbbi, "$(P)$(R)DataTypeOut_RBV")
 {
    field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ROI_DATA_TYPE")
+   field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))ROI_DATA_TYPE")
    field(ZRST, "Int8")
    field(ZRVL, "0")
    field(ONST, "UInt8")
@@ -548,7 +548,7 @@ record(bo, "$(P)$(R)CollapseDims")
 {
    field(PINI, "YES")
    field(DTYP, "asynInt32")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))COLLAPSE_DIMS")
+   field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))COLLAPSE_DIMS")
    field(VAL,  "0")
    field(ZNAM, "Disable")
    field(ONAM, "Enable")
@@ -558,7 +558,7 @@ record(bo, "$(P)$(R)CollapseDims")
 record(bi, "$(P)$(R)CollapseDims_RBV")
 {
    field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))COLLAPSE_DIMS")
+   field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))COLLAPSE_DIMS")
    field(ZNAM, "Disable")
    field(ONAM, "Enable")
    field(ZSV,  "NO_ALARM")

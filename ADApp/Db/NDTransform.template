@@ -7,7 +7,7 @@ record(mbbo, "$(P)$(R)Type")
 {
    field(PINI, "1")
    field(DTYP, "asynInt32")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TRANSFORM_TYPE")
+   field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))TRANSFORM_TYPE")
    field(ZRST, "None")
    field(ZRVL, "0")
    field(ONST, "Rot90")
