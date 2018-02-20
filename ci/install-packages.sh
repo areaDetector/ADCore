@@ -98,7 +98,7 @@ fi
 # TO DO: Install ZLIB, SZIP, JPEG, NEXUS, NETCDF if we want to use package versions
 
 # Installing latest version of code coverage tool lcov (because the ubuntu package is very old)
-wget http://downloads.sourceforge.net/ltp/lcov-1.11.tar.gz
+wget https://sourceforge.net/projects/ltp/files/Coverage%20Analysis/LCOV-1.11/lcov-1.11.tar.gz
 tar -zxf lcov-1.11.tar.gz
 sudo make -C lcov-1.11 install
 gem install coveralls-lcov
