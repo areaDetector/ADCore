@@ -14,7 +14,7 @@ record(stringout, "$(P)$(R)NDArrayPort_$(N)")
 {
     field(PINI, "YES")
     field(DTYP, "asynOctetWrite")
-    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NDARRAY_PORT")
+    field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))NDARRAY_PORT")
     field(VAL,  "$(NDARRAY_PORT)")
     info(autosaveFields, "VAL")
 }
@@ -22,7 +22,7 @@ record(stringout, "$(P)$(R)NDArrayPort_$(N)")
 record(stringin, "$(P)$(R)NDArrayPort_$(N)_RBV")
 {
     field(DTYP, "asynOctetRead")
-    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NDARRAY_PORT")
+    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))NDARRAY_PORT")
     field(SCAN, "I/O Intr")
 }
 
@@ -30,7 +30,7 @@ record(longout, "$(P)$(R)NDArrayAddress_$(N)")
 {
     field(PINI, "YES")
     field(DTYP, "asynInt32")
-    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NDARRAY_ADDR")
+    field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))NDARRAY_ADDR")
     field(VAL,  "$(NDARRAY_ADDR=0)")
     info(autosaveFields, "VAL")
 }
@@ -38,7 +38,7 @@ record(longout, "$(P)$(R)NDArrayAddress_$(N)")
 record(longin, "$(P)$(R)NDArrayAddress_$(N)_RBV")
 {
     field(DTYP, "asynInt32")
-    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NDARRAY_ADDR")
+    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))NDARRAY_ADDR")
     field(SCAN, "I/O Intr")
 }
 

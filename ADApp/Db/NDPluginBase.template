@@ -120,7 +120,7 @@ record(ai, "$(P)$(R)ExecutionTime_RBV")
 record(bo, "$(P)$(R)ProcessPlugin")
 {
     field(DTYP, "asynInt32")
-    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PROCESS_PLUGIN")
+    field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))PROCESS_PLUGIN")
     field(VAL,  "1")
 }
 
@@ -227,7 +227,7 @@ record(calc, "$(P)$(R)QueueUse") {
 record(longout, "$(P)$(R)NumThreads")
 {
     field(DTYP, "asynInt32")
-    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NUM_THREADS")
+    field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))NUM_THREADS")
     field(VAL,  "1")
     field(PINI, "YES")
 }
@@ -235,14 +235,14 @@ record(longout, "$(P)$(R)NumThreads")
 record(longin, "$(P)$(R)NumThreads_RBV")
 {
     field(DTYP, "asynInt32")
-    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NUM_THREADS")
+    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))NUM_THREADS")
     field(SCAN, "I/O Intr")
 }
 
 record(longin, "$(P)$(R)MaxThreads_RBV")
 {
     field(DTYP, "asynInt32")
-    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))MAX_THREADS")
+    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))MAX_THREADS")
     field(SCAN, "I/O Intr")
 }
 
@@ -252,7 +252,7 @@ record(longin, "$(P)$(R)MaxThreads_RBV")
 record(mbbo, "$(P)$(R)SortMode") {
     field(PINI, "YES")
     field(DTYP, "asynInt32")
-    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SORT_MODE")
+    field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))SORT_MODE")
     field(ZRVL, "0")
     field(ZRST, "Unsorted")
     field(ONVL, "1")
@@ -261,7 +261,7 @@ record(mbbo, "$(P)$(R)SortMode") {
 
 record(mbbi, "$(P)$(R)SortMode_RBV") {
     field(DTYP, "asynInt32")
-    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SORT_MODE")
+    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))SORT_MODE")
     field(ZRVL, "0")
     field(ZRST, "Unsorted")
     field(ONVL, "1")
@@ -272,14 +272,14 @@ record(mbbi, "$(P)$(R)SortMode_RBV") {
 record(ao, "$(P)$(R)SortTime") {
     field(PINI, "YES")
     field(DTYP, "asynFloat64")
-    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SORT_TIME")
+    field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))SORT_TIME")
     field(PREC, "3")
     field(VAL, "0.1")
 }
 
 record(ai, "$(P)$(R)SortTime_RBV") {
     field(DTYP, "asynFloat64")
-    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SORT_TIME")
+    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))SORT_TIME")
     field(PREC, "3")
     field(SCAN, "I/O Intr")
 }
@@ -287,7 +287,7 @@ record(ai, "$(P)$(R)SortTime_RBV") {
 record(longout, "$(P)$(R)SortSize")
 {
     field(DTYP, "asynInt32")
-    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SORT_SIZE")
+    field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))SORT_SIZE")
     field(VAL,  "20")
     field(PINI, "YES")
 }
@@ -295,14 +295,14 @@ record(longout, "$(P)$(R)SortSize")
 record(longin, "$(P)$(R)SortSize_RBV")
 {
     field(DTYP, "asynInt32")
-    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SORT_SIZE")
+    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))SORT_SIZE")
     field(FLNK, "$(P)$(R)SortFreeLow")
     field(SCAN, "I/O Intr")
 }
 
 record(longin, "$(P)$(R)SortFree") {
     field(DTYP, "asynInt32")
-    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SORT_FREE")
+    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))SORT_FREE")
     field(LLSV, "MAJOR")
     field(LSV,  "MINOR")
     field(LOLO, "0")
@@ -320,28 +320,28 @@ record(longout, "$(P)$(R)DroppedOutputArrays")
 {
     field(PINI, "YES")
     field(DTYP, "asynInt32")
-    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DROPPED_OUTPUT_ARRAYS")
+    field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))DROPPED_OUTPUT_ARRAYS")
     field(VAL,  "0")
 }
 
 record(longin, "$(P)$(R)DroppedOutputArrays_RBV")
 {
     field(DTYP, "asynInt32")
-    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DROPPED_OUTPUT_ARRAYS")
+    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))DROPPED_OUTPUT_ARRAYS")
     field(SCAN, "I/O Intr")
 }
 
 record(longout, "$(P)$(R)DisorderedArrays")
 {
     field(DTYP, "asynInt32")
-    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DISORDERED_ARRAYS")
+    field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))DISORDERED_ARRAYS")
     field(PINI, "YES")
 }
 
 record(longin, "$(P)$(R)DisorderedArrays_RBV")
 {
     field(DTYP, "asynInt32")
-    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DISORDERED_ARRAYS")
+    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))DISORDERED_ARRAYS")
     field(SCAN, "I/O Intr")
 }
 

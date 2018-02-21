@@ -922,7 +922,7 @@ record(waveform, "$(P)$(R)Histogram_RBV")
 record(waveform, "$(P)$(R)HistogramX_RBV")
 {
    field(DTYP, "asynFloat64ArrayIn")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))HIST_X_ARRAY")
+   field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))HIST_X_ARRAY")
    field(FTVL, "DOUBLE")
    field(NELM, "$(HIST_SIZE)")
    field(SCAN, "I/O Intr")
