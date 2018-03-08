@@ -1,6 +1,6 @@
 
 file {
-	name="/home/epics/devel/areaDetector/ADCore/ADApp/op/adl/NDOverlayN.adl"
+	name="/home/epics/devel/areaDetector-3-2/ADCore/ADApp/op/adl/NDOverlayN.adl"
 	version=030109
 }
 display {
@@ -327,9 +327,9 @@ text {
 }
 text {
 	object {
-		x=100
+		x=30
 		y=170
-		width=50
+		width=120
 		height=20
 	}
 	"basic attribute" {
@@ -431,9 +431,9 @@ text {
 }
 text {
 	object {
-		x=70
+		x=30
 		y=220
-		width=80
+		width=120
 		height=20
 	}
 	"basic attribute" {
@@ -444,9 +444,9 @@ text {
 }
 text {
 	object {
-		x=90
+		x=40
 		y=245
-		width=60
+		width=110
 		height=20
 	}
 	"basic attribute" {
@@ -471,48 +471,37 @@ text {
 	limits {
 	}
 }
-composite {
+menu {
 	object {
-		x=60
+		x=155
 		y=295
-		width=195
-		height=20
+		width=100
+		height=18
 	}
-	"composite name"=""
-	children {
-		menu {
-			object {
-				x=155
-				y=295
-				width=100
-				height=18
-			}
-			control {
-				chan="$(P)$(R)Font"
-				clr=14
-				bclr=51
-			}
-		}
-		text {
-			object {
-				x=60
-				y=295
-				width=90
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Font"
-			align="horiz. right"
-		}
+	control {
+		chan="$(P)$(R)Font"
+		clr=14
+		bclr=51
 	}
 }
 text {
 	object {
-		x=90
+		x=110
+		y=295
+		width=40
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Font"
+	align="horiz. right"
+}
+text {
+	object {
+		x=10
 		y=270
-		width=60
+		width=140
 		height=20
 	}
 	"basic attribute" {
@@ -525,7 +514,7 @@ text {
 	object {
 		x=157
 		y=273
-		width=60
+		width=154
 		height=14
 	}
 	"basic attribute" {
