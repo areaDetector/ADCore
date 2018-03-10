@@ -57,8 +57,8 @@ static const char *driverName = "asynNDArrayDriver";
 
 /** Checks whether the directory specified exists.
   * 
-  * This is a convenience function that determines the directory specified exists.
-  * It adds a trailing '/' or '\' character to the path if one is not present.
+  * This is a convenience function that determines if the directory specified exists.
+  * It adds a trailing '/', (WIN32 '\'), character to the path if one is not present.
   * It returns true if the directory exists and false if it does not
   */
 bool asynNDArrayDriver::checkPath(std::string &filePath)
@@ -231,8 +231,8 @@ asynStatus asynNDArrayDriver::createFileName(int maxChars, char *fullFileName)
   * \param[out] filePath The file path.
   * \param[out] fileName The constructed file name without file file path.
   * 
-  * This is a convenience function that constructs a file path and file name
-  * from the NDFilePath, NDFileName, NDFileNumber, and
+  * This is a convenience function that constructs the directory path and the
+  * file name in that directory from the NDFilePath, NDFileName, NDFileNumber, and
   * NDFileTemplate parameters. If NDAutoIncrement is true then it increments the
   * NDFileNumber after creating the file name.
   */
@@ -720,6 +720,7 @@ asynNDArrayDriver::asynNDArrayDriver(const char *portName, int maxAddr, int maxB
     createParam(NDNDimensionsString,          asynParamInt32,           &NDNDimensions);
     createParam(NDDimensionsString,           asynParamInt32,           &NDDimensions);
     createParam(NDDataTypeString,             asynParamInt32,           &NDDataType);
+    createParam(NDBitsPerPixelString,         asynParamInt32,           &NDBitsPerPixel);
     createParam(NDColorModeString,            asynParamInt32,           &NDColorMode);
     createParam(NDUniqueIdString,             asynParamInt32,           &NDUniqueId);
     createParam(NDTimeStampString,            asynParamFloat64,         &NDTimeStamp);
@@ -777,6 +778,8 @@ asynNDArrayDriver::asynNDArrayDriver(const char *portName, int maxAddr, int maxB
     setIntegerParam(NDArraySizeZ,   0);
     setIntegerParam(NDArraySize,    0);
     setIntegerParam(NDNDimensions,  0);
+    setIntegerParam(NDDataType,     NDUInt8);
+    setIntegerParam(NDBitsPerPixel, 8);
     setIntegerParam(NDColorMode,    NDColorModeMono);
     setIntegerParam(NDUniqueId,     0);
     setDoubleParam (NDTimeStamp,    0.);

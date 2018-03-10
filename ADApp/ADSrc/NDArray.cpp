@@ -30,7 +30,7 @@
 NDArray::NDArray()
   : referenceCount(0), pNDArrayPool(NULL),  
     uniqueId(0), timeStamp(0.0), ndims(0), dataType(NDInt8),
-    dataSize(0),  pData(NULL)
+    dataSize(0), bitsPerElement(0), pData(NULL)
 {
   this->epicsTS.secPastEpoch = 0;
   this->epicsTS.nsec = 0;
@@ -148,6 +148,7 @@ int NDArray::getInfo(NDArrayInfo_t *pInfo)
     pInfo->ySize     = this->dims[pInfo->yDim].size;
     pInfo->colorSize = this->dims[pInfo->colorDim].size;
   }
+  pInfo->bitsPerElement = this->bitsPerElement;
   return(ND_SUCCESS);
 }
 
@@ -201,8 +202,8 @@ int NDArray::report(FILE *fp, int details)
     this->ndims);
   for (dim=0; dim<this->ndims; dim++) fprintf(fp, "%d ", (int)this->dims[dim].size);
   fprintf(fp, "]\n");
-  fprintf(fp, "  dataType=%d, dataSize=%d, pData=%p\n",
-        this->dataType, (int)this->dataSize, this->pData);
+  fprintf(fp, "  dataType=%d, bitsPerElement=%d, dataSize=%d, pData=%p\n",
+        this->dataType, this->bitsPerElement, (int)this->dataSize, this->pData);
   fprintf(fp, "  uniqueId=%d, timeStamp=%f, referenceCount=%d\n",
         this->uniqueId, this->timeStamp, this->referenceCount);
   fprintf(fp, "  number of attributes=%d\n", this->pAttributeList->count());
@@ -211,4 +212,42 @@ int NDArray::report(FILE *fp, int details)
   }
   return ND_SUCCESS;
 }
+
+int GetNDColorModeBits( NDColorMode_t tyColor, NDDataType_t tyData )
+{
+    int nBits;
+    switch ( tyColor )
+    {
+    default:
+    case NDColorModeMono:
+        nBits = GetNDDataTypeBits( tyData );
+        break;
+    // For defined color standards, set nBits to the
+    // number of combined bits in one pixel element
+    case NDColorModeBayer:
+        // Optimal packing uses all bits of data type
+        nBits = GetNDDataTypeBits( tyData );
+        break;
+    case NDColorModeRGB1:
+    case NDColorModeRGB2:
+    case NDColorModeRGB3:
+        // 3 pixels packed with room for a 4th
+        nBits = GetNDDataTypeBits( tyData ) * 3 / 4;
+        break;
+    case NDColorModeYUV444:
+        // 3 values for 1 pixel
+        nBits = 3 * GetNDDataTypeBits( tyData );
+        break;
+    case NDColorModeYUV422:
+        // 4 values for 2 pixels
+        nBits = 4 * GetNDDataTypeBits( tyData );
+        break;
+    case NDColorModeYUV411:
+        // 6 values for 4 pixels
+        nBits = 6 * GetNDDataTypeBits( tyData );
+        break;
+    }
+    return nBits;
+}
+
 
