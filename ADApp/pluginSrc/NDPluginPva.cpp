@@ -104,6 +104,9 @@ void NDPluginPva::processCallbacks(NDArray *pArray)
     m_record->update(pArray);
     this->lock();               // Must return locked
 
+    // Do NDArray callbacks.  We need to copy the array and get the attributes
+    NDPluginDriver::endProcessCallbacks(pArray, true, true);
+
     callParamCallbacks();
 }
 
