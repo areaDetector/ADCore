@@ -203,8 +203,9 @@ int NDArray::report(FILE *fp, int details)
   fprintf(fp, "]\n");
   fprintf(fp, "  dataType=%d, dataSize=%d, pData=%p\n",
         this->dataType, (int)this->dataSize, this->pData);
-  fprintf(fp, "  uniqueId=%d, timeStamp=%f, referenceCount=%d\n",
-        this->uniqueId, this->timeStamp, this->referenceCount);
+  fprintf(fp, "  uniqueId=%d, timeStamp=%f, epicsTS.secPastEpoch=%d, epicsTS.nsec=%d\n",
+        this->uniqueId, this->timeStamp, this->epicsTS.secPastEpoch, this->epicsTS.nsec);
+  fprintf(fp, "  referenceCount=%d\n", this->referenceCount);
   fprintf(fp, "  number of attributes=%d\n", this->pAttributeList->count());
   if (details > 5) {
     this->pAttributeList->report(fp, details);
