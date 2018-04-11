@@ -20,6 +20,19 @@ files respectively, in the configure/ directory of the appropriate release of th
 Release Notes
 =============
 
+R3-3 (April XXX, 2018)
+======================
+### NDArray
+* Added the epicsTS (EPICS time stamp) field to the report() output. 
+  Previously the timeStamp field but not the epicsTS field was in the report.
+### NDPluginPva
+* Added call to NDPluginDriver::endProcessCallbacks at the end of processCallbacks().
+  This will do NDArray callbacks if enabled and will copy the last NDArray to pArrays[0] for asynReport.
+### ntndArrayConverter.cpp
+* Added conversion of the NDArray.timeStamp and NDArray.epicsTS fields from EPICS epoch (Jan. 1 1990) to
+  Posix epoch (Jan. 1, 1970). Needed because NDArrays use EPICS epoch but pvAccess uses Posix epoch and the
+  timestamps shown by pvGet were incorrect for the NTNDArrays.
+
 R3-2 (January 28, 2018)
 ======================
 ### NDPluginStats
