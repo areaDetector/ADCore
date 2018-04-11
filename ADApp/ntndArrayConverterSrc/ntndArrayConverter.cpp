@@ -1,4 +1,5 @@
 #include <math.h>
+#include <epicsTime.h>
 
 #include <epicsExport.h>
 #include "ntndArrayConverter.h"
@@ -440,6 +441,8 @@ void NTNDArrayConverter::fromDataTimeStamp (NDArray *src)
 
     double seconds = floor(src->timeStamp);
     double nanoseconds = (src->timeStamp - seconds)*1e9;
+    // pvAccess uses Posix time, NDArray uses EPICS time, need to convert
+    seconds += POSIX_TIME_AT_EPICS_EPOCH;
 
     PVTimeStamp pvDest;
     pvDest.attach(dest);
@@ -455,7 +458,8 @@ void NTNDArrayConverter::fromTimeStamp (NDArray *src)
     PVTimeStamp pvDest;
     pvDest.attach(dest);
 
-    TimeStamp ts(src->epicsTS.secPastEpoch, src->epicsTS.nsec);
+    // pvAccess uses Posix time, NDArray uses EPICS time, need to convert
+    TimeStamp ts(src->epicsTS.secPastEpoch + POSIX_TIME_AT_EPICS_EPOCH, src->epicsTS.nsec);
     pvDest.set(ts);
 }
 
