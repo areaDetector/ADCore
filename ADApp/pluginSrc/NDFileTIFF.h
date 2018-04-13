@@ -34,7 +34,7 @@ public:
     virtual asynStatus closeFile();
 
 private:
-    TIFF *output;
+    TIFF *tiff;
     NDColorMode_t colorMode;
     int *pAttributeId;
     NDAttributeList *pFileAttributes;
