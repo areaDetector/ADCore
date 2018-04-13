@@ -145,9 +145,12 @@ asynStatus NDPluginFile::readFileBase(void)
 {
     asynStatus status = asynSuccess;
     char fullFileName[MAX_FILENAME_LEN];
-    int dataType=0;
     NDArray *pArray=NULL;
+    char errorMessage[256];
     static const char* functionName = "readFileBase";
+
+    setIntegerParam(NDFileWriteStatus, NDFileWriteOK);
+    setStringParam(NDFileWriteMessage, "");
 
     status = (asynStatus)createFileName(MAX_FILENAME_LEN, fullFileName);
     if (status) { 
@@ -162,16 +165,43 @@ asynStatus NDPluginFile::readFileBase(void)
     this->unlock();
     epicsMutexLock(this->fileMutexId);
     status = this->openFile(fullFileName, NDFileModeRead, pArray);
-    status = this->readFile(&pArray);
-    status = this->closeFile();
+    if (status) {
+        epicsSnprintf(errorMessage, sizeof(errorMessage)-1,
+                "Error opening file %s, status=%d", fullFileName, status);
+        asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
+                "%s::%s %s\n",
+                driverName, functionName, errorMessage);
+        setIntegerParam(NDFileWriteStatus, NDFileWriteError);
+        setStringParam(NDFileWriteMessage, errorMessage);
+    }
+    if (status == asynSuccess) {
+        status = this->readFile(&pArray);
+        if (status) {
+            epicsSnprintf(errorMessage, sizeof(errorMessage)-1,
+                    "Error  file %s, status=%d", fullFileName, status);
+            asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
+                    "%s::%s %s\n",
+                    driverName, functionName, errorMessage);
+            setIntegerParam(NDFileWriteStatus, NDFileWriteError);
+            setStringParam(NDFileWriteMessage, errorMessage);
+        }
+        this->closeFile();
+    }
     epicsMutexUnlock(this->fileMutexId);
     this->lock();
     
     /* If we got an error then return */
     if (status) return(status);
     
-    /* Update the new values of dimensions and the array data */
-    setIntegerParam(NDDataType, dataType);
+    /* Update the new values of array metadata */
+    setIntegerParam(NDNDimensions, pArray->ndims);
+    setIntegerParam(NDDataType, pArray->dataType);
+    //setIntegerParam(NDColorMode, colorMode);
+    //setIntegerParam(NDBayerPattern, bayerPattern);
+    setIntegerParam(NDUniqueId, pArray->uniqueId);
+    setDoubleParam(NDTimeStamp, pArray->timeStamp);
+    setIntegerParam(NDEpicsTSSec, pArray->epicsTS.secPastEpoch);
+    setIntegerParam(NDEpicsTSNsec, pArray->epicsTS.nsec);
     
     /* Call any registered clients */
     NDPluginDriver::endProcessCallbacks(pArray, false, true);
@@ -927,4 +957,3 @@ NDPluginFile::NDPluginFile(const char *portName, int queueSize, int blockingCall
     /* Try to connect to the NDArray port */
     connectToArrayPort();
 }
-
