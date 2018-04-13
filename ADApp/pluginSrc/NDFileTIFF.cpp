@@ -44,6 +44,32 @@ static const char *driverName = "NDFileTIFF";
 const int NDFileTIFF::TIFFTAG_START_ = 65010;
 const int NDFileTIFF::TIFFTAG_END_ = 65500;
 
+static const int TIFFTAG_NDTIMESTAMP    = 65000;
+static const int TIFFTAG_UNIQUEID       = 65001;
+static const int TIFFTAG_EPICSTSSEC     = 65002;
+static const int TIFFTAG_EPICSTSNSEC    = 65003;
+
+static const TIFFFieldInfo tiffFieldInfo[] = {
+    {TIFFTAG_NDTIMESTAMP,1,1,TIFF_DOUBLE,FIELD_CUSTOM,1,0,(char *)"NDTimeStamp"},
+    {TIFFTAG_UNIQUEID,1,1,TIFF_LONG,FIELD_CUSTOM,1,0,(char *)"NDUniqueId"},
+    {TIFFTAG_EPICSTSSEC,1,1,TIFF_LONG,FIELD_CUSTOM,1,0,(char *)"EPICSTSSec"},
+    {TIFFTAG_EPICSTSNSEC,1,1,TIFF_LONG,FIELD_CUSTOM,1,0,(char *)"EPICSTSNsec"}
+};
+
+static void registerCustomTIFFTags(TIFF *tif)
+{
+    /* Install the extended Tag field info */
+    TIFFMergeFieldInfo(tif, tiffFieldInfo, sizeof(tiffFieldInfo)/sizeof(tiffFieldInfo[0]));
+}
+
+static void augmentLibTiffWithCustomTags() {
+    static bool first_time = true;
+    if (!first_time) return;
+    first_time = false;
+    TIFFSetTagExtender(registerCustomTIFFTags);
+}
+
+
 /** Opens a TIFF file.
   * \param[in] fileName The name of the file to open.
   * \param[in] openMode Mask defining how the file should be opened; bits are 
@@ -62,22 +88,45 @@ asynStatus NDFileTIFF::openFile(const char *fileName, NDFileOpenMode_t openMode,
     char tagString[STRING_BUFFER_SIZE] = {0};
     char attrString[STRING_BUFFER_SIZE] = {0};
 
-    /* We don't support reading yet */
-    if (openMode & NDFileModeRead) return(asynError);
+    // Register our custom tags
+    augmentLibTiffWithCustomTags();
+
+    /* Suppress error and warning messages from the TIFF library */
+    TIFFSetErrorHandler(NULL);
+    TIFFSetWarningHandler(NULL);
 
     /* We don't support opening an existing file for appending yet */
     if (openMode & NDFileModeAppend) return(asynError);
 
-    /* Create the file. */
-    if ((this->output = TIFFOpen(fileName, "w")) == NULL ) {
-        asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, 
-        "%s:%s error opening file %s\n",
-        driverName, functionName, fileName);
-        return(asynError);
+    /* Open for reading */
+    else if (openMode & NDFileModeRead) {
+        /* Open the file. */
+        if ((this->tiff = TIFFOpen(fileName, "rc")) == NULL ) {
+            asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, 
+            "%s:%s error opening file %s\n",
+            driverName, functionName, fileName);
+            return(asynError);
+        }
+        asynPrint(pasynUserSelf, ASYN_TRACE_FLOW,
+            "%s::%s opened file %s\n", 
+            driverName, functionName, fileName);
     }
-    asynPrint(pasynUserSelf, ASYN_TRACE_FLOW,
-        "%s::%s opened file %s\n", 
-        driverName, functionName, fileName);
+
+    /* Open file for writing */
+    else if (openMode & NDFileModeWrite) {
+        if ((this->tiff = TIFFOpen(fileName, "w")) == NULL ) {
+            asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, 
+            "%s:%s error opening file %s\n",
+            driverName, functionName, fileName);
+            return(asynError);
+        }
+        asynPrint(pasynUserSelf, ASYN_TRACE_FLOW,
+            "%s::%s opened file %s\n", 
+            driverName, functionName, fileName);
+    }
+
+    // If the file is open for reading we are done
+    if (openMode & NDFileModeRead) return asynSuccess;
     
     /* We do some special treatment based on colorMode */
     pAttribute = pArray->pAttributeList->find("ColorMode");
@@ -156,39 +205,18 @@ asynStatus NDFileTIFF::openFile(const char *fileName, NDFileOpenMode_t openMode,
         return(asynError);
     }
 
-    /* this is in the unallocated 'reusable' range */
-    static const int TIFFTAG_NDTIMESTAMP    = 65000;
-    static const int TIFFTAG_UNIQUEID       = 65001;
-    static const int TIFFTAG_EPICSTSSEC     = 65002;
-    static const int TIFFTAG_EPICSTSNSEC    = 65003;
-    static const TIFFFieldInfo NDTimeStampFI = {
-        TIFFTAG_NDTIMESTAMP,1,1,TIFF_DOUBLE,FIELD_CUSTOM,1,0,(char *)"NDTimeStamp"
-    };
-    static const TIFFFieldInfo NDUniqueIdFI = {
-        TIFFTAG_UNIQUEID,1,1,TIFF_LONG,FIELD_CUSTOM,1,0,(char *)"NDUniqueId"
-    };
-    static const TIFFFieldInfo EPICSTSSecFI = {
-        TIFFTAG_EPICSTSSEC,1,1,TIFF_LONG,FIELD_CUSTOM,1,0,(char *)"EPICSTSSec"
-    };
-    static const TIFFFieldInfo EPICSTSNsecFI = {
-        TIFFTAG_EPICSTSNSEC,1,1,TIFF_LONG,FIELD_CUSTOM,1,0,(char *)"EPICSTSNsec"
-    };
-    TIFFMergeFieldInfo(output, &NDTimeStampFI, 1);
-    TIFFMergeFieldInfo(output, &NDUniqueIdFI, 1);
-    TIFFMergeFieldInfo(output, &EPICSTSSecFI, 1);
-    TIFFMergeFieldInfo(output, &EPICSTSNsecFI, 1);
-    TIFFSetField(this->output, TIFFTAG_NDTIMESTAMP, pArray->timeStamp);
-    TIFFSetField(this->output, TIFFTAG_UNIQUEID, pArray->uniqueId);
-    TIFFSetField(this->output, TIFFTAG_EPICSTSSEC, pArray->epicsTS.secPastEpoch);
-    TIFFSetField(this->output, TIFFTAG_EPICSTSNSEC, pArray->epicsTS.nsec);
-    TIFFSetField(this->output, TIFFTAG_BITSPERSAMPLE, bitsPerSample);
-    TIFFSetField(this->output, TIFFTAG_SAMPLEFORMAT, sampleFormat);
-    TIFFSetField(this->output, TIFFTAG_SAMPLESPERPIXEL, samplesPerPixel);
-    TIFFSetField(this->output, TIFFTAG_PHOTOMETRIC, photoMetric);
-    TIFFSetField(this->output, TIFFTAG_PLANARCONFIG, planarConfig);
-    TIFFSetField(this->output, TIFFTAG_IMAGEWIDTH, (epicsUInt32)sizeX);
-    TIFFSetField(this->output, TIFFTAG_IMAGELENGTH, (epicsUInt32)sizeY);
-    TIFFSetField(this->output, TIFFTAG_ROWSPERSTRIP, (epicsUInt32)rowsPerStrip);   
+    TIFFSetField(this->tiff, TIFFTAG_NDTIMESTAMP, pArray->timeStamp);
+    TIFFSetField(this->tiff, TIFFTAG_UNIQUEID, pArray->uniqueId);
+    TIFFSetField(this->tiff, TIFFTAG_EPICSTSSEC, pArray->epicsTS.secPastEpoch);
+    TIFFSetField(this->tiff, TIFFTAG_EPICSTSNSEC, pArray->epicsTS.nsec);
+    TIFFSetField(this->tiff, TIFFTAG_BITSPERSAMPLE, bitsPerSample);
+    TIFFSetField(this->tiff, TIFFTAG_SAMPLEFORMAT, sampleFormat);
+    TIFFSetField(this->tiff, TIFFTAG_SAMPLESPERPIXEL, samplesPerPixel);
+    TIFFSetField(this->tiff, TIFFTAG_PHOTOMETRIC, photoMetric);
+    TIFFSetField(this->tiff, TIFFTAG_PLANARCONFIG, planarConfig);
+    TIFFSetField(this->tiff, TIFFTAG_IMAGEWIDTH, (epicsUInt32)sizeX);
+    TIFFSetField(this->tiff, TIFFTAG_IMAGELENGTH, (epicsUInt32)sizeY);
+    TIFFSetField(this->tiff, TIFFTAG_ROWSPERSTRIP, (epicsUInt32)rowsPerStrip);   
     
     this->pFileAttributes->clear();
     this->getAttributes(this->pFileAttributes);
@@ -197,26 +225,26 @@ asynStatus NDFileTIFF::openFile(const char *fileName, NDFileOpenMode_t openMode,
     pAttribute = this->pFileAttributes->find("Model");
     if (pAttribute) {
         pAttribute->getValue(NDAttrString, tagString, sizeof(tagString)-1);
-        TIFFSetField(this->output, TIFFTAG_MODEL, tagString);
+        TIFFSetField(this->tiff, TIFFTAG_MODEL, tagString);
     } else {
-        TIFFSetField(this->output, TIFFTAG_MODEL, "Unknown");
+        TIFFSetField(this->tiff, TIFFTAG_MODEL, "Unknown");
     }
     
     pAttribute = this->pFileAttributes->find("Manufacturer");
     if (pAttribute) {
         pAttribute->getValue(NDAttrString, tagString);
-        TIFFSetField(this->output, TIFFTAG_MAKE, tagString, sizeof(tagString)-1);
+        TIFFSetField(this->tiff, TIFFTAG_MAKE, tagString, sizeof(tagString)-1);
     } else {
-        TIFFSetField(this->output, TIFFTAG_MAKE, "Unknown");
+        TIFFSetField(this->tiff, TIFFTAG_MAKE, "Unknown");
     }
 
-    TIFFSetField(this->output, TIFFTAG_SOFTWARE, "EPICS areaDetector");
+    TIFFSetField(this->tiff, TIFFTAG_SOFTWARE, "EPICS areaDetector");
 
     // If the attribute TIFFImageDescription exists use it to set the TIFFTAG_IMAGEDESCRIPTION
     pAttribute = this->pFileAttributes->find("TIFFImageDescription");
     if (pAttribute) {
         pAttribute->getValue(NDAttrString, tagString, sizeof(tagString)-1);
-        TIFFSetField(this->output, TIFFTAG_IMAGEDESCRIPTION, tagString);
+        TIFFSetField(this->tiff, TIFFTAG_IMAGEDESCRIPTION, tagString);
     }
 
     int count = 0;
@@ -304,8 +332,8 @@ asynStatus NDFileTIFF::openFile(const char *fileName, NDFileOpenMode_t openMode,
                   driverName, functionName, tagId, tagString);
             fieldInfo_[count] = (TIFFFieldInfo*) malloc(sizeof(TIFFFieldInfo));
             populateAsciiFieldInfo(fieldInfo_[count], tagId, attributeName);
-            TIFFMergeFieldInfo(output, fieldInfo_[count], 1);
-            TIFFSetField(this->output, tagId, tagString);
+            TIFFMergeFieldInfo(this->tiff, fieldInfo_[count], 1);
+            TIFFSetField(this->tiff, tagId, tagString);
             ++count;
             ++tagId;
             if ((tagId == TIFFTAG_END_) || (count > numAttributes_)) {
@@ -369,20 +397,20 @@ asynStatus NDFileTIFF::writeFile(NDArray *pArray)
               "%s:%s: writing file dimensions=[%lu, %lu]\n", 
               driverName, functionName, (unsigned long)pArray->dims[0].size, (unsigned long)pArray->dims[1].size);
 
-    if (this->output == NULL) {
+    if (this->tiff == NULL) {
         asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, 
         "%s:%s NULL TIFF file\n",
         driverName, functionName);
         return(asynError);
     }
 
-    stripSize = (unsigned long)TIFFStripSize(this->output);
-    TIFFGetField(this->output, TIFFTAG_IMAGELENGTH, &sizeY);
+    stripSize = (unsigned long)TIFFStripSize(this->tiff);
+    TIFFGetField(this->tiff, TIFFTAG_IMAGELENGTH, &sizeY);
 
     switch (this->colorMode) {
         case NDColorModeMono:
         case NDColorModeRGB1:
-            nwrite = TIFFWriteEncodedStrip(this->output, 0, pArray->pData, stripSize); 
+            nwrite = TIFFWriteEncodedStrip(this->tiff, 0, pArray->pData, stripSize); 
             break;
         case NDColorModeRGB2:
             /* TIFF readers don't support row interleave, put all the red strips first, then all the blue, then green. */
@@ -390,14 +418,14 @@ asynStatus NDFileTIFF::writeFile(NDArray *pArray)
                 pRed   = (unsigned char *)pArray->pData + 3*strip*stripSize;
                 pGreen = pRed + stripSize;
                 pBlue  = pRed + 2*stripSize;
-                nwrite = TIFFWriteEncodedStrip(this->output, strip, pRed, stripSize);
-                nwrite = TIFFWriteEncodedStrip(this->output, sizeY+strip, pBlue, stripSize);
-                nwrite = TIFFWriteEncodedStrip(this->output, 2*sizeY+strip, pGreen, stripSize);
+                nwrite = TIFFWriteEncodedStrip(this->tiff, strip, pRed, stripSize);
+                nwrite = TIFFWriteEncodedStrip(this->tiff, sizeY+strip, pBlue, stripSize);
+                nwrite = TIFFWriteEncodedStrip(this->tiff, 2*sizeY+strip, pGreen, stripSize);
             }
             break;
         case NDColorModeRGB3:
             for (strip=0; strip<3; strip++) {
-                nwrite = TIFFWriteEncodedStrip(this->output, strip, (unsigned char *)pArray->pData+stripSize*strip, stripSize);
+                nwrite = TIFFWriteEncodedStrip(this->tiff, strip, (unsigned char *)pArray->pData+stripSize*strip, stripSize);
             }
             break;
         default:
@@ -417,14 +445,101 @@ asynStatus NDFileTIFF::writeFile(NDArray *pArray)
     return(asynSuccess);
 }
 
-/** Reads single NDArray from a TIFF file; NOT CURRENTLY IMPLEMENTED.
+/** Reads single NDArray from a TIFF file; 
   * \param[in] pArray Pointer to the NDArray to be read
   */
 asynStatus NDFileTIFF::readFile(NDArray **pArray)
 {
-    //static const char *functionName = "readFile";
+    epicsInt16 bitsPerSample, sampleFormat, samplesPerPixel, photoMetric, planarConfig;
+    epicsInt32 sizeX, sizeY, rowsPerStrip;
+    size_t totalSize=0;
+    int strip, numStrips;
+    NDDataType_t dataType;
+    int ndims;
+    int size;
+    size_t dims[3];
+    NDArray *pImage;
+    epicsFloat64 tempDouble;
+    epicsInt32 tempLong;
+    char *buffer;
+    int fieldStat;
+    asynStatus status = asynSuccess;
+    static const char *functionName = "readFile";
 
-    return asynError;
+
+    TIFFGetField(this->tiff, TIFFTAG_BITSPERSAMPLE,    &bitsPerSample);
+    TIFFGetField(this->tiff, TIFFTAG_SAMPLEFORMAT,     &sampleFormat);
+    TIFFGetField(this->tiff, TIFFTAG_SAMPLESPERPIXEL,  &samplesPerPixel);
+    TIFFGetField(this->tiff, TIFFTAG_PHOTOMETRIC,      &photoMetric);
+    TIFFGetField(this->tiff, TIFFTAG_PLANARCONFIG,     &planarConfig);
+    TIFFGetField(this->tiff, TIFFTAG_IMAGEWIDTH,       &sizeX);
+    TIFFGetField(this->tiff, TIFFTAG_IMAGELENGTH,      &sizeY);
+    TIFFGetField(this->tiff, TIFFTAG_ROWSPERSTRIP,     &rowsPerStrip);   
+    numStrips= TIFFNumberOfStrips(this->tiff);
+
+    if      ((bitsPerSample == 8)  && (sampleFormat == SAMPLEFORMAT_INT))     dataType = NDInt8;
+    else if ((bitsPerSample == 8)  && (sampleFormat == SAMPLEFORMAT_UINT))    dataType = NDUInt8;
+    else if ((bitsPerSample == 16) && (sampleFormat == SAMPLEFORMAT_INT))     dataType = NDInt16;
+    else if ((bitsPerSample == 16) && (sampleFormat == SAMPLEFORMAT_UINT))    dataType = NDUInt16;
+    else if ((bitsPerSample == 32) && (sampleFormat == SAMPLEFORMAT_INT))     dataType = NDInt32;
+    else if ((bitsPerSample == 32) && (sampleFormat == SAMPLEFORMAT_UINT))    dataType = NDUInt32;
+    else if ((bitsPerSample == 32) && (sampleFormat == SAMPLEFORMAT_IEEEFP))  dataType = NDFloat32;
+    else if ((bitsPerSample == 64) && (sampleFormat == SAMPLEFORMAT_IEEEFP))  dataType = NDFloat64;
+    else {
+        asynPrint(pasynUserSelf, ASYN_TRACE_ERROR, 
+            "%s::%s unsupport bitsPerSample=%d and sampleFormat=%d\n", 
+            driverName, functionName, bitsPerSample, sampleFormat);
+        return asynError;    
+    }
+    if ((photoMetric == PHOTOMETRIC_MINISBLACK) && 
+        (planarConfig == PLANARCONFIG_CONTIG)   &&
+        (samplesPerPixel == 1)) {
+        ndims = 2;
+        dims[0] = sizeX;
+        dims[1] = sizeY;
+    }
+    else {
+        asynPrint(pasynUserSelf, ASYN_TRACE_ERROR, 
+            "%s::%s unsupport photoMetric=%dm planarConfig=%d, and samplesPerPixel=%d\n", 
+            driverName, functionName, photoMetric, planarConfig, samplesPerPixel);
+        return asynError;    
+    }
+    
+    pImage = this->pNDArrayPool->alloc(ndims, dims, dataType, 0, 0);
+    *pArray = pImage;
+    buffer = (char *)pImage->pData;
+    for (strip=0; strip < numStrips; strip++) {
+        size = TIFFReadEncodedStrip(this->tiff, strip, buffer, pImage->dataSize-totalSize);
+        if (size == -1) {
+            asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW,
+                "%s::%s, error reading TIFF file\n",
+                driverName, functionName);
+            status = asynError;
+            break;
+        }
+        buffer += size;
+        totalSize += size;
+        if (totalSize > pImage->dataSize) {
+            status = asynError;
+            asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
+                "%s::%s, file size too large =%lu, must be <= %lu\n",
+                driverName, functionName, (unsigned long)totalSize, (unsigned long)pImage->dataSize);
+            status = asynError;
+            break;
+        }
+    }
+
+    // If the TIFF file contains the standard NDArray attributes then read them
+    fieldStat = TIFFGetField(this->tiff, TIFFTAG_NDTIMESTAMP, &tempDouble);
+    if (fieldStat == 1) pImage->timeStamp = tempDouble;
+    fieldStat = TIFFGetField(this->tiff, TIFFTAG_UNIQUEID, &tempLong);
+    if (fieldStat == 1) pImage->uniqueId = tempLong;
+    fieldStat = TIFFGetField(this->tiff, TIFFTAG_EPICSTSSEC, &tempLong);
+    if (fieldStat == 1) pImage->epicsTS.secPastEpoch = tempLong;
+    fieldStat = TIFFGetField(this->tiff, TIFFTAG_EPICSTSNSEC, &tempLong);
+    if (fieldStat == 1) pImage->epicsTS.nsec = tempLong;
+
+    return status;
 }
 
 
@@ -433,7 +548,7 @@ asynStatus NDFileTIFF::closeFile()
 {
     static const char *functionName = "closeFile";
 
-    if (this->output == NULL) {
+    if (this->tiff == NULL) {
         asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, 
         "%s:%s NULL TIFF file\n",
         driverName, functionName);
@@ -443,12 +558,15 @@ asynStatus NDFileTIFF::closeFile()
     asynPrint(pasynUserSelf, ASYN_TRACE_FLOW,
         "%s::%s closing file\n", 
         driverName, functionName);
-    TIFFClose(this->output);
+    TIFFClose(this->tiff);
 
-    for (int i=0; i<numAttributes_; ++i) {
-      free(fieldInfo_[i]);
+    if (fieldInfo_ != 0) {
+        for (int i=0; i<numAttributes_; ++i) {
+          free(fieldInfo_[i]);
+        }
+        free(fieldInfo_);
+        fieldInfo_ = 0;
     }
-    free(fieldInfo_);
 
     return asynSuccess;
 }
@@ -477,7 +595,8 @@ NDFileTIFF::NDFileTIFF(const char *portName, int queueSize, int blockingCallback
     : NDPluginFile(portName, queueSize, blockingCallbacks,
                    NDArrayPort, NDArrayAddr, 1,
                    2, 0, asynGenericPointerMask, asynGenericPointerMask, 
-                   ASYN_CANBLOCK, 1, priority, stackSize, 1)
+                   ASYN_CANBLOCK, 1, priority, stackSize, 1),
+    fieldInfo_(0), numAttributes_(0)
 {
     //static const char *functionName = "NDFileTIFF";
 
