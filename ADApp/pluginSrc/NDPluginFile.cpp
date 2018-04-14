@@ -162,6 +162,7 @@ asynStatus NDPluginFile::readFileBase(void)
     
     /* Call the readFile method in the derived class */
     /* Do this with the main lock released since it is slow */
+    setStringParam(NDFullFileName, fullFileName);
     this->unlock();
     epicsMutexLock(this->fileMutexId);
     status = this->openFile(fullFileName, NDFileModeRead, pArray);
@@ -174,7 +175,7 @@ asynStatus NDPluginFile::readFileBase(void)
         setIntegerParam(NDFileWriteStatus, NDFileWriteError);
         setStringParam(NDFileWriteMessage, errorMessage);
     }
-    if (status == asynSuccess) {
+    else {
         status = this->readFile(&pArray);
         if (status) {
             epicsSnprintf(errorMessage, sizeof(errorMessage)-1,
@@ -193,16 +194,9 @@ asynStatus NDPluginFile::readFileBase(void)
     /* If we got an error then return */
     if (status) return(status);
     
-    /* Update the new values of array metadata */
-    setIntegerParam(NDNDimensions, pArray->ndims);
-    setIntegerParam(NDDataType, pArray->dataType);
-    //setIntegerParam(NDColorMode, colorMode);
-    //setIntegerParam(NDBayerPattern, bayerPattern);
-    setIntegerParam(NDUniqueId, pArray->uniqueId);
-    setDoubleParam(NDTimeStamp, pArray->timeStamp);
-    setIntegerParam(NDEpicsTSSec, pArray->epicsTS.secPastEpoch);
-    setIntegerParam(NDEpicsTSNsec, pArray->epicsTS.nsec);
-    
+    // This sets all of the plugin PVs from the NDArray
+    NDPluginDriver::beginProcessCallbacks(pArray);    
+
     /* Call any registered clients */
     NDPluginDriver::endProcessCallbacks(pArray, false, true);
 
