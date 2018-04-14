@@ -41,19 +41,21 @@
  
 static const char *driverName = "NDFileTIFF";
 
-const int NDFileTIFF::TIFFTAG_START_ = 65010;
-const int NDFileTIFF::TIFFTAG_END_ = 65500;
 
-static const int TIFFTAG_NDTIMESTAMP    = 65000;
-static const int TIFFTAG_UNIQUEID       = 65001;
-static const int TIFFTAG_EPICSTSSEC     = 65002;
-static const int TIFFTAG_EPICSTSNSEC    = 65003;
+static const int TIFFTAG_NDTIMESTAMP     = 65000;
+static const int TIFFTAG_UNIQUEID        = 65001;
+static const int TIFFTAG_EPICSTSSEC      = 65002;
+static const int TIFFTAG_EPICSTSNSEC     = 65003;
+static const int TIFFTAG_FIRST_ATTRIBUTE = 65010;
+static const int TIFFTAG_LAST_ATTRIBUTE  = 65500;
 
-static const TIFFFieldInfo tiffFieldInfo[] = {
-    {TIFFTAG_NDTIMESTAMP,1,1,TIFF_DOUBLE,FIELD_CUSTOM,1,0,(char *)"NDTimeStamp"},
-    {TIFFTAG_UNIQUEID,1,1,TIFF_LONG,FIELD_CUSTOM,1,0,(char *)"NDUniqueId"},
-    {TIFFTAG_EPICSTSSEC,1,1,TIFF_LONG,FIELD_CUSTOM,1,0,(char *)"EPICSTSSec"},
-    {TIFFTAG_EPICSTSNSEC,1,1,TIFF_LONG,FIELD_CUSTOM,1,0,(char *)"EPICSTSNsec"}
+#define NUM_CUSTOM_TIFF_TAGS (4 + TIFFTAG_LAST_ATTRIBUTE - TIFFTAG_FIRST_ATTRIBUTE - 1)
+
+static TIFFFieldInfo tiffFieldInfo[NUM_CUSTOM_TIFF_TAGS] = {
+    {TIFFTAG_NDTIMESTAMP, 1, 1, TIFF_DOUBLE,FIELD_CUSTOM, 1, 0, (char *)"NDTimeStamp"},
+    {TIFFTAG_UNIQUEID,    1, 1, TIFF_LONG,FIELD_CUSTOM,   1, 0, (char *)"NDUniqueId"},
+    {TIFFTAG_EPICSTSSEC,  1, 1, TIFF_LONG,FIELD_CUSTOM,   1, 0, (char *)"EPICSTSSec"},
+    {TIFFTAG_EPICSTSNSEC, 1, 1, TIFF_LONG,FIELD_CUSTOM,   1, 0, (char *)"EPICSTSNsec"}
 };
 
 static void registerCustomTIFFTags(TIFF *tif)
@@ -87,8 +89,16 @@ asynStatus NDFileTIFF::openFile(const char *fileName, NDFileOpenMode_t openMode,
     NDAttribute *pAttribute = NULL;
     char tagString[STRING_BUFFER_SIZE] = {0};
     char attrString[STRING_BUFFER_SIZE] = {0};
+    char tagName[STRING_BUFFER_SIZE] = {0};
+    int i;
+    TIFFFieldInfo fieldInfo = {0, 1, 1, TIFF_ASCII, FIELD_CUSTOM, 1, 0, tagName};
 
-    // Register our custom tags
+    for (i=TIFFTAG_FIRST_ATTRIBUTE; i<TIFFTAG_LAST_ATTRIBUTE; i++) {
+        sprintf(tagName, "Attribute_%d", i-TIFFTAG_FIRST_ATTRIBUTE+1);
+        fieldInfo.field_tag = i;
+        tiffFieldInfo[4+i-TIFFTAG_FIRST_ATTRIBUTE] = fieldInfo;
+    }
+
     augmentLibTiffWithCustomTags();
 
     /* Suppress error and warning messages from the TIFF library */
@@ -248,27 +258,13 @@ asynStatus NDFileTIFF::openFile(const char *fileName, NDFileOpenMode_t openMode,
     }
 
     int count = 0;
-    int tagId = TIFFTAG_START_;
+    int tagId = TIFFTAG_FIRST_ATTRIBUTE;
    
     numAttributes_ = this->pFileAttributes->count();
     asynPrint(this->pasynUserSelf, ASYN_TRACEIO_DRIVER,
         "%s:%s this->pFileAttributes->count(): %d\n",
         driverName, functionName, numAttributes_);
 
-    fieldInfo_ = (TIFFFieldInfo**) malloc(numAttributes_ * sizeof(TIFFFieldInfo *));
-    if (fieldInfo_ == NULL) {
-        asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
-            "%s:%s error, fieldInfo_ malloc failed. file: %s\n",
-            driverName, functionName, fileName);
-        return asynError;
-    }
-    for (int i=0; i<numAttributes_; ++i) {
-        asynPrint(this->pasynUserSelf, ASYN_TRACEIO_DRIVER,
-            "%s:%s Initializing %d fieldInfo_ entry.\n",
-            driverName, functionName, i);
-        fieldInfo_[i] = NULL;
-    }
-    
     asynPrint(this->pasynUserSelf, ASYN_TRACEIO_DRIVER,
         "%s:%s Looping over attributes...\n",
         driverName, functionName);
@@ -330,13 +326,10 @@ asynStatus NDFileTIFF::openFile(const char *fileName, NDFileOpenMode_t openMode,
             asynPrint(this->pasynUserSelf, ASYN_TRACEIO_DRIVER,
                 "%s:%s : tagId: %d, tagString: %s\n",
                   driverName, functionName, tagId, tagString);
-            fieldInfo_[count] = (TIFFFieldInfo*) malloc(sizeof(TIFFFieldInfo));
-            populateAsciiFieldInfo(fieldInfo_[count], tagId, attributeName);
-            TIFFMergeFieldInfo(this->tiff, fieldInfo_[count], 1);
             TIFFSetField(this->tiff, tagId, tagString);
             ++count;
             ++tagId;
-            if ((tagId == TIFFTAG_END_) || (count > numAttributes_)) {
+            if ((tagId == TIFFTAG_LAST_ATTRIBUTE) || (count > numAttributes_)) {
                 asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
                     "%s:%s error, Too many tags/attributes for file. tagId: %d, count: %d\n",
                     driverName, functionName, tagId, count);
@@ -348,39 +341,6 @@ asynStatus NDFileTIFF::openFile(const char *fileName, NDFileOpenMode_t openMode,
     
     return(asynSuccess);
 }
-
-/**
- * Populate a TIFFFieldInfo structure with fields suitable for 
- * writing a ASCII TIFF custom tag.
- * \param[in] fieldInfo Pointer to a TIFFFieldInfo structure.
- * \param[in] fieldTag TIFF tag number to use.
- * \param[in] tagName Pointer to a char array for the tag name.
- */
-asynStatus NDFileTIFF::populateAsciiFieldInfo(TIFFFieldInfo *fieldInfo, int fieldTag, const char *tagName)
-{
-    asynStatus status = asynSuccess;
-
-    if (fieldInfo) {
-        fieldInfo->field_tag = fieldTag;
-        fieldInfo->field_readcount = 1;
-        fieldInfo->field_writecount = 1;
-        fieldInfo->field_type = TIFF_ASCII;
-        fieldInfo->field_bit = FIELD_CUSTOM;
-        fieldInfo->field_oktochange = 1;
-        fieldInfo->field_passcount = 0;
-        if (tagName) {
-            fieldInfo->field_name = (char *)tagName;
-        } else {
-            status = asynError;
-        }
-    } else {
-        status = asynError;
-    }
-  
-    return status;
-
-}
-
 
 /** Writes single NDArray to the TIFF file.
   * \param[in] pArray Pointer to the NDArray to be written
@@ -461,8 +421,10 @@ asynStatus NDFileTIFF::readFile(NDArray **pArray)
     NDArray *pImage;
     epicsFloat64 tempDouble;
     epicsInt32 tempLong;
+    char *tempString;
     char *buffer;
     int fieldStat;
+    epicsInt32 clrMode;
     asynStatus status = asynSuccess;
     static const char *functionName = "readFile";
 
@@ -497,6 +459,25 @@ asynStatus NDFileTIFF::readFile(NDArray **pArray)
         ndims = 2;
         dims[0] = sizeX;
         dims[1] = sizeY;
+        clrMode = NDColorModeMono;
+    }
+    else if ((photoMetric == PHOTOMETRIC_RGB) && 
+        (planarConfig == PLANARCONFIG_CONTIG)   &&
+        (samplesPerPixel == 3)) {
+        ndims = 3;
+        dims[0] = 3;
+        dims[1] = sizeX;
+        dims[2] = sizeY;
+        clrMode = NDColorModeRGB1;
+    }
+    else if ((photoMetric == PHOTOMETRIC_RGB) && 
+        (planarConfig == PLANARCONFIG_SEPARATE)   &&
+        (samplesPerPixel == 3)) {
+        ndims = 3;
+        dims[0] = sizeX;
+        dims[1] = sizeY;
+        dims[2] = 3;
+        clrMode = NDColorModeRGB3;
     }
     else {
         asynPrint(pasynUserSelf, ASYN_TRACE_ERROR, 
@@ -529,6 +510,12 @@ asynStatus NDFileTIFF::readFile(NDArray **pArray)
         }
     }
 
+    // Get the attribute list
+    this->getAttributes(pImage->pAttributeList);
+
+    // Set the ColorMode attribute
+    pImage->pAttributeList->add("ColorMode", "Color Mode", NDAttrInt32, &clrMode);
+
     // If the TIFF file contains the standard NDArray attributes then read them
     fieldStat = TIFFGetField(this->tiff, TIFFTAG_NDTIMESTAMP, &tempDouble);
     if (fieldStat == 1) pImage->timeStamp = tempDouble;
@@ -538,7 +525,19 @@ asynStatus NDFileTIFF::readFile(NDArray **pArray)
     if (fieldStat == 1) pImage->epicsTS.secPastEpoch = tempLong;
     fieldStat = TIFFGetField(this->tiff, TIFFTAG_EPICSTSNSEC, &tempLong);
     if (fieldStat == 1) pImage->epicsTS.nsec = tempLong;
-
+    
+    for (int i=TIFFTAG_FIRST_ATTRIBUTE; i<TIFFTAG_LAST_ATTRIBUTE; i++) {
+        fieldStat = TIFFGetField(this->tiff, i, &tempString);
+        if (fieldStat == 1) {
+            std::string ts = tempString;
+            int pc = ts.find(':');
+            std::string attrName = ts.substr(0, pc);
+            std::string attrValue = ts.substr(pc+1);
+            // Don't process ColorMode attribute from the attributes in the TIFF file, already done above.
+            if (attrName == "ColorMode") continue;
+            pImage->pAttributeList->add(attrName.c_str(), attrName.c_str(), NDAttrString, (void *)attrValue.c_str());
+        }
+    }
     return status;
 }
 
@@ -559,14 +558,6 @@ asynStatus NDFileTIFF::closeFile()
         "%s::%s closing file\n", 
         driverName, functionName);
     TIFFClose(this->tiff);
-
-    if (fieldInfo_ != 0) {
-        for (int i=0; i<numAttributes_; ++i) {
-          free(fieldInfo_[i]);
-        }
-        free(fieldInfo_);
-        fieldInfo_ = 0;
-    }
 
     return asynSuccess;
 }
@@ -596,7 +587,7 @@ NDFileTIFF::NDFileTIFF(const char *portName, int queueSize, int blockingCallback
                    NDArrayPort, NDArrayAddr, 1,
                    2, 0, asynGenericPointerMask, asynGenericPointerMask, 
                    ASYN_CANBLOCK, 1, priority, stackSize, 1),
-    fieldInfo_(0), numAttributes_(0)
+    numAttributes_(0)
 {
     //static const char *functionName = "NDFileTIFF";
 
