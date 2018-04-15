@@ -379,8 +379,8 @@ asynStatus NDFileTIFF::writeFile(NDArray *pArray)
                 pGreen = pRed + stripSize;
                 pBlue  = pRed + 2*stripSize;
                 nwrite = TIFFWriteEncodedStrip(this->tiff, strip, pRed, stripSize);
-                nwrite = TIFFWriteEncodedStrip(this->tiff, sizeY+strip, pBlue, stripSize);
-                nwrite = TIFFWriteEncodedStrip(this->tiff, 2*sizeY+strip, pGreen, stripSize);
+                nwrite = TIFFWriteEncodedStrip(this->tiff, sizeY+strip, pGreen, stripSize);
+                nwrite = TIFFWriteEncodedStrip(this->tiff, 2*sizeY+strip, pBlue, stripSize);
             }
             break;
         case NDColorModeRGB3:
