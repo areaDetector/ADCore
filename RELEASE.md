@@ -24,7 +24,7 @@ R3-3 (April XXX, 2018)
 ======================
 ### NDArray
 * Added the epicsTS (EPICS time stamp) field to the report() output. 
-  Previously the timeStamp field but not the epicsTS field was in the report.
+  Previously the timeStamp field was in the report, but not the epicsTS field was not.
 ### NDPluginPva
 * Added call to NDPluginDriver::endProcessCallbacks at the end of processCallbacks().
   This will do NDArray callbacks if enabled and will copy the last NDArray to pArrays[0] for asynReport.
@@ -32,6 +32,25 @@ R3-3 (April XXX, 2018)
 * Added conversion of the NDArray.timeStamp and NDArray.epicsTS fields from EPICS epoch (Jan. 1 1990) to
   Posix epoch (Jan. 1, 1970). Needed because NDArrays use EPICS epoch but pvAccess uses Posix epoch and the
   timestamps shown by pvGet were incorrect for the NTNDArrays.
+### NDPluginFile
+* Fixes to readFileBase so that the ReadFile PV actually works.  This has now been implemented for NDFileTIFF.
+* Return an error if Capture mode is enabled in NDFileModeSingle.
+### NDFileTIFF
+* Added support for readFile() so it is now possible to read a TIFF file into an NDArray using this plugin and 
+  do callbacks to downstream plugins.  
+  - All datatypes (NDDataType_t) are supported.  
+  - It supports Mono, RGB1, and RGB3 color modes.  It also correctly reads files written with RGB2 color mode.
+  - It restores the NDArray fields uniqueID, timeStamp, and epicsTS if they are present.  
+  - It restores all of the NDArray NDAttributes that were written to the TIFF file.  
+    Because of the way the NDAttributes are stored in the TIFF file the restored attributes are all of type NDAttrString, 
+    rather than the numeric data types the attributes may have originally used.
+  - One motivation for adding this capability is for the NDPluginProcess plugin to be able to read TIFF files
+    for the background and flat field images, rather than needing to collect them each time it is used.
+### ADApp/Db/
+* Added default ADDR=0 and TIMEOUT=1 to many template files.  This means these values do not need to be specified
+  when loading these databases if these defaults are acceptable, which is often the case.
+### ADApp/op/adl
+* Fixes to a number of .adl files to set text widget size and alignment, etc. to improve conversion to .opi and .ui files.
 
 R3-2 (January 28, 2018)
 ======================
