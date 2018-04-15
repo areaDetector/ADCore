@@ -33,7 +33,7 @@ R3-3 (April XXX, 2018)
   Posix epoch (Jan. 1, 1970). Needed because NDArrays use EPICS epoch but pvAccess uses Posix epoch and the
   timestamps shown by pvGet were incorrect for the NTNDArrays.
 ### NDPluginFile
-* Fixes to readFileBase so that the ReadFile PV actually works.  This has now been implemented for NDFileTIFF.
+* Fixes to readFileBase() so that the ReadFile PV actually works.  This has now been implemented for NDFileTIFF.
 * Return an error if Capture mode is enabled in NDFileModeSingle.
 ### NDFileTIFF
 * Added support for readFile() so it is now possible to read a TIFF file into an NDArray using this plugin and 
