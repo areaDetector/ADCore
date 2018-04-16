@@ -337,6 +337,43 @@
         <td>
           SCALE_FLAT_FIELD
         </td>
+        <tr>
+          <td>
+            N.A.
+          </td>
+          <td>
+            N.A.
+          </td>
+          <td>
+            r/w
+          </td>
+          <td>
+            This is a convenience sseq record to simplify reading the flatfield array from a
+            TIFF file. Prior to processing this record the $(P)$(R)TIFF: plugin records must
+            be correctly configured to read the desired flatfield TIFF file. Processing this
+            record does the following steps.
+            <ol>
+              <li>Saves the current value of $(P)$(R)NDArrayPort in a temporary location.</li>
+              <li>Sets the NDArrayPort to $(P)$(R)TIFF:PortName_RBV, i.e. the TIFF plugin associated
+                with this plugin.</li>
+              <li>Enables ArrayCallbacks for the TIFF plugin in case they were not enabled.</li>
+              <li>Writes 1 to $(R)$(P)TIFF:ReadFile. This causes the TIFF plugin to read the selected
+                file, do callbacks to the Process plugin.</li>
+              <li>Writes 1 to $(P$(R)SaveFlatFeild, saving the array read from the TIFF plugin as
+                the new flatfield.</li>
+              <li>Restores $(P)$(R)NDArrayPort from the temporary location</li>
+            </ol>
+          </td>
+          <td>
+            N.A.
+          </td>
+          <td>
+            $(P)$(R)ReadFlatFieldTIFFSeq
+          </td>
+          <td>
+            sseq
+          </td>
+        </tr>
         <td>
           $(P)$(R)ScaleFlatField<br />
           $(P)$(R)ScaleFlatField_RBV
@@ -460,43 +497,6 @@
         <td>
           ao<br />
           ai
-        </td>
-      </tr>
-      <tr>
-        <td>
-          N.A.
-        </td>
-        <td>
-          N.A.
-        </td>
-        <td>
-          r/w
-        </td>
-        <td>
-          This is a convenience sseq record to simplify reading the flatfield array from a
-          TIFF file. Prior to processing this record the $(P)$(R)TIFF: plugin records must
-          be correctly configured to read the desired flatfield TIFF file. Processing this
-          record does the following steps.
-          <ol>
-            <li>Saves the current value of $(P)$(R)NDArrayPort in a temporary location.</li>
-            <li>Sets the NDArrayPort to $(P)$(R)TIFF:PortName_RBV, i.e. the TIFF plugin associated
-              with this plugin.</li>
-            <li>Enables ArrayCallbacks for the TIFF plugin in case they were not enabled.</li>
-            <li>Writes 1 to $(R)$(P)TIFF:ReadFile. This causes the TIFF plugin to read the selected
-              file, do callbacks to the Process plugin.</li>
-            <li>Writes 1 to $(P$(R)SaveFlatFeild, saving the array read from the TIFF plugin as
-              the new flatfield.</li>
-            <li>Restores $(P)$(R)NDArrayPort from the temporary location</li>
-          </ol>
-        </td>
-        <td>
-          N.A.
-        </td>
-        <td>
-          $(P)$(R)ReadFlatFieldTIFFSeq
-        </td>
-        <td>
-          sseq
         </td>
       </tr>
       <tr>
