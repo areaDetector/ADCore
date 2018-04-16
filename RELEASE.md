@@ -46,6 +46,18 @@ R3-3 (April XXX, 2018)
     rather than the numeric data types the attributes may have originally used.
   - One motivation for adding this capability is for the NDPluginProcess plugin to be able to read TIFF files
     for the background and flat field images, rather than needing to collect them each time it is used.
+### NDPluginProcess
+* Load a dedicated TIFF plugin for the NDPluginProcess plugin in commonPlugins.cmd.  This TIFF plugin is used for reading
+  background or flatfield TIFF files.
+* Add an sseq record to load the background image from a TIFF file. This executes all the following steps:
+  1) Saves the current NDArrayPort fo the Process plugin to a temporary location
+  2) Sets the NDArrayPort to the TIFF plugin.
+  3) Enables ArrayCallbacks for the TIFF plugin in case they were disabled.
+  4) Process the ReadFile record in the TIFF plugin.  This reads the TIFF file and does callback to the Process plugin.
+  5) Loads the NDArray from the callback into the background image.
+  6) Restores the previous NDArrayPort from the temporary location.
+* Add an sseq record to load the flatfile from a TIFF file.  This executes the same steps as for the background
+  above, except that in step 5 it loads the NDArray into the flatfile image.
 ### ADApp/Db/
 * Added default ADDR=0 and TIMEOUT=1 to many template files.  This means these values do not need to be specified
   when loading these databases if these defaults are acceptable, which is often the case.
