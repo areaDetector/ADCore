@@ -115,6 +115,34 @@ record(bi, "$(P)$(R)ValidBackground_RBV")
     field(SCAN, "I/O Intr")
 }
 
+record(sseq, "$(P)$(R)ReadBackgroundTIFFSeq")
+{
+    # Make a backup copy of the NDArrayPort field
+    field(DOL1, "$(P)$(R)NDArrayPort")
+    field(LNK1, "$(P)$(R)PortBackup PP MS")
+    # Set the NDArrayPort field to the TIFF plugin
+    field(DOL2, "$(P)$(R)TIFF:PortName_RBV")
+    field(LNK2, "$(P)$(R)NDArrayPort PP MS")
+    # Enable array callbacks in the TIFF plugin
+    field(STR3, "Enable")
+    field(LNK3, "$(P)$(R)TIFF:ArrayCallbacks PP MS")
+    # Read the TIFF file
+    field(DLY4, "0.1")
+    field(DO4, "1")
+    field(LNK4, "$(P)$(R)TIFF:ReadFile PP MS")
+    # Save background TIFF
+    field(DLY5, "0.5")
+    field(DO5, "1")
+    field(LNK5, "$(P)$(R)SaveBackground PP MS")
+    # Restore the NDArrayPort field
+    field(DOL6, "$(P)$(R)PortBackup")
+    field(LNK6, "$(P)$(R)NDArrayPort PP MS")
+}
+
+record(stringout, "$(P)$(R)PortBackup")
+{
+}
+
 ###################################################################
 # These records control the flat field array processing           #
 ###################################################################
@@ -180,6 +208,30 @@ record(ai, "$(P)$(R)ScaleFlatField_RBV")
     field(DTYP, "asynFloat64")
     field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))SCALE_FLAT_FIELD")
     field(SCAN, "I/O Intr")
+}
+
+record(sseq, "$(P)$(R)ReadFlatFieldTIFFSeq")
+{
+    # Make a backup copy of the NDArrayPort field
+    field(DOL1, "$(P)$(R)NDArrayPort")
+    field(LNK1, "$(P)$(R)PortBackup PP MS")
+    # Set the NDArrayPort field to the TIFF plugin
+    field(DOL2, "$(P)$(R)TIFF:PortName_RBV")
+    field(LNK2, "$(P)$(R)NDArrayPort PP MS")
+    # Enable array callbacks in the TIFF plugin
+    field(STR3, "Enable")
+    field(LNK3, "$(P)$(R)TIFF:ArrayCallbacks PP MS")
+    # Read the TIFF file
+    field(DLY4, "0.1")
+    field(DO4, "1")
+    field(LNK4, "$(P)$(R)TIFF:ReadFile PP MS")
+    # Save background TIFF
+    field(DLY5, "0.5")
+    field(DO5, "1")
+    field(LNK5, "$(P)$(R)SaveFlatField PP MS")
+    # Restore the NDArrayPort field
+    field(DOL6, "$(P)$(R)PortBackup")
+    field(LNK6, "$(P)$(R)NDArrayPort PP MS")
 }
 
 ###################################################################
