@@ -1,4 +1,4 @@
--ADCore Releases
+ADCore Releases
 ===============
 
 The latest untagged master branch can be obtained at
