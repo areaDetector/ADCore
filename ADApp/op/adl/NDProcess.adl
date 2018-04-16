@@ -1,12 +1,12 @@
 
 file {
-	name="/home/epics/devel/areaDetector/ADCore/ADApp/op/adl/NDProcess.adl"
+	name="/home/epics/devel/areaDetector-3-2/ADCore/ADApp/op/adl/NDProcess.adl"
 	version=030109
 }
 display {
 	object {
-		x=269
-		y=141
+		x=10
+		y=31
 		width=1150
 		height=660
 	}
@@ -116,434 +116,12 @@ rectangle {
 		x=390
 		y=40
 		width=350
-		height=530
+		height=570
 	}
 	"basic attribute" {
 		clr=14
 		fill="outline"
 	}
-}
-text {
-	object {
-		x=473
-		y=540
-		width=90
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Data type"
-	align="horiz. right"
-}
-menu {
-	object {
-		x=574
-		y=541
-		width=80
-		height=18
-	}
-	control {
-		chan="$(P)$(R)DataTypeOut"
-		clr=14
-		bclr=51
-	}
-}
-"text update" {
-	object {
-		x=660
-		y=541
-		width=62
-		height=18
-	}
-	monitor {
-		chan="$(P)$(R)DataTypeOut_RBV"
-		clr=54
-		bclr=4
-	}
-	align="horiz. centered"
-	format="string"
-	limits {
-	}
-}
-rectangle {
-	object {
-		x=442
-		y=515
-		width=280
-		height=21
-	}
-	"basic attribute" {
-		clr=2
-	}
-}
-text {
-	object {
-		x=502
-		y=515
-		width=160
-		height=20
-	}
-	"basic attribute" {
-		clr=54
-	}
-	textix="Output data type"
-	align="horiz. centered"
-}
-text {
-	object {
-		x=421
-		y=400
-		width=150
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Enable low clip"
-	align="horiz. right"
-}
-"text update" {
-	object {
-		x=668
-		y=401
-		width=62
-		height=18
-	}
-	monitor {
-		chan="$(P)$(R)EnableLowClip_RBV"
-		clr=54
-		bclr=12
-	}
-	clrmod="alarm"
-	align="horiz. centered"
-	format="string"
-	limits {
-	}
-}
-text {
-	object {
-		x=431
-		y=425
-		width=140
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Low clip value"
-	align="horiz. right"
-}
-"text update" {
-	object {
-		x=668
-		y=426
-		width=62
-		height=18
-	}
-	monitor {
-		chan="$(P)$(R)LowClip_RBV"
-		clr=54
-		bclr=4
-	}
-	align="horiz. centered"
-	limits {
-	}
-}
-text {
-	object {
-		x=411
-		y=450
-		width=160
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Enable high clip"
-	align="horiz. right"
-}
-"text update" {
-	object {
-		x=668
-		y=451
-		width=62
-		height=18
-	}
-	monitor {
-		chan="$(P)$(R)EnableHighClip_RBV"
-		clr=54
-		bclr=12
-	}
-	clrmod="alarm"
-	align="horiz. centered"
-	format="string"
-	limits {
-	}
-}
-"text update" {
-	object {
-		x=668
-		y=475
-		width=62
-		height=18
-	}
-	monitor {
-		chan="$(P)$(R)HighClip_RBV"
-		clr=54
-		bclr=4
-	}
-	align="horiz. centered"
-	limits {
-	}
-}
-text {
-	object {
-		x=421
-		y=475
-		width=150
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="High clip value"
-	align="horiz. right"
-}
-menu {
-	object {
-		x=582
-		y=401
-		width=80
-		height=19
-	}
-	control {
-		chan="$(P)$(R)EnableLowClip"
-		clr=14
-		bclr=51
-	}
-}
-"text entry" {
-	object {
-		x=582
-		y=426
-		width=80
-		height=19
-	}
-	control {
-		chan="$(P)$(R)LowClip"
-		clr=14
-		bclr=51
-	}
-	limits {
-	}
-}
-menu {
-	object {
-		x=582
-		y=451
-		width=80
-		height=19
-	}
-	control {
-		chan="$(P)$(R)EnableHighClip"
-		clr=14
-		bclr=51
-	}
-}
-"text entry" {
-	object {
-		x=582
-		y=475
-		width=80
-		height=19
-	}
-	control {
-		chan="$(P)$(R)HighClip"
-		clr=14
-		bclr=51
-	}
-	limits {
-	}
-}
-rectangle {
-	object {
-		x=442
-		y=375
-		width=280
-		height=21
-	}
-	"basic attribute" {
-		clr=2
-	}
-}
-text {
-	object {
-		x=497
-		y=375
-		width=170
-		height=20
-	}
-	"basic attribute" {
-		clr=54
-	}
-	textix="Low/High Clipping"
-	align="horiz. centered"
-}
-text {
-	object {
-		x=421
-		y=160
-		width=150
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Save flat field"
-	align="horiz. right"
-}
-"text update" {
-	object {
-		x=668
-		y=161
-		width=62
-		height=18
-	}
-	monitor {
-		chan="$(P)$(R)ValidFlatField_RBV"
-		clr=54
-		bclr=4
-	}
-	format="string"
-	limits {
-	}
-}
-text {
-	object {
-		x=401
-		y=185
-		width=170
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Enable flat field"
-	align="horiz. right"
-}
-"text update" {
-	object {
-		x=668
-		y=186
-		width=62
-		height=18
-	}
-	monitor {
-		chan="$(P)$(R)EnableFlatField_RBV"
-		clr=54
-		bclr=12
-	}
-	clrmod="alarm"
-	align="horiz. centered"
-	format="string"
-	limits {
-	}
-}
-text {
-	object {
-		x=411
-		y=210
-		width=160
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Scale flat field"
-	align="horiz. right"
-}
-"text update" {
-	object {
-		x=668
-		y=211
-		width=62
-		height=18
-	}
-	monitor {
-		chan="$(P)$(R)ScaleFlatField_RBV"
-		clr=54
-		bclr=4
-	}
-	limits {
-	}
-}
-"message button" {
-	object {
-		x=582
-		y=161
-		width=80
-		height=19
-	}
-	control {
-		chan="$(P)$(R)SaveFlatField"
-		clr=14
-		bclr=51
-	}
-	label="Save"
-	press_msg="1"
-}
-menu {
-	object {
-		x=582
-		y=186
-		width=80
-		height=19
-	}
-	control {
-		chan="$(P)$(R)EnableFlatField"
-		clr=14
-		bclr=51
-	}
-}
-"text entry" {
-	object {
-		x=582
-		y=211
-		width=80
-		height=19
-	}
-	control {
-		chan="$(P)$(R)ScaleFlatField"
-		clr=14
-		bclr=51
-	}
-	limits {
-	}
-}
-rectangle {
-	object {
-		x=437
-		y=135
-		width=280
-		height=21
-	}
-	"basic attribute" {
-		clr=2
-	}
-}
-text {
-	object {
-		x=457
-		y=135
-		width=240
-		height=20
-	}
-	"basic attribute" {
-		clr=54
-	}
-	textix="Flat field normalization"
-	align="horiz. centered"
 }
 rectangle {
 	object {
@@ -749,30 +327,6 @@ text {
 	label="Reset"
 	press_msg="1"
 }
-rectangle {
-	object {
-		x=442
-		y=245
-		width=280
-		height=21
-	}
-	"basic attribute" {
-		clr=2
-	}
-}
-text {
-	object {
-		x=502
-		y=245
-		width=160
-		height=20
-	}
-	"basic attribute" {
-		clr=54
-	}
-	textix="Scale and Offset"
-	align="horiz. centered"
-}
 composite {
 	object {
 		x=5
@@ -867,18 +421,6 @@ text {
 	}
 	textix="O = Output array passed to clients"
 }
-text {
-	object {
-		x=752
-		y=245
-		width=70
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="OOffset"
-}
 "text entry" {
 	object {
 		x=825
@@ -908,19 +450,6 @@ text {
 	}
 	limits {
 	}
-}
-text {
-	object {
-		x=792
-		y=270
-		width=30
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="OC1"
-	align="horiz. right"
 }
 "text entry" {
 	object {
@@ -995,19 +524,6 @@ text {
 	limits {
 	}
 }
-text {
-	object {
-		x=792
-		y=295
-		width=30
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="OC3"
-	align="horiz. right"
-}
 "text entry" {
 	object {
 		x=825
@@ -1081,19 +597,6 @@ text {
 	limits {
 	}
 }
-text {
-	object {
-		x=752
-		y=395
-		width=70
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="ROffset"
-	align="horiz. right"
-}
 "text entry" {
 	object {
 		x=825
@@ -1124,18 +627,6 @@ text {
 	limits {
 	}
 }
-text {
-	object {
-		x=752
-		y=320
-		width=70
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="FOffset"
-}
 "text entry" {
 	object {
 		x=825
@@ -1165,19 +656,6 @@ text {
 	}
 	limits {
 	}
-}
-text {
-	object {
-		x=792
-		y=345
-		width=30
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="FC1"
-	align="horiz. right"
 }
 "text entry" {
 	object {
@@ -1251,19 +729,6 @@ text {
 	}
 	limits {
 	}
-}
-text {
-	object {
-		x=792
-		y=370
-		width=30
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="FC3"
-	align="horiz. right"
 }
 "text entry" {
 	object {
@@ -1458,19 +923,6 @@ text {
 	}
 	textix="F[0] = ROffset + RC1*F[n] + RC2*I[0]"
 }
-text {
-	object {
-		x=792
-		y=420
-		width=30
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="RC1"
-	align="horiz. right"
-}
 "text entry" {
 	object {
 		x=825
@@ -1598,35 +1050,6 @@ menu {
 }
 text {
 	object {
-		x=421
-		y=70
-		width=150
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Save background"
-	align="horiz. right"
-}
-"text update" {
-	object {
-		x=668
-		y=71
-		width=62
-		height=18
-	}
-	monitor {
-		chan="$(P)$(R)ValidBackground_RBV"
-		clr=54
-		bclr=4
-	}
-	format="string"
-	limits {
-	}
-}
-text {
-	object {
 		x=401
 		y=95
 		width=170
@@ -1654,21 +1077,6 @@ text {
 	format="string"
 	limits {
 	}
-}
-"message button" {
-	object {
-		x=582
-		y=71
-		width=80
-		height=19
-	}
-	control {
-		chan="$(P)$(R)SaveBackground"
-		clr=14
-		bclr=51
-	}
-	label="Save"
-	press_msg="1"
 }
 menu {
 	object {
@@ -1709,8 +1117,556 @@ text {
 }
 text {
 	object {
-		x=461
+		x=752
+		y=245
+		width=70
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="OOffset"
+}
+text {
+	object {
+		x=792
+		y=270
+		width=30
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="OC1"
+	align="horiz. right"
+}
+text {
+	object {
+		x=792
+		y=295
+		width=30
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="OC3"
+	align="horiz. right"
+}
+text {
+	object {
+		x=752
+		y=395
+		width=70
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="ROffset"
+	align="horiz. right"
+}
+text {
+	object {
+		x=752
 		y=320
+		width=70
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="FOffset"
+}
+text {
+	object {
+		x=792
+		y=345
+		width=30
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="FC1"
+	align="horiz. right"
+}
+text {
+	object {
+		x=792
+		y=370
+		width=30
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="FC3"
+	align="horiz. right"
+}
+text {
+	object {
+		x=792
+		y=420
+		width=30
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="RC1"
+	align="horiz. right"
+}
+text {
+	object {
+		x=473
+		y=585
+		width=90
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Data type"
+	align="horiz. right"
+}
+menu {
+	object {
+		x=574
+		y=586
+		width=80
+		height=18
+	}
+	control {
+		chan="$(P)$(R)DataTypeOut"
+		clr=14
+		bclr=51
+	}
+}
+"text update" {
+	object {
+		x=660
+		y=586
+		width=62
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)DataTypeOut_RBV"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
+	format="string"
+	limits {
+	}
+}
+rectangle {
+	object {
+		x=442
+		y=560
+		width=280
+		height=21
+	}
+	"basic attribute" {
+		clr=2
+	}
+}
+text {
+	object {
+		x=502
+		y=560
+		width=160
+		height=20
+	}
+	"basic attribute" {
+		clr=54
+	}
+	textix="Output data type"
+	align="horiz. centered"
+}
+text {
+	object {
+		x=421
+		y=450
+		width=150
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Enable low clip"
+	align="horiz. right"
+}
+"text update" {
+	object {
+		x=668
+		y=451
+		width=62
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)EnableLowClip_RBV"
+		clr=54
+		bclr=12
+	}
+	clrmod="alarm"
+	align="horiz. centered"
+	format="string"
+	limits {
+	}
+}
+text {
+	object {
+		x=431
+		y=475
+		width=140
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Low clip value"
+	align="horiz. right"
+}
+"text update" {
+	object {
+		x=668
+		y=476
+		width=62
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)LowClip_RBV"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
+	limits {
+	}
+}
+text {
+	object {
+		x=411
+		y=500
+		width=160
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Enable high clip"
+	align="horiz. right"
+}
+"text update" {
+	object {
+		x=668
+		y=501
+		width=62
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)EnableHighClip_RBV"
+		clr=54
+		bclr=12
+	}
+	clrmod="alarm"
+	align="horiz. centered"
+	format="string"
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=668
+		y=525
+		width=62
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)HighClip_RBV"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
+	limits {
+	}
+}
+text {
+	object {
+		x=421
+		y=525
+		width=150
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="High clip value"
+	align="horiz. right"
+}
+menu {
+	object {
+		x=582
+		y=451
+		width=80
+		height=19
+	}
+	control {
+		chan="$(P)$(R)EnableLowClip"
+		clr=14
+		bclr=51
+	}
+}
+"text entry" {
+	object {
+		x=582
+		y=476
+		width=80
+		height=19
+	}
+	control {
+		chan="$(P)$(R)LowClip"
+		clr=14
+		bclr=51
+	}
+	limits {
+	}
+}
+menu {
+	object {
+		x=582
+		y=501
+		width=80
+		height=19
+	}
+	control {
+		chan="$(P)$(R)EnableHighClip"
+		clr=14
+		bclr=51
+	}
+}
+"text entry" {
+	object {
+		x=582
+		y=525
+		width=80
+		height=19
+	}
+	control {
+		chan="$(P)$(R)HighClip"
+		clr=14
+		bclr=51
+	}
+	limits {
+	}
+}
+rectangle {
+	object {
+		x=442
+		y=425
+		width=280
+		height=21
+	}
+	"basic attribute" {
+		clr=2
+	}
+}
+text {
+	object {
+		x=497
+		y=425
+		width=170
+		height=20
+	}
+	"basic attribute" {
+		clr=54
+	}
+	textix="Low/High Clipping"
+	align="horiz. centered"
+}
+text {
+	object {
+		x=421
+		y=180
+		width=150
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Save flat field"
+	align="horiz. right"
+}
+"text update" {
+	object {
+		x=668
+		y=181
+		width=62
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)ValidFlatField_RBV"
+		clr=54
+		bclr=4
+	}
+	format="string"
+	limits {
+	}
+}
+text {
+	object {
+		x=401
+		y=205
+		width=170
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Enable flat field"
+	align="horiz. right"
+}
+"text update" {
+	object {
+		x=668
+		y=206
+		width=62
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)EnableFlatField_RBV"
+		clr=54
+		bclr=12
+	}
+	clrmod="alarm"
+	align="horiz. centered"
+	format="string"
+	limits {
+	}
+}
+text {
+	object {
+		x=411
+		y=230
+		width=160
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Scale flat field"
+	align="horiz. right"
+}
+"text update" {
+	object {
+		x=668
+		y=231
+		width=62
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)ScaleFlatField_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+"message button" {
+	object {
+		x=582
+		y=181
+		width=80
+		height=19
+	}
+	control {
+		chan="$(P)$(R)SaveFlatField"
+		clr=14
+		bclr=51
+	}
+	label="Save"
+	press_msg="1"
+}
+menu {
+	object {
+		x=582
+		y=206
+		width=80
+		height=19
+	}
+	control {
+		chan="$(P)$(R)EnableFlatField"
+		clr=14
+		bclr=51
+	}
+}
+"text entry" {
+	object {
+		x=582
+		y=231
+		width=80
+		height=19
+	}
+	control {
+		chan="$(P)$(R)ScaleFlatField"
+		clr=14
+		bclr=51
+	}
+	limits {
+	}
+}
+rectangle {
+	object {
+		x=437
+		y=155
+		width=280
+		height=21
+	}
+	"basic attribute" {
+		clr=2
+	}
+}
+text {
+	object {
+		x=457
+		y=155
+		width=240
+		height=20
+	}
+	"basic attribute" {
+		clr=54
+	}
+	textix="Flat field normalization"
+	align="horiz. centered"
+}
+rectangle {
+	object {
+		x=442
+		y=290
+		width=280
+		height=21
+	}
+	"basic attribute" {
+		clr=2
+	}
+}
+text {
+	object {
+		x=502
+		y=290
+		width=160
+		height=20
+	}
+	"basic attribute" {
+		clr=54
+	}
+	textix="Scale and Offset"
+	align="horiz. centered"
+}
+text {
+	object {
+		x=461
+		y=365
 		width=110
 		height=20
 	}
@@ -1723,7 +1679,7 @@ text {
 "text update" {
 	object {
 		x=668
-		y=321
+		y=366
 		width=62
 		height=18
 	}
@@ -1739,7 +1695,7 @@ text {
 "text entry" {
 	object {
 		x=582
-		y=321
+		y=366
 		width=80
 		height=19
 	}
@@ -1754,7 +1710,7 @@ text {
 text {
 	object {
 		x=451
-		y=345
+		y=390
 		width=120
 		height=20
 	}
@@ -1767,7 +1723,7 @@ text {
 "text entry" {
 	object {
 		x=582
-		y=345
+		y=390
 		width=80
 		height=19
 	}
@@ -1782,7 +1738,7 @@ text {
 "text update" {
 	object {
 		x=668
-		y=345
+		y=390
 		width=62
 		height=18
 	}
@@ -1798,7 +1754,7 @@ text {
 text {
 	object {
 		x=401
-		y=270
+		y=315
 		width=170
 		height=20
 	}
@@ -1811,7 +1767,7 @@ text {
 menu {
 	object {
 		x=582
-		y=271
+		y=316
 		width=80
 		height=19
 	}
@@ -1824,7 +1780,7 @@ menu {
 "text update" {
 	object {
 		x=668
-		y=271
+		y=316
 		width=62
 		height=18
 	}
@@ -1842,7 +1798,7 @@ menu {
 text {
 	object {
 		x=421
-		y=295
+		y=340
 		width=150
 		height=20
 	}
@@ -1855,7 +1811,7 @@ text {
 "message button" {
 	object {
 		x=582
-		y=296
+		y=341
 		width=80
 		height=19
 	}
@@ -1866,4 +1822,136 @@ text {
 	}
 	label="Auto calc"
 	press_msg="1"
+}
+text {
+	object {
+		x=421
+		y=70
+		width=150
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Save background"
+	align="horiz. right"
+}
+"message button" {
+	object {
+		x=582
+		y=71
+		width=80
+		height=19
+	}
+	control {
+		chan="$(P)$(R)SaveBackground"
+		clr=14
+		bclr=51
+	}
+	label="Save"
+	press_msg="1"
+}
+"text update" {
+	object {
+		x=668
+		y=71
+		width=62
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)ValidBackground_RBV"
+		clr=54
+		bclr=4
+	}
+	format="string"
+	limits {
+	}
+}
+text {
+	object {
+		x=431
+		y=120
+		width=140
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Read TIFF file"
+	align="horiz. right"
+}
+"message button" {
+	object {
+		x=582
+		y=121
+		width=80
+		height=19
+	}
+	control {
+		chan="$(P)$(R)ReadBackgroundTIFFSeq.PROC"
+		clr=14
+		bclr=51
+	}
+	label="Read"
+	press_msg="1"
+}
+"related display" {
+	object {
+		x=668
+		y=120
+		width=60
+		height=20
+	}
+	display[0] {
+		label="TIFF file setup"
+		name="NDProcessTIFF.adl"
+		args="P=$(P),R=$(R)TIFF:"
+	}
+	clr=14
+	bclr=51
+	label="Setup"
+}
+text {
+	object {
+		x=431
+		y=255
+		width=140
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Read TIFF file"
+	align="horiz. right"
+}
+"message button" {
+	object {
+		x=582
+		y=256
+		width=80
+		height=19
+	}
+	control {
+		chan="$(P)$(R)ReadFlatFieldTIFFSeq"
+		clr=14
+		bclr=51
+	}
+	label="Read"
+	press_msg="1"
+}
+"related display" {
+	object {
+		x=668
+		y=255
+		width=60
+		height=20
+	}
+	display[0] {
+		label="TIFF file setup"
+		name="NDProcessTIFF.adl"
+		args="P=$(P),R=$(R)TIFF:"
+	}
+	clr=14
+	bclr=51
+	label="Setup"
 }
