@@ -591,12 +591,15 @@ record(longin, "$(P)$(R)ArrayCounter_RBV")
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))ARRAY_COUNTER")
     field(SCAN, "I/O Intr")
+    field(LOW,  "0" )
+    field(LSV,  "MINOR" )
 }
 
 # Updated rate calculation to use a smoothing factor w/ guard against negative values
+# 0 rate sets alarm state to MINOR
 record(calc, "$(P)$(R)ArrayRate_RBV")
 {
-    field(INPA, "$(P)$(R)ArrayRate_RBV.LB NPP NMS")   # Previous counter value
+    field(INPA, "$(P)$(R)ArrayRate_RBV.LB NPP NMS")   # Previous counter (Last B value)
     field(INPB, "$(P)$(R)ArrayCounter_RBV NPP NMS")   # Current counter value
     field(INPC, "1.0")                                # Delta time in seconds
     field(INPD, "$(P)$(R)ArrayRate_RBV.VAL NPP NMS")  # Previous rate
@@ -605,6 +608,9 @@ record(calc, "$(P)$(R)ArrayRate_RBV")
     field(PREC, "2" )
     field(EGU,  "Hz" )
     field(SCAN, "1 second")
+    field(LOW,  "0")
+    field(LSV,  "MINOR")
+    field(ADEL, "0.1")
 }
 
 ###################################################################
