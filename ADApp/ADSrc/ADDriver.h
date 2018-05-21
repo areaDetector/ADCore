@@ -190,9 +190,7 @@ protected:
     int ADReadStatus;
     int ADStatusMessage;
     int ADStringToServer;
-    int ADStringFromServer; 
-    #define LAST_AD_PARAM ADStringFromServer   
+    int ADStringFromServer;
 };
-#define NUM_AD_PARAMS ((int)(&LAST_AD_PARAM - &FIRST_AD_PARAM + 1))
 
 #endif
