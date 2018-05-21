@@ -22,7 +22,7 @@ using namespace std;
 struct PluginFixture
 {
     NDArrayPool *arrayPool;
-    asynPortDriver *dummy_driver;
+    asynNDArrayDriver *dummy_driver;
     NDPluginCircularBuff *cb;
     TestingPlugin *ds;
     asynInt32Client *cbControl;
@@ -37,8 +37,6 @@ struct PluginFixture
 
     PluginFixture()
     {
-        arrayPool = new NDArrayPool(100, 0);
-
         std::string dummy_port("simPort"), testport("testPort");
 
         // Asyn manager doesn't like it if we try to reuse the same port name for multiple drivers (even if only one is ever instantiated at once), so
@@ -48,8 +46,9 @@ struct PluginFixture
 
         // We need some upstream driver for our test plugin so that calls to connectToArrayPort don't fail, but we can then ignore it and send
         // arrays by calling processCallbacks directly.
-        // Thus we instansiate a basic asynPortDriver object which is never used.
-        dummy_driver = new asynPortDriver(dummy_port.c_str(), 0, 1, asynGenericPointerMask, asynGenericPointerMask, 0, 0, 0, 2000000);
+        // Thus we instantiate a basic asynPortDriver object which is never used.
+        dummy_driver = new asynNDArrayDriver(dummy_port.c_str(), 1, true, 0, asynGenericPointerMask, asynGenericPointerMask, 0, 0, 0, 0);
+        arrayPool = dummy_driver->pNDArrayPool;
 
         // This is the plugin under test
         cb = new NDPluginCircularBuff(testport.c_str(), 50, 0, dummy_port.c_str(), 0, 1000, -1, 0, 2000000);
@@ -82,8 +81,7 @@ struct PluginFixture
         delete cbControl;
         //delete ds; // TODO: something is wrong here - if we delete ds we get a memory corruption error (in a loop!?!?)
         delete cb;
-        delete dummy_driver;
-        delete arrayPool;
+        //delete dummy_driver;
     }
     void cbProcess(NDArray *pArray)
     {

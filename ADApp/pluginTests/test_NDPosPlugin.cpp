@@ -44,7 +44,7 @@ static NDArrayPool *arrayPool;
 
 struct PosPluginTestFixture
 {
-  std::tr1::shared_ptr<asynPortDriver> driver;
+  std::tr1::shared_ptr<asynNDArrayDriver> driver;
   std::tr1::shared_ptr<PosPluginWrapper> pos;
   std::tr1::shared_ptr<asynGenericPointerClient> client;
 
@@ -52,7 +52,6 @@ struct PosPluginTestFixture
 
   PosPluginTestFixture()
   {
-    arrayPool = new NDArrayPool(100, 0);
 
     // Asyn manager doesn't like it if we try to reuse the same port name for multiple drivers (even if only one is ever instantiated at once), so
     // change it slightly for each test case.
@@ -62,7 +61,8 @@ struct PosPluginTestFixture
 
     // We need some upstream driver for our test plugin so that calls to connectArrayPort don't fail, but we can then ignore it and send
     // arrays by calling processCallbacks directly.
-    driver = std::tr1::shared_ptr<asynPortDriver>(new asynPortDriver(simport.c_str(), 0, 1, asynGenericPointerMask, asynGenericPointerMask, 0, 0, 0, 2000000));
+    driver = std::tr1::shared_ptr<asynNDArrayDriver>(new asynNDArrayDriver(simport.c_str(), 1, true, 0, asynGenericPointerMask, asynGenericPointerMask, 0, 0, 0, 0));
+    arrayPool = driver->pNDArrayPool;
 
     // This is the plugin under test
     pos = std::tr1::shared_ptr<PosPluginWrapper>(new PosPluginWrapper(testport.c_str(),
@@ -86,10 +86,9 @@ struct PosPluginTestFixture
 
   ~PosPluginTestFixture()
   {
-    delete arrayPool;
     client.reset();
     pos.reset();
-    driver.reset();
+    //driver.reset();
   }
 
 };

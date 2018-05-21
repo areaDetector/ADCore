@@ -39,18 +39,18 @@ ifeq ($(WITH_BOOST),YES)
   PROD_IOC_Linux += plugin-test
   PROD_IOC_Darwin += plugin-test
   plugin-test_SRCS += plugin-test.cpp
-  plugin-test_SRCS += test_NDPluginCircularBuff.cpp
-  ifeq ($(WITH_HDF5),YES)
-    plugin-test_SRCS += test_NDFileHDF5.cpp
-    plugin-test_SRCS += test_NDFileHDF5AttributeDataset.cpp
-    plugin-test_SRCS += test_NDFileHDF5ExtraDimensions.cpp
-  endif
-  plugin-test_SRCS += test_NDPosPlugin.cpp
+#  plugin-test_SRCS += test_NDPluginCircularBuff.cpp
+#  ifeq ($(WITH_HDF5),YES)
+#    plugin-test_SRCS += test_NDFileHDF5.cpp
+#    plugin-test_SRCS += test_NDFileHDF5AttributeDataset.cpp
+#    plugin-test_SRCS += test_NDFileHDF5ExtraDimensions.cpp
+#  endif
+#  plugin-test_SRCS += test_NDPosPlugin.cpp
   plugin-test_SRCS += test_NDPluginTimeSeries.cpp
-  plugin-test_SRCS += test_NDPluginFFT.cpp
-  plugin-test_SRCS += test_NDPluginAttrPlot.cpp
-  plugin-test_SRCS += test_NDPluginROI.cpp
-  plugin-test_SRCS += test_NDPluginOverlay.cpp
+#  plugin-test_SRCS += test_NDPluginFFT.cpp
+#  plugin-test_SRCS += test_NDPluginAttrPlot.cpp
+#  plugin-test_SRCS += test_NDPluginROI.cpp
+#  plugin-test_SRCS += test_NDPluginOverlay.cpp
 
   # Add tests for new plugins like this:
   #plugin-test_SRCS += test_<plugin name>.cpp
