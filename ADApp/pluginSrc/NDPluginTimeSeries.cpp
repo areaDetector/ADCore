@@ -132,14 +132,14 @@ void NDPluginTimeSeries::allocateArrays()
   numTimePoints_ = numPoints;
   if (timeStamp_)  free(timeStamp_);
   if (signalData_) free (signalData_);
-  if (pTimeCircular_) pTimeCircular_->release();
+  if (pTimeCircular_) delete pTimeCircular_;
 
   timeStamp_  = (double *)calloc(numSignals_*numTimePoints_, sizeof(double));
   signalData_ = (double *)calloc(numSignals_*numTimePoints_, sizeof(double));
   nDims = 2;
   dims[0] = numTimePoints_;
   dims[1] = numSignals_;
-  pTimeCircular_ = pNDArrayPool->alloc(nDims, dims, dataType_, 0, 0);
+  pTimeCircular_ = new NDArray(nDims, dims, dataType_, 0, 0);
   createAxisArray();
   acquireReset();
 }
