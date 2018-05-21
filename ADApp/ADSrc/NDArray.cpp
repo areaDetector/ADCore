@@ -28,15 +28,49 @@
 /** NDArray constructor, no parameters.
   * Initializes all fields to 0.  Creates the attribute linked list and linked list mutex. */
 NDArray::NDArray()
-  : referenceCount(0), pNDArrayPool(NULL),  
+  : referenceCount(0), pNDArrayPool(0), pDriver(0),
     uniqueId(0), timeStamp(0.0), ndims(0), dataType(NDInt8),
-    dataSize(0),  pData(NULL)
+    dataSize(0),  pData(0)
 {
   this->epicsTS.secPastEpoch = 0;
   this->epicsTS.nsec = 0;
   memset(this->dims, 0, sizeof(this->dims));
   memset(&this->node, 0, sizeof(this->node));
   this->pAttributeList = new NDAttributeList();
+}
+
+NDArray::NDArray(int nDims, size_t *dims, NDDataType_t dataType, size_t dataSize, void *pData)
+  : referenceCount(0), pNDArrayPool(0), pDriver(0),
+    uniqueId(0), timeStamp(0.0), ndims(nDims), dataType(dataType),
+    dataSize(dataSize),  pData(0)
+{
+  static const char *functionName = "NDArray::NDArray";
+  this->epicsTS.secPastEpoch = 0;
+  this->epicsTS.nsec = 0;
+  this->pAttributeList = new NDAttributeList();
+  this->referenceCount = 1;
+
+  memset(this->dims, 0, sizeof(this->dims));
+  for (int i=0; i<ndims && i<ND_ARRAY_MAX_DIMS; i++) {
+    this->dims[i].size = dims[i];
+    this->dims[i].offset = 0;
+    this->dims[i].binning = 1;
+    this->dims[i].reverse = 0;
+  }
+  NDArrayInfo arrayInfo;
+  this->getInfo(&arrayInfo);
+  if (dataSize == 0) dataSize = arrayInfo.totalBytes;
+  if (arrayInfo.totalBytes > dataSize) {
+    printf("%s: ERROR: required size=%d passed size=%d is too small\n",
+    functionName, (int)arrayInfo.totalBytes, (int)dataSize);
+  }
+  /* If the caller passed a valid buffer use that, trust that its size is correct */
+  if (pData) {
+    this->pData = pData;
+  } else {
+    this->pData = malloc(dataSize);
+    this->dataSize = dataSize;
+  }
 }
 
 /** NDArray destructor 
@@ -203,9 +237,8 @@ int NDArray::report(FILE *fp, int details)
   fprintf(fp, "]\n");
   fprintf(fp, "  dataType=%d, dataSize=%d, pData=%p\n",
         this->dataType, (int)this->dataSize, this->pData);
-  fprintf(fp, "  uniqueId=%d, timeStamp=%f, epicsTS.secPastEpoch=%d, epicsTS.nsec=%d\n",
-        this->uniqueId, this->timeStamp, this->epicsTS.secPastEpoch, this->epicsTS.nsec);
-  fprintf(fp, "  referenceCount=%d\n", this->referenceCount);
+  fprintf(fp, "  uniqueId=%d, timeStamp=%f, referenceCount=%d\n",
+        this->uniqueId, this->timeStamp, this->referenceCount);
   fprintf(fp, "  number of attributes=%d\n", this->pAttributeList->count());
   if (details > 5) {
     this->pAttributeList->report(fp, details);
