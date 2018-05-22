@@ -663,31 +663,36 @@ void asynNDArrayDriver::report(FILE *fp, int details)
     }
 }
 
-asynStatus asynNDArrayDriver::incrementPluginCount() {
-	int pluginCount;
-	
-	getIntegerParam(NDNumActivePlugins, &pluginCount);
-	pluginCount++;
-	setIntegerParam(NDNumActivePlugins, pluginCount);
-	callParamCallbacks();
-	return asynSuccess;
+asynStatus asynNDArrayDriver::incrementPluginCount() 
+{ 
+    int pluginCount;
+  
+    pluginCountMutex_->lock();
+    getIntegerParam(NDNumActivePlugins, &pluginCount);
+    pluginCount++;
+    setIntegerParam(NDNumActivePlugins, pluginCount);
+    callParamCallbacks();
+    pluginCountMutex_->unlock();
+    return asynSuccess;
 }
 
-asynStatus asynNDArrayDriver::decrementPluginCount() {
-	static const char *functionName = "decrementPluginCount";
-	int pluginCount;
-
-	getIntegerParam(NDNumActivePlugins, &pluginCount);
-	if (pluginCount <= 0) {
-		asynPrint(pasynUserSelf, ASYN_TRACE_ERROR, 
-		"%s::%s error, numActivePlugins already 0 or less (%d)\n",
-		driverName, functionName, pluginCount);
-	    return asynError;
-	}
-	pluginCount--;
-	setIntegerParam(NDNumActivePlugins, pluginCount);
-	callParamCallbacks();
-	return asynSuccess;
+asynStatus asynNDArrayDriver::decrementPluginCount() 
+{
+    static const char *functionName = "decrementPluginCount";
+    int pluginCount;
+  
+    pluginCountMutex_->lock();
+    getIntegerParam(NDNumActivePlugins, &pluginCount);
+    if (pluginCount <= 0) {
+        asynPrint(pasynUserSelf, ASYN_TRACE_ERROR, 
+            "%s::%s error, numActivePlugins already 0 or less (%d)\n",
+            driverName, functionName, pluginCount);
+    }
+    pluginCount--;
+    setIntegerParam(NDNumActivePlugins, pluginCount);
+    callParamCallbacks();
+    pluginCountMutex_->unlock();
+    return asynSuccess;
 }
 
 
@@ -719,7 +724,7 @@ asynNDArrayDriver::asynNDArrayDriver(const char *portName, int maxAddr, bool isD
                      interfaceMask | asynInt32Mask | asynFloat64Mask | asynOctetMask | asynInt32ArrayMask | asynGenericPointerMask | asynDrvUserMask, 
                      interruptMask | asynInt32Mask | asynFloat64Mask | asynOctetMask | asynInt32ArrayMask | asynGenericPointerMask,
                      asynFlags, autoConnect, priority, stackSize),
-      pNDArrayPool(0)
+      pNDArrayPool(0), pluginCountMutex_(0)
 {
     char versionString[20];
 
@@ -731,6 +736,7 @@ asynNDArrayDriver::asynNDArrayDriver(const char *portName, int maxAddr, bool isD
 
     if (isDriver) {
         this->pNDArrayPool = new NDArrayPool(this, maxMemory);
+        this->pluginCountMutex_ = new epicsMutex();
     }
 
     /* Allocate pArray pointer array */
@@ -852,5 +858,6 @@ asynNDArrayDriver::~asynNDArrayDriver()
     if (this->pNDArrayPool) delete this->pNDArrayPool;
     free(this->pArrays);
     delete this->pAttributeList;
+    if (this->pluginCountMutex_) delete this->pluginCountMutex_;
 }    
 
