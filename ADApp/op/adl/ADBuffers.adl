@@ -8,7 +8,7 @@ display {
 		x=603
 		y=111
 		width=350
-		height=160
+		height=135
 	}
 	clr=14
 	bclr=4
@@ -201,7 +201,7 @@ rectangle {
 		x=0
 		y=0
 		width=350
-		height=160
+		height=135
 	}
 	"basic attribute" {
 		clr=14
@@ -211,7 +211,7 @@ rectangle {
 menu {
 	object {
 		x=245
-		y=130
+		y=105
 		width=90
 		height=20
 	}
@@ -224,7 +224,7 @@ menu {
 text {
 	object {
 		x=10
-		y=130
+		y=105
 		width=230
 		height=20
 	}
@@ -277,34 +277,5 @@ text {
 		clr=14
 	}
 	textix="Memory max/used (MB)"
-	align="horiz. right"
-}
-"text update" {
-	object {
-		x=215
-		y=106
-		width=60
-		height=18
-	}
-	monitor {
-		chan="$(P)$(R)NumActivePlugins"
-		clr=54
-		bclr=4
-	}
-	align="horiz. right"
-	limits {
-	}
-}
-text {
-	object {
-		x=10
-		y=105
-		width=200
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="# active plugins"
 	align="horiz. right"
 }
