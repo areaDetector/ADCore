@@ -724,7 +724,7 @@ asynNDArrayDriver::asynNDArrayDriver(const char *portName, int maxAddr, bool isD
                      interfaceMask | asynInt32Mask | asynFloat64Mask | asynOctetMask | asynInt32ArrayMask | asynGenericPointerMask | asynDrvUserMask, 
                      interruptMask | asynInt32Mask | asynFloat64Mask | asynOctetMask | asynInt32ArrayMask | asynGenericPointerMask,
                      asynFlags, autoConnect, priority, stackSize),
-      pNDArrayPool(0), pluginCountMutex_(0)
+      pNDArrayPool(0), isDriver_(isDriver), pluginCountMutex_(0)
 {
     char versionString[20];
 
@@ -734,7 +734,7 @@ asynNDArrayDriver::asynNDArrayDriver(const char *portName, int maxAddr, bool isD
     if (priority <= 0) priority = epicsThreadPriorityMedium;
     threadPriority_ = priority;
 
-    if (isDriver) {
+    if (isDriver_) {
         this->pNDArrayPool = new NDArrayPool(this, maxMemory);
         this->pluginCountMutex_ = new epicsMutex();
     }
@@ -855,7 +855,7 @@ asynNDArrayDriver::asynNDArrayDriver(const char *portName, int maxAddr, bool isD
 
 asynNDArrayDriver::~asynNDArrayDriver()
 { 
-    if (this->pNDArrayPool) delete this->pNDArrayPool;
+    if (isDriver_ && this->pNDArrayPool) delete this->pNDArrayPool;
     free(this->pArrays);
     delete this->pAttributeList;
     if (this->pluginCountMutex_) delete this->pluginCountMutex_;
