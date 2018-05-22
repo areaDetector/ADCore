@@ -69,7 +69,6 @@ struct NDFileHDF5TestFixture
   }
   ~NDFileHDF5TestFixture()
   {
-    delete arrayPool;
     hdf5.reset();
     delete dummy_driver;
   }
