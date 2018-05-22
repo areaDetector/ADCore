@@ -423,12 +423,14 @@ record(longin, "$(P)$(R)NumImagesCounter_RBV")
 #  and stop                                                       #
 ###################################################################
 
-record(busy, "$(P)$(R)Acquire") {
+record(bo, "$(P)$(R)Acquire") {
    field(DTYP, "asynInt32")
    field(OUT, "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))ACQUIRE")
    field(ZNAM, "Done")
    field(ONAM, "Acquire")
    field(VAL,  "0")
+   field(FLNK, "$(P)$(R)SetAcquireBusy")
+   info(asyn:READBACK, "1")
 }
 
 record(bi, "$(P)$(R)Acquire_RBV") {
@@ -439,6 +441,38 @@ record(bi, "$(P)$(R)Acquire_RBV") {
    field(ONAM, "Acquiring")
    field(OSV,  "MINOR")
    field(SCAN, "I/O Intr")
+}
+
+record(calcout, "$(P)$(R)SetAcquireBusy")
+{
+    field(INPA, "$(P)$(R)Acquire NPP")
+    field(CALC, "A")
+    field(OOPT, "Transition To Non-zero")
+    field(OUT,  "$(P)$(R)AcquireBusy PP")
+}
+
+record(busy, "$(P)$(R)AcquireBusy") {
+   field(ZNAM, "Done")
+   field(ZSV,  "NO_ALARM")
+   field(ONAM, "Acquiring")
+   field(OSV,  "MINOR")
+   field(VAL,  "0")
+}
+
+record(calcout, "$(P)$(R)ClearAcquireBusy")
+{
+    field(INPA, "$(P)$(R)WaitForPlugins CP")
+    field(INPB, "$(P)$(R)Acquire_RBV CP")
+    field(INPC, "$(P)$(R)NumActivePlugins CP")
+    field(CALC, "A ? B || (C > 0) : B")
+    field(OOPT, "Transition To Zero")
+    field(OUT,  "$(P)$(R)AcquireBusy PP")
+}
+
+record(bo, "$(P)$(R)WaitForPlugins") {
+   field(ZNAM, "No")
+   field(ONAM, "Yes")
+   field(VAL,  "0")
 }
 
 ###################################################################
