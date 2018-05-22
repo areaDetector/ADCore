@@ -22,7 +22,7 @@ public:
                     int address,
                     int priority,
                     int stackSize);
-	virtual ~HDF5PluginWrapper();
+  virtual ~HDF5PluginWrapper();
 
 };
 

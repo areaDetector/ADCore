@@ -24,21 +24,21 @@ class AsynPortClientContainer {
 public:
     static const int max_string_parameter_len = 1024;
 
-	AsynPortClientContainer(const std::string& port);
+    AsynPortClientContainer(const std::string& port);
 
-	virtual void write(const std::string& paramName, int value, int address=0);
-	virtual void write(const std::string& paramName, double value, int address=0);
-	virtual unsigned long int write(const std::string& paramName, const std::string& value, int address=0);
-	virtual int readInt(const std::string& paramName, int address=0);
+    virtual void write(const std::string& paramName, int value, int address=0);
+    virtual void write(const std::string& paramName, double value, int address=0);
+    virtual unsigned long int write(const std::string& paramName, const std::string& value, int address=0);
+    virtual int readInt(const std::string& paramName, int address=0);
     virtual double readDouble(const std::string& paramName, int address=0);
     virtual std::string readString(const std::string& paramName, int address=0);
 
-	virtual void cleanup();
+    virtual void cleanup();
 
-	virtual ~AsynPortClientContainer();
+    virtual ~AsynPortClientContainer();
 
 protected:
-	std::string portName;
+    std::string portName;
 
 private:
     std::vector<boost::shared_ptr<int32ClientMap> > int32Maps;
