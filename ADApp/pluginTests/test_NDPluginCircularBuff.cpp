@@ -81,7 +81,7 @@ struct PluginFixture
         delete cbControl;
         //delete ds; // TODO: something is wrong here - if we delete ds we get a memory corruption error (in a loop!?!?)
         delete cb;
-        //delete dummy_driver;
+        delete dummy_driver;
     }
     void cbProcess(NDArray *pArray)
     {

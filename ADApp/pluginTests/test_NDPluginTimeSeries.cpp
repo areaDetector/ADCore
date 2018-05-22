@@ -128,7 +128,7 @@ struct TimeSeriesPluginTestFixture
   {
     client.reset();
     ts.reset();
-    //driver.reset();
+    driver.reset();
     //delete downstream_plugin; // TODO: We can't delete a TestingPlugin because it tries to delete an asyn port which doesnt work
   }
 

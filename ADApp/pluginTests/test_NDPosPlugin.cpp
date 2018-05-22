@@ -88,7 +88,7 @@ struct PosPluginTestFixture
   {
     client.reset();
     pos.reset();
-    //driver.reset();
+    driver.reset();
   }
 
 };
