@@ -7,6 +7,7 @@
  */
 
 #include <stdlib.h>
+#include <dbDefs.h>
 
 #include <cantProceed.h>
 #include <epicsExport.h>
@@ -40,6 +41,20 @@ NDArrayPool::NDArrayPool(int maxBuffers, size_t maxMemory)
   listLock_ = epicsMutexCreate();
 }
 
+NDArray* NDArrayPool::createArray() 
+{
+    return new NDArray;
+}
+void NDArrayPool::onAllocateArray(NDArray *pArray)
+{
+}
+void NDArrayPool::onReserveArray(NDArray *pArray)
+{
+}
+void NDArrayPool::onReleaseArray(NDArray *pArray)
+{
+}
+
 /** Allocates a new NDArray object; the first 3 arguments are required.
   * \param[in] ndims The number of dimensions in the NDArray. 
   * \param[in] dims Array of dimensions, whose size must be at least ndims.
@@ -69,7 +84,11 @@ NDArray* NDArrayPool::alloc(int ndims, size_t *dims, NDDataType_t dataType, size
   epicsMutexLock(listLock_);
 
   /* Find a free image */
-  pArray = (NDArray *)ellFirst(&freeList_);
+  ELLNODE* ellNode = ellFirst(&freeList_);
+  pArray = NULL;
+  if (ellNode) {
+      pArray = (NDArray *)((char*)ellNode-ellNodeOffset);
+  }
 
   if (!pArray) {
     /* We did not find a free image.
@@ -79,7 +98,10 @@ NDArray* NDArrayPool::alloc(int ndims, size_t *dims, NDDataType_t dataType, size
              functionName, maxBuffers_, (long)memorySize_, (long)maxMemory_);
     } else {
       numBuffers_++;
-      pArray = new NDArray;
+      pArray = this->createArray();
+      if (numBuffers_ <= 1) {
+         ellNodeOffset = (char*)(&(pArray->node)) - (char*)pArray;
+      }
       ellAdd(&freeList_, &pArray->node);
       numFree_++;
     }
@@ -163,6 +185,7 @@ NDArray* NDArrayPool::alloc(int ndims, size_t *dims, NDDataType_t dataType, size
     ellDelete(&freeList_, &pArray->node);
     numFree_--;
   }
+  onAllocateArray(pArray);
   epicsMutexUnlock(listLock_);
   return (pArray);
 }
@@ -233,6 +256,7 @@ int NDArrayPool::reserve(NDArray *pArray)
            driverName, pArray->referenceCount, pArray);
   }
   pArray->referenceCount++;
+  onReserveArray(pArray);
   epicsMutexUnlock(listLock_);
   return ND_SUCCESS;
 }
@@ -267,6 +291,7 @@ int NDArrayPool::release(NDArray *pArray)
     cantProceed("%s:release ERROR, reference count < 0 pArray=%p\n",
            driverName, pArray);
   }
+  onReleaseArray(pArray);
   epicsMutexUnlock(listLock_);
   return ND_SUCCESS;
 }
