@@ -91,11 +91,12 @@ class epicsShareClass NDArray {
 public:
     /* Methods */
     NDArray();
-    ~NDArray();
+    virtual ~NDArray();
     int          initDimension   (NDDimension_t *pDimension, size_t size);
     int          getInfo         (NDArrayInfo_t *pInfo);
     int          reserve();
     int          release();
+    int          getReferenceCount() const {return referenceCount;}
     int          report(FILE *fp, int details);
     friend class NDArrayPool;
     
@@ -131,6 +132,7 @@ public:
 class epicsShareClass NDArrayPool {
 public:
     NDArrayPool  (int maxBuffers, size_t maxMemory);
+    virtual ~NDArrayPool() {}
     NDArray*     alloc     (int ndims, size_t *dims, NDDataType_t dataType, size_t dataSize, void *pData);
     NDArray*     copy      (NDArray *pIn, NDArray *pOut, int copyData);
 
@@ -149,6 +151,11 @@ public:
     size_t       maxMemory  ();
     size_t       memorySize ();
     int          numFree    ();
+protected:
+    virtual NDArray* createArray();
+    virtual void onAllocateArray(NDArray *pArray);
+    virtual void onReserveArray(NDArray *pArray);
+    virtual void onReleaseArray(NDArray *pArray);
 private:
     ELLLIST      freeList_;      /**< Linked list of free NDArray objects that form the pool */
     epicsMutexId listLock_;      /**< Mutex to protect the free list */
@@ -157,6 +164,7 @@ private:
     size_t       maxMemory_;     /**< Maximum bytes of memory this object is allowed to allocate; -1=unlimited */
     size_t       memorySize_;    /**< Number of bytes of memory this object has currently allocated */
     int          numFree_;       /**< Number of NDArray objects in the free list */
+    size_t ellNodeOffset;
 };
 
 #endif
