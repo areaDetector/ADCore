@@ -133,7 +133,6 @@ public:
   */
 class epicsShareClass NDArrayPool {
 public:
-    NDArrayPool  (int maxBuffers, size_t maxMemory);
     NDArrayPool  (class asynNDArrayDriver *pDriver, size_t maxMemory);
     virtual ~NDArrayPool() {}
     NDArray*     alloc     (int ndims, size_t *dims, NDDataType_t dataType, size_t dataSize, void *pData);
