@@ -655,8 +655,13 @@ void asynNDArrayDriver::report(FILE *fp, int details)
     }
     if (details > 5) {
         fprintf(fp, "\n");
-        fprintf(fp, "%s: NDArrayPool report\n", this->portName);
-        if (this->pNDArrayPool) this->pNDArrayPool->report(fp, details);
+        fprintf(fp, "%s: private NDArrayPool report\n", this->portName);
+        this->pNDArrayPoolPvt_->report(fp, details);
+        if (this->pNDArrayPool != this->pNDArrayPoolPvt_) {
+            fprintf(fp, "\n");
+            fprintf(fp, "%s: shared NDArrayPool report\n", this->portName);
+            this->pNDArrayPool->report(fp, details);
+        }
         fprintf(fp, "\n");
         fprintf(fp, "%s: pAttributeList report\n", this->portName);
         this->pAttributeList->report(fp, details);
