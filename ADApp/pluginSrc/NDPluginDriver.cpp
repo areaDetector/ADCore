@@ -351,6 +351,8 @@ void NDPluginDriver::driverCallback(asynUser *pasynUser, void *genericPointer)
     
     epicsTimeGetCurrent(&tNow);
     deltaTime = epicsTimeDiffInSeconds(&tNow, &this->lastProcessTime_);
+    
+    this->pNDArrayPool = pArray->pNDArrayPool;
 
     if ((minCallbackTime == 0.) || (deltaTime > minCallbackTime)) {
         if (pasynUser->auxStatus == asynOverflow) ignoreQueueFull = true;
@@ -392,6 +394,8 @@ void NDPluginDriver::driverCallback(asynUser *pasynUser, void *genericPointer)
                 }
                 /* This buffer needs to be released */
                 pArray->release();
+            } else {
+                pArray->pDriver->incrementPluginCount();
             }
         }
     }
@@ -465,11 +469,12 @@ void NDPluginDriver::processTask()
          * but of course it must not access any class data when the lock is released. */
         processCallbacks(pArray); 
         
-        /* We are done with this array buffer */
-        pArray->release();
         epicsTimeGetCurrent(&tEnd);
         setDoubleParam(NDPluginDriverExecutionTime, epicsTimeDiffInSeconds(&tEnd, &tStart)*1e3);
+        pArray->pDriver->decrementPluginCount();
         callParamCallbacks();
+        /* We are done with this array buffer */
+        pArray->release();
     }
 }
 

@@ -78,56 +78,6 @@ value {
 }
 endObjectProperties
 
-# (Text Control)
-object activeXTextDspClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 215
-y 81
-w 60
-h 18
-controlPv "$(P)$(R)PoolMaxMem"
-font "helvetica-medium-r-8.0"
-fontAlign "right"
-smartRefresh
-fastUpdate
-fgColor index 54
-bgColor index 4
-autoHeight
-format decimal
-nullColor index 32
-useHexPrefix
-objType "controls"
-newPos
-endObjectProperties
-
-# (Text Control)
-object activeXTextDspClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 280
-y 81
-w 60
-h 18
-controlPv "$(P)$(R)PoolUsedMem"
-font "helvetica-medium-r-8.0"
-fontAlign "right"
-smartRefresh
-fastUpdate
-fgColor index 54
-bgColor index 4
-autoHeight
-format decimal
-nullColor index 32
-useHexPrefix
-objType "controls"
-newPos
-endObjectProperties
-
 # (Static Text)
 object activeXTextClass
 beginObjectProperties
@@ -143,7 +93,7 @@ fontAlign "right"
 fgColor index 14
 useDisplayBg
 value {
- "Buffers max/used"
+ "Buffers used"
 }
 endObjectProperties
 
@@ -154,31 +104,6 @@ major 4
 minor 0
 release 0
 x 215
-y 31
-w 50
-h 18
-controlPv "$(P)$(R)PoolMaxBuffers"
-font "helvetica-medium-r-8.0"
-fontAlign "right"
-smartRefresh
-fastUpdate
-fgColor index 54
-bgColor index 4
-autoHeight
-format decimal
-nullColor index 32
-useHexPrefix
-objType "controls"
-newPos
-endObjectProperties
-
-# (Text Control)
-object activeXTextDspClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 270
 y 31
 w 50
 h 18
@@ -266,6 +191,21 @@ objType "controls"
 newPos
 endObjectProperties
 
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 0
+y 0
+w 350
+h 135
+lineColor index 14
+fillColor index 14
+lineWidth 0
+endObjectProperties
+
 # (Static Text)
 object activeXTextClass
 beginObjectProperties
@@ -285,19 +225,54 @@ value {
 }
 endObjectProperties
 
-# (Rectangle)
-object activeRectangleClass
+# (Text Control)
+object activeXTextDspClass
 beginObjectProperties
 major 4
 minor 0
 release 0
-x 0
-y 0
-w 350
-h 135
-lineColor index 14
-fillColor index 14
-lineWidth 0
+x 215
+y 81
+w 60
+h 18
+controlPv "$(P)$(R)PoolMaxMem"
+font "helvetica-medium-r-8.0"
+fontAlign "right"
+smartRefresh
+fastUpdate
+fgColor index 54
+bgColor index 4
+autoHeight
+format decimal
+nullColor index 32
+useHexPrefix
+objType "controls"
+newPos
+endObjectProperties
+
+# (Text Control)
+object activeXTextDspClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 280
+y 81
+w 60
+h 18
+controlPv "$(P)$(R)PoolUsedMem"
+font "helvetica-medium-r-8.0"
+fontAlign "right"
+smartRefresh
+fastUpdate
+fgColor index 54
+bgColor index 4
+autoHeight
+format decimal
+nullColor index 32
+useHexPrefix
+objType "controls"
+newPos
 endObjectProperties
 
 # (Static Text)

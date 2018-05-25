@@ -20,9 +20,55 @@ files respectively, in the configure/ directory of the appropriate release of th
 Release Notes
 =============
 
-R3-3 (April XXX, 2018)
+R3-3 (June XXX, 2018)
 ======================
-### NDArray
+### NDArrayPool design changes
+* Previously each plugin used its own NDArrayPool. This design had the problem that it was not really possible 
+  to enforce the maxMemory limits for the driver and plugin chain.  It is the sum of the memory use by the driver 
+  and all plugins that matters, not the use by each individual driver and plugin.  
+* The NDPluginDriver base class was changed to set its pNDArrayPool pointer to the address passed to it in the 
+  NDArray.pNDArrayPool for the NDArray in the callback.  Ultimately all NDArrays are derived from the driver,
+  either directly, or via the NDArrayPool.copy() or NDArrayPool.convert() methods.  This means that plugins
+  now allocate NDArrays from the driver's NDArrayPool, not their own.  Any NDArrays allocated before the first
+  callback still use the plugin's private NDArrayPool, but only a few plugins do this, and these only allocate
+  a single NDArray so they don't use much memory.
+* This means that the maxMemory argument to the driver constuctor now controls
+  the total amount of memory that can be allocated for the driver and all downstream plugins.
+* The maxBuffers argument to all driver and plugin constructors is now ignored.
+  There is now no limit on the number of NDArrays, only on the total amount of memory.
+* The maxBuffers argument to the ADDriver and NDPluginDriver base class constructors are still present so existing drivers 
+  and plugins will work with no changes. This argument is simply ignored. 
+  A second constructor will be added to each base class in the future and the old one will be deprecated.
+* The maxMemory argument to the NDPluginDriver constructor is only used for NDArrays allocated before the
+  first callback, so it can safely be set to 0 (unlimited).
+* These changes are generally backwards compatible. However, startup scripts that set a non-zero value for 
+  maxMemory in the driver may need to increase this value because all NDArrays are now allocated from this NDArrayPool.
+### Active plugin counting and waiting for plugins to complete
+* Previously if one wanted to wait for plugins to complete before the driver indicated that acquisition was complete
+  then one needed to set CallbacksBlock=Yes for each plugin in the chain.
+  Waiting for plugins is needed in cases like the following, for example:
+  - One is doing a step scan and one of the counters for the step-scan is a PV from the statistics plugin. It is necessary to
+    wait for the statistics plugin to complete to be sure the PV value is for current NDArray and not the previous one.
+  - One is doing a scan and writing the NDArrays to a file with one of the file plugins. It is necessary to wait
+    for the file plugin to complete before changing the file name for the next point.
+* There are 2 problems with setting CallbacksBlock=Yes.
+  - It slows down the driver because the plugin is executing in the driver thread and not in its own thread.
+  - It is complicated to change all of the required plugin settings from CallbacksBlock=No to CallbacksBlock=Yes.
+* The NDPluginDriver base class now increments a NumActivePlugins counter in the driver that owns each NDArray as it is queued, 
+  and decrements the counter after the processing is done. 
+* All drivers have 3 new records:
+  - NumActivePlugins: This record indicates the total number of NDArrays that are currently processing or are queued
+    for processing by this driver.
+  - WaitForPlugins: This record determines whether AcquireBusy waits for NumActivePlugins to go to 0 before changing to 0 when acquisition completes.
+  - AcquireBusy This is a busy record that is set to 1 when Acquire changes to 1. It changes back to 0 when acquisition completes, 
+    i.e. when Acquire_RBV=0. If WaitForPlugins is Yes then it also waits for NumActivePlugins to go to 0 before changing to 0.
+* The ADCollect sub-screen now contains these 3 PVs.
+* The ADBase screen contains the ADCollect screen, so it shows these PVs.
+* Driver screens typically do not use the ADCollect sub-screen, so they need to be individually edited to contain these PVs.  
+  They are not yet all complete.
+* With this new design it should rarely be necessary to change plugins to use CallbacksBlock=Yes.
+### NDArray, NDArrayPool
+* Changes to allow the NDArray class to be inherited by derived classes.  Thanks to Sinisa Veseli for this. 
 * Added the epicsTS (EPICS time stamp) field to the report() output. 
   Previously the timeStamp field was in the report, but not the epicsTS field was not.
 ### NDPluginPva

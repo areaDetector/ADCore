@@ -102,6 +102,9 @@ typedef enum {
 #define NDPoolMaxMemoryString       "POOL_MAX_MEMORY"
 #define NDPoolUsedMemoryString      "POOL_USED_MEMORY"
 
+/* Active plugin counter */
+#define NDNumActivePluginsString   "NUM_ACTIVE_PLUGINS"
+
 /** This is the class from which NDArray drivers are derived; implements the asynGenericPointer functions 
   * for NDArray objects. 
   * For areaDetector, both plugins and detector drivers are indirectly derived from this class.
@@ -130,6 +133,12 @@ public:
     virtual asynStatus createFileName(int maxChars, char *filePath, char *fileName);
     virtual asynStatus readNDAttributesFile();
     virtual asynStatus getAttributes(NDAttributeList *pAttributeList);
+
+    asynStatus incrementPluginCount();
+    asynStatus decrementPluginCount();
+    
+    NDArrayPool *pNDArrayPool;     /**< An NDArrayPool pointer that is initialized to pNDArrayPoolPvt_ in the constructor.
+                                     * Plugins change this pointer to the one passed in NDArray::pNDArrayPool */
 
 protected:
     int NDPortNameSelf;
@@ -181,11 +190,12 @@ protected:
     int NDPoolFreeBuffers;
     int NDPoolMaxMemory;
     int NDPoolUsedMemory;
+    int NDNumActivePlugins;
 
     NDArray **pArrays;             /**< An array of NDArray pointers used to store data in the driver */
-    NDArrayPool *pNDArrayPool;     /**< An NDArrayPool object used to allocate and manipulate NDArray objects */
-    class NDAttributeList *pAttributeList;  /**< An NDAttributeList object used to obtain the current values of a set of
-                                          *  attributes */
+    class NDAttributeList *pAttributeList;  /**< An NDAttributeList object used to obtain the current values of a set of attributes */
+    NDArrayPool *pNDArrayPoolPvt_;
+    epicsMutex *pluginCountMutex_;
     int threadStackSize_;
     int threadPriority_;
 
