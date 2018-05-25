@@ -89,7 +89,7 @@ NDPluginDriver::NDPluginDriver(const char *portName, int queueSize, int blocking
                                int maxBuffers, size_t maxMemory, int interfaceMask, int interruptMask,
                                int asynFlags, int autoConnect, int priority, int stackSize, int maxThreads)
 
-    : asynNDArrayDriver(portName, maxAddr, false, maxMemory,
+    : asynNDArrayDriver(portName, maxAddr, maxBuffers, maxMemory,
           interfaceMask | asynInt32Mask | asynFloat64Mask | asynOctetMask | asynInt32ArrayMask | asynDrvUserMask,
           interruptMask | asynInt32Mask | asynFloat64Mask | asynOctetMask | asynInt32ArrayMask,
           asynFlags, autoConnect, priority, stackSize),
@@ -196,7 +196,6 @@ NDPluginDriver::~NDPluginDriver()
     int colorMode=NDColorModeMono, bayerPattern=NDBayerRGGB;
     //static const char *functionName="beginProcessCallbacks";
 
-    this->pNDArrayPool = pArray->pNDArrayPool;
     pAttribute = pArray->pAttributeList->find("ColorMode");
     if (pAttribute) pAttribute->getValue(NDAttrInt32, &colorMode);
     pAttribute = pArray->pAttributeList->find("BayerPattern");
