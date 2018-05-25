@@ -114,7 +114,7 @@ NDArray* NDArrayPool::alloc(int ndims, size_t *dims, NDDataType_t dataType, size
     numBuffers_++;
     pArray = this->createArray();
     if (numBuffers_ <= 1) {
-        /* Calculate offset for the first allocated buffer. This will be non-zero only of the pool manages objects that derive from NDArray class */
+        /* Calculate offset for the first allocated buffer. This will be non-zero only if the pool manages objects that derive from NDArray class */
         ellNodeOffset = (char*)(&(pArray->node)) - (char*)pArray;
     }
     ellAdd(&freeList_, &pArray->node);

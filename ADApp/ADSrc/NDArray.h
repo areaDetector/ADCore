@@ -152,11 +152,16 @@ public:
     size_t       getMaxMemory  ();
     size_t       getMemorySize ();
     int          getNumFree    ();
+
 protected:
+    /** The following methods should be implemented by a pool class
+      * that manages objects derived from the NDArray class.
+      */
     virtual NDArray* createArray();
     virtual void onAllocateArray(NDArray *pArray);
     virtual void onReserveArray(NDArray *pArray);
     virtual void onReleaseArray(NDArray *pArray);
+
 private:
     ELLLIST      freeList_;      /**< Linked list of free NDArray objects that form the pool */
     epicsMutexId listLock_;      /**< Mutex to protect the free list */
