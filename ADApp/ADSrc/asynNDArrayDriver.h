@@ -112,7 +112,7 @@ typedef enum {
   */
 class epicsShareFunc asynNDArrayDriver : public asynPortDriver {
 public:
-    asynNDArrayDriver(const char *portName, int maxAddr, bool isDriver, size_t maxMemory,
+    asynNDArrayDriver(const char *portName, int maxAddr, int maxBuffers, size_t maxMemory,
                       int interfaceMask, int interruptMask,
                       int asynFlags, int autoConnect, int priority, int stackSize);
     virtual ~asynNDArrayDriver();
@@ -195,7 +195,7 @@ protected:
     NDArray **pArrays;             /**< An array of NDArray pointers used to store data in the driver */
     class NDAttributeList *pAttributeList;  /**< An NDAttributeList object used to obtain the current values of a set of
                                           *  attributes */
-    bool isDriver_;
+    NDArrayPool *pNDArrayPoolPvt_;
     epicsMutex *pluginCountMutex_;
     int threadStackSize_;
     int threadPriority_;
