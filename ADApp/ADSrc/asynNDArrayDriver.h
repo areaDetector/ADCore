@@ -137,8 +137,8 @@ public:
     asynStatus incrementPluginCount();
     asynStatus decrementPluginCount();
     
-    // This only needs to be public because of the unit tests
-    NDArrayPool *pNDArrayPool;     /**< An NDArrayPool object used to allocate and manipulate NDArray objects */
+    NDArrayPool *pNDArrayPool;     /**< An NDArrayPool pointer that is initialized to pNDArrayPoolPvt_ in the constructor.
+                                     * Plugins change this pointer to the one passed in NDArray::pNDArrayPool */
 
 protected:
     int NDPortNameSelf;
@@ -193,8 +193,8 @@ protected:
     int NDNumActivePlugins;
 
     NDArray **pArrays;             /**< An array of NDArray pointers used to store data in the driver */
-    class NDAttributeList *pAttributeList;  /**< An NDAttributeList object used to obtain the current values of a set of
-                                          *  attributes */
+    class NDAttributeList *pAttributeList;  /**< An NDAttributeList object used to obtain the current values of a set of attributes */
+private:
     NDArrayPool *pNDArrayPoolPvt_;
     epicsMutex *pluginCountMutex_;
     int threadStackSize_;
