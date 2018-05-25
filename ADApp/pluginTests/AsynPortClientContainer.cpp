@@ -9,7 +9,7 @@
 
 AsynPortClientContainer::AsynPortClientContainer(const std::string& port)
 {
-	portName = port;
+    portName = port;
 }
 
 boost::shared_ptr<int32ClientMap> AsynPortClientContainer::getInt32Map(int address)
@@ -30,44 +30,44 @@ boost::shared_ptr<octetClientMap> AsynPortClientContainer::getOctetMap(int addre
 void AsynPortClientContainer::write(const std::string& paramName, int value, int address)
 {
     boost::shared_ptr<int32ClientMap> mapPtr = getInt32Map(address);
-	// Check for the client
-	if (mapPtr->count(paramName) == 0){
-		// We need to create the client as it isn't stored
+    // Check for the client
+    if (mapPtr->count(paramName) == 0){
+        // We need to create the client as it isn't stored
         (*mapPtr)[paramName] = boost::shared_ptr<asynInt32Client>(new asynInt32Client(portName.c_str(), address, paramName.c_str()));
-	}
-	if ((*mapPtr)[paramName]->write(value) != asynSuccess){
-	  throw AsynException();
-	}
+    }
+    if ((*mapPtr)[paramName]->write(value) != asynSuccess){
+        throw AsynException();
+    }
 }
 
 void AsynPortClientContainer::write(const std::string& paramName, double value, int address)
 {
     boost::shared_ptr<float64ClientMap> mapPtr = getFloat64Map(address);
-	// Check for the client
+    // Check for the client
     if (mapPtr->count(paramName) == 0){
-		// We need to create the client as it isn't stored
+        // We need to create the client as it isn't stored
         (*mapPtr)[paramName] = boost::shared_ptr<asynFloat64Client>(new asynFloat64Client(portName.c_str(), address, paramName.c_str()));
-	}
-	if ((*mapPtr)[paramName]->write(value) != asynSuccess){
-	  throw AsynException();
-	}
+    }
+    if ((*mapPtr)[paramName]->write(value) != asynSuccess){
+        throw AsynException();
+    }
 }
 
 unsigned long int AsynPortClientContainer::write(const std::string& paramName, const std::string& value, int address)
 {
     boost::shared_ptr<octetClientMap> mapPtr = getOctetMap(address);
-  size_t length = 0;
-  size_t numWritten = 0;
-	// Check for the client
-	if (mapPtr->count(paramName) == 0){
-		// We need to create the client as it isn't stored
+    size_t length = 0;
+    size_t numWritten = 0;
+    // Check for the client
+    if (mapPtr->count(paramName) == 0){
+        // We need to create the client as it isn't stored
         (*mapPtr)[paramName] = boost::shared_ptr<asynOctetClient>(new asynOctetClient(portName.c_str(), address, paramName.c_str()));
-	}
-	length = value.size();
-	if ((*mapPtr)[paramName]->write(value.c_str(), length, &numWritten) != asynSuccess){
-    throw AsynException();
-	}
-	return numWritten;
+    }
+    length = value.size();
+    if ((*mapPtr)[paramName]->write(value.c_str(), length, &numWritten) != asynSuccess){
+        throw AsynException();
+    }
+    return numWritten;
 }
 
 int AsynPortClientContainer::readInt(const std::string& paramName, int address)
@@ -76,11 +76,11 @@ int AsynPortClientContainer::readInt(const std::string& paramName, int address)
   boost::shared_ptr<int32ClientMap> mapPtr = getInt32Map(address);
   // Check for the client
   if (mapPtr->count(paramName) == 0){
-    // We need to create the client as it isn't stored
+      // We need to create the client as it isn't stored
       (*mapPtr)[paramName] = boost::shared_ptr<asynInt32Client>(new asynInt32Client(portName.c_str(), address, paramName.c_str()));
   }
   if ((*mapPtr)[paramName]->read(&value) != asynSuccess){
-    throw AsynException();
+      throw AsynException();
   }
   return value;
 }
@@ -91,11 +91,11 @@ double AsynPortClientContainer::readDouble(const std::string& paramName, int add
   boost::shared_ptr<float64ClientMap> mapPtr = getFloat64Map(address);
   // Check for the client
   if (mapPtr->count(paramName) == 0){
-    // We need to create the client as it isn't stored
+      // We need to create the client as it isn't stored
       (*mapPtr)[paramName] = boost::shared_ptr<asynFloat64Client>(new asynFloat64Client(portName.c_str(), address, paramName.c_str()));
   }
   if ((*mapPtr)[paramName]->read(&value) != asynSuccess){
-    throw AsynException();
+      throw AsynException();
   }
   return value;
 }
@@ -109,11 +109,11 @@ std::string AsynPortClientContainer::readString(const std::string& paramName, in
   boost::shared_ptr<octetClientMap> mapPtr = getOctetMap(address);
   // Check for the client
   if (mapPtr->count(paramName) == 0){
-    // We need to create the client as it isn't stored
+      // We need to create the client as it isn't stored
       (*mapPtr)[paramName] = boost::shared_ptr<asynOctetClient>(new asynOctetClient(portName.c_str(), address, paramName.c_str()));
   }
   if ((*mapPtr)[paramName]->read(value, maxlen, &nRead, &reason) != asynSuccess){
-    throw AsynException();
+      throw AsynException();
   }
   std::string svalue(value);
   return svalue;

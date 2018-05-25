@@ -52,12 +52,12 @@ NDArray *NDArrayRing::addToEnd(NDArray *pArray)
   if (noOfBuffers_ > 0) {
       writeIndex_ = (writeIndex_ + 1) % noOfBuffers_;
       if (wrapped_ == 1){
-	  retVal = buffers_[writeIndex_];
+          retVal = buffers_[writeIndex_];
       }
       buffers_[writeIndex_] = pArray;
       if (writeIndex_+1 == noOfBuffers_){
-	  // We have now wrapped
-	  wrapped_ = 1;
+          // We have now wrapped
+          wrapped_ = 1;
       }
   } else {
       // Buffer is not being used, so return the passed array to be released immediately.

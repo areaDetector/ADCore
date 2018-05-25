@@ -102,6 +102,9 @@ typedef enum {
 #define NDPoolMaxMemoryString       "POOL_MAX_MEMORY"
 #define NDPoolUsedMemoryString      "POOL_USED_MEMORY"
 
+/* Active plugin counter */
+#define NDNumActivePluginsString   "NUM_ACTIVE_PLUGINS"
+
 /** This is the class from which NDArray drivers are derived; implements the asynGenericPointer functions 
   * for NDArray objects. 
   * For areaDetector, both plugins and detector drivers are indirectly derived from this class.
@@ -109,7 +112,7 @@ typedef enum {
   */
 class epicsShareFunc asynNDArrayDriver : public asynPortDriver {
 public:
-    asynNDArrayDriver(const char *portName, int maxAddr, int maxBuffers, size_t maxMemory,
+    asynNDArrayDriver(const char *portName, int maxAddr, bool isDriver, size_t maxMemory,
                       int interfaceMask, int interruptMask,
                       int asynFlags, int autoConnect, int priority, int stackSize);
     virtual ~asynNDArrayDriver();
@@ -130,6 +133,12 @@ public:
     virtual asynStatus createFileName(int maxChars, char *filePath, char *fileName);
     virtual asynStatus readNDAttributesFile();
     virtual asynStatus getAttributes(NDAttributeList *pAttributeList);
+
+    asynStatus incrementPluginCount();
+    asynStatus decrementPluginCount();
+    
+    // This only needs to be public because of the unit tests
+    NDArrayPool *pNDArrayPool;     /**< An NDArrayPool object used to allocate and manipulate NDArray objects */
 
 protected:
     int NDPortNameSelf;
@@ -181,11 +190,13 @@ protected:
     int NDPoolFreeBuffers;
     int NDPoolMaxMemory;
     int NDPoolUsedMemory;
+    int NDNumActivePlugins;
 
     NDArray **pArrays;             /**< An array of NDArray pointers used to store data in the driver */
-    NDArrayPool *pNDArrayPool;     /**< An NDArrayPool object used to allocate and manipulate NDArray objects */
     class NDAttributeList *pAttributeList;  /**< An NDAttributeList object used to obtain the current values of a set of
                                           *  attributes */
+    bool isDriver_;
+    epicsMutex *pluginCountMutex_;
     int threadStackSize_;
     int threadPriority_;
 

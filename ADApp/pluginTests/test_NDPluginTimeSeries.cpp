@@ -42,7 +42,7 @@ void TS_callback(void *userPvt, asynUser *pasynUser, void *pointer)
 struct TimeSeriesPluginTestFixture
 {
   NDArrayPool *arrayPool;
-  boost::shared_ptr<asynPortDriver> driver;
+  boost::shared_ptr<asynNDArrayDriver> driver;
   boost::shared_ptr<TimeSeriesPluginWrapper> ts;
   boost::shared_ptr<asynGenericPointerClient> client;
   TestingPlugin* downstream_plugin; // TODO: we don't put this in a shared_ptr and purposefully leak memory because asyn ports cannot be deleted
@@ -57,7 +57,6 @@ struct TimeSeriesPluginTestFixture
 
   TimeSeriesPluginTestFixture()
   {
-    arrayPool = new NDArrayPool(250, 0);
 
     // Asyn manager doesn't like it if we try to reuse the same port name for multiple drivers
     // (even if only one is ever instantiated at once), so we change it slightly for each test case.
@@ -67,11 +66,12 @@ struct TimeSeriesPluginTestFixture
 
     // We need some upstream driver for our test plugin so that calls to connectArrayPort
     // don't fail, but we can then ignore it and send arrays by calling processCallbacks directly.
-    driver = boost::shared_ptr<asynPortDriver>(new asynPortDriver(simport.c_str(),
-                                                                     1, 1,
+    driver = boost::shared_ptr<asynNDArrayDriver>(new asynNDArrayDriver(simport.c_str(),
+                                                                     1, true, 0,
                                                                      asynGenericPointerMask,
                                                                      asynGenericPointerMask,
-                                                                     0, 0, 0, 2000000));
+                                                                     0, 0, 0, 0));
+    arrayPool = driver->pNDArrayPool;
 
     // This is the plugin under test
     ts = boost::shared_ptr<TimeSeriesPluginWrapper>(new TimeSeriesPluginWrapper(testport.c_str(),
@@ -126,7 +126,6 @@ struct TimeSeriesPluginTestFixture
 
   ~TimeSeriesPluginTestFixture()
   {
-    delete arrayPool;
     client.reset();
     ts.reset();
     driver.reset();

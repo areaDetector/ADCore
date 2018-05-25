@@ -699,14 +699,6 @@ record(ai, "$(P)$(R)PoolMaxMem")
    field(PINI, "YES")
 }
 
-record(longin, "$(P)$(R)PoolMaxBuffers")
-{
-   field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))POOL_MAX_BUFFERS")
-   field(SCAN, "Passive")
-   field(PINI, "YES")
-}
-
 record(ai, "$(P)$(R)PoolUsedMem")
 {
    field(DTYP, "asynFloat64")
@@ -737,4 +729,11 @@ record(calc, "$(P)$(R)PoolUsedBuffers")
     field(INPA, "$(P)$(R)PoolAllocBuffers NPP MS")
     field(INPB, "$(P)$(R)PoolFreeBuffers NPP MS")
     field(CALC, "A-B")
+}
+
+record(longin, "$(P)$(R)NumActivePlugins")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))NUM_ACTIVE_PLUGINS")
+   field(SCAN, "I/O Intr")
 }

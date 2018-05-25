@@ -30,12 +30,12 @@ volatile int eraseNDAttributes=0;
 extern "C" {epicsExportAddress(int, eraseNDAttributes);}
 
 /** NDArrayPool constructor
-  * \param[in] maxBuffers Maximum number of NDArray objects that the pool is allowed to contain; 0=unlimited.
+  * \param[in] pDriver Pointer to the asynNDArrayDriver that created this object.
   * \param[in] maxMemory Maxiumum number of bytes of memory the the pool is allowed to use, summed over
   * all of the NDArray objects; 0=unlimited.
   */
-NDArrayPool::NDArrayPool(int maxBuffers, size_t maxMemory)
-  : maxBuffers_(maxBuffers), numBuffers_(0), maxMemory_(maxMemory), memorySize_(0), numFree_(0)
+NDArrayPool::NDArrayPool(class asynNDArrayDriver *pDriver, size_t maxMemory)
+  : numBuffers_(0), maxMemory_(maxMemory), memorySize_(0), numFree_(0), pDriver_(pDriver)
 {
   ellInit(&freeList_);
   listLock_ = epicsMutexCreate();
@@ -68,8 +68,7 @@ void NDArrayPool::onReleaseArray(NDArray *pArray)
   * array, and this array must be large enough to hold the array data. 
   * alloc() searches
   * its free list to find a free NDArray buffer. If is cannot find one then it will
-  * allocate a new one and add it to the free list. If doing so would exceed maxBuffers
-  * then alloc() will return an error. Similarly if allocating the memory required for
+  * allocate a new one and add it to the free list. If allocating the memory required for
   * this NDArray would cause the cumulative memory allocated for the pool to exceed
   * maxMemory then an error will be returned. alloc() sets the reference count for the
   * returned NDArray to 1.
@@ -91,26 +90,21 @@ NDArray* NDArrayPool::alloc(int ndims, size_t *dims, NDDataType_t dataType, size
   }
 
   if (!pArray) {
-    /* We did not find a free image.
-     * Allocate a new one if we have not exceeded the limit */
-    if ((maxBuffers_ > 0) && (numBuffers_ >= maxBuffers_)) {
-      printf("%s: error: reached limit of %d buffers (memory use=%ld/%ld bytes)\n",
-             functionName, maxBuffers_, (long)memorySize_, (long)maxMemory_);
-    } else {
-      numBuffers_++;
-      pArray = this->createArray();
-      if (numBuffers_ <= 1) {
-         ellNodeOffset = (char*)(&(pArray->node)) - (char*)pArray;
-      }
-      ellAdd(&freeList_, &pArray->node);
-      numFree_++;
+    /* We did not find a free image, allocate a new one */
+    numBuffers_++;
+    pArray = this->createArray();
+    if (numBuffers_ <= 1) {
+        ellNodeOffset = (char*)(&(pArray->node)) - (char*)pArray;
     }
+    ellAdd(&freeList_, &pArray->node);
+    numFree_++;
   }
 
   if (pArray) {
     /* We have a frame */
     /* Initialize fields */
     pArray->pNDArrayPool = this;
+    pArray->pDriver = pDriver_;
     pArray->dataType = dataType;
     pArray->ndims = ndims;
     memset(pArray->dims, 0, sizeof(pArray->dims));
@@ -162,8 +156,8 @@ NDArray* NDArrayPool::alloc(int ndims, size_t *dims, NDDataType_t dataType, size
           }
         }
         if ((maxMemory_ > 0) && ((memorySize_ + dataSize) > maxMemory_)) {
-          printf("%s: error: reached limit of %ld memory (%d/%d buffers)\n",
-                 functionName, (long)maxMemory_, numBuffers_, maxBuffers_);
+          printf("%s: error: reached limit of %ld memory (%d buffers)\n",
+                 functionName, (long)maxMemory_, numBuffers_);
           pArray = NULL;
         } else {
           pArray->pData = malloc(dataSize);
@@ -624,32 +618,26 @@ int NDArrayPool::convert(NDArray *pIn,
   return ND_SUCCESS;
 }
 
-/** Returns maximum number of buffers this object is allowed to allocate; 0=unlimited */
-int NDArrayPool::maxBuffers()
-{  
-return maxBuffers_;
-}
-
 /** Returns number of buffers this object has currently allocated */
-int NDArrayPool::numBuffers()
+int NDArrayPool::getNumBuffers()
 {  
 return numBuffers_;
 }
 
 /** Returns maximum bytes of memory this object is allowed to allocate; 0=unlimited */
-size_t NDArrayPool::maxMemory()
+size_t NDArrayPool::getMaxMemory()
 {  
 return maxMemory_;
 }
 
 /** Returns mumber of bytes of memory this object has currently allocated */
-size_t NDArrayPool::memorySize()
+size_t NDArrayPool::getMemorySize()
 {
   return memorySize_;
 }
 
 /** Returns number of NDArray objects in the free list */
-int NDArrayPool::numFree()
+int NDArrayPool::getNumFree()
 {
   return numFree_;
 }
@@ -663,12 +651,10 @@ int NDArrayPool::report(FILE *fp, int details)
 {
   fprintf(fp, "\n");
   fprintf(fp, "NDArrayPool:\n");
-  fprintf(fp, "  numBuffers=%d, maxBuffers=%d\n",
-         numBuffers_, maxBuffers_);
+  fprintf(fp, "  numBuffers=%d, numFree=%d\n",
+         numBuffers_, numFree_);
   fprintf(fp, "  memorySize=%ld, maxMemory=%ld\n",
         (long)memorySize_, (long)maxMemory_);
-  fprintf(fp, "  numFree=%d\n",
-         numFree_);
       
   return ND_SUCCESS;
 }

@@ -100,7 +100,7 @@ ADDriver::ADDriver(const char *portName, int maxAddr, int numParams, int maxBuff
                    int interfaceMask, int interruptMask,
                    int asynFlags, int autoConnect, int priority, int stackSize)
 
-    : asynNDArrayDriver(portName, maxAddr, maxBuffers, maxMemory,
+    : asynNDArrayDriver(portName, maxAddr, true, maxMemory,
           interfaceMask | asynInt32Mask | asynFloat64Mask | asynOctetMask | asynGenericPointerMask | asynDrvUserMask,
           interruptMask | asynInt32Mask | asynFloat64Mask | asynOctetMask | asynGenericPointerMask,
           asynFlags, autoConnect, priority, stackSize)

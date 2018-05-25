@@ -91,6 +91,7 @@ class epicsShareClass NDArray {
 public:
     /* Methods */
     NDArray();
+    NDArray(int ndims, size_t *dims, NDDataType_t dataType, size_t dataSize, void *pData);
     virtual ~NDArray();
     int          initDimension   (NDDimension_t *pDimension, size_t size);
     int          getInfo         (NDArrayInfo_t *pInfo);
@@ -105,7 +106,8 @@ private:
     int          referenceCount;    /**< Reference count for this NDArray=number of clients who are using it */
 
 public:
-    class NDArrayPool *pNDArrayPool; /**< The NDArrayPool object that created this array */
+    class NDArrayPool *pNDArrayPool;  /**< The NDArrayPool object that created this array */
+    class asynNDArrayDriver *pDriver; /**< The asynNDArrayDriver that created this array */
     int           uniqueId;     /**< A number that must be unique for all NDArrays produced by a driver after is has started */
     double        timeStamp;    /**< The time stamp in seconds for this array; seconds since EPICS epoch (00:00:00 UTC, January 1, 1990)
                                   * is recommended, but some drivers may use a different start time.*/
@@ -132,6 +134,7 @@ public:
 class epicsShareClass NDArrayPool {
 public:
     NDArrayPool  (int maxBuffers, size_t maxMemory);
+    NDArrayPool  (class asynNDArrayDriver *pDriver, size_t maxMemory);
     virtual ~NDArrayPool() {}
     NDArray*     alloc     (int ndims, size_t *dims, NDDataType_t dataType, size_t dataSize, void *pData);
     NDArray*     copy      (NDArray *pIn, NDArray *pOut, int copyData);
@@ -146,11 +149,10 @@ public:
                             NDArray **ppOut,
                             NDDataType_t dataTypeOut);
     int          report     (FILE  *fp, int details);
-    int          maxBuffers ();
-    int          numBuffers ();
-    size_t       maxMemory  ();
-    size_t       memorySize ();
-    int          numFree    ();
+    int          getNumBuffers ();
+    size_t       getMaxMemory  ();
+    size_t       getMemorySize ();
+    int          getNumFree    ();
 protected:
     virtual NDArray* createArray();
     virtual void onAllocateArray(NDArray *pArray);
@@ -159,12 +161,12 @@ protected:
 private:
     ELLLIST      freeList_;      /**< Linked list of free NDArray objects that form the pool */
     epicsMutexId listLock_;      /**< Mutex to protect the free list */
-    int          maxBuffers_;    /**< Maximum number of buffers this object is allowed to allocate; -1=unlimited */
-    int          numBuffers_;    /**< Number of buffers this object has currently allocated */
+    int          numBuffers_;
     size_t       maxMemory_;     /**< Maximum bytes of memory this object is allowed to allocate; -1=unlimited */
     size_t       memorySize_;    /**< Number of bytes of memory this object has currently allocated */
     int          numFree_;       /**< Number of NDArray objects in the free list */
     size_t ellNodeOffset;
+    class asynNDArrayDriver *pDriver_; /**< The asynNDArrayDriver that created this object */
 };
 
 #endif

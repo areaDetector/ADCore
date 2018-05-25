@@ -89,7 +89,7 @@ NDPluginDriver::NDPluginDriver(const char *portName, int queueSize, int blocking
                                int maxBuffers, size_t maxMemory, int interfaceMask, int interruptMask,
                                int asynFlags, int autoConnect, int priority, int stackSize, int maxThreads)
 
-    : asynNDArrayDriver(portName, maxAddr, maxBuffers, maxMemory,
+    : asynNDArrayDriver(portName, maxAddr, false, maxMemory,
           interfaceMask | asynInt32Mask | asynFloat64Mask | asynOctetMask | asynInt32ArrayMask | asynDrvUserMask,
           interruptMask | asynInt32Mask | asynFloat64Mask | asynOctetMask | asynInt32ArrayMask,
           asynFlags, autoConnect, priority, stackSize),
@@ -196,6 +196,7 @@ NDPluginDriver::~NDPluginDriver()
     int colorMode=NDColorModeMono, bayerPattern=NDBayerRGGB;
     //static const char *functionName="beginProcessCallbacks";
 
+    this->pNDArrayPool = pArray->pNDArrayPool;
     pAttribute = pArray->pAttributeList->find("ColorMode");
     if (pAttribute) pAttribute->getValue(NDAttrInt32, &colorMode);
     pAttribute = pArray->pAttributeList->find("BayerPattern");
@@ -351,6 +352,8 @@ void NDPluginDriver::driverCallback(asynUser *pasynUser, void *genericPointer)
     
     epicsTimeGetCurrent(&tNow);
     deltaTime = epicsTimeDiffInSeconds(&tNow, &this->lastProcessTime_);
+    
+    this->pNDArrayPool = pArray->pNDArrayPool;
 
     if ((minCallbackTime == 0.) || (deltaTime > minCallbackTime)) {
         if (pasynUser->auxStatus == asynOverflow) ignoreQueueFull = true;
@@ -392,6 +395,8 @@ void NDPluginDriver::driverCallback(asynUser *pasynUser, void *genericPointer)
                 }
                 /* This buffer needs to be released */
                 pArray->release();
+            } else {
+                pArray->pDriver->incrementPluginCount();
             }
         }
     }
@@ -465,11 +470,12 @@ void NDPluginDriver::processTask()
          * but of course it must not access any class data when the lock is released. */
         processCallbacks(pArray); 
         
-        /* We are done with this array buffer */
-        pArray->release();
         epicsTimeGetCurrent(&tEnd);
         setDoubleParam(NDPluginDriverExecutionTime, epicsTimeDiffInSeconds(&tEnd, &tStart)*1e3);
+        pArray->pDriver->decrementPluginCount();
         callParamCallbacks();
+        /* We are done with this array buffer */
+        pArray->release();
     }
 }
 
