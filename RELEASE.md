@@ -23,30 +23,26 @@ Release Notes
 R3-3 (June XXX, 2018)
 ======================
 ### NDArrayPool design changes
-* Previously each asynNDArrayDriver had its own NDArrayPool. asynNDArrayDriver is the class from which both
-  ADDriver, NDPluginDriver, and many classes in other modules such as dxp and quadEM are derived.
-  This design had the problem that it was not really possible to enforce the maxMemory limits for the
-  driver and plugin chain.  It is the sum of the memory use by the driver and all plugins that matters, 
-  not the use by each individual driver and plugin.  
-* In the new design the asynNDArray driver constructor is passed a flag indicating if the object is a driver or a plugin.
-  It only creates an NDArrayPool if it is a driver, i.e. the original source of NDArrays.
+* Previously each plugin used its own NDArrayPool. This design had the problem that it was not really possible 
+  to enforce the maxMemory limits for the driver and plugin chain.  It is the sum of the memory use by the driver 
+  and all plugins that matters, not the use by each individual driver and plugin.  
 * The NDPluginDriver base class was changed to set its pNDArrayPool pointer to the address passed to it in the 
   NDArray.pNDArrayPool for the NDArray in the callback.  Ultimately all NDArrays are derived from the driver,
   either directly, or via the NDArrayPool.copy() or NDArrayPool.convert() methods.  This means that plugins
-  now allocate NDArrays from the driver's NDArrayPool, not their own.
-* This means that there is now just a single NDArrayPool and the maxMemory argument to the driver constuctor now controls
+  now allocate NDArrays from the driver's NDArrayPool, not their own.  Any NDArrays allocated before the first
+  callback still use the plugin's private NDArrayPool, but only a few plugins do this, and these only allocate
+  a single NDArray so they don't use much memory.
+* This means that the maxMemory argument to the driver constuctor now controls
   the total amount of memory that can be allocated for the driver and all downstream plugins.
-* The maxBuffers argument to the driver is now ignored.
+* The maxBuffers argument to all driver and plugin constructors is now ignored.
   There is now no limit on the number of NDArrays, only on the total amount of memory.
-* The maxBuffers argument to the ADDriver constructor is still present so existing drivers will work with no changes. It is ignored. 
-  A second constructor will be added in the future and the old one will be deprecated.
-* The maxBuffers and maxMemory arguments to the NDPluginDriver constructor are now ignored.
-  They are still present so existing plugins will work with no changes.
-  A second constructor will be added in the future and the old one will be deprecated.
-* These changes are not quite 100% backwards compatible.
-  - Startup scripts that set a non-zero value for maxMemory in the driver may need to increase this value.
-  - Plugins that call NDArrayPool->alloc() before the first callback need to be modified.
-    There was only one plugin in ADCore that needed this change.
+* The maxBuffers argument to the ADDriver and NDPluginDriver base class constructors are still present so existing drivers 
+  and plugins will work with no changes. This argument is simply ignored. 
+  A second constructor will be added to each base class in the future and the old one will be deprecated.
+* The maxMemory argument to the NDPluginDriver constructor is only used for NDArrays allocated before the
+  first callback, so it can safely be set to 0 (unlimited).
+* These changes are generally backwards compatible. However, startup scripts that set a non-zero value for 
+  maxMemory in the driver may need to increase this value because all NDArrays are now allocated from this NDArrayPool.
 ### Active plugin counting and waiting for plugins to complete
 * Previously if one wanted to wait for plugins to complete before the driver indicated that acquisition was complete
   then one needed to set CallbacksBlock=Yes for each plugin in the chain.
