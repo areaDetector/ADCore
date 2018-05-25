@@ -194,7 +194,6 @@ protected:
 
     NDArray **pArrays;             /**< An array of NDArray pointers used to store data in the driver */
     class NDAttributeList *pAttributeList;  /**< An NDAttributeList object used to obtain the current values of a set of attributes */
-private:
     NDArrayPool *pNDArrayPoolPvt_;
     epicsMutex *pluginCountMutex_;
     int threadStackSize_;
