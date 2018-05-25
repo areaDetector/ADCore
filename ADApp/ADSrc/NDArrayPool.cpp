@@ -41,16 +41,35 @@ NDArrayPool::NDArrayPool(class asynNDArrayDriver *pDriver, size_t maxMemory)
   listLock_ = epicsMutexCreate();
 }
 
+/** Create new NDArray object. 
+  * This method should be overriden by a pool class that manages objects 
+  * that derive from NDArray class.
+  */
 NDArray* NDArrayPool::createArray() 
 {
     return new NDArray;
 }
+
+/** Hook for pool classes that manage objects derived from NDArray class.
+  * This hook is called after new array has been allocated.
+  * \param[in] pArray Pointer to the allocated NDArray object
+  */
 void NDArrayPool::onAllocateArray(NDArray *pArray)
 {
 }
+
+/** Hook for pool classes that manage objects derived from NDArray class.
+  * This hook is called after array has been reserved.
+  * \param[in] pArray Pointer to the reserved NDArray object
+  */
 void NDArrayPool::onReserveArray(NDArray *pArray)
 {
 }
+
+/** Hook for pool classes that manage objects derived from NDArray class.
+  * This hook is called after array has been released.
+  * \param[in] pArray Pointer to the released NDArray object
+  */
 void NDArrayPool::onReleaseArray(NDArray *pArray)
 {
 }
@@ -86,6 +105,7 @@ NDArray* NDArrayPool::alloc(int ndims, size_t *dims, NDDataType_t dataType, size
   ELLNODE* ellNode = ellFirst(&freeList_);
   pArray = NULL;
   if (ellNode) {
+      /* ellNodeOffset is non-zero only for objects that derive from NDArray class */
       pArray = (NDArray *)((char*)ellNode-ellNodeOffset);
   }
 
@@ -94,6 +114,7 @@ NDArray* NDArrayPool::alloc(int ndims, size_t *dims, NDDataType_t dataType, size
     numBuffers_++;
     pArray = this->createArray();
     if (numBuffers_ <= 1) {
+        /* Calculate offset for the first allocated buffer. This will be non-zero only of the pool manages objects that derive from NDArray class */
         ellNodeOffset = (char*)(&(pArray->node)) - (char*)pArray;
     }
     ellAdd(&freeList_, &pArray->node);
@@ -179,6 +200,8 @@ NDArray* NDArrayPool::alloc(int ndims, size_t *dims, NDDataType_t dataType, size
     ellDelete(&freeList_, &pArray->node);
     numFree_--;
   }
+
+  // Call allocation hook (for pools that manage objects derived from NDArray class)
   onAllocateArray(pArray);
   epicsMutexUnlock(listLock_);
   return (pArray);
@@ -250,6 +273,8 @@ int NDArrayPool::reserve(NDArray *pArray)
            driverName, pArray->referenceCount, pArray);
   }
   pArray->referenceCount++;
+
+  // Call reservation hook (for pools that manage objects derived from NDArray class)
   onReserveArray(pArray);
   epicsMutexUnlock(listLock_);
   return ND_SUCCESS;
@@ -285,6 +310,8 @@ int NDArrayPool::release(NDArray *pArray)
     cantProceed("%s:release ERROR, reference count < 0 pArray=%p\n",
            driverName, pArray);
   }
+
+  // Call release hook (for pools that manage objects derived from NDArray class)
   onReleaseArray(pArray);
   epicsMutexUnlock(listLock_);
   return ND_SUCCESS;
