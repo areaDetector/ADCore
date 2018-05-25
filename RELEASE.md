@@ -55,7 +55,8 @@ R3-3 (June XXX, 2018)
     wait for the statistics plugin to complete to be sure the PV value is for current NDArray and not the previous one.
   - One is doing a scan and writing the NDArrays to a file with one of the file plugins. It is necessary to wait
     for the file plugin to complete before changing the file name for the next point.
-  There are 2 problems with setting CallbacksBlock=Yes.
+  
+    There are 2 problems with setting CallbacksBlock=Yes.
   - It slows down the driver because the plugin is executing in the driver thread and not in its own thread.
   - It is complicated to change all of the required plugin settings from CallbacksBlock=No to CallbacksBlock=Yes.
 * The NDPluginDriver base class now increments a NumActivePlugins counter in the driver that owns each NDArray as it is queued, 
