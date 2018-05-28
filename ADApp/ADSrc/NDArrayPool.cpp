@@ -8,6 +8,7 @@
 
 #include <stdlib.h>
 #include <dbDefs.h>
+#include <stdint.h>
 
 #include <cantProceed.h>
 #include <epicsExport.h>
@@ -94,7 +95,7 @@ void NDArrayPool::onReleaseArray(NDArray *pArray)
   */
 NDArray* NDArrayPool::alloc(int ndims, size_t *dims, NDDataType_t dataType, size_t dataSize, void *pData)
 {
-  NDArray *pArray;
+  NDArray *pArray=NULL, *freeArray=NULL;
   NDArrayInfo_t arrayInfo;
   int i;
   const char* functionName = "NDArrayPool::alloc:";
@@ -103,13 +104,12 @@ NDArray* NDArrayPool::alloc(int ndims, size_t *dims, NDDataType_t dataType, size
 
   /* Find a free image */
   ELLNODE* ellNode = ellFirst(&freeList_);
-  pArray = NULL;
   if (ellNode) {
       /* ellNodeOffset is non-zero only for objects that derive from NDArray class */
-      pArray = (NDArray *)((char*)ellNode-ellNodeOffset);
+      freeArray = (NDArray *)((char*)ellNode-ellNodeOffset);
   }
 
-  if (!pArray) {
+  if (!freeArray) {
     /* We did not find a free image, allocate a new one */
     numBuffers_++;
     pArray = this->createArray();
@@ -119,6 +119,50 @@ NDArray* NDArrayPool::alloc(int ndims, size_t *dims, NDDataType_t dataType, size
     }
     ellAdd(&freeList_, &pArray->node);
     numFree_++;
+  }
+
+  size_t thresholdSize = dataSize + dataSize / 2;
+  // sanity check for case of overflow when calculating thresholdSize
+  thresholdSize = (thresholdSize < dataSize) ? SIZE_MAX : thresholdSize;
+  if (freeArray) {
+    pArray = freeArray;
+    if (pArray->dataSize != dataSize) {
+      size_t diffSize = (pArray->dataSize > dataSize) ? pArray->dataSize - dataSize : dataSize - pArray->dataSize;
+      NDArray* nextArray = (NDArray *)ellNext(&freeArray->node);
+      NDArray* closestArray = NULL;
+      NDArray* threshArray = NULL;
+      while(nextArray) {
+        if (nextArray->dataSize == dataSize) {
+          threshArray = nextArray;
+          break;
+        }
+        if (nextArray->dataSize > dataSize) {
+          if ((nextArray->dataSize - dataSize) < thresholdSize) {
+            if (threshArray) {
+              if (threshArray->dataSize > nextArray->dataSize) {
+                threshArray = nextArray;
+              }
+            } else {
+              threshArray = nextArray;
+            }
+          }
+        }
+        if (!threshArray) {
+          size_t ndiffSize = (nextArray->dataSize > dataSize) ? nextArray->dataSize - dataSize : dataSize - nextArray->dataSize;
+          if(ndiffSize < diffSize) {
+            diffSize = ndiffSize;
+            closestArray = nextArray;
+          }
+        }
+        nextArray = (NDArray *)ellNext(&nextArray->node);
+      }
+      if (threshArray) {
+        pArray = threshArray;
+      } else {
+        if (closestArray)
+          pArray = closestArray;
+      }
+    }
   }
 
   if (pArray) {
@@ -137,30 +181,36 @@ NDArray* NDArrayPool::alloc(int ndims, size_t *dims, NDDataType_t dataType, size
     }
     /* Erase the attributes if that global flag is set */
     if (eraseNDAttributes) pArray->pAttributeList->clear();
+    // calcs totalBytes
     pArray->getInfo(&arrayInfo);
     if (dataSize == 0) dataSize = arrayInfo.totalBytes;
-    if (arrayInfo.totalBytes > dataSize) {
-      printf("%s: ERROR: required size=%d passed size=%d is too small\n",
-      functionName, (int)arrayInfo.totalBytes, (int)dataSize);
-      pArray=NULL;
+    if (!freeArray) {
+      if (arrayInfo.totalBytes > dataSize) {
+        // we have a passed array, check size
+        printf("%s: ERROR: required size=%d passed size=%d is too small\n",
+        functionName, (int)arrayInfo.totalBytes, (int)dataSize);
+        pArray=NULL;
+      }
     }
   }
 
   if (pArray) {
-    /* If the caller passed a valid buffer use that, trust that its size is correct */
+    /* If the caller passed a valid buffer use that, trust that its allocated size is correct */
     if (pData) {
       pArray->pData = pData;
     } else {
       /* See if the current buffer is big enough */
-      if (pArray->dataSize < dataSize) {
+      if (pArray->pData) {
+        if ((pArray->dataSize < dataSize) || (pArray->dataSize > thresholdSize)) {
         /* No, we need to free the current buffer and allocate a new one */
         /* See if there is enough room */
-        if (pArray->pData) {
           memorySize_ -= pArray->dataSize;
           free(pArray->pData);
           pArray->pData = NULL;
           pArray->dataSize = 0;
         }
+      }
+      if (!pArray->pData) {
         if ((maxMemory_ > 0) && ((memorySize_ + dataSize) > maxMemory_)) {
           // We don't have enough memory to allocate the array
           // See if we can get memory by deleting arrays
@@ -682,7 +732,17 @@ int NDArrayPool::report(FILE *fp, int details)
          numBuffers_, numFree_);
   fprintf(fp, "  memorySize=%ld, maxMemory=%ld\n",
         (long)memorySize_, (long)maxMemory_);
-      
+  if(details > 0) {
+    NDArray* freeArray = (NDArray *)ellFirst(&freeList_);
+    unsigned i = 0;
+    while(freeArray)
+    {
+      fprintf(fp, "Free Array %d:\n", i);
+      freeArray->report(fp, details);
+      freeArray = (NDArray *)ellNext(&freeArray->node);
+      i++;
+    }
+  }
   return ND_SUCCESS;
 }
 
