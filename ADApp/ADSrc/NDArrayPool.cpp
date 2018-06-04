@@ -174,7 +174,7 @@ printf("NDArrayPool::alloc allocated new array %p ellNodeOffset_=%d\n", pArray, 
         }
       }
 printf("NDArrayPool::alloc freelist_=%p allocated existing array %p dims[0].size=%d\n", 
-freeList_, pArray, (int)pArray->dims[0].size);
+&freeList_, pArray, (int)pArray->dims[0].size);
     }
   }
 
@@ -746,13 +746,15 @@ int NDArrayPool::report(FILE *fp, int details)
   fprintf(fp, "  memorySize=%ld, maxMemory=%ld\n",
         (long)memorySize_, (long)maxMemory_);
   if(details > 0) {
-    NDArray* freeArray = (NDArray *)ellFirst(&freeList_);
+    ELLNODE *ellNode = ellFirst(&freeList_);
     unsigned i = 0;
+    NDArray *freeArray = NULL;
+    if (ellNode) freeArray = (NDArray *)((char*)ellNode-ellNodeOffset_);
     while(freeArray)
     {
       fprintf(fp, "Free Array %d:\n", i);
 printf("freeArray->ndims=%d\n", freeArray->ndims);
-//      freeArray->report(fp, details);
+      freeArray->report(fp, details);
       freeArray = (NDArray *)ellNext(&freeArray->node);
       i++;
     }
