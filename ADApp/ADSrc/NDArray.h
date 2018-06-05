@@ -163,13 +163,15 @@ protected:
     virtual void onReleaseArray(NDArray *pArray);
 
 private:
+    NDArray*     getFirstFreeArray();
+    NDArray*     getNextFreeArray(NDArray *pArray);
     ELLLIST      freeList_;      /**< Linked list of free NDArray objects that form the pool */
     epicsMutexId listLock_;      /**< Mutex to protect the free list */
     int          numBuffers_;
     size_t       maxMemory_;     /**< Maximum bytes of memory this object is allowed to allocate; -1=unlimited */
     size_t       memorySize_;    /**< Number of bytes of memory this object has currently allocated */
     int          numFree_;       /**< Number of NDArray objects in the free list */
-    size_t       ellNodeOffset_; /**< Difference between the list node and NDArray object that belongs to that node; this offset is non-zero only if this pool manages objects derived from NDArray class */
+    int          ellNodeOffset_; /**< Difference between the list node and NDArray object that belongs to that node */
     class asynNDArrayDriver *pDriver_; /**< The asynNDArrayDriver that created this object */
 };
 
