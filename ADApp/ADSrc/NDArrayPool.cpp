@@ -36,7 +36,7 @@ extern "C" {epicsExportAddress(int, eraseNDAttributes);}
   * all of the NDArray objects; 0=unlimited.
   */
 NDArrayPool::NDArrayPool(class asynNDArrayDriver *pDriver, size_t maxMemory)
-  : numBuffers_(0), maxMemory_(maxMemory), memorySize_(0), numFree_(0), pDriver_(pDriver)
+  : numBuffers_(0), maxMemory_(maxMemory), memorySize_(0), numFree_(0), ellNodeOffset_(-1), pDriver_(pDriver)
 {
   ellInit(&freeList_);
   listLock_ = epicsMutexCreate();
@@ -75,6 +75,32 @@ void NDArrayPool::onReleaseArray(NDArray *pArray)
 {
 }
 
+NDArray* NDArrayPool::getFirstFreeArray()
+{
+  /* Find a free image */
+  ELLNODE* ellNode = ellFirst(&freeList_);
+  if (ellNode) {
+    return (NDArray *)((char*)ellNode - ellNodeOffset_);
+  }
+  else {
+    return NULL;
+  }
+}
+
+NDArray* NDArrayPool::getNextFreeArray(NDArray *pArray)
+{
+  /* Find a free image */
+  ELLNODE* ellNode = ellNext(&pArray->node);
+  if (ellNode) {
+    return (NDArray *)((char*)ellNode - ellNodeOffset_);
+  }
+  else {
+    return NULL;
+  }
+}
+
+
+
 /** Allocates a new NDArray object; the first 3 arguments are required.
   * \param[in] ndims The number of dimensions in the NDArray. 
   * \param[in] dims Array of dimensions, whose size must be at least ndims.
@@ -104,23 +130,18 @@ NDArray* NDArrayPool::alloc(int ndims, size_t *dims, NDDataType_t dataType, size
   epicsMutexLock(listLock_);
 
   /* Find a free image */
-  ELLNODE* ellNode = ellFirst(&freeList_);
-  if (ellNode) {
-      /* ellNodeOffset_ is non-zero only for objects that derive from NDArray class */
-      freeArray = (NDArray *)((char*)ellNode-ellNodeOffset_);
-  }
+  freeArray = getFirstFreeArray();
 
   if (!freeArray) {
     /* We did not find a free image, allocate a new one */
     numBuffers_++;
     pArray = this->createArray();
-    if (numBuffers_ <= 1) {
-        /* Calculate offset for the first allocated buffer. This will be non-zero only if the pool manages objects that derive from NDArray class */
+    if (ellNodeOffset_ < 0) {
+        /* Calculate offset for the first allocated buffer */
         ellNodeOffset_ = (char*)(&(pArray->node)) - (char*)pArray;
     }
     ellAdd(&freeList_, &pArray->node);
     numFree_++;
-printf("NDArrayPool::alloc allocated new array %p ellNodeOffset_=%d\n", pArray, (int)ellNodeOffset_);
   }
 
   size_t thresholdSize = dataSize + dataSize / 2;
@@ -130,12 +151,8 @@ printf("NDArrayPool::alloc allocated new array %p ellNodeOffset_=%d\n", pArray, 
     pArray = freeArray;
     if (pArray->dataSize != dataSize) {
       size_t diffSize = (pArray->dataSize > dataSize) ? pArray->dataSize - dataSize : dataSize - pArray->dataSize;
-      ELLNODE* ellNode = ellNext(&freeArray->node);
-      if (ellNode) {
-      /* ellNodeOffset_ is non-zero only for objects that derive from NDArray class */
-        nextArray = (NDArray *)((char*)ellNode-ellNodeOffset_);
-      }
-      while(nextArray) {
+      nextArray = getNextFreeArray(freeArray);
+      while (nextArray) {
         if (nextArray->dataSize == dataSize) {
           threshArray = nextArray;
           break;
@@ -158,13 +175,7 @@ printf("NDArrayPool::alloc allocated new array %p ellNodeOffset_=%d\n", pArray, 
             closestArray = nextArray;
           }
         }
-        ELLNODE* ellNode = ellNext(&nextArray->node);
-        if (ellNode) {
-        /* ellNodeOffset_ is non-zero only for objects that derive from NDArray class */
-          nextArray = (NDArray *)((char*)ellNode-ellNodeOffset_);
-        } else {
-          nextArray = NULL;
-        }
+        nextArray = getNextFreeArray(nextArray);
       }
       if (threshArray) {
         pArray = threshArray;
@@ -173,8 +184,6 @@ printf("NDArrayPool::alloc allocated new array %p ellNodeOffset_=%d\n", pArray, 
           pArray = closestArray;
         }
       }
-printf("NDArrayPool::alloc freelist_=%p allocated existing array %p dims[0].size=%d\n", 
-&freeList_, pArray, (int)pArray->dims[0].size);
     }
   }
 
@@ -227,7 +236,7 @@ printf("NDArrayPool::alloc freelist_=%p allocated existing array %p dims[0].size
         if ((maxMemory_ > 0) && ((memorySize_ + dataSize) > maxMemory_)) {
           // We don't have enough memory to allocate the array
           // See if we can get memory by deleting arrays
-          NDArray *freeArray = (NDArray *)ellFirst(&freeList_);
+          NDArray *freeArray = getFirstFreeArray();
           while (freeArray && ((memorySize_ + dataSize) > maxMemory_)) {
             if (freeArray->pData) {
               memorySize_ -= freeArray->dataSize;
@@ -236,7 +245,7 @@ printf("NDArrayPool::alloc freelist_=%p allocated existing array %p dims[0].size
               freeArray->dataSize = 0;
             }
             // Next array
-            freeArray = (NDArray *)ellNext(&freeArray->node);
+            freeArray = getNextFreeArray(freeArray);
           }
         }
         if ((maxMemory_ > 0) && ((memorySize_ + dataSize) > maxMemory_)) {
@@ -746,16 +755,13 @@ int NDArrayPool::report(FILE *fp, int details)
   fprintf(fp, "  memorySize=%ld, maxMemory=%ld\n",
         (long)memorySize_, (long)maxMemory_);
   if(details > 0) {
-    ELLNODE *ellNode = ellFirst(&freeList_);
     unsigned i = 0;
-    NDArray *freeArray = NULL;
-    if (ellNode) freeArray = (NDArray *)((char*)ellNode-ellNodeOffset_);
+    NDArray *freeArray = getFirstFreeArray();
     while(freeArray)
     {
       fprintf(fp, "Free Array %d:\n", i);
-printf("freeArray->ndims=%d\n", freeArray->ndims);
       freeArray->report(fp, details);
-      freeArray = (NDArray *)ellNext(&freeArray->node);
+      freeArray = getNextFreeArray(freeArray);
       i++;
     }
   }
