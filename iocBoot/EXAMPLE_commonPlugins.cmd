@@ -153,7 +153,7 @@ dbLoadRecords("$(AUTOSAVE)/asApp/Db/save_restoreStatus.db", "P=$(PREFIX)")
 
 # Optional: load NDPluginEdge plugin
 #NDEdgeConfigure("EDGE1", $(QSIZE), 0, "$(PORT)", 0, 0, 0, 0)
-#dbLoadRecords("NDEdge.template",  "P=$(PREFIX),R=Edge1:, PORT=EDGE1,ADDR=0,TIMEOUT=1,NDARRAY_PORT=$(PORT)")
+#dbLoadRecords("$(ADPLUGINEDGE)/db/NDEdge.template",  "P=$(PREFIX),R=Edge1:, PORT=EDGE1,ADDR=0,TIMEOUT=1,NDARRAY_PORT=$(PORT)")
 #set_requestfile_path("$(ADPLUGINEDGE)/edgeApp/Db")
 
 # Optional: load scan records
@@ -169,4 +169,3 @@ dbLoadRecords("$(AUTOSAVE)/asApp/Db/save_restoreStatus.db", "P=$(PREFIX)")
 
 # Optional: load alive record (requires ALIVE module)
 #dbLoadRecords("$(ALIVE)/aliveApp/Db/alive.db", "P=$(PREFIX),RHOST=192.168.1.254")
-
