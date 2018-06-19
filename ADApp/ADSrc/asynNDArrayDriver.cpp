@@ -740,6 +740,7 @@ asynNDArrayDriver::asynNDArrayDriver(const char *portName, int maxAddr, int maxB
     if (priority <= 0) priority = epicsThreadPriorityMedium;
     threadPriority_ = priority;
 
+printf("asynNDArrayDriver::asynNDArrayDriver creating NDArrayPool, maxMemory=%d\n", (int)maxMemory);
     this->pNDArrayPoolPvt_ = new NDArrayPool(this, maxMemory);
     this->pNDArrayPool = this->pNDArrayPoolPvt_;
     this->pluginCountMutex_ = new epicsMutex();
