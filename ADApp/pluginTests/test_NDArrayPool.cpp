@@ -16,13 +16,13 @@
 using namespace std;
 
 
-struct PluginFixture
+struct NDArrayPoolFixture
 {
     NDArrayPool *pPool;
     asynNDArrayDriver *dummy_driver;
     #define MAX_MEMORY 60000
 
-    PluginFixture()
+    NDArrayPoolFixture()
     {
         std::string dummy_port("simPort");
 
@@ -36,13 +36,13 @@ printf("test_NDArrayPool::PluginFixture constructing asynNDArrayDriver maxMemory
         pPool = dummy_driver->pNDArrayPool;
 
     }
-    ~PluginFixture()
+    ~NDArrayPoolFixture()
     {
         delete dummy_driver;
     }
 };
 
-BOOST_FIXTURE_TEST_SUITE(NDArrayPoolTests, PluginFixture)
+BOOST_FIXTURE_TEST_SUITE(NDArrayPoolTests, NDArrayPoolFixture)
 
 BOOST_AUTO_TEST_CASE(test_Pool)
 {

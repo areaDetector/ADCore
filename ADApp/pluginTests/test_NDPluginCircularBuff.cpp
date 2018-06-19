@@ -19,7 +19,7 @@
 using namespace std;
 
 
-struct PluginFixture
+struct NDPluginCircularBuffFixture
 {
     NDArrayPool *arrayPool;
     asynNDArrayDriver *dummy_driver;
@@ -35,7 +35,7 @@ struct PluginFixture
     asynOctetClient *cbTrigB;
     asynOctetClient *cbCalc;
 
-    PluginFixture()
+    NDPluginCircularBuffFixture()
     {
         std::string dummy_port("simPort"), testport("testPort");
 
@@ -68,7 +68,7 @@ struct PluginFixture
         cbCalc = new asynOctetClient(testport.c_str(), 0, NDCircBuffTriggerCalcString);
 
     }
-    ~PluginFixture()
+    ~NDPluginCircularBuffFixture()
     {
         delete cbCalc;
         delete cbTrigB;
@@ -91,7 +91,7 @@ struct PluginFixture
     }
 };
 
-BOOST_FIXTURE_TEST_SUITE(CircularBuffTests, PluginFixture)
+BOOST_FIXTURE_TEST_SUITE(CircularBuffTests, NDPluginCircularBuffFixture)
 
 BOOST_AUTO_TEST_CASE(test_BufferWrappingAndStatusMessages)
 {
