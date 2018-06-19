@@ -143,7 +143,7 @@ struct AttrPlotPluginTestFixture
         uniqueAsynPortName(port);
         uniqueAsynPortName(dummy_port);
 
-        asynNDArrayDriver *dummy_driver = new asynNDArrayDriver(dummy_port.c_str(), 1, true, 0, asynGenericPointerMask, asynGenericPointerMask, 0, 0, 0, 0);
+        asynNDArrayDriver *dummy_driver = new asynNDArrayDriver(dummy_port.c_str(), 1, 0, 0, asynGenericPointerMask, asynGenericPointerMask, 0, 0, 0, 0);
         arrPool = dummy_driver->pNDArrayPool;
 
         // This is the plugin under test
