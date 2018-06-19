@@ -102,8 +102,8 @@ typedef enum {
 #define NDPoolMaxMemoryString       "POOL_MAX_MEMORY"
 #define NDPoolUsedMemoryString      "POOL_USED_MEMORY"
 
-/* Active plugin counter */
-#define NDNumActivePluginsString   "NUM_ACTIVE_PLUGINS"
+/* Queued arrays */
+#define NDNumQueuedArraysString     "NUM_QUEUED_ARRAYS"
 
 /** This is the class from which NDArray drivers are derived; implements the asynGenericPointer functions 
   * for NDArray objects. 
@@ -134,8 +134,8 @@ public:
     virtual asynStatus readNDAttributesFile();
     virtual asynStatus getAttributes(NDAttributeList *pAttributeList);
 
-    asynStatus incrementPluginCount();
-    asynStatus decrementPluginCount();
+    asynStatus incrementQueuedArrayCount();
+    asynStatus decrementQueuedArrayCount();
     
     NDArrayPool *pNDArrayPool;     /**< An NDArrayPool pointer that is initialized to pNDArrayPoolPvt_ in the constructor.
                                      * Plugins change this pointer to the one passed in NDArray::pNDArrayPool */
@@ -190,12 +190,12 @@ protected:
     int NDPoolFreeBuffers;
     int NDPoolMaxMemory;
     int NDPoolUsedMemory;
-    int NDNumActivePlugins;
+    int NDNumQueuedArrays;
 
     NDArray **pArrays;             /**< An array of NDArray pointers used to store data in the driver */
     class NDAttributeList *pAttributeList;  /**< An NDAttributeList object used to obtain the current values of a set of attributes */
     NDArrayPool *pNDArrayPoolPvt_;
-    epicsMutex *pluginCountMutex_;
+    epicsMutex *queuedArrayCountMutex_;
     int threadStackSize_;
     int threadPriority_;
 

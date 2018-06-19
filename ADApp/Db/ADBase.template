@@ -463,7 +463,7 @@ record(calcout, "$(P)$(R)ClearAcquireBusy")
 {
     field(INPA, "$(P)$(R)WaitForPlugins CP")
     field(INPB, "$(P)$(R)Acquire_RBV CP")
-    field(INPC, "$(P)$(R)NumActivePlugins CP")
+    field(INPC, "$(P)$(R)NumQueuedArrays CP")
     field(CALC, "A ? B || (C > 0) : B")
     field(OOPT, "Transition To Zero")
     field(OUT,  "$(P)$(R)AcquireBusy PP")
