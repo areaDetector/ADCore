@@ -128,6 +128,7 @@ int NDArray::getInfo(NDArrayInfo_t *pInfo)
   size_t *dims_t = new size_t(this->ndims);
   for (i=0; i<this->ndims; i++) dims_t[i] = this->dims[i].size;
   int status = NDArray::computeArrayInfo(this->ndims, dims_t, this->dataType, pInfo);
+  delete dims_t;
   if (status != ND_SUCCESS) return status;
   
   pInfo->colorMode = NDColorModeMono;
