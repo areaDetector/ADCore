@@ -30,7 +30,8 @@ struct PluginFixture
         // change it slightly for each test case.
         uniqueAsynPortName(dummy_port);
 
-        // Thus we instantiate a basic asynPortDriver object which is never used.
+        // Thus we instantiate a basic asynPortDriver object which is used for the NDArrayPool
+printf("test_NDArrayPool::PluginFixture constructing asynNDArrayDriver maxMemory=%d\n", MAX_MEMORY);
         dummy_driver = new asynNDArrayDriver(dummy_port.c_str(), 1, 0, MAX_MEMORY, asynGenericPointerMask, asynGenericPointerMask, 0, 0, 0, 0);
         pPool = dummy_driver->pNDArrayPool;
 
