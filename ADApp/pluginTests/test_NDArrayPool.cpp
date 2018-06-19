@@ -118,6 +118,14 @@ BOOST_AUTO_TEST_CASE(test_Pool)
   BOOST_CHECK_EQUAL(pPool->getNumFree(), 0);
   pArrayTest->release();
   pPool->report(stdout, 6);
+
+  // Allocate an array of size of MAX_MEMORY*2; this should cause the one existing array to be deleted
+  // and then return a NULL pointer because MAX_MEMORY is exceeded.
+  dims = MAX_MEMORY*2;
+  pArrayTest = pPool->alloc(1, &dims, NDUInt8, 0, NULL);
+  BOOST_CHECK(pArrayTest == 0);
+  BOOST_CHECK_EQUAL(pPool->getNumFree(), 0);
+  pPool->report(stdout, 6);
     
 }
 
