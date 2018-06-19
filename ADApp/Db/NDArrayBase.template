@@ -731,9 +731,9 @@ record(calc, "$(P)$(R)PoolUsedBuffers")
     field(CALC, "A-B")
 }
 
-record(longin, "$(P)$(R)NumActivePlugins")
+record(longin, "$(P)$(R)NumQueuedArrays")
 {
    field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))NUM_ACTIVE_PLUGINS")
+   field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))NUM_QUEUED_ARRAYS")
    field(SCAN, "I/O Intr")
 }

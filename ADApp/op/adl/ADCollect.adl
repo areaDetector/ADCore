@@ -1,6 +1,6 @@
 
 file {
-	name="/home/epics/devel/areaDetector/ADCore/ADApp/op/adl/ADCollect.adl"
+	name="/home/epics/devel/areaDetector-3-2/ADCore/ADApp/op/adl/ADCollect.adl"
 	version=030109
 }
 display {
@@ -646,15 +646,15 @@ text {
 }
 text {
 	object {
-		x=15
+		x=25
 		y=255
-		width=160
+		width=150
 		height=20
 	}
 	"basic attribute" {
 		clr=14
 	}
-	textix="# active plugins"
+	textix="# Queued arrays"
 	align="horiz. right"
 }
 "text update" {
@@ -665,7 +665,7 @@ text {
 		height=18
 	}
 	monitor {
-		chan="$(P)$(R)NumActivePlugins"
+		chan="$(P)$(R)NumQueuedArrays"
 		clr=54
 		bclr=4
 	}

@@ -668,35 +668,35 @@ void asynNDArrayDriver::report(FILE *fp, int details)
     }
 }
 
-asynStatus asynNDArrayDriver::incrementPluginCount() 
+asynStatus asynNDArrayDriver::incrementQueuedArrayCount() 
 { 
-    int pluginCount;
+    int arrayCount;
   
-    pluginCountMutex_->lock();
-    getIntegerParam(NDNumActivePlugins, &pluginCount);
-    pluginCount++;
-    setIntegerParam(NDNumActivePlugins, pluginCount);
+    queuedArrayCountMutex_->lock();
+    getIntegerParam(NDNumQueuedArrays, &arrayCount);
+    arrayCount++;
+    setIntegerParam(NDNumQueuedArrays, arrayCount);
     callParamCallbacks();
-    pluginCountMutex_->unlock();
+    queuedArrayCountMutex_->unlock();
     return asynSuccess;
 }
 
-asynStatus asynNDArrayDriver::decrementPluginCount() 
+asynStatus asynNDArrayDriver::decrementQueuedArrayCount() 
 {
-    static const char *functionName = "decrementPluginCount";
-    int pluginCount;
+    static const char *functionName = "decrementQueuedArrayCount";
+    int arrayCount;
   
-    pluginCountMutex_->lock();
-    getIntegerParam(NDNumActivePlugins, &pluginCount);
-    if (pluginCount <= 0) {
+    queuedArrayCountMutex_->lock();
+    getIntegerParam(NDNumQueuedArrays, &arrayCount);
+    if (arrayCount <= 0) {
         asynPrint(pasynUserSelf, ASYN_TRACE_ERROR, 
-            "%s::%s error, numActivePlugins already 0 or less (%d)\n",
-            driverName, functionName, pluginCount);
+            "%s::%s error, numQueuedArrays already 0 or less (%d)\n",
+            driverName, functionName, arrayCount);
     }
-    pluginCount--;
-    setIntegerParam(NDNumActivePlugins, pluginCount);
+    arrayCount--;
+    setIntegerParam(NDNumQueuedArrays, arrayCount);
     callParamCallbacks();
-    pluginCountMutex_->unlock();
+    queuedArrayCountMutex_->unlock();
     return asynSuccess;
 }
 
@@ -730,7 +730,7 @@ asynNDArrayDriver::asynNDArrayDriver(const char *portName, int maxAddr, int maxB
                      interfaceMask | asynInt32Mask | asynFloat64Mask | asynOctetMask | asynInt32ArrayMask | asynGenericPointerMask | asynDrvUserMask, 
                      interruptMask | asynInt32Mask | asynFloat64Mask | asynOctetMask | asynInt32ArrayMask | asynGenericPointerMask,
                      asynFlags, autoConnect, priority, stackSize),
-      pNDArrayPool(NULL), pluginCountMutex_(NULL)
+      pNDArrayPool(NULL), queuedArrayCountMutex_(NULL)
 {
     char versionString[20];
 
@@ -742,7 +742,7 @@ asynNDArrayDriver::asynNDArrayDriver(const char *portName, int maxAddr, int maxB
 
     this->pNDArrayPoolPvt_ = new NDArrayPool(this, maxMemory);
     this->pNDArrayPool = this->pNDArrayPoolPvt_;
-    this->pluginCountMutex_ = new epicsMutex();
+    this->queuedArrayCountMutex_ = new epicsMutex();
 
     /* Allocate pArray pointer array */
     this->pArrays = (NDArray **)calloc(maxAddr, sizeof(NDArray *));
@@ -796,7 +796,7 @@ asynNDArrayDriver::asynNDArrayDriver(const char *portName, int maxAddr, int maxB
     createParam(NDPoolFreeBuffersString,      asynParamInt32,           &NDPoolFreeBuffers);
     createParam(NDPoolMaxMemoryString,        asynParamFloat64,         &NDPoolMaxMemory);
     createParam(NDPoolUsedMemoryString,       asynParamFloat64,         &NDPoolUsedMemory);
-    createParam(NDNumActivePluginsString,     asynParamInt32,           &NDNumActivePlugins);
+    createParam(NDNumQueuedArraysString,      asynParamInt32,           &NDNumQueuedArrays);
 
     /* Here we set the values of read-only parameters and of read/write parameters that cannot
      * or should not get their values from the database.  Note that values set here will override
@@ -848,7 +848,7 @@ asynNDArrayDriver::asynNDArrayDriver(const char *portName, int maxAddr, int maxB
     setDoubleParam(NDPoolMaxMemory, 0);
     setDoubleParam(NDPoolUsedMemory, 0);
 
-    setIntegerParam(NDNumActivePlugins, 0);
+    setIntegerParam(NDNumQueuedArrays, 0);
 
 }
 
@@ -858,6 +858,6 @@ asynNDArrayDriver::~asynNDArrayDriver()
     delete this->pNDArrayPoolPvt_;
     free(this->pArrays);
     delete this->pAttributeList;
-    delete this->pluginCountMutex_;
+    delete this->queuedArrayCountMutex_;
 }    
 

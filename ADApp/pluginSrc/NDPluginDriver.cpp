@@ -395,7 +395,7 @@ void NDPluginDriver::driverCallback(asynUser *pasynUser, void *genericPointer)
                 /* This buffer needs to be released */
                 pArray->release();
             } else {
-                pArray->pDriver->incrementPluginCount();
+                pArray->pDriver->incrementQueuedArrayCount();
             }
         }
     }
@@ -471,7 +471,7 @@ void NDPluginDriver::processTask()
         
         epicsTimeGetCurrent(&tEnd);
         setDoubleParam(NDPluginDriverExecutionTime, epicsTimeDiffInSeconds(&tEnd, &tStart)*1e3);
-        pArray->pDriver->decrementPluginCount();
+        pArray->pDriver->decrementQueuedArrayCount();
         callParamCallbacks();
         /* We are done with this array buffer */
         pArray->release();
