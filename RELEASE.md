@@ -41,6 +41,13 @@ R3-3 (June XXX, 2018)
   A second constructor will be added to each base class in the future and the old one will be deprecated.
 * The maxMemory argument to the NDPluginDriver constructor is only used for NDArrays allocated before the
   first callback, so it can safely be set to 0 (unlimited).
+* The freelist in NDArrayPool was changed from being an EPICS ellList to an std::multiset.  The freelist is 
+  now sorted by the size of the NDArray.  This allows quickly finding an NDArray of the correct size, 
+  and knowing if no such NDArray exists.
+* Improved the efficiency of memory allocation.  Previously the first NDArray that is large enough was returned.
+  Now if the size of the smallest available NDArray exceeds the requested size by a factor of 1.5 then the
+  memory in that NDArray is freed and reallocated to be the requested size.  Thanks to Michael Huth for the first
+  implementation of this.
 * These changes are generally backwards compatible. However, startup scripts that set a non-zero value for 
   maxMemory in the driver may need to increase this value because all NDArrays are now allocated from this NDArrayPool.
 ### Active plugin counting and waiting for plugins to complete
@@ -109,6 +116,10 @@ R3-3 (June XXX, 2018)
   when loading these databases if these defaults are acceptable, which is often the case.
 ### ADApp/op/adl
 * Fixes to a number of .adl files to set text widget size and alignment, etc. to improve conversion to .opi and .ui files.
+### ADApp/pluginTests
+* Added a new unit test, test_NDArrayPool to test NDArrayPool::alloc().
+* All unit tests were changed to create an asynNDArrayDriver and use the NDArrayPool from that, rather than directly
+  creating an NDArrayPool.
 
 R3-2 (January 28, 2018)
 ======================
