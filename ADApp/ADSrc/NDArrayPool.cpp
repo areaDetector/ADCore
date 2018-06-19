@@ -176,19 +176,20 @@ NDArray* NDArrayPool::alloc(int ndims, size_t *dims, NDDataType_t dataType, size
     if ((maxMemory_ > 0) && ((memorySize_ + dataSize) > maxMemory_)) {
       printf("%s: error: reached limit of %ld memory (%d buffers)\n",
              functionName, (long)maxMemory_, numBuffers_);
-      pArray = NULL;
     } else {
       pArray->pData = malloc(dataSize);
       if (pArray->pData) {
         pArray->dataSize = dataSize;
         memorySize_ += dataSize;
-      } else {
-        pArray = NULL;
       }
     }
   }
   // If we don't have a valid memory buffer see pArray to NULL to indicate error
-  if (pArray && (pArray->pData == NULL)) pArray = NULL;
+  if (pArray && (pArray->pData == NULL)) {
+    delete pArray;
+    numBuffers_--;
+    pArray = NULL;
+  }
 
   // Call allocation hook (for pools that manage objects derived from NDArray class)
   onAllocateArray(pArray);
