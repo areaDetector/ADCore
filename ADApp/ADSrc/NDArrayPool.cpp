@@ -161,14 +161,16 @@ NDArray* NDArrayPool::alloc(int ndims, size_t *dims, NDDataType_t dataType, size
       // We don't have enough memory to allocate the array
       // See if we can get memory by deleting arrays
       // Delete the largest arrays first, i.e. work from the end of freeList_
-      std::multiset<freeListElement>::reverse_iterator rit;
       NDArray *freeArray;
-      for (rit=freeList_.rbegin(); rit!=freeList_.rend(); ++rit) {
-        freeArray = rit->pArray_;
+      std::multiset<freeListElement>::iterator it;
+      while (!freeList_.empty() && ((memorySize_ + dataSize) > maxMemory_)) {
+        it = freeList_.end();
+        it--;
+        freeArray = it->pArray_;
+        freeList_.erase(it);
         memorySize_ -= freeArray->dataSize;
-        freeList_.erase(*rit);
+        numBuffers_--;
         delete freeArray;
-        if ((memorySize_ + dataSize) <= maxMemory_) break;
       }
     }
     if ((maxMemory_ > 0) && ((memorySize_ + dataSize) > maxMemory_)) {
@@ -290,8 +292,8 @@ int NDArrayPool::release(NDArray *pArray)
   pArray->referenceCount--;
   if (pArray->referenceCount == 0) {
     /* The last user has released this image, add it back to the free list */
-    freeListElement *pListElement = new freeListElement(pArray, pArray->dataSize);
-    freeList_.insert(*pListElement);
+    freeListElement listElement(pArray, pArray->dataSize);
+    freeList_.insert(listElement);
   }
   if (pArray->referenceCount < 0) {
     cantProceed("%s:release ERROR, reference count < 0 pArray=%p\n",
@@ -635,13 +637,13 @@ int NDArrayPool::convert(NDArray *pIn,
 /** Returns number of buffers this object has currently allocated */
 int NDArrayPool::getNumBuffers()
 {  
-return numBuffers_;
+  return numBuffers_;
 }
 
 /** Returns maximum bytes of memory this object is allowed to allocate; 0=unlimited */
 size_t NDArrayPool::getMaxMemory()
 {  
-return maxMemory_;
+  return maxMemory_;
 }
 
 /** Returns mumber of bytes of memory this object has currently allocated */
