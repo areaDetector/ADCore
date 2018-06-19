@@ -41,7 +41,6 @@ extern "C" {epicsExportAddress(int, eraseNDAttributes);}
 NDArrayPool::NDArrayPool(class asynNDArrayDriver *pDriver, size_t maxMemory)
   : numBuffers_(0), maxMemory_(maxMemory), memorySize_(0), pDriver_(pDriver)
 {
-printf("NDArrayPool::NDArrayPool maxMemory=%d maxMemory_=%d\n", (int)maxMemory, (int)maxMemory_);
   listLock_ = epicsMutexCreate();
 }
 
@@ -645,7 +644,6 @@ int NDArrayPool::getNumBuffers()
 /** Returns maximum bytes of memory this object is allowed to allocate; 0=unlimited */
 size_t NDArrayPool::getMaxMemory()
 {
-printf("NDArrayPool::getMaxMemory maxMemory_=%d\n", (int)maxMemory_);
   return maxMemory_;
 }
 
