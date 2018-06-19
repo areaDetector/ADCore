@@ -41,6 +41,7 @@ extern "C" {epicsExportAddress(int, eraseNDAttributes);}
 NDArrayPool::NDArrayPool(class asynNDArrayDriver *pDriver, size_t maxMemory)
   : numBuffers_(0), maxMemory_(maxMemory), memorySize_(0), pDriver_(pDriver)
 {
+printf("NDArrayPool::NDArrayPool maxMemory=%d maxMemory_=%d\n", (int)maxMemory, (int)maxMemory_);
   listLock_ = epicsMutexCreate();
 }
 
