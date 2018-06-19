@@ -643,7 +643,8 @@ int NDArrayPool::getNumBuffers()
 
 /** Returns maximum bytes of memory this object is allowed to allocate; 0=unlimited */
 size_t NDArrayPool::getMaxMemory()
-{  
+{
+printf("NDArrayPool::getMaxMemory maxMemory_=%d\n", (int)maxMemory_);
   return maxMemory_;
 }
 
