@@ -51,6 +51,7 @@ ifeq ($(WITH_BOOST),YES)
   plugin-test_SRCS += test_NDPluginAttrPlot.cpp
   plugin-test_SRCS += test_NDPluginROI.cpp
   plugin-test_SRCS += test_NDPluginOverlay.cpp
+  plugin-test_SRCS += test_NDArrayPool.cpp
 
   # Add tests for new plugins like this:
   #plugin-test_SRCS += test_<plugin name>.cpp
