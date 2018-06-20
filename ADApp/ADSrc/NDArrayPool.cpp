@@ -656,7 +656,10 @@ size_t NDArrayPool::getMemorySize()
 /** Returns number of NDArray objects in the free list */
 int NDArrayPool::getNumFree()
 {
-  return freeList_.size();
+  epicsMutexLock(listLock_);
+  int size = (int)freeList_.size();
+  epicsMutexUnlock(listLock_);
+  return size;
 }
 
 /** Reports on the free list size and other properties of the NDArrayPool
@@ -677,6 +680,7 @@ int NDArrayPool::report(FILE *fp, int details)
     std::multiset<freeListElement>::iterator it;
     NDArray *freeArray;
     fprintf(fp, "  freeList: (index, dataSize, pArray)\n");
+    epicsMutexLock(listLock_);
     for (it=freeList_.begin(),i=0; it!=freeList_.end(); ++it,i++) {
       fprintf(fp, "    %d %d %p\n", i, (int)it->dataSize_, it->pArray_);
     }
@@ -687,6 +691,7 @@ int NDArrayPool::report(FILE *fp, int details)
         freeArray->report(fp, details);
       }
     }
+    epicsMutexUnlock(listLock_);
   }
   return ND_SUCCESS;
 }
