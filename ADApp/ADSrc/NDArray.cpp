@@ -14,6 +14,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <ellLib.h>
+#include <vector>
 
 #include <epicsMutex.h>
 #include <epicsTypes.h>
@@ -125,10 +126,10 @@ int NDArray::getInfo(NDArrayInfo_t *pInfo)
 {
   int i;
   NDAttribute *pAttribute;
-  size_t *dims_t = new size_t(this->ndims);
-  for (i=0; i<this->ndims; i++) dims_t[i] = this->dims[i].size;
-  int status = NDArray::computeArrayInfo(this->ndims, dims_t, this->dataType, pInfo);
-  delete dims_t;
+  std::vector<size_t> dims_t;
+  dims_t.reserve(ndims);
+  for (i=0; i<this->ndims; i++) dims_t.push_back(this->dims[i].size);
+  int status = NDArray::computeArrayInfo(this->ndims, &dims_t[0], this->dataType, pInfo);
   if (status != ND_SUCCESS) return status;
   
   pInfo->colorMode = NDColorModeMono;
