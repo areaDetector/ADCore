@@ -1187,29 +1187,6 @@
       </tr>
       <tr>
         <td>
-          NDPoolMaxBuffers
-        </td>
-        <td>
-          asynInt32
-        </td>
-        <td>
-          r/o
-        </td>
-        <td>
-          The maximum number of NDArrayPool buffers that can be allocated. 0=unlimited.
-        </td>
-        <td>
-          POOL_MAX_BUFFERS
-        </td>
-        <td>
-          $(P)$(R)PoolMaxBuffers
-        </td>
-        <td>
-          longin
-        </td>
-      </tr>
-      <tr>
-        <td>
           NDPoolAllocBuffers
         </td>
         <td>
@@ -1289,8 +1266,9 @@
           r/o
         </td>
         <td>
-          The number of NDArrays from this driver's NDArrayPool that are queued for processing
-          by plugins.
+          The number of NDArrays from this driver's NDArrayPool that are currently queued
+          for processing by plugins. When this number goes to 0 the plugins have all completed
+          processing.
         </td>
         <td>
           NUM_QUEUED_ARRAYS
