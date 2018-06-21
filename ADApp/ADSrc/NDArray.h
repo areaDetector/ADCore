@@ -137,7 +137,7 @@ public:
 //class sortedListElement;
 
 class freeListElement {
-    private:
+    public:
         freeListElement(NDArray *pArray, size_t dataSize) {
           pArray_ = pArray;
           dataSize_ = dataSize;}
@@ -146,7 +146,8 @@ class freeListElement {
         }
         NDArray *pArray_;
         size_t dataSize_;
-    friend class NDArrayPool;
+    private:
+        freeListElement(); // Default constructor is private so objects cannot be constructed without arguments
 };
 
 /** The NDArrayPool class manages a free list (pool) of NDArray objects.
