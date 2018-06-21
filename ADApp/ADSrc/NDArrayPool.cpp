@@ -201,6 +201,7 @@ NDArray* NDArrayPool::alloc(int ndims, size_t *dims, NDDataType_t dataType, size
       pArray->dims[i].binning = 1;
       pArray->dims[i].reverse = 0;
     }
+    pArray->codec = "";
     /* Erase the attributes if that global flag is set */
     if (eraseNDAttributes) pArray->pAttributeList->clear();
     // calcs totalBytes
@@ -230,6 +231,7 @@ NDArray* NDArrayPool::alloc(int ndims, size_t *dims, NDDataType_t dataType, size
           free(pArray->pData);
           pArray->pData = NULL;
           pArray->dataSize = 0;
+          pArray->compressedSize = 0;
         }
       }
       if (!pArray->pData) {
@@ -243,6 +245,7 @@ NDArray* NDArrayPool::alloc(int ndims, size_t *dims, NDDataType_t dataType, size
               free(freeArray->pData);
               freeArray->pData = NULL;
               freeArray->dataSize = 0;
+              freeArray->compressedSize = 0;
             }
             // Next array
             freeArray = getNextFreeArray(freeArray);
@@ -256,6 +259,7 @@ NDArray* NDArrayPool::alloc(int ndims, size_t *dims, NDDataType_t dataType, size
           pArray->pData = malloc(dataSize);
           if (pArray->pData) {
             pArray->dataSize = dataSize;
+            pArray->compressedSize = dataSize;
             memorySize_ += dataSize;
           } else {
             pArray = NULL;
@@ -272,6 +276,7 @@ NDArray* NDArrayPool::alloc(int ndims, size_t *dims, NDDataType_t dataType, size
     ellDelete(&freeList_, &pArray->node);
     numFree_--;
   }
+
 
   // Call allocation hook (for pools that manage objects derived from NDArray class)
   onAllocateArray(pArray);
@@ -310,9 +315,11 @@ NDArray* NDArrayPool::copy(NDArray *pIn, NDArray *pOut, int copyData)
   pOut->ndims = pIn->ndims;
   memcpy(pOut->dims, pIn->dims, sizeof(pIn->dims));
   pOut->dataType = pIn->dataType;
+  pOut->codec = pIn->codec;
+  pOut->compressedSize = pIn->compressedSize;
   if (copyData) {
     pIn->getInfo(&arrayInfo);
-    numCopy = arrayInfo.totalBytes;
+    numCopy = pIn->codec.empty() ? arrayInfo.totalBytes : pIn->compressedSize;
     if (pOut->dataSize < numCopy) numCopy = pOut->dataSize;
     memcpy(pOut->pData, pIn->pData, numCopy);
   }
@@ -612,6 +619,13 @@ int NDArrayPool::convert(NDArray *pIn,
 
   /* Initialize failure */
   *ppOut = NULL;
+
+  /* Can't convert compressed data */
+  if (!pIn->codec.empty()) {
+    fprintf(stderr, "%s:%s: can't convert compressed data [%s]\n",
+            driverName, functionName, pIn->codec.c_str());
+    return ND_ERROR;
+  }
 
   /* Copy the input dimension array because we need to modify it
    * but don't want to affect caller */

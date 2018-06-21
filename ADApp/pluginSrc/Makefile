@@ -78,6 +78,10 @@ NDPluginSupport_DBD += NDPluginAttrPlot.dbd
 INC      += NDPluginAttrPlot.h CircularBuffer.h
 LIB_SRCS += NDPluginAttrPlot.cpp
 
+NDPluginSupport_DBD += NDPluginCodec.dbd
+INC      += NDPluginCodec.h
+LIB_SRCS += NDPluginCodec.cpp
+
 DBD      += NDPosPlugin.dbd
 INC      += NDPosPlugin.h
 INC      += NDPosPluginFileReader.h
@@ -121,7 +125,8 @@ endif
 ifeq ($(WITH_JPEG),YES)
   DBD      += NDFileJPEG.dbd
   INC      += NDFileJPEG.h
-  LIB_SRCS += NDFileJPEG.cpp 
+  LIB_SRCS += NDFileJPEG.cpp
+  USR_CXXFLAGS += -DHAVE_JPEG
 endif
 
 ifeq ($(WITH_NETCDF),YES)
@@ -150,6 +155,14 @@ ifeq ($(WITH_PVA), YES)
   DBD += NDPluginPva.dbd
   INC += NDPluginPva.h
   LIB_SRCS += NDPluginPva.cpp
+endif
+
+ifeq ($(WITH_BLOSC), YES)
+  USR_CXXFLAGS += -DHAVE_BLOSC
+endif
+
+ifdef BLOSC_INCLUDE
+  USR_INCLUDES += -I$(BLOSC_INCLUDE)
 endif
 
 ifdef HDF5_INCLUDE
