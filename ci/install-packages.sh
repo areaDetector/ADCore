@@ -23,6 +23,8 @@ WITH_SZIP=YES
 SZIP_EXTERNAL=NO
 WITH_ZLIB=YES
 ZLIB_EXTERNAL=NO
+WITH_BLOSC=YES
+BLOSC_EXTERNAL=NO
 
 mkdir external
 
@@ -64,9 +66,11 @@ echo "WITH_SZIP = "      $WITH_SZIP          >> configure/CONFIG_SITE.linux-x86_
 echo "SZIP_EXTERNAL = "  $SZIP_EXTERNAL      >> configure/CONFIG_SITE.linux-x86_64.Common
 echo "WITH_ZLIB = "      $WITH_ZLIB          >> configure/CONFIG_SITE.linux-x86_64.Common
 echo "ZLIB_EXTERNAL = "  $ZLIB_EXTERNAL      >> configure/CONFIG_SITE.linux-x86_64.Common
-echo "HOST_OPT=NO"                           >> configure/CONFIG_SITE.linux-x86_64.Common 
-echo "USR_CXXFLAGS_Linux=--coverage"         >> configure/CONFIG_SITE.linux-x86_64.Common 
-echo "USR_LDFLAGS_Linux=--coverage"          >> configure/CONFIG_SITE.linux-x86_64.Common 
+echo "WITH_BLOSC= "      $WITH_BLOSC         >> configure/CONFIG_SITE.linux-x86_64.Common
+echo "BLOSC_EXTERNAL = " $BLOSC_EXTERNAL     >> configure/CONFIG_SITE.linux-x86_64.Common
+echo "HOST_OPT=NO"                           >> configure/CONFIG_SITE.linux-x86_64.Common
+echo "USR_CXXFLAGS_Linux=--coverage"         >> configure/CONFIG_SITE.linux-x86_64.Common
+echo "USR_LDFLAGS_Linux=--coverage"          >> configure/CONFIG_SITE.linux-x86_64.Common
 
 echo "======= configure/RELEASE.local ========================================="
 cat configure/RELEASE.local
@@ -105,7 +109,7 @@ gem install coveralls-lcov
 
 cd external
 
-# Install asyn 
+# Install asyn
 wget -nv https://github.com/epics-modules/asyn/archive/R4-32.tar.gz
 tar -zxf R4-32.tar.gz
 echo "EPICS_BASE="$EPICS_BASE > asyn-R4-32/configure/RELEASE
