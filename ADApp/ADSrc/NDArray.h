@@ -20,6 +20,8 @@
 #include "NDAttribute.h"
 #include "NDAttributeList.h"
 
+#include "asynNDArrayDriver.h"
+
 /** The maximum number of dimensions in an NDArray */
 #define ND_ARRAY_MAX_DIMS 10
 
