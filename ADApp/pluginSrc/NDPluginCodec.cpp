@@ -288,7 +288,7 @@ NDArray *decompressJPEG(NDArrayPool *pool, NDArray *input)
 
     jpeg_mem_src(&jpegInfo, static_cast<unsigned char*>(input->pData),
             input->compressedSize);
-    jpeg_read_header(&jpegInfo, true);
+    jpeg_read_header(&jpegInfo, TRUE);
     jpeg_start_decompress(&jpegInfo);
 
     unsigned char *dest = static_cast<unsigned char*>(output->pData);
