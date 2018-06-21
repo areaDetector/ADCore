@@ -425,7 +425,7 @@ NDArray *compressBlosc(NDArrayPool*, NDArray*, int , bool , NDCodecBloscComp_t,
     return NULL;
 }
 
-NDArray *decompressBlosc(NDArrayPool*, NDArray*)
+NDArray *decompressBlosc(NDArrayPool*, NDArray*, int)
 {
     fprintf(stderr, "No Blosc support");
     return NULL;
