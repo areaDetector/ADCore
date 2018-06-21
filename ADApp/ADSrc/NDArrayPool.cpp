@@ -110,11 +110,12 @@ NDArray* NDArrayPool::alloc(int ndims, size_t *dims, NDDataType_t dataType, size
     dataSize = arrayInfo.totalBytes;
   } 
   else if (dataSize < arrayInfo.totalBytes) {
-      printf("%s: ERROR: required size=%d passed size=%d is too small, using required size\n",
+    asynPrint(pDriver_->pasynUserSelf, ASYN_TRACE_ERROR,
+      "%s: ERROR: required size=%d passed size=%d is too small, using required size\n",
       functionName, (int)arrayInfo.totalBytes, (int)dataSize);
-      dataSize = arrayInfo.totalBytes;
-      // Since the passed dataSize was wrong we don't trust the passed pointer either
-      if (pData != NULL) pData = NULL;
+    dataSize = arrayInfo.totalBytes;
+    // Since the passed dataSize was wrong we don't trust the passed pointer either
+    if (pData != NULL) pData = NULL;
   }
 
   // Try to find an array in the free list which is big enough.
@@ -174,7 +175,8 @@ NDArray* NDArrayPool::alloc(int ndims, size_t *dims, NDDataType_t dataType, size
       }
     }
     if ((maxMemory_ > 0) && ((memorySize_ + dataSize) > maxMemory_)) {
-      printf("%s: error: reached limit of %ld memory (%d buffers)\n",
+      asynPrint(pDriver_->pasynUserSelf, ASYN_TRACE_ERROR, 
+             "%s: error: reached limit of %ld memory (%d buffers)\n",
              functionName, (long)maxMemory_, numBuffers_);
     } else {
       pArray->pData = malloc(dataSize);
@@ -251,11 +253,13 @@ int NDArrayPool::reserve(NDArray *pArray)
 
   /* Make sure we own this array */
   if (pArray->pNDArrayPool != this) {
-    printf("%s:%s: ERROR, not owner!  owner=%p, should be this=%p\n",
-         driverName, functionName, pArray->pNDArrayPool, this);
+    asynPrint(pDriver_->pasynUserSelf, ASYN_TRACE_ERROR, 
+      "%s::%s: ERROR, not owner!  owner=%p, should be this=%p\n",
+      driverName, functionName, pArray->pNDArrayPool, this);
     return(ND_ERROR);
   }
-  //printf("NDArrayPool::reserve pArray=%p, count=%d\n", pArray, pArray->referenceCount);
+  //asynPrint(pDriver_->pasynUserSelf, ASYN_TRACE_FLOW,
+  //  "NDArrayPool::reserve pArray=%p, count=%d\n", pArray, pArray->referenceCount);
   epicsMutexLock(listLock_);
   // If the reference count is less than 1 then something is wrong, this NDArray has been released.
   if (pArray->referenceCount < 1) {
@@ -284,11 +288,13 @@ int NDArrayPool::release(NDArray *pArray)
 
   /* Make sure we own this array */
   if (pArray->pNDArrayPool != this) {
-    printf("%s:%s: ERROR, not owner!  owner=%p, should be this=%p\n",
-           driverName, functionName, pArray->pNDArrayPool, this);
+    asynPrint(pDriver_->pasynUserSelf, ASYN_TRACE_ERROR, 
+      "%s::%s: ERROR, not owner!  owner=%p, should be this=%p\n",
+      driverName, functionName, pArray->pNDArrayPool, this);
     return(ND_ERROR);
   }
-  //printf("NDArrayPool::release pArray=%p, count=%d\n", pArray, pArray->referenceCount);
+  //asynPrint(pDriver_->pasynUserSelf, ASYN_TRACE_FLOW,
+  //  "NDArrayPool::release pArray=%p, count=%d\n", pArray, pArray->referenceCount);
   epicsMutexLock(listLock_);
   pArray->referenceCount--;
   if (pArray->referenceCount == 0) {
@@ -539,8 +545,9 @@ int NDArrayPool::convert(NDArray *pIn,
   for (i=0; i<pIn->ndims; i++) {
     dimsOutCopy[i].size = dimsOutCopy[i].size/dimsOutCopy[i].binning;
     if (dimsOutCopy[i].size <= 0) {
-      printf("%s:%s: ERROR, invalid output dimension, size=%d, binning=%d\n",
-             driverName, functionName, (int)dimsOut[i].size, dimsOut[i].binning);
+      asynPrint(pDriver_->pasynUserSelf, ASYN_TRACE_ERROR,
+        "%s:%s: ERROR, invalid output dimension, size=%d, binning=%d\n",
+        driverName, functionName, (int)dimsOut[i].size, dimsOut[i].binning);
       return(ND_ERROR);
     }
     dimSizeOut[i] = dimsOutCopy[i].size;
@@ -555,8 +562,9 @@ int NDArrayPool::convert(NDArray *pIn,
   pOut = alloc(pIn->ndims, dimSizeOut, dataTypeOut, 0, NULL);
   *ppOut = pOut;
   if (!pOut) {
-    printf("%s:%s: ERROR, cannot allocate output array\n",
-           driverName, functionName);
+    asynPrint(pDriver_->pasynUserSelf, ASYN_TRACE_ERROR,
+      "%s:%s: ERROR, cannot allocate output array\n",
+      driverName, functionName);
     return(ND_ERROR);
   }
   /* Copy fields from input to output */
