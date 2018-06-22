@@ -1,6 +1,6 @@
 
 file {
-	name="/home/epics/devel/areaDetector-3-2/ADCore/ADApp/op/adl/NDStats.adl"
+	name="/home/epics/devel/areaDetector-3-3/ADCore/ADApp/op/adl/NDStats.adl"
 	version=030109
 }
 display {
@@ -1043,8 +1043,8 @@ text {
 	}
 	display[0] {
 		label="Total"
-		name="NDTimeSeries.adl"
-		args="P=$(P),R=$(R),PLT=TSTotal"
+		name="NDStatsTimeSeriesPlot.adl"
+		args="P=$(P),R=$(R)TS:,RN=$(R)TSTotal"
 	}
 	display[1] {
 		label="Net"
