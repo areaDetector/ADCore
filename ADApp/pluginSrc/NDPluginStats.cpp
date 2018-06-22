@@ -395,37 +395,6 @@ asynStatus NDPluginStats::doComputeProfiles(NDArray *pArray, NDStats_t *pStats)
     return(status);
 }
 
-void NDPluginStats::doTimeSeriesCallbacks()
-{
-    int currentPoint;
-    
-    getIntegerParam(NDPluginStatsTSCurrentPoint, &currentPoint);
-
-    doCallbacksFloat64Array(this->timeSeries[TSMinValue],   currentPoint, NDPluginStatsTSMinValue, 0);
-    doCallbacksFloat64Array(this->timeSeries[TSMinX],       currentPoint, NDPluginStatsTSMinX,     0);
-    doCallbacksFloat64Array(this->timeSeries[TSMinY],       currentPoint, NDPluginStatsTSMinY,     0);            
-    doCallbacksFloat64Array(this->timeSeries[TSMaxValue],   currentPoint, NDPluginStatsTSMaxValue, 0);
-    doCallbacksFloat64Array(this->timeSeries[TSMaxX],       currentPoint, NDPluginStatsTSMaxX,     0);
-    doCallbacksFloat64Array(this->timeSeries[TSMaxY],       currentPoint, NDPluginStatsTSMaxY,     0);                
-    doCallbacksFloat64Array(this->timeSeries[TSMeanValue],  currentPoint, NDPluginStatsTSMeanValue, 0);
-    doCallbacksFloat64Array(this->timeSeries[TSSigmaValue], currentPoint, NDPluginStatsTSSigmaValue, 0);
-    doCallbacksFloat64Array(this->timeSeries[TSTotal],      currentPoint, NDPluginStatsTSTotal, 0);
-    doCallbacksFloat64Array(this->timeSeries[TSNet],        currentPoint, NDPluginStatsTSNet, 0);
-    doCallbacksFloat64Array(this->timeSeries[TSCentroidTotal],  currentPoint, NDPluginStatsTSCentroidTotal, 0);
-    doCallbacksFloat64Array(this->timeSeries[TSCentroidX],      currentPoint, NDPluginStatsTSCentroidX, 0);
-    doCallbacksFloat64Array(this->timeSeries[TSCentroidY],      currentPoint, NDPluginStatsTSCentroidY, 0);
-    doCallbacksFloat64Array(this->timeSeries[TSSigmaX],         currentPoint, NDPluginStatsTSSigmaX, 0);
-    doCallbacksFloat64Array(this->timeSeries[TSSigmaY],         currentPoint, NDPluginStatsTSSigmaY, 0);
-    doCallbacksFloat64Array(this->timeSeries[TSSigmaXY],        currentPoint, NDPluginStatsTSSigmaXY, 0);
-    doCallbacksFloat64Array(this->timeSeries[TSSkewX],          currentPoint, NDPluginStatsTSSkewX, 0);
-    doCallbacksFloat64Array(this->timeSeries[TSSkewY],          currentPoint, NDPluginStatsTSSkewY, 0);
-    doCallbacksFloat64Array(this->timeSeries[TSKurtosisX],      currentPoint, NDPluginStatsTSKurtosisX, 0);
-    doCallbacksFloat64Array(this->timeSeries[TSKurtosisY],      currentPoint, NDPluginStatsTSKurtosisY, 0);
-    doCallbacksFloat64Array(this->timeSeries[TSEccentricity],   currentPoint, NDPluginStatsTSEccentricity, 0);
-    doCallbacksFloat64Array(this->timeSeries[TSOrientation],    currentPoint, NDPluginStatsTSOrientation, 0);
-    doCallbacksFloat64Array(this->timeSeries[TSTimestamp],      currentPoint, NDPluginStatsTSTimestamp, 0);
-}
-
 
 /** Callback function that is called by the NDArray driver with new NDArray data.
   * Does image statistics.
@@ -447,7 +416,6 @@ void NDPluginStats::processCallbacks(NDArray *pArray)
     int computeStatistics, computeCentroid, computeProfiles, computeHistogram;
     size_t sizeX=0, sizeY=0;
     int i;
-    int numTSPoints, currentTSPoint, TSAcquiring;
     int itemp;
     NDArrayInfo arrayInfo;
     static const char* functionName = "processCallbacks";
@@ -560,40 +528,35 @@ void NDPluginStats::processCallbacks(NDArray *pArray)
     // Take the lock again.  The time-series data need to be protected.
     this->lock();
 
-    getIntegerParam(NDPluginStatsTSCurrentPoint,     &currentTSPoint);
-    getIntegerParam(NDPluginStatsTSNumPoints,        &numTSPoints);
-    getIntegerParam(NDPluginStatsTSAcquiring,        &TSAcquiring);
-    if (TSAcquiring) {
-        timeSeries[TSMinValue][currentTSPoint]    = pStats->min;
-        timeSeries[TSMinX][currentTSPoint]        = (double)pStats->minX;
-        timeSeries[TSMinY][currentTSPoint]        = (double)pStats->minY;                        
-        timeSeries[TSMaxValue][currentTSPoint]    = pStats->max;
-        timeSeries[TSMaxX][currentTSPoint]        = (double)pStats->maxX;
-        timeSeries[TSMaxY][currentTSPoint]        = (double)pStats->maxY;                                
-        timeSeries[TSMeanValue][currentTSPoint]   = pStats->mean;
-        timeSeries[TSSigmaValue][currentTSPoint]  = pStats->sigma;
-        timeSeries[TSTotal][currentTSPoint]       = pStats->total;
-        timeSeries[TSNet][currentTSPoint]         = pStats->net;
-        timeSeries[TSCentroidTotal][currentTSPoint]   = pStats->centroidTotal;
-        timeSeries[TSCentroidX][currentTSPoint]       = pStats->centroidX;
-        timeSeries[TSCentroidY][currentTSPoint]       = pStats->centroidY;
-        timeSeries[TSSigmaX][currentTSPoint]          = pStats->sigmaX;
-        timeSeries[TSSigmaY][currentTSPoint]          = pStats->sigmaY;
-        timeSeries[TSSigmaXY][currentTSPoint]         = pStats->sigmaXY;
-        timeSeries[TSSkewX][currentTSPoint]           = pStats->skewX;
-        timeSeries[TSSkewY][currentTSPoint]           = pStats->skewY;
-        timeSeries[TSKurtosisX][currentTSPoint]       = pStats->kurtosisX;
-        timeSeries[TSKurtosisY][currentTSPoint]       = pStats->kurtosisY;
-        timeSeries[TSEccentricity][currentTSPoint]    = pStats->eccentricity;
-        timeSeries[TSOrientation][currentTSPoint]     = pStats->orientation;
-        timeSeries[TSTimestamp][currentTSPoint]       = pArray->timeStamp;
-        currentTSPoint++;
-        setIntegerParam(NDPluginStatsTSCurrentPoint, currentTSPoint);
-        if (currentTSPoint >= numTSPoints) {
-            setIntegerParam(NDPluginStatsTSAcquiring, 0);
-            doTimeSeriesCallbacks();
-        }
-    }
+    size_t dims=MAX_TIME_SERIES_TYPES;
+    NDArray *pTimeSeriesArray = this->pNDArrayPool->alloc(1, &dims, NDFloat64, 0, NULL);
+    epicsFloat64 *timeSeries = (epicsFloat64 *)pTimeSeriesArray->pData;
+
+    timeSeries[TSMinValue]        = pStats->min;
+    timeSeries[TSMinX]            = (double)pStats->minX;
+    timeSeries[TSMinY]            = (double)pStats->minY;                        
+    timeSeries[TSMaxValue]        = pStats->max;
+    timeSeries[TSMaxX]            = (double)pStats->maxX;
+    timeSeries[TSMaxY]            = (double)pStats->maxY;                                
+    timeSeries[TSMeanValue]       = pStats->mean;
+    timeSeries[TSSigmaValue]      = pStats->sigma;
+    timeSeries[TSTotal]           = pStats->total;
+    timeSeries[TSNet]             = pStats->net;
+    timeSeries[TSCentroidTotal]   = pStats->centroidTotal;
+    timeSeries[TSCentroidX]       = pStats->centroidX;
+    timeSeries[TSCentroidY]       = pStats->centroidY;
+    timeSeries[TSSigmaX]          = pStats->sigmaX;
+    timeSeries[TSSigmaY]          = pStats->sigmaY;
+    timeSeries[TSSigmaXY]         = pStats->sigmaXY;
+    timeSeries[TSSkewX]           = pStats->skewX;
+    timeSeries[TSSkewY]           = pStats->skewY;
+    timeSeries[TSKurtosisX]       = pStats->kurtosisX;
+    timeSeries[TSKurtosisY]       = pStats->kurtosisY;
+    timeSeries[TSEccentricity]    = pStats->eccentricity;
+    timeSeries[TSOrientation]     = pStats->orientation;
+    timeSeries[TSTimestamp]       = pArray->timeStamp;
+    doCallbacksGenericPointer(pTimeSeriesArray, NDArrayData, 1);
+
 
     if (computeStatistics) {
         setDoubleParam(NDPluginStatsMinValue,    pStats->min);
@@ -689,8 +652,6 @@ asynStatus NDPluginStats::writeInt32(asynUser *pasynUser, epicsInt32 value)
 {
     int function = pasynUser->reason;
     asynStatus status = asynSuccess;
-    int i;
-    int numPoints, currentPoint;
     static const char *functionName = "writeInt32";
 
 
@@ -705,38 +666,8 @@ asynStatus NDPluginStats::writeInt32(asynUser *pasynUser, epicsInt32 value)
         if (pPrevInputArray_) {
             processCallbacks(pPrevInputArray_);
         }
-    } else if (function == NDPluginStatsTSNumPoints) {
-        for (i=0; i<MAX_TIME_SERIES_TYPES; i++) {
-            free(this->timeSeries[i]);
-            timeSeries[i] = (double *)calloc(value, sizeof(double));
-        }
     } else if (function == NDPluginStatsHistSize) {
           status = computeHistX();
-    } else if (function == NDPluginStatsTSControl) {
-        switch (value) {
-            case TSEraseStart:
-                setIntegerParam(NDPluginStatsTSCurrentPoint, 0);
-                setIntegerParam(NDPluginStatsTSAcquiring, 1);
-                getIntegerParam(NDPluginStatsTSNumPoints, &numPoints);
-                for (i=0; i<MAX_TIME_SERIES_TYPES; i++) {
-                    memset(this->timeSeries[i], 0, numPoints*sizeof(double));
-                }
-                break;
-            case TSStart:
-                getIntegerParam(NDPluginStatsTSNumPoints, &numPoints);
-                getIntegerParam(NDPluginStatsTSCurrentPoint, &currentPoint);
-                if (currentPoint < numPoints) {
-                    setIntegerParam(NDPluginStatsTSAcquiring, 1);
-                }
-                break;
-            case TSStop:
-                setIntegerParam(NDPluginStatsTSAcquiring, 0);
-                doTimeSeriesCallbacks();
-                break;
-            case TSRead:
-                doTimeSeriesCallbacks();
-                break;
-        }
     } else {
         /* If this parameter belongs to a base class call its method */
         if (function < FIRST_NDPLUGIN_STATS_PARAM) 
@@ -827,13 +758,11 @@ NDPluginStats::NDPluginStats(const char *portName, int queueSize, int blockingCa
                          int priority, int stackSize, int maxThreads)
     /* Invoke the base class constructor */
     : NDPluginDriver(portName, queueSize, blockingCallbacks,
-                   NDArrayPort, NDArrayAddr, 1, maxBuffers, maxMemory,
+                   NDArrayPort, NDArrayAddr, 2, maxBuffers, maxMemory,
                    asynInt32ArrayMask | asynFloat64ArrayMask | asynGenericPointerMask,
                    asynInt32ArrayMask | asynFloat64ArrayMask | asynGenericPointerMask,
                    0, 1, priority, stackSize, maxThreads)
 {
-    int numTSPoints=256;  // Initial size of time series
-    int i;
     //static const char *functionName = "NDPluginStats";
     
     /* Statistics */
@@ -866,35 +795,6 @@ NDPluginStats::NDPluginStats(const char *portName, int queueSize, int blockingCa
     createParam(NDPluginStatsEccentricityString,      asynParamFloat64,    &NDPluginStatsEccentricity);
     createParam(NDPluginStatsOrientationString,       asynParamFloat64,    &NDPluginStatsOrientation);
 
-    /* Time series */
-    createParam(NDPluginStatsTSControlString,         asynParamInt32,        &NDPluginStatsTSControl);
-    createParam(NDPluginStatsTSNumPointsString,       asynParamInt32,        &NDPluginStatsTSNumPoints);
-    createParam(NDPluginStatsTSCurrentPointString,    asynParamInt32,        &NDPluginStatsTSCurrentPoint);
-    createParam(NDPluginStatsTSAcquiringString,       asynParamInt32,        &NDPluginStatsTSAcquiring);
-    createParam(NDPluginStatsTSMinValueString,        asynParamFloat64Array, &NDPluginStatsTSMinValue);
-    createParam(NDPluginStatsTSMinXString,            asynParamFloat64Array, &NDPluginStatsTSMinX);
-    createParam(NDPluginStatsTSMinYString,            asynParamFloat64Array, &NDPluginStatsTSMinY);            
-    createParam(NDPluginStatsTSMaxValueString,        asynParamFloat64Array, &NDPluginStatsTSMaxValue);
-    createParam(NDPluginStatsTSMaxXString,            asynParamFloat64Array, &NDPluginStatsTSMaxX);
-    createParam(NDPluginStatsTSMaxYString,            asynParamFloat64Array, &NDPluginStatsTSMaxY);                
-    createParam(NDPluginStatsTSMeanValueString,       asynParamFloat64Array, &NDPluginStatsTSMeanValue);
-    createParam(NDPluginStatsTSSigmaValueString,      asynParamFloat64Array, &NDPluginStatsTSSigmaValue);
-    createParam(NDPluginStatsTSTotalString,           asynParamFloat64Array, &NDPluginStatsTSTotal);
-    createParam(NDPluginStatsTSNetString,             asynParamFloat64Array, &NDPluginStatsTSNet);
-    createParam(NDPluginStatsTSCentroidTotalString,   asynParamFloat64Array, &NDPluginStatsTSCentroidTotal);
-    createParam(NDPluginStatsTSCentroidXString,       asynParamFloat64Array, &NDPluginStatsTSCentroidX);
-    createParam(NDPluginStatsTSCentroidYString,       asynParamFloat64Array, &NDPluginStatsTSCentroidY);
-    createParam(NDPluginStatsTSSigmaXString,          asynParamFloat64Array, &NDPluginStatsTSSigmaX);
-    createParam(NDPluginStatsTSSigmaYString,          asynParamFloat64Array, &NDPluginStatsTSSigmaY);
-    createParam(NDPluginStatsTSSigmaXYString,         asynParamFloat64Array, &NDPluginStatsTSSigmaXY);
-    createParam(NDPluginStatsTSSkewXString,           asynParamFloat64Array, &NDPluginStatsTSSkewX);
-    createParam(NDPluginStatsTSSkewYString,           asynParamFloat64Array, &NDPluginStatsTSSkewY);
-    createParam(NDPluginStatsTSKurtosisXString,       asynParamFloat64Array, &NDPluginStatsTSKurtosisX);
-    createParam(NDPluginStatsTSKurtosisYString,       asynParamFloat64Array, &NDPluginStatsTSKurtosisY);
-    createParam(NDPluginStatsTSEccentricityString,    asynParamFloat64Array, &NDPluginStatsTSEccentricity);
-    createParam(NDPluginStatsTSOrientationString,     asynParamFloat64Array, &NDPluginStatsTSOrientation);
-    createParam(NDPluginStatsTSTimestampString,       asynParamFloat64Array, &NDPluginStatsTSTimestamp);
-
     /* Profiles */
     createParam(NDPluginStatsComputeProfilesString,   asynParamInt32,         &NDPluginStatsComputeProfiles);
     createParam(NDPluginStatsProfileSizeXString,      asynParamInt32,         &NDPluginStatsProfileSizeX);
@@ -920,14 +820,6 @@ NDPluginStats::NDPluginStats(const char *portName, int queueSize, int blockingCa
     createParam(NDPluginStatsHistEntropyString,       asynParamFloat64,       &NDPluginStatsHistEntropy);
     createParam(NDPluginStatsHistArrayString,         asynParamFloat64Array,  &NDPluginStatsHistArray);
     createParam(NDPluginStatsHistXArrayString,        asynParamFloat64Array,  &NDPluginStatsHistXArray);
-
-    // If we uncomment the following line then we can't set numTSPoints from database at initialisation
-    //setIntegerParam(NDPluginStatsTSNumPoints, numTSPoints);
-    setIntegerParam(NDPluginStatsTSAcquiring, 0);
-    setIntegerParam(NDPluginStatsTSCurrentPoint, 0);
-    for (i=0; i<MAX_TIME_SERIES_TYPES; i++) {
-        timeSeries[i] = (double *)calloc(numTSPoints, sizeof(double));
-    }
 
     /* Set the plugin type string */
     setStringParam(NDPluginDriverPluginType, "NDPluginStats");
