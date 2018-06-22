@@ -12,12 +12,15 @@
 #ifndef NDArray_H
 #define NDArray_H
 
+#include <set>
 #include <epicsMutex.h>
 #include <epicsTime.h>
 #include <stdio.h>
 
 #include "NDAttribute.h"
 #include "NDAttributeList.h"
+
+#include "asynNDArrayDriver.h"
 
 /** The maximum number of dimensions in an NDArray */
 #define ND_ARRAY_MAX_DIMS 10
@@ -94,6 +97,7 @@ public:
     NDArray(int ndims, size_t *dims, NDDataType_t dataType, size_t dataSize, void *pData);
     virtual ~NDArray();
     int          initDimension   (NDDimension_t *pDimension, size_t size);
+    static int   computeArrayInfo(int ndims, size_t *dims, NDDataType_t dataType, NDArrayInfo *pInfo);
     int          getInfo         (NDArrayInfo_t *pInfo);
     int          reserve();
     int          release();
@@ -122,6 +126,28 @@ public:
                                   * The data is assumed to be stored in the order of dims[0] changing fastest, and 
                                   * dims[ndims-1] changing slowest. */
     NDAttributeList *pAttributeList;  /**< Linked list of attributes */
+};
+
+// This class defines the object that is contained in the std::multilist for sorting NDArrays in the freeList_.
+// It defines the < operator to use the NDArray::dataSize field as the sort key
+
+// We would like to hide this class definition in NDArrayPool.cpp and just forward reference it here.
+// That works on Visual Studio, and on gcc if instantiating plugins as heap variables with "new", but fails on gcc
+// if instantiating plugins as automatic variables.
+//class sortedListElement;
+
+class freeListElement {
+    public:
+        freeListElement(NDArray *pArray, size_t dataSize) {
+          pArray_ = pArray;
+          dataSize_ = dataSize;}
+        friend bool operator<(const freeListElement& lhs, const freeListElement& rhs) {
+            return (lhs.dataSize_ < rhs.dataSize_);
+        }
+        NDArray *pArray_;
+        size_t dataSize_;
+    private:
+        freeListElement(); // Default constructor is private so objects cannot be constructed without arguments
 };
 
 /** The NDArrayPool class manages a free list (pool) of NDArray objects.
@@ -163,15 +189,11 @@ protected:
     virtual void onReleaseArray(NDArray *pArray);
 
 private:
-    NDArray*     getFirstFreeArray();
-    NDArray*     getNextFreeArray(NDArray *pArray);
-    ELLLIST      freeList_;      /**< Linked list of free NDArray objects that form the pool */
+    std::multiset<freeListElement> freeList_;
     epicsMutexId listLock_;      /**< Mutex to protect the free list */
     int          numBuffers_;
     size_t       maxMemory_;     /**< Maximum bytes of memory this object is allowed to allocate; -1=unlimited */
     size_t       memorySize_;    /**< Number of bytes of memory this object has currently allocated */
-    int          numFree_;       /**< Number of NDArray objects in the free list */
-    int          ellNodeOffset_; /**< Difference between the list node and NDArray object that belongs to that node */
     class asynNDArrayDriver *pDriver_; /**< The asynNDArrayDriver that created this object */
 };
 

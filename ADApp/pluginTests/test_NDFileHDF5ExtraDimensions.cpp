@@ -383,7 +383,7 @@ BOOST_AUTO_TEST_CASE(test_PluginExtraDimensions)
 
   // We need some upstream driver for our test plugin so that calls to connectArrayPort don't fail, but we can then ignore it and send
   // arrays by calling processCallbacks directly.
-  driver = std::tr1::shared_ptr<asynNDArrayDriver>(new asynNDArrayDriver(simport.c_str(), 1, true, 0, asynGenericPointerMask, asynGenericPointerMask, 0, 0, 0, 0));
+  driver = std::tr1::shared_ptr<asynNDArrayDriver>(new asynNDArrayDriver(simport.c_str(), 1, 0, 0, asynGenericPointerMask, asynGenericPointerMask, 0, 0, 0, 0));
   NDArrayPool *arrayPool = driver->pNDArrayPool;
 
   // This is the plugin under test

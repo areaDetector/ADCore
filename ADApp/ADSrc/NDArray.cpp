@@ -14,6 +14,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <ellLib.h>
+#include <vector>
 
 #include <epicsMutex.h>
 #include <epicsTypes.h>
@@ -81,15 +82,10 @@ NDArray::~NDArray()
   delete this->pAttributeList;
 }
 
-/** Convenience method returns information about an NDArray, including the total number of elements, 
-  * the number of bytes per element, and the total number of bytes in the array.
-  \param[out] pInfo Pointer to an NDArrayInfo_t structure, must have been allocated by caller. */
-int NDArray::getInfo(NDArrayInfo_t *pInfo)
+/** Convenience method computes the total the total number of bytes in the array. */
+int NDArray::computeArrayInfo(int ndims, size_t *dims, NDDataType_t dataType, NDArrayInfo *pInfo)
 {
-  int i;
-  NDAttribute *pAttribute;
-
-  switch(this->dataType) {
+  switch(dataType) {
     case NDInt8:
       pInfo->bytesPerElement = sizeof(epicsInt8);
       break;
@@ -119,8 +115,23 @@ int NDArray::getInfo(NDArrayInfo_t *pInfo)
       break;
   }
   pInfo->nElements = 1;
-  for (i=0; i<this->ndims; i++) pInfo->nElements *= this->dims[i].size;
+  for (int i=0; i<ndims; i++) pInfo->nElements *= dims[i];
   pInfo->totalBytes = pInfo->nElements * pInfo->bytesPerElement;
+  return ND_SUCCESS;
+}
+/** Convenience method returns information about an NDArray, including the total number of elements, 
+  * the number of bytes per element, and the total number of bytes in the array.
+  \param[out] pInfo Pointer to an NDArrayInfo_t structure, must have been allocated by caller. */
+int NDArray::getInfo(NDArrayInfo_t *pInfo)
+{
+  int i;
+  NDAttribute *pAttribute;
+  size_t *dims_t = new size_t(this->ndims);
+  for (i=0; i<this->ndims; i++) dims_t[i] = this->dims[i].size;
+  int status = NDArray::computeArrayInfo(this->ndims, dims_t, this->dataType, pInfo);
+  delete dims_t;
+  if (status != ND_SUCCESS) return status;
+  
   pInfo->colorMode = NDColorModeMono;
   pAttribute = this->pAttributeList->find("ColorMode");
   if (pAttribute) pAttribute->getValue(NDAttrInt32, &pInfo->colorMode);

@@ -137,7 +137,7 @@ public:
     asynStatus incrementQueuedArrayCount();
     asynStatus decrementQueuedArrayCount();
     
-    NDArrayPool *pNDArrayPool;     /**< An NDArrayPool pointer that is initialized to pNDArrayPoolPvt_ in the constructor.
+    class NDArrayPool *pNDArrayPool;     /**< An NDArrayPool pointer that is initialized to pNDArrayPoolPvt_ in the constructor.
                                      * Plugins change this pointer to the one passed in NDArray::pNDArrayPool */
 
 protected:
@@ -192,12 +192,14 @@ protected:
     int NDPoolUsedMemory;
     int NDNumQueuedArrays;
 
-    NDArray **pArrays;             /**< An array of NDArray pointers used to store data in the driver */
+    class NDArray **pArrays;             /**< An array of NDArray pointers used to store data in the driver */
     class NDAttributeList *pAttributeList;  /**< An NDAttributeList object used to obtain the current values of a set of attributes */
     NDArrayPool *pNDArrayPoolPvt_;
     epicsMutex *queuedArrayCountMutex_;
     int threadStackSize_;
     int threadPriority_;
+    
+    friend class NDArrayPool;
 
 };
 

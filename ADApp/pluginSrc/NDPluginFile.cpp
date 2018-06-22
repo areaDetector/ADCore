@@ -435,7 +435,7 @@ asynStatus NDPluginFile::doCapture(int capture)
         }
     }
     
-    /* Decide whether or not to use the NDAttribute named "fileprefix" to create the filename */
+    /* Decide whether or not to use the NDAttribute named "FilePluginFileName" to create the filename */
     if (pArray) {
         if( pArray->pAttributeList->find(FILEPLUGIN_NAME) != NULL)
             this->useAttrFilePrefix = true;

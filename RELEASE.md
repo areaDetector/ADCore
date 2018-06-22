@@ -41,9 +41,16 @@ R3-3 (June XXX, 2018)
   A second constructor will be added to each base class in the future and the old one will be deprecated.
 * The maxMemory argument to the NDPluginDriver constructor is only used for NDArrays allocated before the
   first callback, so it can safely be set to 0 (unlimited).
+* The freelist in NDArrayPool was changed from being an EPICS ellList to an std::multiset.  The freelist is 
+  now sorted by the size of the NDArray.  This allows quickly finding an NDArray of the correct size, 
+  and knowing if no such NDArray exists.
+* Improved the efficiency of memory allocation.  Previously the first NDArray that is large enough was returned.
+  Now if the size of the smallest available NDArray exceeds the requested size by a factor of 1.5 then the
+  memory in that NDArray is freed and reallocated to be the requested size.  Thanks to Michael Huth for the first
+  implementation of this.
 * These changes are generally backwards compatible. However, startup scripts that set a non-zero value for 
   maxMemory in the driver may need to increase this value because all NDArrays are now allocated from this NDArrayPool.
-### Active plugin counting and waiting for plugins to complete
+### Queued array counting and waiting for plugins to complete
 * Previously if one wanted to wait for plugins to complete before the driver indicated that acquisition was complete
   then one needed to set CallbacksBlock=Yes for each plugin in the chain.
   Waiting for plugins is needed in cases like the following, for example:
@@ -54,14 +61,14 @@ R3-3 (June XXX, 2018)
 * There are 2 problems with setting CallbacksBlock=Yes.
   - It slows down the driver because the plugin is executing in the driver thread and not in its own thread.
   - It is complicated to change all of the required plugin settings from CallbacksBlock=No to CallbacksBlock=Yes.
-* The NDPluginDriver base class now increments a NumActivePlugins counter in the driver that owns each NDArray as it is queued, 
+* The NDPluginDriver base class now increments a NumQueuedArrays counter in the driver that owns each NDArray as it is queued, 
   and decrements the counter after the processing is done. 
 * All drivers have 3 new records:
-  - NumActivePlugins: This record indicates the total number of NDArrays that are currently processing or are queued
+  - NumQueuedArrays: This record indicates the total number of NDArrays that are currently processing or are queued
     for processing by this driver.
-  - WaitForPlugins: This record determines whether AcquireBusy waits for NumActivePlugins to go to 0 before changing to 0 when acquisition completes.
+  - WaitForPlugins: This record determines whether AcquireBusy waits for NumQueuedArrays to go to 0 before changing to 0 when acquisition completes.
   - AcquireBusy This is a busy record that is set to 1 when Acquire changes to 1. It changes back to 0 when acquisition completes, 
-    i.e. when Acquire_RBV=0. If WaitForPlugins is Yes then it also waits for NumActivePlugins to go to 0 before changing to 0.
+    i.e. when Acquire_RBV=0. If WaitForPlugins is Yes then it also waits for NumQueuedArrays to go to 0 before changing to 0.
 * The ADCollect sub-screen now contains these 3 PVs.
 * The ADBase screen contains the ADCollect screen, so it shows these PVs.
 * Driver screens typically do not use the ADCollect sub-screen, so they need to be individually edited to contain these PVs.  
@@ -71,6 +78,8 @@ R3-3 (June XXX, 2018)
 * Changes to allow the NDArray class to be inherited by derived classes.  Thanks to Sinisa Veseli for this. 
 * Added the epicsTS (EPICS time stamp) field to the report() output. 
   Previously the timeStamp field was in the report, but not the epicsTS field was not.
+* NDArrayPool::report() now prints a summary of the freeList entries if details>5 and shows the details
+  of each array in the freeList if details>10.  This information can be printed with "asynReport 6 driverName" for example.
 ### NDPluginPva
 * Added call to NDPluginDriver::endProcessCallbacks at the end of processCallbacks().
   This will do NDArray callbacks if enabled and will copy the last NDArray to pArrays[0] for asynReport.
@@ -109,6 +118,10 @@ R3-3 (June XXX, 2018)
   when loading these databases if these defaults are acceptable, which is often the case.
 ### ADApp/op/adl
 * Fixes to a number of .adl files to set text widget size and alignment, etc. to improve conversion to .opi and .ui files.
+### ADApp/pluginTests
+* Added a new unit test, test_NDArrayPool to test NDArrayPool::alloc().
+* All unit tests were changed to create an asynNDArrayDriver and use the NDArrayPool from that, rather than directly
+  creating an NDArrayPool.
 
 R3-2 (January 28, 2018)
 ======================
