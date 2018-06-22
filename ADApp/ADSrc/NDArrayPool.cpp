@@ -15,6 +15,9 @@
 
 #include "NDArray.h"
 
+// How much larger an NDArray must be than the required size before it is considered "too large"
+#define THRESHOLD_SIZE_RATIO 1.5
+
 static const char *driverName = "NDArrayPool";
 
 
@@ -36,9 +39,8 @@ extern "C" {epicsExportAddress(int, eraseNDAttributes);}
   * all of the NDArray objects; 0=unlimited.
   */
 NDArrayPool::NDArrayPool(class asynNDArrayDriver *pDriver, size_t maxMemory)
-  : numBuffers_(0), maxMemory_(maxMemory), memorySize_(0), numFree_(0), ellNodeOffset_(-1), pDriver_(pDriver)
+  : numBuffers_(0), maxMemory_(maxMemory), memorySize_(0), pDriver_(pDriver)
 {
-  ellInit(&freeList_);
   listLock_ = epicsMutexCreate();
 }
 
@@ -75,31 +77,6 @@ void NDArrayPool::onReleaseArray(NDArray *pArray)
 {
 }
 
-NDArray* NDArrayPool::getFirstFreeArray()
-{
-  /* Find a free image */
-  ELLNODE* ellNode = ellFirst(&freeList_);
-  if (ellNode) {
-    return (NDArray *)((char*)ellNode - ellNodeOffset_);
-  }
-  else {
-    return NULL;
-  }
-}
-
-NDArray* NDArrayPool::getNextFreeArray(NDArray *pArray)
-{
-  /* Find a free image */
-  ELLNODE* ellNode = ellNext(&pArray->node);
-  if (ellNode) {
-    return (NDArray *)((char*)ellNode - ellNodeOffset_);
-  }
-  else {
-    return NULL;
-  }
-}
-
-
 
 /** Allocates a new NDArray object; the first 3 arguments are required.
   * \param[in] ndims The number of dimensions in the NDArray. 
@@ -121,162 +98,101 @@ NDArray* NDArrayPool::getNextFreeArray(NDArray *pArray)
   */
 NDArray* NDArrayPool::alloc(int ndims, size_t *dims, NDDataType_t dataType, size_t dataSize, void *pData)
 {
-  NDArray *pArray=NULL, *freeArray=NULL, *nextArray=NULL, *closestArray=NULL, *threshArray=NULL;
-
+  NDArray *pArray=NULL;
   NDArrayInfo_t arrayInfo;
-  int i;
   const char* functionName = "NDArrayPool::alloc:";
 
   epicsMutexLock(listLock_);
 
-  /* Find a free image */
-  freeArray = getFirstFreeArray();
+  // Compute the required NDArray size
+  NDArray::computeArrayInfo(ndims, dims, dataType, &arrayInfo);
+  if (dataSize == 0) {
+    dataSize = arrayInfo.totalBytes;
+  } 
+  else if (dataSize < arrayInfo.totalBytes) {
+    asynPrint(pDriver_->pasynUserSelf, ASYN_TRACE_ERROR,
+      "%s: ERROR: required size=%d passed size=%d is too small, using required size\n",
+      functionName, (int)arrayInfo.totalBytes, (int)dataSize);
+    dataSize = arrayInfo.totalBytes;
+    // Since the passed dataSize was wrong we don't trust the passed pointer either
+    if (pData != NULL) pData = NULL;
+  }
 
-  if (!freeArray) {
-    /* We did not find a free image, allocate a new one */
+  // Try to find an array in the free list which is big enough.
+  freeListElement testElement(NULL, dataSize);
+  std::multiset<freeListElement>::iterator pListElement = freeList_.lower_bound(testElement);
+  if (pListElement == freeList_.end()) {
+    /* We did not find a free image that is large enough, allocate a new one */
     numBuffers_++;
     pArray = this->createArray();
-    if (ellNodeOffset_ < 0) {
-        /* Calculate offset for the first allocated buffer */
-        ellNodeOffset_ = (char*)(&(pArray->node)) - (char*)pArray;
-    }
-    ellAdd(&freeList_, &pArray->node);
-    numFree_++;
-  }
-
-  size_t thresholdSize = dataSize + dataSize / 2;
-  // sanity check for case of overflow when calculating thresholdSize
-  thresholdSize = (thresholdSize < dataSize) ? SIZE_MAX : thresholdSize;
-  if (freeArray) {
-    pArray = freeArray;
-    if (pArray->dataSize != dataSize) {
-      size_t diffSize = (pArray->dataSize > dataSize) ? pArray->dataSize - dataSize : dataSize - pArray->dataSize;
-      nextArray = getNextFreeArray(freeArray);
-      while (nextArray) {
-        if (nextArray->dataSize == dataSize) {
-          threshArray = nextArray;
-          break;
-        }
-        if (nextArray->dataSize > dataSize) {
-          if ((nextArray->dataSize - dataSize) < thresholdSize) {
-            if (threshArray) {
-              if (threshArray->dataSize > nextArray->dataSize) {
-                threshArray = nextArray;
-              }
-            } else {
-              threshArray = nextArray;
-            }
-          }
-        }
-        if (!threshArray) {
-          size_t ndiffSize = (nextArray->dataSize > dataSize) ? nextArray->dataSize - dataSize : dataSize - nextArray->dataSize;
-          if (ndiffSize < diffSize) {
-            diffSize = ndiffSize;
-            closestArray = nextArray;
-          }
-        }
-        nextArray = getNextFreeArray(nextArray);
-      }
-      if (threshArray) {
-        pArray = threshArray;
-      } else {
-        if (closestArray) {
-          pArray = closestArray;
-        }
-      }
+  } else {
+    pArray = pListElement->pArray_;
+    freeList_.erase(pListElement);
+    if (pListElement->dataSize_ > (dataSize * THRESHOLD_SIZE_RATIO)) {
+      // We found an array but it is too large.  Set the size to 0 so it will be allocated below.
+      memorySize_ -= pArray->dataSize;
+      free(pArray->pData);
+      pArray->pData = NULL;
     }
   }
-
-  if (pArray) {
-    /* We have a frame */
-    /* Initialize fields */
-    pArray->pNDArrayPool = this;
-    pArray->pDriver = pDriver_;
-    pArray->dataType = dataType;
-    pArray->ndims = ndims;
-    memset(pArray->dims, 0, sizeof(pArray->dims));
-    for (i=0; i<ndims && i<ND_ARRAY_MAX_DIMS; i++) {
-      pArray->dims[i].size = dims[i];
-      pArray->dims[i].offset = 0;
-      pArray->dims[i].binning = 1;
-      pArray->dims[i].reverse = 0;
-    }
-    pArray->codec = "";
-    /* Erase the attributes if that global flag is set */
-    if (eraseNDAttributes) pArray->pAttributeList->clear();
-    // calcs totalBytes
-    pArray->getInfo(&arrayInfo);
-    if (dataSize == 0) dataSize = arrayInfo.totalBytes;
-    if (!freeArray) {
-      if (arrayInfo.totalBytes > dataSize) {
-        // we have a passed array, check size
-        printf("%s: ERROR: required size=%d passed size=%d is too small\n",
-        functionName, (int)arrayInfo.totalBytes, (int)dataSize);
-        pArray=NULL;
-      }
-    }
+    
+  /* Initialize fields */
+  pArray->pNDArrayPool = this;
+  pArray->referenceCount = 1;
+  pArray->pDriver = pDriver_;
+  pArray->dataType = dataType;
+  pArray->ndims = ndims;
+  memset(pArray->dims, 0, sizeof(pArray->dims));
+  for (int i=0; i<ndims && i<ND_ARRAY_MAX_DIMS; i++) {
+    pArray->dims[i].size = dims[i];
+    pArray->dims[i].offset = 0;
+    pArray->dims[i].binning = 1;
+    pArray->dims[i].reverse = 0;
   }
 
-  if (pArray) {
-    /* If the caller passed a valid buffer use that, trust that its allocated size is correct */
-    if (pData) {
-      pArray->pData = pData;
+  /* Erase the attributes if that global flag is set */
+  if (eraseNDAttributes) pArray->pAttributeList->clear();
+
+  /* At this point pArray exists, but pArray->pData may be NULL */
+  /* If the caller passed a valid buffer use that */
+  if (pData) {
+    pArray->pData = pData;
+  } else if (pArray->pData == NULL) {
+    if ((maxMemory_ > 0) && ((memorySize_ + dataSize) > maxMemory_)) {
+      // We don't have enough memory to allocate the array
+      // See if we can get memory by deleting arrays
+      // Delete the largest arrays first, i.e. work from the end of freeList_
+      NDArray *freeArray;
+      std::multiset<freeListElement>::iterator it;
+      while (!freeList_.empty() && ((memorySize_ + dataSize) > maxMemory_)) {
+        it = freeList_.end();
+        it--;
+        freeArray = it->pArray_;
+        freeList_.erase(it);
+        memorySize_ -= freeArray->dataSize;
+        numBuffers_--;
+        delete freeArray;
+      }
+    }
+    if ((maxMemory_ > 0) && ((memorySize_ + dataSize) > maxMemory_)) {
+      asynPrint(pDriver_->pasynUserSelf, ASYN_TRACE_ERROR, 
+             "%s: error: reached limit of %ld memory (%d buffers)\n",
+             functionName, (long)maxMemory_, numBuffers_);
     } else {
-      /* See if the current buffer is big enough or is too big */
+      pArray->pData = malloc(dataSize);
       if (pArray->pData) {
-        if ((pArray->dataSize < dataSize) || (pArray->dataSize > thresholdSize)) {
-        /* No, we need to free the current buffer and allocate a new one */
-        /* See if there is enough room */
-          memorySize_ -= pArray->dataSize;
-          free(pArray->pData);
-          pArray->pData = NULL;
-          pArray->dataSize = 0;
-          pArray->compressedSize = 0;
-        }
-      }
-      if (!pArray->pData) {
-        if ((maxMemory_ > 0) && ((memorySize_ + dataSize) > maxMemory_)) {
-          // We don't have enough memory to allocate the array
-          // See if we can get memory by deleting arrays
-          NDArray *freeArray = getFirstFreeArray();
-          while (freeArray && ((memorySize_ + dataSize) > maxMemory_)) {
-            if (freeArray->pData) {
-              memorySize_ -= freeArray->dataSize;
-              free(freeArray->pData);
-              freeArray->pData = NULL;
-              freeArray->dataSize = 0;
-              freeArray->compressedSize = 0;
-            }
-            // Next array
-            freeArray = getNextFreeArray(freeArray);
-          }
-        }
-        if ((maxMemory_ > 0) && ((memorySize_ + dataSize) > maxMemory_)) {
-          printf("%s: error: reached limit of %ld memory (%d buffers)\n",
-                 functionName, (long)maxMemory_, numBuffers_);
-          pArray = NULL;
-        } else {
-          pArray->pData = malloc(dataSize);
-          if (pArray->pData) {
-            pArray->dataSize = dataSize;
-            pArray->compressedSize = dataSize;
-            memorySize_ += dataSize;
-          } else {
-            pArray = NULL;
-          }
-        }
+        pArray->dataSize = dataSize;
+        pArray->compressedSize = dataSize;
+        memorySize_ += dataSize;
       }
     }
-    // If we don't have a valid memory buffer see pArray to NULL to indicate error
-    if (pArray && (pArray->pData == NULL)) pArray = NULL;
   }
-  if (pArray) {
-    /* Set the reference count to 1, remove from free list */
-    pArray->referenceCount = 1;
-    ellDelete(&freeList_, &pArray->node);
-    numFree_--;
+  // If we don't have a valid memory buffer see pArray to NULL to indicate error
+  if (pArray && (pArray->pData == NULL)) {
+    delete pArray;
+    numBuffers_--;
+    pArray = NULL;
   }
-
 
   // Call allocation hook (for pools that manage objects derived from NDArray class)
   onAllocateArray(pArray);
@@ -340,11 +256,13 @@ int NDArrayPool::reserve(NDArray *pArray)
 
   /* Make sure we own this array */
   if (pArray->pNDArrayPool != this) {
-    printf("%s:%s: ERROR, not owner!  owner=%p, should be this=%p\n",
-         driverName, functionName, pArray->pNDArrayPool, this);
+    asynPrint(pDriver_->pasynUserSelf, ASYN_TRACE_ERROR, 
+      "%s::%s: ERROR, not owner!  owner=%p, should be this=%p\n",
+      driverName, functionName, pArray->pNDArrayPool, this);
     return(ND_ERROR);
   }
-  //printf("NDArrayPool::reserve pArray=%p, count=%d\n", pArray, pArray->referenceCount);
+  //asynPrint(pDriver_->pasynUserSelf, ASYN_TRACE_FLOW,
+  //  "NDArrayPool::reserve pArray=%p, count=%d\n", pArray, pArray->referenceCount);
   epicsMutexLock(listLock_);
   // If the reference count is less than 1 then something is wrong, this NDArray has been released.
   if (pArray->referenceCount < 1) {
@@ -373,17 +291,19 @@ int NDArrayPool::release(NDArray *pArray)
 
   /* Make sure we own this array */
   if (pArray->pNDArrayPool != this) {
-    printf("%s:%s: ERROR, not owner!  owner=%p, should be this=%p\n",
-           driverName, functionName, pArray->pNDArrayPool, this);
+    asynPrint(pDriver_->pasynUserSelf, ASYN_TRACE_ERROR, 
+      "%s::%s: ERROR, not owner!  owner=%p, should be this=%p\n",
+      driverName, functionName, pArray->pNDArrayPool, this);
     return(ND_ERROR);
   }
-  //printf("NDArrayPool::release pArray=%p, count=%d\n", pArray, pArray->referenceCount);
+  //asynPrint(pDriver_->pasynUserSelf, ASYN_TRACE_FLOW,
+  //  "NDArrayPool::release pArray=%p, count=%d\n", pArray, pArray->referenceCount);
   epicsMutexLock(listLock_);
   pArray->referenceCount--;
   if (pArray->referenceCount == 0) {
     /* The last user has released this image, add it back to the free list */
-    ellAdd(&freeList_, &pArray->node);
-    numFree_++;
+    freeListElement listElement(pArray, pArray->dataSize);
+    freeList_.insert(listElement);
   }
   if (pArray->referenceCount < 0) {
     cantProceed("%s:release ERROR, reference count < 0 pArray=%p\n",
@@ -635,8 +555,9 @@ int NDArrayPool::convert(NDArray *pIn,
   for (i=0; i<pIn->ndims; i++) {
     dimsOutCopy[i].size = dimsOutCopy[i].size/dimsOutCopy[i].binning;
     if (dimsOutCopy[i].size <= 0) {
-      printf("%s:%s: ERROR, invalid output dimension, size=%d, binning=%d\n",
-             driverName, functionName, (int)dimsOut[i].size, dimsOut[i].binning);
+      asynPrint(pDriver_->pasynUserSelf, ASYN_TRACE_ERROR,
+        "%s:%s: ERROR, invalid output dimension, size=%d, binning=%d\n",
+        driverName, functionName, (int)dimsOut[i].size, dimsOut[i].binning);
       return(ND_ERROR);
     }
     dimSizeOut[i] = dimsOutCopy[i].size;
@@ -651,8 +572,9 @@ int NDArrayPool::convert(NDArray *pIn,
   pOut = alloc(pIn->ndims, dimSizeOut, dataTypeOut, 0, NULL);
   *ppOut = pOut;
   if (!pOut) {
-    printf("%s:%s: ERROR, cannot allocate output array\n",
-           driverName, functionName);
+    asynPrint(pDriver_->pasynUserSelf, ASYN_TRACE_ERROR,
+      "%s:%s: ERROR, cannot allocate output array\n",
+      driverName, functionName);
     return(ND_ERROR);
   }
   /* Copy fields from input to output */
@@ -734,13 +656,13 @@ int NDArrayPool::convert(NDArray *pIn,
 /** Returns number of buffers this object has currently allocated */
 int NDArrayPool::getNumBuffers()
 {  
-return numBuffers_;
+  return numBuffers_;
 }
 
 /** Returns maximum bytes of memory this object is allowed to allocate; 0=unlimited */
 size_t NDArrayPool::getMaxMemory()
-{  
-return maxMemory_;
+{
+  return maxMemory_;
 }
 
 /** Returns mumber of bytes of memory this object has currently allocated */
@@ -752,7 +674,10 @@ size_t NDArrayPool::getMemorySize()
 /** Returns number of NDArray objects in the free list */
 int NDArrayPool::getNumFree()
 {
-  return numFree_;
+  epicsMutexLock(listLock_);
+  int size = (int)freeList_.size();
+  epicsMutexUnlock(listLock_);
+  return size;
 }
 
 /** Reports on the free list size and other properties of the NDArrayPool
@@ -765,20 +690,26 @@ int NDArrayPool::report(FILE *fp, int details)
   fprintf(fp, "\n");
   fprintf(fp, "NDArrayPool:\n");
   fprintf(fp, "  numBuffers=%d, numFree=%d\n",
-         numBuffers_, numFree_);
+         numBuffers_, this->getNumFree());
   fprintf(fp, "  memorySize=%ld, maxMemory=%ld\n",
         (long)memorySize_, (long)maxMemory_);
-  if(details > 0) {
-    unsigned i = 0;
-    NDArray *freeArray = getFirstFreeArray();
-    while(freeArray)
-    {
-      fprintf(fp, "Free Array %d:\n", i);
-      freeArray->report(fp, details);
-      freeArray = getNextFreeArray(freeArray);
-      i++;
+  if (details > 5) {
+    int i;
+    std::multiset<freeListElement>::iterator it;
+    NDArray *freeArray;
+    fprintf(fp, "  freeList: (index, dataSize, pArray)\n");
+    epicsMutexLock(listLock_);
+    for (it=freeList_.begin(),i=0; it!=freeList_.end(); ++it,i++) {
+      fprintf(fp, "    %d %d %p\n", i, (int)it->dataSize_, it->pArray_);
     }
+    if (details > 10) {
+      for (it=freeList_.begin(); it!=freeList_.end(); ++it) {
+        freeArray = it->pArray_;
+        fprintf(fp, "    Array %d\n", i);
+        freeArray->report(fp, details);
+      }
+    }
+    epicsMutexUnlock(listLock_);
   }
   return ND_SUCCESS;
 }
-

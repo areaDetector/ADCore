@@ -19,7 +19,7 @@
 using namespace std;
 
 
-struct PluginFixture
+struct NDPluginCircularBuffFixture
 {
     NDArrayPool *arrayPool;
     asynNDArrayDriver *dummy_driver;
@@ -35,7 +35,7 @@ struct PluginFixture
     asynOctetClient *cbTrigB;
     asynOctetClient *cbCalc;
 
-    PluginFixture()
+    NDPluginCircularBuffFixture()
     {
         std::string dummy_port("simPort"), testport("testPort");
 
@@ -47,7 +47,7 @@ struct PluginFixture
         // We need some upstream driver for our test plugin so that calls to connectToArrayPort don't fail, but we can then ignore it and send
         // arrays by calling processCallbacks directly.
         // Thus we instantiate a basic asynPortDriver object which is never used.
-        dummy_driver = new asynNDArrayDriver(dummy_port.c_str(), 1, true, 0, asynGenericPointerMask, asynGenericPointerMask, 0, 0, 0, 0);
+        dummy_driver = new asynNDArrayDriver(dummy_port.c_str(), 1, 0, 0, asynGenericPointerMask, asynGenericPointerMask, 0, 0, 0, 0);
         arrayPool = dummy_driver->pNDArrayPool;
 
         // This is the plugin under test
@@ -68,7 +68,7 @@ struct PluginFixture
         cbCalc = new asynOctetClient(testport.c_str(), 0, NDCircBuffTriggerCalcString);
 
     }
-    ~PluginFixture()
+    ~NDPluginCircularBuffFixture()
     {
         delete cbCalc;
         delete cbTrigB;
@@ -91,7 +91,7 @@ struct PluginFixture
     }
 };
 
-BOOST_FIXTURE_TEST_SUITE(CircularBuffTests, PluginFixture)
+BOOST_FIXTURE_TEST_SUITE(CircularBuffTests, NDPluginCircularBuffFixture)
 
 BOOST_AUTO_TEST_CASE(test_BufferWrappingAndStatusMessages)
 {
