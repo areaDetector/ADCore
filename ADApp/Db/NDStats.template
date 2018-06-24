@@ -390,60 +390,6 @@ record(ai, "$(P)$(R)Orientation_RBV")
 ###################################################################
 #  These records control time series                              #
 ###################################################################
-record(mbbo, "$(P)$(R)TSControl")
-{
-   field(DTYP, "asynInt32")
-   field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))TS_CONTROL")
-   field(ZRVL, "0")
-   field(ZRST, "Erase/Start")
-   field(ONVL, "1")
-   field(ONST, "Start")
-   field(TWVL, "2")
-   field(TWST, "Stop")
-   field(THVL, "3")
-   field(THST, "Read") 
-}
-
-# This record periodically pokes the TSControl record with 3 to read the time series
-# but only when TSAcquiring = Acquiring
-record(longout, "$(P)$(R)TSRead")
-{
-   field(SDIS, "$(P)$(R)TSAcquiring NPP NMS")
-   field(DISV, "0")
-   field(OUT,  "$(P)$(R)TSControl PP MS")
-   field(VAL,  "3")
-   field(SCAN, "1 second")
-   info(autosaveFields, "SCAN")
-}
-
-record(longout, "$(P)$(R)TSNumPoints")
-{
-   field(PINI, "YES")
-   field(DTYP, "asynInt32")
-   field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))TS_NUM_POINTS")
-   field(VAL,  "$(NCHANS)")
-   field(DRVH, "$(NCHANS)")
-   info(autosaveFields, "VAL")
-}
-
-record(longin, "$(P)$(R)TSCurrentPoint")
-{
-   field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))TS_CURRENT_POINT")
-   field(SCAN, "I/O Intr")
-}
-
-record(bi, "$(P)$(R)TSAcquiring")
-{
-   field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))TS_ACQUIRING")
-   field(ZNAM, "Done")
-   field(ONAM, "Acquiring")
-   field(ZSV,  "NO_ALARM")
-   field(OSV,  "MINOR")
-   field(SCAN, "I/O Intr")
-}
-
 record(waveform, "$(P)$(R)TSMinValue")
 {
    field(DTYP, "asynFloat64ArrayIn")
@@ -456,7 +402,7 @@ record(waveform, "$(P)$(R)TSMinValue")
 record(waveform, "$(P)$(R)TSMinX")
 {
    field(DTYP, "asynFloat64ArrayIn")
-   field(INP,  "@asyn($(TS_PORT=$(PORT)_TS),1),$(TIMEOUT=1))TS_TIME_SERIES")
+   field(INP,  "@asyn($(TS_PORT=$(PORT)_TS),1,$(TIMEOUT=1))TS_TIME_SERIES")
    field(NELM, "$(NCHANS)")
    field(FTVL, "DOUBLE")
    field(SCAN, "I/O Intr")
