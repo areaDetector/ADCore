@@ -246,164 +246,6 @@ composite {
 		}
 	}
 }
-"message button" {
-	object {
-		x=23
-		y=479
-		width=90
-		height=20
-	}
-	control {
-		chan="$(P)$(R)TSControl"
-		clr=14
-		bclr=51
-	}
-	label="Erase/Start"
-	press_msg="0"
-}
-"message button" {
-	object {
-		x=118
-		y=479
-		width=60
-		height=20
-	}
-	control {
-		chan="$(P)$(R)TSControl"
-		clr=14
-		bclr=51
-	}
-	label="Stop"
-	press_msg="2"
-}
-"message button" {
-	object {
-		x=183
-		y=479
-		width=60
-		height=20
-	}
-	control {
-		chan="$(P)$(R)TSControl"
-		clr=14
-		bclr=51
-	}
-	label="Start"
-	press_msg="1"
-}
-"text update" {
-	object {
-		x=248
-		y=480
-		width=90
-		height=18
-	}
-	monitor {
-		chan="$(P)$(R)TSAcquiring"
-		clr=54
-		bclr=12
-	}
-	clrmod="alarm"
-	format="string"
-	limits {
-	}
-}
-"text entry" {
-	object {
-		x=188
-		y=505
-		width=60
-		height=19
-	}
-	control {
-		chan="$(P)$(R)TSNumPoints"
-		clr=14
-		bclr=51
-	}
-	limits {
-	}
-}
-text {
-	object {
-		x=23
-		y=504
-		width=160
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Number of points"
-	align="horiz. right"
-}
-text {
-	object {
-		x=23
-		y=529
-		width=130
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Current point"
-	align="horiz. right"
-}
-"text update" {
-	object {
-		x=158
-		y=530
-		width=90
-		height=18
-	}
-	monitor {
-		chan="$(P)$(R)TSCurrentPoint"
-		clr=54
-		bclr=4
-	}
-	limits {
-	}
-}
-menu {
-	object {
-		x=118
-		y=555
-		width=80
-		height=18
-	}
-	control {
-		chan="$(P)$(R)TSRead.SCAN"
-		clr=14
-		bclr=51
-	}
-}
-"message button" {
-	object {
-		x=203
-		y=554
-		width=60
-		height=20
-	}
-	control {
-		chan="$(P)$(R)TSControl"
-		clr=14
-		bclr=51
-	}
-	label="Read"
-	press_msg="3"
-}
-text {
-	object {
-		x=23
-		y=554
-		width=90
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Read rate"
-}
 "cartesian plot" {
 	object {
 		x=720
@@ -589,4 +431,189 @@ text {
 	y2_axis {
 		rangeStyle="auto-scale"
 	}
+}
+text {
+	object {
+		x=46
+		y=531
+		width=130
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Current point"
+	align="horiz. right"
+}
+"text update" {
+	object {
+		x=181
+		y=532
+		width=90
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)TS:TSCurrentPoint"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+menu {
+	object {
+		x=181
+		y=556
+		width=80
+		height=20
+	}
+	control {
+		chan="$(P)$(R)TS:TSRead.SCAN"
+		clr=14
+		bclr=51
+	}
+}
+"message button" {
+	object {
+		x=266
+		y=556
+		width=60
+		height=20
+	}
+	control {
+		chan="$(P)$(R)TS:TSRead.PROC"
+		clr=14
+		bclr=51
+	}
+	label="Read"
+	press_msg="1"
+}
+text {
+	object {
+		x=86
+		y=556
+		width=90
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Read rate"
+	align="horiz. right"
+}
+"text entry" {
+	object {
+		x=181
+		y=507
+		width=60
+		height=19
+	}
+	control {
+		chan="$(P)$(R)TS:TSNumPoints"
+		clr=14
+		bclr=51
+	}
+	limits {
+	}
+}
+text {
+	object {
+		x=16
+		y=506
+		width=160
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Number of points"
+	align="horiz. right"
+}
+"message button" {
+	object {
+		x=86
+		y=481
+		width=90
+		height=20
+	}
+	control {
+		chan="$(P)$(R)TS:TSAcquire"
+		clr=14
+		bclr=51
+	}
+	label="Erase/Start"
+	press_msg="1"
+}
+"message button" {
+	object {
+		x=181
+		y=481
+		width=60
+		height=20
+	}
+	control {
+		chan="$(P)$(R)TS:TSAcquire"
+		clr=14
+		bclr=51
+	}
+	label="Stop"
+	press_msg="2"
+}
+"text update" {
+	object {
+		x=246
+		y=482
+		width=90
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)TS:TSAcquiring"
+		clr=54
+		bclr=12
+	}
+	clrmod="alarm"
+	format="string"
+	limits {
+	}
+}
+text {
+	object {
+		x=11
+		y=481
+		width=70
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Acquire"
+}
+text {
+	object {
+		x=136
+		y=581
+		width=40
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="More"
+	align="horiz. right"
+}
+"related display" {
+	object {
+		x=181
+		y=581
+		width=69
+		height=20
+	}
+	display[0] {
+		label="Time series control"
+		name="NDPluginTimeSeries.adl"
+		args="P=$(P),R=$(R)TS:"
+	}
+	clr=14
+	bclr=4
+	label="More"
 }
