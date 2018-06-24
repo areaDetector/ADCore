@@ -556,6 +556,7 @@ void NDPluginStats::processCallbacks(NDArray *pArray)
     timeSeries[TSOrientation]     = pStats->orientation;
     timeSeries[TSTimestamp]       = pArray->timeStamp;
     doCallbacksGenericPointer(pTimeSeriesArray, NDArrayData, 1);
+    pTimeSeriesArray->release();
 
 
     if (computeStatistics) {
