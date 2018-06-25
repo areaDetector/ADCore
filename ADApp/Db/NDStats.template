@@ -588,7 +588,7 @@ record(waveform, "$(P)$(R)TSOrientation")
    field(SCAN, "I/O Intr")
 }
 
-record(waveform, "$(P)$(R)TS:TSTimestamp")
+record(waveform, "$(P)$(R)TSTimestamp")
 {
    field(DTYP, "asynFloat64ArrayIn")
    field(INP,  "@asyn($(TS_PORT=$(PORT)_TS),22,$(TIMEOUT=1))TS_TIME_SERIES")
