@@ -494,188 +494,211 @@ composite {
 		}
 	}
 }
-text {
+composite {
 	object {
-		x=64
-		y=705
-		width=130
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Current point"
-	align="horiz. right"
-}
-"text update" {
-	object {
-		x=199
-		y=706
-		width=90
-		height=18
-	}
-	monitor {
-		chan="$(P)$(R)TS:TSCurrentPoint"
-		clr=54
-		bclr=4
-	}
-	limits {
-	}
-}
-menu {
-	object {
-		x=199
-		y=730
-		width=80
-		height=20
-	}
-	control {
-		chan="$(P)$(R)TS:TSRead.SCAN"
-		clr=14
-		bclr=51
-	}
-}
-"message button" {
-	object {
-		x=284
-		y=730
-		width=60
-		height=20
-	}
-	control {
-		chan="$(P)$(R)TS:TSRead.PROC"
-		clr=14
-		bclr=51
-	}
-	label="Read"
-	press_msg="1"
-}
-text {
-	object {
-		x=104
-		y=730
-		width=90
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Read rate"
-	align="horiz. right"
-}
-"text entry" {
-	object {
-		x=199
-		y=681
-		width=60
-		height=19
-	}
-	control {
-		chan="$(P)$(R)TS:TSNumPoints"
-		clr=14
-		bclr=51
-	}
-	limits {
-	}
-}
-text {
-	object {
-		x=34
-		y=680
-		width=160
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Number of points"
-	align="horiz. right"
-}
-"message button" {
-	object {
-		x=104
+		x=20
 		y=655
-		width=90
-		height=20
+		width=325
+		height=120
 	}
-	control {
-		chan="$(P)$(R)TS:TSAcquire"
-		clr=14
-		bclr=51
+	"composite name"=""
+	children {
+		text {
+			object {
+				x=55
+				y=705
+				width=130
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Current point"
+			align="horiz. right"
+		}
+		"text update" {
+			object {
+				x=190
+				y=706
+				width=90
+				height=18
+			}
+			monitor {
+				chan="$(P)$(R)TS:TSCurrentPoint"
+				clr=54
+				bclr=4
+			}
+			limits {
+			}
+		}
+		menu {
+			object {
+				x=170
+				y=730
+				width=100
+				height=20
+			}
+			control {
+				chan="$(P)$(R)TS:TSRead.SCAN"
+				clr=14
+				bclr=51
+			}
+		}
+		"message button" {
+			object {
+				x=275
+				y=730
+				width=70
+				height=20
+			}
+			control {
+				chan="$(P)$(R)TS:TSRead.PROC"
+				clr=14
+				bclr=51
+			}
+			label="Read"
+			press_msg="1"
+		}
+		text {
+			object {
+				x=75
+				y=730
+				width=90
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Read rate"
+			align="horiz. right"
+		}
+		"text entry" {
+			object {
+				x=190
+				y=681
+				width=60
+				height=19
+			}
+			control {
+				chan="$(P)$(R)TS:TSNumPoints"
+				clr=14
+				bclr=51
+			}
+			limits {
+			}
+		}
+		text {
+			object {
+				x=25
+				y=680
+				width=160
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Number of points"
+			align="horiz. right"
+		}
+		"message button" {
+			object {
+				x=95
+				y=655
+				width=90
+				height=20
+			}
+			control {
+				chan="$(P)$(R)TS:TSAcquire"
+				clr=14
+				bclr=51
+			}
+			label="Erase/Start"
+			press_msg="1"
+		}
+		"message button" {
+			object {
+				x=190
+				y=655
+				width=60
+				height=20
+			}
+			control {
+				chan="$(P)$(R)TS:TSAcquire"
+				clr=14
+				bclr=51
+			}
+			label="Stop"
+			press_msg="2"
+		}
+		"text update" {
+			object {
+				x=255
+				y=656
+				width=90
+				height=18
+			}
+			monitor {
+				chan="$(P)$(R)TS:TSAcquiring"
+				clr=54
+				bclr=12
+			}
+			clrmod="alarm"
+			format="string"
+			limits {
+			}
+		}
+		text {
+			object {
+				x=20
+				y=655
+				width=70
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Acquire"
+		}
+		"related display" {
+			object {
+				x=275
+				y=755
+				width=70
+				height=20
+			}
+			display[0] {
+				label="Time series control"
+				name="NDPluginTimeSeries.adl"
+				args="P=$(P),R=$(R)TS:"
+			}
+			clr=14
+			bclr=51
+			label="More"
+		}
+		text {
+			object {
+				x=55
+				y=754
+				width=110
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="AcquireMode"
+		}
+		menu {
+			object {
+				x=170
+				y=754
+				width=100
+				height=20
+			}
+			control {
+				chan="$(P)$(R)TS:TSAcquireMode"
+				clr=14
+				bclr=51
+			}
+		}
 	}
-	label="Erase/Start"
-	press_msg="1"
-}
-"message button" {
-	object {
-		x=199
-		y=655
-		width=60
-		height=20
-	}
-	control {
-		chan="$(P)$(R)TS:TSAcquire"
-		clr=14
-		bclr=51
-	}
-	label="Stop"
-	press_msg="2"
-}
-"text update" {
-	object {
-		x=264
-		y=656
-		width=90
-		height=18
-	}
-	monitor {
-		chan="$(P)$(R)TS:TSAcquiring"
-		clr=54
-		bclr=12
-	}
-	clrmod="alarm"
-	format="string"
-	limits {
-	}
-}
-text {
-	object {
-		x=29
-		y=655
-		width=70
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Acquire"
-}
-text {
-	object {
-		x=154
-		y=755
-		width=40
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="More"
-	align="horiz. right"
-}
-"related display" {
-	object {
-		x=199
-		y=755
-		width=69
-		height=20
-	}
-	display[0] {
-		label="Time series control"
-		name="NDPluginTimeSeries.adl"
-		args="P=$(P),R=$(R)TS:"
-	}
-	clr=14
-	bclr=4
-	label="More"
 }

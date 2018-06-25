@@ -1,12 +1,12 @@
 
 file {
-	name="/home/epics/devel/areaDetector/ADCore/ADApp/op/adl/NDStats.adl"
+	name="/home/epics/devel/areaDetector-3-3/ADCore/ADApp/op/adl/NDStats.adl"
 	version=030109
 }
 display {
 	object {
-		x=174
-		y=128
+		x=180
+		y=122
 		width=1120
 		height=675
 	}
@@ -897,6 +897,11 @@ text {
 		args="P=$(P),R=$(R)TS:,RN=$(R)TSSigma"
 	}
 	display[10] {
+		label="Time stamp"
+		name="NDStatsTimeSeriesPlot.adl"
+		args="P=$(P),R=$(R)TS:,RN=$(R)TSTimestamp"
+	}
+	display[11] {
 		label="All"
 		name="NDStatsTimeSeriesBasicAll.adl"
 		args="P=$(P),R=$(R)"
@@ -1896,51 +1901,51 @@ composite {
 		}
 	}
 }
-composite {
+rectangle {
+	object {
+		x=875
+		y=485
+		width=120
+		height=21
+	}
+	"basic attribute" {
+		clr=2
+	}
+}
+rectangle {
 	object {
 		x=755
 		y=480
 		width=360
 		height=155
 	}
+	"basic attribute" {
+		clr=14
+		fill="outline"
+	}
+}
+text {
+	object {
+		x=880
+		y=485
+		width=110
+		height=20
+	}
+	"basic attribute" {
+		clr=54
+	}
+	textix="Time Series"
+	align="horiz. centered"
+}
+composite {
+	object {
+		x=781
+		y=512
+		width=325
+		height=120
+	}
 	"composite name"=""
 	children {
-		rectangle {
-			object {
-				x=875
-				y=485
-				width=120
-				height=21
-			}
-			"basic attribute" {
-				clr=2
-			}
-		}
-		rectangle {
-			object {
-				x=755
-				y=480
-				width=360
-				height=155
-			}
-			"basic attribute" {
-				clr=14
-				fill="outline"
-			}
-		}
-		text {
-			object {
-				x=880
-				y=485
-				width=110
-				height=20
-			}
-			"basic attribute" {
-				clr=54
-			}
-			textix="Time Series"
-			align="horiz. centered"
-		}
 		text {
 			object {
 				x=816
