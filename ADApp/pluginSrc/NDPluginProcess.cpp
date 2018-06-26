@@ -365,7 +365,8 @@ NDPluginProcess::NDPluginProcess(const char *portName, int queueSize, int blocki
                    NDArrayPort, NDArrayAddr, 1, maxBuffers, maxMemory,
                    asynInt32ArrayMask | asynFloat64ArrayMask | asynGenericPointerMask,
                    asynInt32ArrayMask | asynFloat64ArrayMask | asynGenericPointerMask,
-                   ASYN_MULTIDEVICE, 1, priority, stackSize, 1)
+                   ASYN_MULTIDEVICE, 1, priority, stackSize, 1),
+    numFiltered(0)
 {
     //static const char *functionName = "NDPluginProcess";
 
