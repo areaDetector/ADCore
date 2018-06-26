@@ -1,6 +1,6 @@
 
 file {
-	name="/home/epics/devel/areaDetector-3-2/ADCore/ADApp/op/adl/ADBuffers.adl"
+	name="/home/epics/devel/areaDetector/ADCore/ADApp/op/adl/ADBuffers.adl"
 	version=030109
 }
 display {
@@ -8,7 +8,7 @@ display {
 		x=603
 		y=111
 		width=350
-		height=135
+		height=160
 	}
 	clr=14
 	bclr=4
@@ -201,7 +201,7 @@ rectangle {
 		x=0
 		y=0
 		width=350
-		height=135
+		height=160
 	}
 	"basic attribute" {
 		clr=14
@@ -278,4 +278,32 @@ text {
 	}
 	textix="Memory max/used (MB)"
 	align="horiz. right"
+}
+text {
+	object {
+		x=60
+		y=130
+		width=150
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Empty free list"
+	align="horiz. right"
+}
+"message button" {
+	object {
+		x=215
+		y=130
+		width=83
+		height=20
+	}
+	control {
+		chan="$(P)$(R)EmptyFreeList"
+		clr=14
+		bclr=51
+	}
+	label="Empty"
+	press_msg="1"
 }
