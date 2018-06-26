@@ -3,10 +3,10 @@ beginScreenProperties
 major 4
 minor 0
 release 0
-x 174
-y 128
+x 180
+y 122
 w 1120
-h 700
+h 675
 font "helvetica-medium-r-18.0"
 ctlFont "helvetica-medium-r-8.0"
 btnFont "helvetica-medium-r-18.0"
@@ -641,188 +641,6 @@ fgColor index 14
 useDisplayBg
 value {
  "Plot"
-}
-endObjectProperties
-
-# (Rectangle)
-object activeRectangleClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 875
-y 570
-w 119
-h 20
-lineColor index 2
-fill
-fillColor index 2
-lineWidth 0
-endObjectProperties
-
-# (Rectangle)
-object activeRectangleClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 755
-y 565
-w 360
-h 130
-lineColor index 14
-fillColor index 14
-lineWidth 0
-endObjectProperties
-
-# (Static Text)
-object activeXTextClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 880
-y 570
-w 110
-h 20
-font "helvetica-medium-r-8.0"
-fontAlign "center"
-fgColor index 54
-useDisplayBg
-value {
- "Time Series"
-}
-endObjectProperties
-
-# (Static Text)
-object activeXTextClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 816
-y 647
-w 130
-h 20
-font "helvetica-medium-r-8.0"
-fontAlign "right"
-fgColor index 14
-useDisplayBg
-value {
- "Current point"
-}
-endObjectProperties
-
-# (Text Control)
-object activeXTextDspClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 951
-y 648
-w 90
-h 18
-controlPv "$(P)$(R)TSCurrentPoint"
-font "helvetica-medium-r-8.0"
-smartRefresh
-fastUpdate
-fgColor index 54
-bgColor index 4
-autoHeight
-format decimal
-nullColor index 32
-useHexPrefix
-objType "controls"
-newPos
-endObjectProperties
-
-# (Static Text)
-object activeXTextClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 856
-y 672
-w 90
-h 20
-font "helvetica-medium-r-8.0"
-fontAlign "right"
-fgColor index 14
-useDisplayBg
-value {
- "Read rate"
-}
-endObjectProperties
-
-# (Text Control)
-object activeXTextDspClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 1003
-y 598
-w 90
-h 18
-controlPv "$(P)$(R)TSAcquiring"
-font "helvetica-medium-r-8.0"
-smartRefresh
-fastUpdate
-fgColor index 54
-fgAlarm
-bgColor index 12
-autoHeight
-format "string"
-nullColor index 32
-useHexPrefix
-objType "controls"
-newPos
-endObjectProperties
-
-# (Text Control)
-object activeXTextDspClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 951
-y 623
-w 60
-h 19
-controlPv "$(P)$(R)TSNumPoints"
-font "helvetica-medium-r-8.0"
-smartRefresh
-fastUpdate
-fgColor index 14
-bgColor index 51
-editable
-autoHeight
-format decimal
-motifWidget
-nullColor index 32
-useHexPrefix
-objType "controls"
-newPos
-endObjectProperties
-
-# (Static Text)
-object activeXTextClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 786
-y 622
-w 160
-h 20
-font "helvetica-medium-r-8.0"
-fontAlign "right"
-fgColor index 14
-useDisplayBg
-value {
- "Number of points"
 }
 endObjectProperties
 
@@ -2274,94 +2092,6 @@ value {
 }
 endObjectProperties
 
-# (Rectangle)
-object activeRectangleClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 882
-y 482
-w 106
-h 20
-lineColor index 2
-fill
-fillColor index 2
-lineWidth 0
-endObjectProperties
-
-# (Static Text)
-object activeXTextClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 910
-y 482
-w 50
-h 20
-font "helvetica-medium-r-8.0"
-fontAlign "center"
-fgColor index 54
-useDisplayBg
-value {
- "Reset"
-}
-endObjectProperties
-
-# (Static Text)
-object activeXTextClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 890
-y 509
-w 50
-h 20
-font "helvetica-medium-r-8.0"
-fontAlign "right"
-fgColor index 14
-useDisplayBg
-value {
- "Reset"
-}
-endObjectProperties
-
-# (Rectangle)
-object activeRectangleClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 755
-y 480
-w 360
-h 80
-lineColor index 14
-fillColor index 14
-lineWidth 0
-endObjectProperties
-
-# (Static Text)
-object activeXTextClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 850
-y 534
-w 90
-h 20
-font "helvetica-medium-r-8.0"
-fontAlign "right"
-fgColor index 14
-useDisplayBg
-value {
- "Configure"
-}
-endObjectProperties
-
 # (Text Control)
 object activeXTextDspClass
 beginObjectProperties
@@ -2510,6 +2240,350 @@ value {
 }
 endObjectProperties
 
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 390
+y 590
+w 360
+h 80
+
+beginGroup
+
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 517
+y 592
+w 106
+h 20
+lineColor index 2
+fill
+fillColor index 2
+lineWidth 0
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 545
+y 592
+w 50
+h 20
+font "helvetica-medium-r-8.0"
+fontAlign "center"
+fgColor index 54
+useDisplayBg
+value {
+ "Reset"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 525
+y 619
+w 50
+h 20
+font "helvetica-medium-r-8.0"
+fontAlign "right"
+fgColor index 14
+useDisplayBg
+value {
+ "Reset"
+}
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 390
+y 590
+w 360
+h 80
+lineColor index 14
+fillColor index 14
+lineWidth 0
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 485
+y 644
+w 90
+h 20
+font "helvetica-medium-r-8.0"
+fontAlign "right"
+fgColor index 14
+useDisplayBg
+value {
+ "Configure"
+}
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 875
+y 485
+w 119
+h 20
+lineColor index 2
+fill
+fillColor index 2
+lineWidth 0
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 755
+y 480
+w 360
+h 155
+lineColor index 14
+fillColor index 14
+lineWidth 0
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 880
+y 485
+w 110
+h 20
+font "helvetica-medium-r-8.0"
+fontAlign "center"
+fgColor index 54
+useDisplayBg
+value {
+ "Time Series"
+}
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 781
+y 512
+w 325
+h 120
+
+beginGroup
+
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 816
+y 562
+w 130
+h 20
+font "helvetica-medium-r-8.0"
+fontAlign "right"
+fgColor index 14
+useDisplayBg
+value {
+ "Current point"
+}
+endObjectProperties
+
+# (Text Control)
+object activeXTextDspClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 951
+y 563
+w 90
+h 18
+controlPv "$(P)$(R)TS:TSCurrentPoint"
+font "helvetica-medium-r-8.0"
+smartRefresh
+fastUpdate
+fgColor index 54
+bgColor index 4
+autoHeight
+format decimal
+nullColor index 32
+useHexPrefix
+objType "controls"
+newPos
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 836
+y 587
+w 90
+h 20
+font "helvetica-medium-r-8.0"
+fontAlign "right"
+fgColor index 14
+useDisplayBg
+value {
+ "Read rate"
+}
+endObjectProperties
+
+# (Text Control)
+object activeXTextDspClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 951
+y 538
+w 60
+h 19
+controlPv "$(P)$(R)TS:TSNumPoints"
+font "helvetica-medium-r-8.0"
+smartRefresh
+fastUpdate
+fgColor index 14
+bgColor index 51
+editable
+autoHeight
+format decimal
+motifWidget
+nullColor index 32
+useHexPrefix
+objType "controls"
+newPos
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 786
+y 537
+w 160
+h 20
+font "helvetica-medium-r-8.0"
+fontAlign "right"
+fgColor index 14
+useDisplayBg
+value {
+ "Number of points"
+}
+endObjectProperties
+
+# (Text Control)
+object activeXTextDspClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1016
+y 513
+w 90
+h 18
+controlPv "$(P)$(R)TS:TSAcquiring"
+font "helvetica-medium-r-8.0"
+smartRefresh
+fastUpdate
+fgColor index 54
+fgAlarm
+bgColor index 12
+autoHeight
+format "string"
+nullColor index 32
+useHexPrefix
+objType "controls"
+newPos
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 781
+y 512
+w 70
+h 20
+font "helvetica-medium-r-8.0"
+fgColor index 14
+useDisplayBg
+value {
+ "Acquire"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 816
+y 611
+w 110
+h 20
+font "helvetica-medium-r-8.0"
+fgColor index 14
+useDisplayBg
+value {
+ "AcquireMode"
+}
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+
 # (Menu Button)
 object activeMenuButtonClass
 beginObjectProperties
@@ -2572,126 +2646,6 @@ displayFileName {
 }
 menuLabel {
 }
-endObjectProperties
-
-# (Menu Button)
-object activeMenuButtonClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 951
-y 673
-w 80
-h 18
-fgColor index 14
-bgColor index 51
-inconsistentColor index 12
-topShadowColor index 2
-botShadowColor index 12
-controlPv "$(P)$(R)TSRead.SCAN"
-indicatorPv "$(P)$(R)TSRead.SCAN"
-font "helvetica-medium-r-10.0"
-endObjectProperties
-
-# (Message Button)
-object activeMessageButtonClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 1036
-y 672
-w 60
-h 20
-fgColor index 14
-onColor index 51
-offColor index 51
-topShadowColor index 0
-botShadowColor index 14
-controlPv "$(P)$(R)TSControl"
-pressValue "3"
-releaseValue 
-onLabel "Read"
-offLabel "Read"
-3d
-useEnumNumeric
-font "helvetica-medium-r-10.0"
-endObjectProperties
-
-# (Message Button)
-object activeMessageButtonClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 778
-y 597
-w 90
-h 20
-fgColor index 14
-onColor index 51
-offColor index 51
-topShadowColor index 0
-botShadowColor index 14
-controlPv "$(P)$(R)TSControl"
-pressValue "0"
-releaseValue 
-onLabel "Erase/Start"
-offLabel "Erase/Start"
-3d
-useEnumNumeric
-font "helvetica-medium-r-10.0"
-endObjectProperties
-
-# (Message Button)
-object activeMessageButtonClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 873
-y 597
-w 60
-h 20
-fgColor index 14
-onColor index 51
-offColor index 51
-topShadowColor index 0
-botShadowColor index 14
-controlPv "$(P)$(R)TSControl"
-pressValue "2"
-releaseValue 
-onLabel "Stop"
-offLabel "Stop"
-3d
-useEnumNumeric
-font "helvetica-medium-r-10.0"
-endObjectProperties
-
-# (Message Button)
-object activeMessageButtonClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 938
-y 597
-w 60
-h 20
-fgColor index 14
-onColor index 51
-offColor index 51
-topShadowColor index 0
-botShadowColor index 14
-controlPv "$(P)$(R)TSControl"
-pressValue "1"
-releaseValue 
-onLabel "Start"
-offLabel "Start"
-3d
-useEnumNumeric
-font "helvetica-medium-r-10.0"
 endObjectProperties
 
 # (Related Display)
@@ -2789,7 +2743,44 @@ major 4
 minor 0
 release 0
 x 951
-y 534
+y 449
+w 60
+h 20
+fgColor index 14
+bgColor index 51
+topShadowColor index 2
+botShadowColor index 12
+font "helvetica-medium-r-10.0"
+icon
+numPvs 0
+numDsps 0
+displayFileName {
+}
+menuLabel {
+}
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 390
+y 590
+w 360
+h 80
+
+beginGroup
+
+
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 586
+y 644
 w 60
 h 20
 fgColor index 14
@@ -2812,8 +2803,8 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 951
-y 509
+x 586
+y 619
 w 60
 h 20
 fgColor index 14
@@ -2831,15 +2822,128 @@ useEnumNumeric
 font "helvetica-medium-r-10.0"
 endObjectProperties
 
+endGroup
+
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 781
+y 512
+w 325
+h 120
+
+beginGroup
+
+
+# (Menu Button)
+object activeMenuButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 931
+y 587
+w 100
+h 20
+fgColor index 14
+bgColor index 51
+inconsistentColor index 12
+topShadowColor index 2
+botShadowColor index 12
+controlPv "$(P)$(R)TS:TSRead.SCAN"
+indicatorPv "$(P)$(R)TS:TSRead.SCAN"
+font "helvetica-medium-r-10.0"
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1036
+y 587
+w 70
+h 20
+fgColor index 14
+onColor index 51
+offColor index 51
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)TS:TSRead.PROC"
+pressValue "1"
+releaseValue 
+onLabel "Read"
+offLabel "Read"
+3d
+useEnumNumeric
+font "helvetica-medium-r-10.0"
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 856
+y 512
+w 90
+h 20
+fgColor index 14
+onColor index 51
+offColor index 51
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)TS:TSAcquire"
+pressValue "1"
+releaseValue 
+onLabel "Erase/Start"
+offLabel "Erase/Start"
+3d
+useEnumNumeric
+font "helvetica-medium-r-10.0"
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 951
+y 512
+w 60
+h 20
+fgColor index 14
+onColor index 51
+offColor index 51
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)TS:TSAcquire"
+pressValue "2"
+releaseValue 
+onLabel "Stop"
+offLabel "Stop"
+3d
+useEnumNumeric
+font "helvetica-medium-r-10.0"
+endObjectProperties
+
 # (Related Display)
 object relatedDisplayClass
 beginObjectProperties
 major 4
 minor 0
 release 0
-x 951
-y 449
-w 60
+x 1036
+y 612
+w 70
 h 20
 fgColor index 14
 bgColor index 51
@@ -2847,6 +2951,7 @@ topShadowColor index 2
 botShadowColor index 12
 font "helvetica-medium-r-10.0"
 icon
+buttonLabel "More"
 numPvs 0
 numDsps 0
 displayFileName {
@@ -2854,4 +2959,29 @@ displayFileName {
 menuLabel {
 }
 endObjectProperties
+
+# (Menu Button)
+object activeMenuButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 931
+y 611
+w 100
+h 20
+fgColor index 14
+bgColor index 51
+inconsistentColor index 12
+topShadowColor index 2
+botShadowColor index 12
+controlPv "$(P)$(R)TS:TSAcquireMode"
+indicatorPv "$(P)$(R)TS:TSAcquireMode"
+font "helvetica-medium-r-10.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
 

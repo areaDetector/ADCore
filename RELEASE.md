@@ -113,6 +113,15 @@ R3-3 (June XXX, 2018)
   6. Restores the previous NDArrayPort from the temporary location.
 * Add an sseq record to load the flatfile from a TIFF file.  This executes the same steps as for the background
   above, except that in step 5 it loads the NDArray into the flatfile image.
+### NDPluginStats
+* Changed the time series to use NDPluginTimeSeries, rather than having the time series logic in NDPluginStats.
+  This reduced the code by 240 lines, while adding the capability of running in Circular Buffer mode, 
+  not just a fixed number of time points.
+* NOTE: The names of the time series arrays for each statistic have not changed.  However, the name of the PVs to control
+  the time series acquisition have changed, for example from $(P)$(R)TSControl, to $(P)$(R)TS:TSAcquire.  This may
+  require changes to clients that were controlling time series acquisitions.
+* EXAMPLE_commonPlugins.cmd has changed to load an NDPluginTimeSeries plugin and database for each NDPluginStats plugin,
+  so the local commonPlugins.cmd file must be updated.
 ### ADApp/Db/
 * Added default ADDR=0 and TIMEOUT=1 to many template files.  This means these values do not need to be specified
   when loading these databases if these defaults are acceptable, which is often the case.
