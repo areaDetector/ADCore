@@ -127,13 +127,13 @@ NDArray* NDArrayPool::alloc(int ndims, size_t *dims, NDDataType_t dataType, size
     pArray = this->createArray();
   } else {
     pArray = pListElement->pArray_;
-    freeList_.erase(pListElement);
     if (pListElement->dataSize_ > (dataSize * THRESHOLD_SIZE_RATIO)) {
       // We found an array but it is too large.  Set the size to 0 so it will be allocated below.
       memorySize_ -= pArray->dataSize;
       free(pArray->pData);
       pArray->pData = NULL;
     }
+    freeList_.erase(pListElement);
   }
     
   /* Initialize fields */
@@ -668,6 +668,22 @@ int NDArrayPool::getNumFree()
   int size = (int)freeList_.size();
   epicsMutexUnlock(listLock_);
   return size;
+}
+
+void NDArrayPool::emptyFreeList()
+{
+  NDArray *freeArray;
+  std::multiset<freeListElement>::iterator it;
+  epicsMutexLock(listLock_);
+  while (!freeList_.empty()) {
+    it = freeList_.begin();
+    freeArray = it->pArray_;
+    freeList_.erase(it);
+    memorySize_ -= freeArray->dataSize;
+    numBuffers_--;
+    delete freeArray;
+  }
+  epicsMutexUnlock(listLock_);
 }
 
 /** Reports on the free list size and other properties of the NDArrayPool
