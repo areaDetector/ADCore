@@ -20,7 +20,7 @@ files respectively, in the configure/ directory of the appropriate release of th
 Release Notes
 =============
 
-R3-3 (June 26, 2018)
+R3-3 (June 27, 2018)
 ======================
 ### NDArrayPool design changes
 * Previously each plugin used its own NDArrayPool. This design had the problem that it was not really possible 
@@ -135,6 +135,8 @@ R3-3 (June 26, 2018)
   when loading these databases if these defaults are acceptable, which is often the case.
 ### ADApp/op/adl
 * Fixes to a number of .adl files to set text widget size and alignment, etc. to improve conversion to .opi and .ui files.
+### ADApp/op/edl/autoconvert
+* Major improvement in quality of edm screens (colors, fonts, etc.) thanks to Bruce Hill.
 ### ADApp/pluginTests
 * Added a new unit test, test_NDArrayPool to test NDArrayPool::alloc().
 * All unit tests were changed to create an asynNDArrayDriver and use the NDArrayPool from that, rather than directly
