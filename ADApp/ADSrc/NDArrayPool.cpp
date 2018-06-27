@@ -670,6 +670,7 @@ int NDArrayPool::getNumFree()
   return size;
 }
 
+/** Deletes all of the NDArrays in the free list */
 void NDArrayPool::emptyFreeList()
 {
   NDArray *freeArray;
