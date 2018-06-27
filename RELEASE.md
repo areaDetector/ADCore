@@ -20,7 +20,7 @@ files respectively, in the configure/ directory of the appropriate release of th
 Release Notes
 =============
 
-R3-3 (June XXX, 2018)
+R3-3 (June 26, 2018)
 ======================
 ### NDArrayPool design changes
 * Previously each plugin used its own NDArrayPool. This design had the problem that it was not really possible 
@@ -44,6 +44,14 @@ R3-3 (June XXX, 2018)
 * The freelist in NDArrayPool was changed from being an EPICS ellList to an std::multiset.  The freelist is 
   now sorted by the size of the NDArray.  This allows quickly finding an NDArray of the correct size, 
   and knowing if no such NDArray exists.
+* Previously there was no way to free the memory in the freelist, giving the memory back to the operating system
+  after a large number of NDArrays had been allocated, without restarting the IOC.  The NDArrayPool class now
+  has an emptyFreeList() method that deletes all of the NDArrays in the freelist.  asynNDArrayDriver has a
+  new NDPoolEmptyFreeList parameter, and NDArrayBase.template has a new bo record called $(P)$(R)EmptyFreeList
+  that will empty the freelist when processed.  Note that on Linux the freed memory may not actually be returned
+  to the operating system.  On Centos7 (and presumably many other versions of Linux) setting the value of the 
+  environment variable MALLOC_TRIM_THRESHOLD_ to a small value will allow the memory to actually be returned
+  to the operating system.
 * Improved the efficiency of memory allocation.  Previously the first NDArray that is large enough was returned.
   Now if the size of the smallest available NDArray exceeds the requested size by a factor of 1.5 then the
   memory in that NDArray is freed and reallocated to be the requested size.  Thanks to Michael Huth for the first
