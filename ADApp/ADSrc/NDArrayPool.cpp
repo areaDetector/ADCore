@@ -11,6 +11,9 @@
 #include <stdint.h>
 
 #include <cantProceed.h>
+
+#include "asynNDArrayDriver.h"
+
 #include <epicsExport.h>
 
 #include "NDArray.h"
