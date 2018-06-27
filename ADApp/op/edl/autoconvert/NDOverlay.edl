@@ -1,28 +1,28 @@
-4 0 0
+4 0 1
 beginScreenProperties
 major 4
 minor 0
-release 0
+release 1
 x 353
 y 59
 w 390
 h 690
 font "helvetica-medium-r-18.0"
-ctlFont "helvetica-medium-r-8.0"
+ctlFont "helvetica-bold-r-10.0"
 btnFont "helvetica-medium-r-18.0"
-fgColor index 14
-bgColor index 4
-textColor index 14
-ctlFgColor1 index 30
-ctlFgColor2 index 32
-ctlBgColor1 index 34
-ctlBgColor2 index 35
-topShadowColor index 37
-botShadowColor index 44
+fgColor rgb 0 0 0
+bgColor rgb 47872 47872 47872
+textColor rgb 0 0 0
+ctlFgColor1 rgb 64256 62208 18944
+ctlFgColor2 rgb 60928 46592 11008
+ctlBgColor1 rgb 52480 24832 0
+ctlBgColor2 rgb 65280 45056 65280
+topShadowColor rgb 44544 19968 48128
+botShadowColor rgb 13312 13056 34304
+showGrid
 snapToGrid
-gridSize 5
+gridSize 4
 endScreenProperties
-
 
 # (Rectangle)
 object activeRectangleClass
@@ -34,9 +34,9 @@ x 0
 y 5
 w 389
 h 24
-lineColor index 2
+lineColor rgb 55808 55808 55808
 fill
-fillColor index 2
+fillColor rgb 55808 55808 55808
 lineWidth 0
 endObjectProperties
 
@@ -44,18 +44,19 @@ endObjectProperties
 object activeXTextClass
 beginObjectProperties
 major 4
-minor 0
-release 0
+minor 1
+release 1
 x 0
 y 6
 w 390
 h 25
-font "helvetica-medium-r-8.0"
+font "helvetica-medium-r-18.0"
 fontAlign "center"
-fgColor index 54
+fgColor rgb 2560 0 47104
+bgColor index 3
 useDisplayBg
 value {
- "$(P)$(R)"
+  "$(P)$(R)"
 }
 endObjectProperties
 
@@ -76,26 +77,28 @@ beginGroup
 object activePipClass
 beginObjectProperties
 major 4
-minor 0
+minor 1
 release 0
 x 5
 y 40
 w 380
 h 555
-fgColor index 14
-bgColor index 0
-topShadowColor index 0
-botShadowColor index 14
-noScroll
+fgColor rgb 0 0 0
+bgColor rgb 65280 65280 65280
+topShadowColor rgb 65280 65280 65280
+botShadowColor rgb 0 0 0
 displaySource "file"
 file "NDPluginBase.edl"
 sizeOfs 5
-numDsps 0
+numDsps 1
+displayFileName {
+  0 "NDPluginBase.edl"
+}
+noScroll
 endObjectProperties
 
 endGroup
 
-visPv ""
 visMin "A"
 visMax "1"
 endObjectProperties
@@ -110,8 +113,8 @@ x 5
 y 600
 w 380
 h 85
-lineColor index 14
-fillColor index 14
+lineColor rgb 0 0 0
+fillColor rgb 0 0 0
 lineWidth 0
 endObjectProperties
 
@@ -119,18 +122,19 @@ endObjectProperties
 object activeXTextClass
 beginObjectProperties
 major 4
-minor 0
-release 0
+minor 1
+release 1
 x 22
 y 630
 w 140
 h 20
-font "helvetica-medium-r-8.0"
+font "helvetica-medium-r-14.0"
 fontAlign "right"
-fgColor index 14
+fgColor rgb 0 0 0
+bgColor index 3
 useDisplayBg
 value {
- "Individual 0-7"
+  "Individual 0-7"
 }
 endObjectProperties
 
@@ -138,18 +142,19 @@ endObjectProperties
 object activeXTextClass
 beginObjectProperties
 major 4
-minor 0
-release 0
+minor 1
+release 1
 x 138
 y 605
 w 150
 h 20
-font "helvetica-medium-r-8.0"
+font "helvetica-medium-r-14.0"
 fontAlign "right"
-fgColor index 14
+fgColor rgb 0 0 0
+bgColor index 3
 useDisplayBg
 value {
- "Overlay definitions"
+  "Overlay definitions"
 }
 endObjectProperties
 
@@ -157,18 +162,19 @@ endObjectProperties
 object activeXTextClass
 beginObjectProperties
 major 4
-minor 0
-release 0
+minor 1
+release 1
 x 82
 y 658
 w 80
 h 20
-font "helvetica-medium-r-8.0"
+font "helvetica-medium-r-14.0"
 fontAlign "right"
-fgColor index 14
+fgColor rgb 0 0 0
+bgColor index 3
 useDisplayBg
 value {
- "Combined"
+  "Combined"
 }
 endObjectProperties
 
@@ -182,18 +188,54 @@ x 172
 y 630
 w 160
 h 20
-fgColor index 14
-bgColor index 51
-topShadowColor index 2
-botShadowColor index 12
-font "helvetica-medium-r-10.0"
+fgColor rgb 0 0 0
+bgColor rgb 29440 57088 65280
+topShadowColor rgb 55808 55808 55808
+botShadowColor rgb 17920 17920 17920
+font "helvetica-medium-r-12.0"
 icon
 buttonLabel "Individual Overlays"
-numPvs 0
-numDsps 0
+numPvs 16
+numDsps 8
 displayFileName {
+  0 NDOverlayN.edl
+  1 NDOverlayN.edl
+  2 NDOverlayN.edl
+  3 NDOverlayN.edl
+  4 NDOverlayN.edl
+  5 NDOverlayN.edl
+  6 NDOverlayN.edl
+  7 NDOverlayN.edl
 }
 menuLabel {
+  0 Overlay 1
+  1 Overlay 2
+  2 Overlay 3
+  3 Overlay 4
+  4 Overlay 5
+  5 Overlay 6
+  6 Overlay 7
+  7 Overlay 8
+}
+symbols {
+  0 "P=$(P),R=$(R)1:"
+  1 "P=$(P),R=$(R)2:"
+  2 "P=$(P),R=$(R)3:"
+  3 "P=$(P),R=$(R)4:"
+  4 "P=$(P),R=$(R)5:"
+  5 "P=$(P),R=$(R)6:"
+  6 "P=$(P),R=$(R)7:"
+  7 "P=$(P),R=$(R)8:"
+}
+replaceSymbols {
+  0 1
+  1 1
+  2 1
+  3 1
+  4 1
+  5 1
+  6 1
+  7 1
 }
 endObjectProperties
 
@@ -207,18 +249,30 @@ x 172
 y 657
 w 160
 h 20
-fgColor index 14
-bgColor index 51
-topShadowColor index 2
-botShadowColor index 12
-font "helvetica-medium-r-10.0"
+fgColor rgb 0 0 0
+bgColor rgb 29440 57088 65280
+topShadowColor rgb 55808 55808 55808
+botShadowColor rgb 17920 17920 17920
+font "helvetica-medium-r-12.0"
 icon
 buttonLabel "Combined Overlays"
-numPvs 0
-numDsps 0
+numPvs 4
+numDsps 2
 displayFileName {
+  0 NDOverlay8.edl
+  1 NDOverlay8.edl
 }
 menuLabel {
+  0 Overlays 1-8
+  1 Overlays 9-16
+}
+symbols {
+  0 "P=$(P),R=$(R),O1=$(R)1:,O2=$(R)2:,O3=$(R)3:,O4=$(R)4:,O5=$(R)5:,O6=$(R)6:,O7=$(R)7:,O8=$(R)8:"
+  1 "P=$(P),R=$(R),O1=$(R)9:,O2=$(R)10:,O3=$(R)11:,O4=$(R)12:,O5=$(R)13:,O6=$(R)14:,O7=$(R)15:,O8=$(R)16:"
+}
+replaceSymbols {
+  0 1
+  1 1
 }
 endObjectProperties
 
