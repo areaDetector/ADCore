@@ -30,8 +30,9 @@ R3-3-1 (June 30, 2018)
   ```
   USR_INCLUDES += $(addprefix -I, $(XML2_INCLUDE))
   ```
-  This allows XML2_INCLUDE to contain multiple directory paths. Note that these user-defined include directories
-  must __not__ contain the -I in their definitions.  
+  This allows XML2_INCLUDE to contain multiple directory paths. 
+  
+  Note that these user-defined include directories must __not__ contain the -I in their definitions.  
   Prior to areaDetector R3-3-1 the areaDetector/configure/EXAMPLE_CONFIG_SITE.local* files incorrectly had
   the -I flags in them, and these would not work correctly with the existing Makefiles.
 
