@@ -19,6 +19,20 @@ files respectively, in the configure/ directory of the appropriate release of th
 
 Release Notes
 =============
+R3-3-1 (June 30, 2018)
+* ADApp/ADSrc/Makefile, ADApp/pluginSrc/Makefile, ADApp/pluginTests/Makefile
+  * Changed USR_INCLUDES definitions for all user-defined include directories, for example XML_INCLUDE from this
+  ```
+  USR_INCLUDES += -I$(XML2_INCLUDE)
+  ```
+  to this:
+  ```
+  USR_INCLUDES += $(addprefix -I, $(XML2_INCLUDE))
+  ```
+  This allows XML2_INCLUDE to contain multiple directory paths. Note that these user-defined include directories
+  must __not__ contain the -I in their definitions.  
+  Prior to areaDetector R3-3-1 the areaDetector/configure/EXAMPLE_CONFIG_SITE.local* files incorrectly had
+  the -I flags in them, and these would not work correctly with the existing Makefiles.
 
 R3-3 (June 27, 2018)
 ======================
