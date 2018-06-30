@@ -22,7 +22,8 @@ Release Notes
 R3-3-1 (June 30, 2018)
 * ADApp/ADSrc/Makefile, ADApp/pluginSrc/Makefile, ADApp/pluginTests/Makefile
   
-  Changed USR_INCLUDES definitions for all user-defined include directories, for example XML_INCLUDE from this
+  Changed USR_INCLUDES definitions for all user-defined include directories,
+  (for example XML_INCLUDE) from this:
   ```
   USR_INCLUDES += -I$(XML2_INCLUDE)
   ```
