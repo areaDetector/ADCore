@@ -35,8 +35,8 @@ R3-3-1 (June 30, 2018)
   
   Note that these user-defined include directories must __not__ contain the -I in their definitions.  
   Prior to areaDetector R3-3-1 the areaDetector/configure/EXAMPLE_CONFIG_SITE.local* files incorrectly had
-  the -I flags in them, and these would not work correctly with the Makefiles in any release of ADCore or
-  other repositories.
+  the -I flags in them, and these would not work correctly with the Makefiles in this release 
+  (or prior releases) of ADCore or other repositories.
 
 R3-3 (June 27, 2018)
 ======================
