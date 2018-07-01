@@ -19,8 +19,14 @@ files respectively, in the configure/ directory of the appropriate release of th
 
 Release Notes
 =============
-R3-3-1 (June 30, 2018)
+R3-3-1 (July XXX, 2018)
 ======================
+### ADApp/commonDriverMakefile
+* Added qsrv dbd and lib files so that areaDetector IOCs can serve normal EPICS PVs using pvAccess.
+  Thanks to Pete Jemian for this.
+### ADApp/ADSrc
+* Changes in include statements in several files to eliminate warning when building dynamically with
+  Visual Studio.
 ### ADApp/ADSrc/Makefile, ADApp/pluginSrc/Makefile, ADApp/pluginTests/Makefile
 * Changed USR_INCLUDES definitions for all user-defined include directories,
   (for example XML_INCLUDE) from this:
