@@ -19,7 +19,7 @@ files respectively, in the configure/ directory of the appropriate release of th
 
 Release Notes
 =============
-R3-3-1 (July XXX, 2018)
+R3-3-1 (July 1, 2018)
 ======================
 ### ADApp/commonDriverMakefile
 * Added qsrv dbd and lib files so that areaDetector IOCs can serve normal EPICS PVs using pvAccess.
