@@ -12,10 +12,11 @@
 
 #include <cantProceed.h>
 
-#include "asynNDArrayDriver.h"
+#include <asynPortDriver.h>
 
 #include <epicsExport.h>
 
+#include "asynNDArrayDriver.h"
 #include "NDArray.h"
 
 // How much larger an NDArray must be than the required size before it is considered "too large"

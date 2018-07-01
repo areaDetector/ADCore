@@ -25,7 +25,7 @@
 #include <macLib.h>
 #include <cantProceed.h>
 
-#include <asynDriver.h>
+#include <asynPortDriver.h>
 
 
 #define epicsExportSharedSymbols
