@@ -176,6 +176,12 @@ ifeq ($(WITH_ZLIB),YES)
   endif
 endif
 
+ifdef FFMPEGSERVER
+  $(DBD_NAME)_DBD += ffmpegServer.dbd
+  PROD_LIBS       += ffmpegServer
+  PROD_LIBS       += avdevice avformat avcodec swresample swscale avutil
+endif
+
 ifdef ADPLUGINEDGE
   $(DBD_NAME)_DBD  += NDPluginEdge.dbd
   PROD_LIBS         += NDPluginEdge
