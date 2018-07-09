@@ -19,6 +19,14 @@ files respectively, in the configure/ directory of the appropriate release of th
 
 Release Notes
 =============
+R3-3-2 (July 9, 2018)
+======================
+### ADApp/commonDriverMakefile
+* Changed so that qsrv dbd and lib files are only included if WITH_QSRV=YES.
+  Previously they were included if WITH_PVA=YES.  However base 3.14.12 supports
+  WITH_PVA but does not support qsrv.  This allows WITH_PVA=YES to be used on 3.14.12
+  as long as WITH_QSRV=NO.
+
 R3-3-1 (July 1, 2018)
 ======================
 ### ADApp/commonDriverMakefile
