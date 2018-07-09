@@ -17,14 +17,18 @@ $(DBD_NAME)_DBD += ADSupport.dbd
 
 $(DBD_NAME)_DBD += NDFileNull.dbd
 
+# Note that if WITH_QSRV is YES then WITH_PVA must also be YES
+ifeq ($(WITH_QSRV),YES)
+  $(DBD_NAME)_DBD += qsrv.dbd
+  PROD_LIBS += qsrv
+endif
+
 ifeq ($(WITH_PVA),YES)
   $(DBD_NAME)_DBD += NDPluginPva.dbd
   $(DBD_NAME)_DBD += PVAServerRegister.dbd
-  $(DBD_NAME)_DBD += qsrv.dbd
   PROD_LIBS += ntndArrayConverter
   PROD_LIBS += nt
   PROD_LIBS += pvDatabase
-  PROD_LIBS += qsrv
   ifdef EPICS_BASE_PVA_CORE_LIBS
     PROD_LIBS += $(EPICS_BASE_PVA_CORE_LIBS)
   else
