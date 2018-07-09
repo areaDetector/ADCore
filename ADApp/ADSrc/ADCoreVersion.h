@@ -3,7 +3,7 @@
 
 #define ADCORE_VERSION      3
 #define ADCORE_REVISION     3
-#define ADCORE_MODIFICATION 1
+#define ADCORE_MODIFICATION 2
 
 #endif
 
