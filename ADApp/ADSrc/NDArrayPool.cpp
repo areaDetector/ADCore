@@ -8,7 +8,7 @@
 
 #include <stdlib.h>
 #include <dbDefs.h>
-#include <stdint.h>
+#include <limits>
 
 #include <cantProceed.h>
 #include <epicsExport.h>
@@ -146,7 +146,7 @@ NDArray* NDArrayPool::alloc(int ndims, size_t *dims, NDDataType_t dataType, size
 
   size_t thresholdSize = dataSize + dataSize / 2;
   // sanity check for case of overflow when calculating thresholdSize
-  thresholdSize = (thresholdSize < dataSize) ? SIZE_MAX : thresholdSize;
+  thresholdSize = (thresholdSize < dataSize) ? std::numeric_limits<size_t>::max() : thresholdSize;
   if (freeArray) {
     pArray = freeArray;
     if (pArray->dataSize != dataSize) {
