@@ -8,7 +8,7 @@ display {
 		x=305
 		y=202
 		width=1435
-		height=755
+		height=780
 	}
 	clr=14
 	bclr=4
@@ -110,197 +110,6 @@ text {
 	}
 	textix="$(P)$(R)"
 	align="horiz. centered"
-}
-"message button" {
-	object {
-		x=10
-		y=655
-		width=90
-		height=20
-	}
-	control {
-		chan="$(P)$(R)TSControl"
-		clr=14
-		bclr=51
-	}
-	label="Erase/Start"
-	press_msg="0"
-}
-"message button" {
-	object {
-		x=105
-		y=655
-		width=60
-		height=20
-	}
-	control {
-		chan="$(P)$(R)TSControl"
-		clr=14
-		bclr=51
-	}
-	label="Stop"
-	press_msg="2"
-}
-"message button" {
-	object {
-		x=170
-		y=655
-		width=60
-		height=20
-	}
-	control {
-		chan="$(P)$(R)TSControl"
-		clr=14
-		bclr=51
-	}
-	label="Start"
-	press_msg="1"
-}
-"text update" {
-	object {
-		x=235
-		y=656
-		width=90
-		height=18
-	}
-	monitor {
-		chan="$(P)$(R)TSAcquiring"
-		clr=54
-		bclr=12
-	}
-	clrmod="alarm"
-	format="string"
-	limits {
-	}
-}
-composite {
-	object {
-		x=10
-		y=680
-		width=225
-		height=20
-	}
-	"composite name"=""
-	children {
-		"text entry" {
-			object {
-				x=175
-				y=681
-				width=60
-				height=19
-			}
-			control {
-				chan="$(P)$(R)TSNumPoints"
-				clr=14
-				bclr=51
-			}
-			limits {
-			}
-		}
-		text {
-			object {
-				x=10
-				y=680
-				width=160
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Number of points"
-			align="horiz. right"
-		}
-	}
-}
-composite {
-	object {
-		x=10
-		y=705
-		width=225
-		height=20
-	}
-	"composite name"=""
-	children {
-		text {
-			object {
-				x=10
-				y=705
-				width=130
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Current point"
-			align="horiz. right"
-		}
-		"text update" {
-			object {
-				x=145
-				y=706
-				width=90
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)TSCurrentPoint"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
-		}
-	}
-}
-composite {
-	object {
-		x=10
-		y=730
-		width=240
-		height=20
-	}
-	"composite name"=""
-	children {
-		menu {
-			object {
-				x=105
-				y=731
-				width=80
-				height=18
-			}
-			control {
-				chan="$(P)$(R)TSRead.SCAN"
-				clr=14
-				bclr=51
-			}
-		}
-		"message button" {
-			object {
-				x=190
-				y=730
-				width=60
-				height=20
-			}
-			control {
-				chan="$(P)$(R)TSControl"
-				clr=14
-				bclr=51
-			}
-			label="Read"
-			press_msg="3"
-		}
-		text {
-			object {
-				x=10
-				y=730
-				width=90
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Read rate"
-		}
-	}
 }
 composite {
 	object {
@@ -681,6 +490,214 @@ composite {
 			}
 			y2_axis {
 				rangeStyle="auto-scale"
+			}
+		}
+	}
+}
+composite {
+	object {
+		x=20
+		y=655
+		width=325
+		height=120
+	}
+	"composite name"=""
+	children {
+		text {
+			object {
+				x=55
+				y=705
+				width=130
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Current point"
+			align="horiz. right"
+		}
+		"text update" {
+			object {
+				x=190
+				y=706
+				width=90
+				height=18
+			}
+			monitor {
+				chan="$(P)$(R)TS:TSCurrentPoint"
+				clr=54
+				bclr=4
+			}
+			limits {
+			}
+		}
+		menu {
+			object {
+				x=170
+				y=730
+				width=100
+				height=20
+			}
+			control {
+				chan="$(P)$(R)TS:TSRead.SCAN"
+				clr=14
+				bclr=51
+			}
+		}
+		"message button" {
+			object {
+				x=275
+				y=730
+				width=70
+				height=20
+			}
+			control {
+				chan="$(P)$(R)TS:TSRead.PROC"
+				clr=14
+				bclr=51
+			}
+			label="Read"
+			press_msg="1"
+		}
+		text {
+			object {
+				x=75
+				y=730
+				width=90
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Read rate"
+			align="horiz. right"
+		}
+		"text entry" {
+			object {
+				x=190
+				y=681
+				width=60
+				height=19
+			}
+			control {
+				chan="$(P)$(R)TS:TSNumPoints"
+				clr=14
+				bclr=51
+			}
+			limits {
+			}
+		}
+		text {
+			object {
+				x=25
+				y=680
+				width=160
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Number of points"
+			align="horiz. right"
+		}
+		"message button" {
+			object {
+				x=95
+				y=655
+				width=90
+				height=20
+			}
+			control {
+				chan="$(P)$(R)TS:TSAcquire"
+				clr=14
+				bclr=51
+			}
+			label="Erase/Start"
+			press_msg="1"
+		}
+		"message button" {
+			object {
+				x=190
+				y=655
+				width=60
+				height=20
+			}
+			control {
+				chan="$(P)$(R)TS:TSAcquire"
+				clr=14
+				bclr=51
+			}
+			label="Stop"
+			press_msg="2"
+		}
+		"text update" {
+			object {
+				x=255
+				y=656
+				width=90
+				height=18
+			}
+			monitor {
+				chan="$(P)$(R)TS:TSAcquiring"
+				clr=54
+				bclr=12
+			}
+			clrmod="alarm"
+			format="string"
+			limits {
+			}
+		}
+		text {
+			object {
+				x=20
+				y=655
+				width=70
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Acquire"
+		}
+		"related display" {
+			object {
+				x=275
+				y=755
+				width=70
+				height=20
+			}
+			display[0] {
+				label="Time series control"
+				name="NDPluginTimeSeries.adl"
+				args="P=$(P),R=$(R)TS:"
+			}
+			clr=14
+			bclr=51
+			label="More"
+		}
+		text {
+			object {
+				x=55
+				y=754
+				width=110
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="AcquireMode"
+		}
+		menu {
+			object {
+				x=170
+				y=754
+				width=100
+				height=20
+			}
+			control {
+				chan="$(P)$(R)TS:TSAcquireMode"
+				clr=14
+				bclr=51
 			}
 		}
 	}

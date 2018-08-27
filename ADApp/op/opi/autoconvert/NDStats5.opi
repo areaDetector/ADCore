@@ -5476,7 +5476,7 @@ $(pv_value)</tooltip>
     <x>1175</x>
     <y>66</y>
   </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.MenuButton" version="1.0.0">
+  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
     <actions hook="false" hook_all="false">
       <action type="OPEN_DISPLAY">
         <path>NDStats.opi</path>
@@ -5485,39 +5485,9 @@ $(pv_value)</tooltip>
           <R>$(R1)</R>
         </macros>
         <mode>1</mode>
-        <description>Statistics #1 full</description>
-      </action>
-      <action type="OPEN_DISPLAY">
-        <path>NDTimeSeries.opi</path>
-        <macros>
-          <include_parent_macros>true</include_parent_macros>
-          <R>$(R1)</R>
-          <PLT>TSTotal</PLT>
-        </macros>
-        <mode>1</mode>
-        <description>Total time-series</description>
-      </action>
-      <action type="OPEN_DISPLAY">
-        <path>NDTimeSeries.opi</path>
-        <macros>
-          <include_parent_macros>true</include_parent_macros>
-          <R>$(R1)</R>
-          <PLT>TSNet</PLT>
-        </macros>
-        <mode>1</mode>
-        <description>Net time-series</description>
-      </action>
-      <action type="OPEN_DISPLAY">
-        <path>NDTimeSeriesAll.opi</path>
-        <macros>
-          <include_parent_macros>true</include_parent_macros>
-          <R>$(R1)</R>
-        </macros>
-        <mode>1</mode>
-        <description>All time-series</description>
+        <description>Statistics full</description>
       </action>
     </actions>
-    <actions_from_pv>false</actions_from_pv>
     <alarm_pulsing>false</alarm_pulsing>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <background_color>
@@ -5527,7 +5497,7 @@ $(pv_value)</tooltip>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
-    <border_style>6</border_style>
+    <border_style>0</border_style>
     <border_width>1</border_width>
     <enabled>true</enabled>
     <font>
@@ -5535,11 +5505,12 @@ $(pv_value)</tooltip>
     </font>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <foreground_color>
-      <color red="42" green="99" blue="228" />
+      <color red="0" green="0" blue="0" />
     </foreground_color>
     <height>20</height>
-    <label></label>
-    <name>Menu Button</name>
+    <image></image>
+    <name>Action Button</name>
+    <push_action_index>0</push_action_index>
     <pv_name></pv_name>
     <pv_value />
     <rules />
@@ -5549,12 +5520,13 @@ $(pv_value)</tooltip>
       <keep_wh_ratio>false</keep_wh_ratio>
     </scale_options>
     <scripts />
-    <show_down_arrow>false</show_down_arrow>
+    <style>0</style>
+    <text></text>
+    <toggle_button>false</toggle_button>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-    <transparent>false</transparent>
     <visible>true</visible>
-    <widget_type>Menu Button</widget_type>
+    <widget_type>Action Button</widget_type>
     <width>60</width>
     <x>1165</x>
     <y>94</y>
@@ -6149,7 +6121,7 @@ $(pv_value)</tooltip>
     <x>1095</x>
     <y>323</y>
   </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.MenuButton" version="1.0.0">
+  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
     <actions hook="false" hook_all="false">
       <action type="OPEN_DISPLAY">
         <path>NDStats.opi</path>
@@ -6158,39 +6130,9 @@ $(pv_value)</tooltip>
           <R>$(R2)</R>
         </macros>
         <mode>1</mode>
-        <description>Statistics #1 full</description>
-      </action>
-      <action type="OPEN_DISPLAY">
-        <path>NDTimeSeries.opi</path>
-        <macros>
-          <include_parent_macros>true</include_parent_macros>
-          <R>$(R2)</R>
-          <PLT>TSTotal</PLT>
-        </macros>
-        <mode>1</mode>
-        <description>Total time-series</description>
-      </action>
-      <action type="OPEN_DISPLAY">
-        <path>NDTimeSeries.opi</path>
-        <macros>
-          <include_parent_macros>true</include_parent_macros>
-          <R>$(R2)</R>
-          <PLT>TSNet</PLT>
-        </macros>
-        <mode>1</mode>
-        <description>Net time-series</description>
-      </action>
-      <action type="OPEN_DISPLAY">
-        <path>NDTimeSeriesAll.opi</path>
-        <macros>
-          <include_parent_macros>true</include_parent_macros>
-          <R>$(R2)</R>
-        </macros>
-        <mode>1</mode>
-        <description>All time-series</description>
+        <description>Statistics full</description>
       </action>
     </actions>
-    <actions_from_pv>false</actions_from_pv>
     <alarm_pulsing>false</alarm_pulsing>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <background_color>
@@ -6200,7 +6142,7 @@ $(pv_value)</tooltip>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
-    <border_style>6</border_style>
+    <border_style>0</border_style>
     <border_width>1</border_width>
     <enabled>true</enabled>
     <font>
@@ -6208,11 +6150,12 @@ $(pv_value)</tooltip>
     </font>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <foreground_color>
-      <color red="42" green="99" blue="228" />
+      <color red="0" green="0" blue="0" />
     </foreground_color>
     <height>20</height>
-    <label></label>
-    <name>Menu Button</name>
+    <image></image>
+    <name>Action Button</name>
+    <push_action_index>0</push_action_index>
     <pv_name></pv_name>
     <pv_value />
     <rules />
@@ -6222,17 +6165,18 @@ $(pv_value)</tooltip>
       <keep_wh_ratio>false</keep_wh_ratio>
     </scale_options>
     <scripts />
-    <show_down_arrow>false</show_down_arrow>
+    <style>0</style>
+    <text></text>
+    <toggle_button>false</toggle_button>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-    <transparent>false</transparent>
     <visible>true</visible>
-    <widget_type>Menu Button</widget_type>
+    <widget_type>Action Button</widget_type>
     <width>60</width>
     <x>1165</x>
     <y>151</y>
   </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.MenuButton" version="1.0.0">
+  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
     <actions hook="false" hook_all="false">
       <action type="OPEN_DISPLAY">
         <path>NDStats.opi</path>
@@ -6241,39 +6185,9 @@ $(pv_value)</tooltip>
           <R>$(R3)</R>
         </macros>
         <mode>1</mode>
-        <description>Statistics #1 full</description>
-      </action>
-      <action type="OPEN_DISPLAY">
-        <path>NDTimeSeries.opi</path>
-        <macros>
-          <include_parent_macros>true</include_parent_macros>
-          <R>$(R3)</R>
-          <PLT>TSTotal</PLT>
-        </macros>
-        <mode>1</mode>
-        <description>Total time-series</description>
-      </action>
-      <action type="OPEN_DISPLAY">
-        <path>NDTimeSeries.opi</path>
-        <macros>
-          <include_parent_macros>true</include_parent_macros>
-          <R>$(R3)</R>
-          <PLT>TSNet</PLT>
-        </macros>
-        <mode>1</mode>
-        <description>Net time-series</description>
-      </action>
-      <action type="OPEN_DISPLAY">
-        <path>NDTimeSeriesAll.opi</path>
-        <macros>
-          <include_parent_macros>true</include_parent_macros>
-          <R>$(R3)</R>
-        </macros>
-        <mode>1</mode>
-        <description>All time-series</description>
+        <description>Statistics full</description>
       </action>
     </actions>
-    <actions_from_pv>false</actions_from_pv>
     <alarm_pulsing>false</alarm_pulsing>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <background_color>
@@ -6283,7 +6197,7 @@ $(pv_value)</tooltip>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
-    <border_style>6</border_style>
+    <border_style>0</border_style>
     <border_width>1</border_width>
     <enabled>true</enabled>
     <font>
@@ -6291,11 +6205,12 @@ $(pv_value)</tooltip>
     </font>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <foreground_color>
-      <color red="42" green="99" blue="228" />
+      <color red="0" green="0" blue="0" />
     </foreground_color>
     <height>20</height>
-    <label></label>
-    <name>Menu Button</name>
+    <image></image>
+    <name>Action Button</name>
+    <push_action_index>0</push_action_index>
     <pv_name></pv_name>
     <pv_value />
     <rules />
@@ -6305,17 +6220,18 @@ $(pv_value)</tooltip>
       <keep_wh_ratio>false</keep_wh_ratio>
     </scale_options>
     <scripts />
-    <show_down_arrow>false</show_down_arrow>
+    <style>0</style>
+    <text></text>
+    <toggle_button>false</toggle_button>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-    <transparent>false</transparent>
     <visible>true</visible>
-    <widget_type>Menu Button</widget_type>
+    <widget_type>Action Button</widget_type>
     <width>60</width>
     <x>1165</x>
     <y>208</y>
   </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.MenuButton" version="1.0.0">
+  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
     <actions hook="false" hook_all="false">
       <action type="OPEN_DISPLAY">
         <path>NDStats.opi</path>
@@ -6324,39 +6240,9 @@ $(pv_value)</tooltip>
           <R>$(R4)</R>
         </macros>
         <mode>1</mode>
-        <description>Statistics #1 full</description>
-      </action>
-      <action type="OPEN_DISPLAY">
-        <path>NDTimeSeries.opi</path>
-        <macros>
-          <include_parent_macros>true</include_parent_macros>
-          <R>$(R4)</R>
-          <PLT>TSTotal</PLT>
-        </macros>
-        <mode>1</mode>
-        <description>Total time-series</description>
-      </action>
-      <action type="OPEN_DISPLAY">
-        <path>NDTimeSeries.opi</path>
-        <macros>
-          <include_parent_macros>true</include_parent_macros>
-          <R>$(R4)</R>
-          <PLT>TSNet</PLT>
-        </macros>
-        <mode>1</mode>
-        <description>Net time-series</description>
-      </action>
-      <action type="OPEN_DISPLAY">
-        <path>NDTimeSeriesAll.opi</path>
-        <macros>
-          <include_parent_macros>true</include_parent_macros>
-          <R>$(R4)</R>
-        </macros>
-        <mode>1</mode>
-        <description>All time-series</description>
+        <description>Statistics full</description>
       </action>
     </actions>
-    <actions_from_pv>false</actions_from_pv>
     <alarm_pulsing>false</alarm_pulsing>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <background_color>
@@ -6366,7 +6252,7 @@ $(pv_value)</tooltip>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
-    <border_style>6</border_style>
+    <border_style>0</border_style>
     <border_width>1</border_width>
     <enabled>true</enabled>
     <font>
@@ -6374,11 +6260,12 @@ $(pv_value)</tooltip>
     </font>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <foreground_color>
-      <color red="42" green="99" blue="228" />
+      <color red="0" green="0" blue="0" />
     </foreground_color>
     <height>20</height>
-    <label></label>
-    <name>Menu Button</name>
+    <image></image>
+    <name>Action Button</name>
+    <push_action_index>0</push_action_index>
     <pv_name></pv_name>
     <pv_value />
     <rules />
@@ -6388,17 +6275,18 @@ $(pv_value)</tooltip>
       <keep_wh_ratio>false</keep_wh_ratio>
     </scale_options>
     <scripts />
-    <show_down_arrow>false</show_down_arrow>
+    <style>0</style>
+    <text></text>
+    <toggle_button>false</toggle_button>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-    <transparent>false</transparent>
     <visible>true</visible>
-    <widget_type>Menu Button</widget_type>
+    <widget_type>Action Button</widget_type>
     <width>60</width>
     <x>1164</x>
     <y>265</y>
   </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.MenuButton" version="1.0.0">
+  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
     <actions hook="false" hook_all="false">
       <action type="OPEN_DISPLAY">
         <path>NDStats.opi</path>
@@ -6407,39 +6295,9 @@ $(pv_value)</tooltip>
           <R>$(R5)</R>
         </macros>
         <mode>1</mode>
-        <description>Statistics #1 full</description>
-      </action>
-      <action type="OPEN_DISPLAY">
-        <path>NDTimeSeries.opi</path>
-        <macros>
-          <include_parent_macros>true</include_parent_macros>
-          <R>$(R5)</R>
-          <PLT>TSTotal</PLT>
-        </macros>
-        <mode>1</mode>
-        <description>Total time-series</description>
-      </action>
-      <action type="OPEN_DISPLAY">
-        <path>NDTimeSeries.opi</path>
-        <macros>
-          <include_parent_macros>true</include_parent_macros>
-          <R>$(R5)</R>
-          <PLT>TSNet</PLT>
-        </macros>
-        <mode>1</mode>
-        <description>Net time-series</description>
-      </action>
-      <action type="OPEN_DISPLAY">
-        <path>NDTimeSeriesAll.opi</path>
-        <macros>
-          <include_parent_macros>true</include_parent_macros>
-          <R>$(R5)</R>
-        </macros>
-        <mode>1</mode>
-        <description>All time-series</description>
+        <description>Statistics full</description>
       </action>
     </actions>
-    <actions_from_pv>false</actions_from_pv>
     <alarm_pulsing>false</alarm_pulsing>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <background_color>
@@ -6449,7 +6307,7 @@ $(pv_value)</tooltip>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
-    <border_style>6</border_style>
+    <border_style>0</border_style>
     <border_width>1</border_width>
     <enabled>true</enabled>
     <font>
@@ -6457,11 +6315,12 @@ $(pv_value)</tooltip>
     </font>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <foreground_color>
-      <color red="42" green="99" blue="228" />
+      <color red="0" green="0" blue="0" />
     </foreground_color>
     <height>20</height>
-    <label></label>
-    <name>Menu Button</name>
+    <image></image>
+    <name>Action Button</name>
+    <push_action_index>0</push_action_index>
     <pv_name></pv_name>
     <pv_value />
     <rules />
@@ -6471,12 +6330,13 @@ $(pv_value)</tooltip>
       <keep_wh_ratio>false</keep_wh_ratio>
     </scale_options>
     <scripts />
-    <show_down_arrow>false</show_down_arrow>
+    <style>0</style>
+    <text></text>
+    <toggle_button>false</toggle_button>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-    <transparent>false</transparent>
     <visible>true</visible>
-    <widget_type>Menu Button</widget_type>
+    <widget_type>Action Button</widget_type>
     <width>60</width>
     <x>1165</x>
     <y>322</y>

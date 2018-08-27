@@ -1,28 +1,28 @@
-4 0 0
+4 0 1
 beginScreenProperties
 major 4
 minor 0
-release 0
+release 1
 x 464
 y 226
 w 1435
 h 655
 font "helvetica-medium-r-18.0"
-ctlFont "helvetica-medium-r-8.0"
+ctlFont "helvetica-bold-r-10.0"
 btnFont "helvetica-medium-r-18.0"
-fgColor index 14
-bgColor index 4
-textColor index 14
-ctlFgColor1 index 30
-ctlFgColor2 index 32
-ctlBgColor1 index 34
-ctlBgColor2 index 35
-topShadowColor index 37
-botShadowColor index 44
+fgColor rgb 0 0 0
+bgColor rgb 47872 47872 47872
+textColor rgb 0 0 0
+ctlFgColor1 rgb 64256 62208 18944
+ctlFgColor2 rgb 60928 46592 11008
+ctlBgColor1 rgb 52480 24832 0
+ctlBgColor2 rgb 65280 45056 65280
+topShadowColor rgb 44544 19968 48128
+botShadowColor rgb 13312 13056 34304
+showGrid
 snapToGrid
-gridSize 5
+gridSize 4
 endScreenProperties
-
 
 # (Rectangle)
 object activeRectangleClass
@@ -34,9 +34,9 @@ x 0
 y 5
 w 1434
 h 24
-lineColor index 54
+lineColor rgb 2560 0 47104
 fill
-fillColor index 54
+fillColor rgb 2560 0 47104
 lineWidth 0
 endObjectProperties
 
@@ -44,34 +44,21 @@ endObjectProperties
 object activeXTextClass
 beginObjectProperties
 major 4
-minor 0
-release 0
+minor 1
+release 1
 x 0
 y 5
 w 1435
 h 25
-font "helvetica-medium-r-8.0"
+font "helvetica-medium-r-18.0"
 fontAlign "center"
-fgColor index 0
+fgColor rgb 65280 65280 65280
+bgColor index 3
 useDisplayBg
 value {
- "$(P)$(R)"
+  "$(P)$(R)"
 }
 endObjectProperties
-
-# (Group)
-object activeGroupClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 10
-y 40
-w 1415
-h 200
-
-beginGroup
-
 
 # (X-Y Graph)
 object xyGraphClass
@@ -79,7 +66,7 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 10
+x 5
 y 40
 w 350
 h 200
@@ -88,9 +75,9 @@ border
 graphTitle "$(P)$(R)TSTotal"
 xLabel "Time point"
 yLabel "Value"
-fgColor index 14
-bgColor index 2
-gridColor index 14
+fgColor rgb 0 0 0
+bgColor rgb 55808 55808 55808
+gridColor rgb 0 0 0
 font "helvetica-medium-r-10.0"
 # Operating Modes
 plotMode "plotLastNPts"
@@ -117,7 +104,7 @@ plotSymbolType {
   0 "circle"
 }
 plotColor {
-  0 index 27
+  0 rgb 19200 28160 50944
 }
 endObjectProperties
 
@@ -127,7 +114,7 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 365
+x 360
 y 40
 w 350
 h 200
@@ -136,9 +123,9 @@ border
 graphTitle "$(P)$(R)TSNet"
 xLabel "Time point"
 yLabel "Value"
-fgColor index 14
-bgColor index 2
-gridColor index 14
+fgColor rgb 0 0 0
+bgColor rgb 55808 55808 55808
+gridColor rgb 0 0 0
 font "helvetica-medium-r-10.0"
 # Operating Modes
 plotMode "plotLastNPts"
@@ -165,7 +152,7 @@ plotSymbolType {
   0 "circle"
 }
 plotColor {
-  0 index 27
+  0 rgb 19200 28160 50944
 }
 endObjectProperties
 
@@ -175,7 +162,7 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 720
+x 715
 y 40
 w 350
 h 200
@@ -184,9 +171,9 @@ border
 graphTitle "$(P)$(R)TSMin"
 xLabel "Time point"
 yLabel "Value"
-fgColor index 14
-bgColor index 2
-gridColor index 14
+fgColor rgb 0 0 0
+bgColor rgb 55808 55808 55808
+gridColor rgb 0 0 0
 font "helvetica-medium-r-10.0"
 # Operating Modes
 plotMode "plotLastNPts"
@@ -213,7 +200,7 @@ plotSymbolType {
   0 "circle"
 }
 plotColor {
-  0 index 27
+  0 rgb 19200 28160 50944
 }
 endObjectProperties
 
@@ -223,7 +210,7 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 1075
+x 1070
 y 40
 w 350
 h 200
@@ -232,9 +219,9 @@ border
 graphTitle "$(P)$(R)TSMax"
 xLabel "Time point"
 yLabel "Value"
-fgColor index 14
-bgColor index 2
-gridColor index 14
+fgColor rgb 0 0 0
+bgColor rgb 55808 55808 55808
+gridColor rgb 0 0 0
 font "helvetica-medium-r-10.0"
 # Operating Modes
 plotMode "plotLastNPts"
@@ -261,143 +248,7 @@ plotSymbolType {
   0 "circle"
 }
 plotColor {
-  0 index 27
-}
-endObjectProperties
-
-endGroup
-
-endObjectProperties
-
-
-# (Text Control)
-object activeXTextDspClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 248
-y 480
-w 90
-h 18
-controlPv "$(P)$(R)TSAcquiring"
-font "helvetica-medium-r-8.0"
-smartRefresh
-fastUpdate
-fgColor index 54
-fgAlarm
-bgColor index 12
-autoHeight
-format "string"
-nullColor index 32
-useHexPrefix
-objType "controls"
-newPos
-endObjectProperties
-
-# (Text Control)
-object activeXTextDspClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 188
-y 505
-w 60
-h 19
-controlPv "$(P)$(R)TSNumPoints"
-font "helvetica-medium-r-8.0"
-smartRefresh
-fastUpdate
-fgColor index 14
-bgColor index 51
-editable
-autoHeight
-format decimal
-motifWidget
-nullColor index 32
-useHexPrefix
-objType "controls"
-newPos
-endObjectProperties
-
-# (Static Text)
-object activeXTextClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 23
-y 504
-w 160
-h 20
-font "helvetica-medium-r-8.0"
-fontAlign "right"
-fgColor index 14
-useDisplayBg
-value {
- "Number of points"
-}
-endObjectProperties
-
-# (Static Text)
-object activeXTextClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 23
-y 529
-w 130
-h 20
-font "helvetica-medium-r-8.0"
-fontAlign "right"
-fgColor index 14
-useDisplayBg
-value {
- "Current point"
-}
-endObjectProperties
-
-# (Text Control)
-object activeXTextDspClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 158
-y 530
-w 90
-h 18
-controlPv "$(P)$(R)TSCurrentPoint"
-font "helvetica-medium-r-8.0"
-smartRefresh
-fastUpdate
-fgColor index 54
-bgColor index 4
-autoHeight
-format decimal
-nullColor index 32
-useHexPrefix
-objType "controls"
-newPos
-endObjectProperties
-
-# (Static Text)
-object activeXTextClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 23
-y 554
-w 90
-h 20
-font "helvetica-medium-r-8.0"
-fgColor index 14
-useDisplayBg
-value {
- "Read rate"
+  0 rgb 19200 28160 50944
 }
 endObjectProperties
 
@@ -407,7 +258,7 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 720
+x 715
 y 450
 w 350
 h 200
@@ -416,9 +267,9 @@ border
 graphTitle "$(P)$(R)TSSigma"
 xLabel "Time point"
 yLabel "Value"
-fgColor index 14
-bgColor index 2
-gridColor index 14
+fgColor rgb 0 0 0
+bgColor rgb 55808 55808 55808
+gridColor rgb 0 0 0
 font "helvetica-medium-r-10.0"
 # Operating Modes
 plotMode "plotLastNPts"
@@ -445,7 +296,7 @@ plotSymbolType {
   0 "circle"
 }
 plotColor {
-  0 index 27
+  0 rgb 19200 28160 50944
 }
 endObjectProperties
 
@@ -455,7 +306,7 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 365
+x 360
 y 450
 w 350
 h 200
@@ -464,9 +315,9 @@ border
 graphTitle "$(P)$(R)TSMean"
 xLabel "Time point"
 yLabel "Value"
-fgColor index 14
-bgColor index 2
-gridColor index 14
+fgColor rgb 0 0 0
+bgColor rgb 55808 55808 55808
+gridColor rgb 0 0 0
 font "helvetica-medium-r-10.0"
 # Operating Modes
 plotMode "plotLastNPts"
@@ -493,7 +344,7 @@ plotSymbolType {
   0 "circle"
 }
 plotColor {
-  0 index 27
+  0 rgb 19200 28160 50944
 }
 endObjectProperties
 
@@ -512,9 +363,9 @@ border
 graphTitle "$(P)$(R)TSMinX"
 xLabel "Time point"
 yLabel "Value"
-fgColor index 14
-bgColor index 2
-gridColor index 14
+fgColor rgb 0 0 0
+bgColor rgb 55808 55808 55808
+gridColor rgb 0 0 0
 font "helvetica-medium-r-10.0"
 # Operating Modes
 plotMode "plotLastNPts"
@@ -541,7 +392,7 @@ plotSymbolType {
   0 "circle"
 }
 plotColor {
-  0 index 27
+  0 rgb 19200 28160 50944
 }
 endObjectProperties
 
@@ -560,9 +411,9 @@ border
 graphTitle "$(P)$(R)TSMinY"
 xLabel "Time point"
 yLabel "Value"
-fgColor index 14
-bgColor index 2
-gridColor index 14
+fgColor rgb 0 0 0
+bgColor rgb 55808 55808 55808
+gridColor rgb 0 0 0
 font "helvetica-medium-r-10.0"
 # Operating Modes
 plotMode "plotLastNPts"
@@ -589,7 +440,7 @@ plotSymbolType {
   0 "circle"
 }
 plotColor {
-  0 index 27
+  0 rgb 19200 28160 50944
 }
 endObjectProperties
 
@@ -608,9 +459,9 @@ border
 graphTitle "$(P)$(R)TSMaxX"
 xLabel "Time point"
 yLabel "Value"
-fgColor index 14
-bgColor index 2
-gridColor index 14
+fgColor rgb 0 0 0
+bgColor rgb 55808 55808 55808
+gridColor rgb 0 0 0
 font "helvetica-medium-r-10.0"
 # Operating Modes
 plotMode "plotLastNPts"
@@ -637,7 +488,7 @@ plotSymbolType {
   0 "circle"
 }
 plotColor {
-  0 index 27
+  0 rgb 19200 28160 50944
 }
 endObjectProperties
 
@@ -656,9 +507,9 @@ border
 graphTitle "$(P)$(R)TSMaxY"
 xLabel "Time point"
 yLabel "Value"
-fgColor index 14
-bgColor index 2
-gridColor index 14
+fgColor rgb 0 0 0
+bgColor rgb 55808 55808 55808
+gridColor rgb 0 0 0
 font "helvetica-medium-r-10.0"
 # Operating Modes
 plotMode "plotLastNPts"
@@ -685,51 +536,279 @@ plotSymbolType {
   0 "circle"
 }
 plotColor {
-  0 index 27
+  0 rgb 19200 28160 50944
 }
 endObjectProperties
+
+# (X-Y Graph)
+object xyGraphClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1070
+y 450
+w 350
+h 200
+# Appearance
+border
+graphTitle "$(P)$(R)TSTimestamp"
+xLabel "Time point"
+yLabel "Value"
+fgColor rgb 0 0 0
+bgColor rgb 55808 55808 55808
+gridColor rgb 0 0 0
+font "helvetica-medium-r-10.0"
+# Operating Modes
+plotMode "plotLastNPts"
+nPts 1
+#  X axis properties
+showXAxis
+xAxisSrc "AutoScale"
+xLablePrecision 1
+#  Y axis properties
+showYAxis
+yAxisSrc "AutoScale"
+#  Trace Properties
+numTraces 1
+yPv {
+  0 "$(P)$(R)TSTimestamp"
+}
+plotStyle {
+  0 "line"
+}
+plotUpdateMode {
+  0 "x"
+}
+plotSymbolType {
+  0 "circle"
+}
+plotColor {
+  0 rgb 19200 28160 50944
+}
+endObjectProperties
+
 # (Group)
 object activeGroupClass
 beginObjectProperties
 major 4
 minor 0
 release 0
-x 10
-y 40
-w 1415
-h 200
+x 20
+y 460
+w 325
+h 120
 
 beginGroup
 
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 55
+y 510
+w 130
+h 20
+font "helvetica-medium-r-14.0"
+fontAlign "right"
+fgColor rgb 0 0 0
+bgColor index 3
+useDisplayBg
+value {
+  "Current point"
+}
+endObjectProperties
+
+# (Text Monitor)
+object activeXTextDspClass:noedit
+beginObjectProperties
+major 4
+minor 7
+release 0
+x 190
+y 511
+w 90
+h 18
+controlPv "$(P)$(R)TS:TSCurrentPoint"
+format "decimal"
+font "helvetica-medium-r-14.0"
+fontAlign "left"
+fgColor rgb 2560 0 47104
+bgColor rgb 47872 47872 47872
+limitsFromDb
+nullColor rgb 60928 46592 11008
+smartRefresh
+fastUpdate
+newPos
+objType "controls"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 75
+y 535
+w 90
+h 20
+font "helvetica-medium-r-14.0"
+fontAlign "right"
+fgColor rgb 0 0 0
+bgColor index 3
+useDisplayBg
+value {
+  "Read rate"
+}
+endObjectProperties
+
+# (Text Control)
+object activeXTextDspClass
+beginObjectProperties
+major 4
+minor 7
+release 0
+x 190
+y 486
+w 60
+h 19
+controlPv "$(P)$(R)TS:TSNumPoints"
+format "decimal"
+font "helvetica-medium-r-10.0"
+fontAlign "left"
+fgColor rgb 0 0 0
+bgColor rgb 29440 57088 65280
+editable
+motifWidget
+limitsFromDb
+nullColor rgb 60928 46592 11008
+smartRefresh
+fastUpdate
+newPos
+objType "controls"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 25
+y 485
+w 160
+h 20
+font "helvetica-medium-r-14.0"
+fontAlign "right"
+fgColor rgb 0 0 0
+bgColor index 3
+useDisplayBg
+value {
+  "Number of points"
+}
+endObjectProperties
+
+# (Text Monitor)
+object activeXTextDspClass:noedit
+beginObjectProperties
+major 4
+minor 7
+release 0
+x 255
+y 461
+w 90
+h 18
+controlPv "$(P)$(R)TS:TSAcquiring"
+format "string"
+font "helvetica-medium-r-14.0"
+fontAlign "left"
+fgColor rgb 0 65535 0
+fgAlarm
+bgColor rgb 17920 17920 17920
+limitsFromDb
+nullColor rgb 60928 46592 11008
+smartRefresh
+fastUpdate
+newPos
+objType "controls"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 20
+y 460
+w 70
+h 20
+font "helvetica-medium-r-14.0"
+fgColor rgb 0 0 0
+bgColor index 3
+useDisplayBg
+value {
+  "Acquire"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 55
+y 559
+w 110
+h 20
+font "helvetica-medium-r-14.0"
+fgColor rgb 0 0 0
+bgColor index 3
+useDisplayBg
+value {
+  "AcquireMode"
+}
+endObjectProperties
 
 endGroup
 
 endObjectProperties
 
-
-# (Message Button)
-object activeMessageButtonClass
+# (Group)
+object activeGroupClass
 beginObjectProperties
 major 4
 minor 0
 release 0
-x 23
-y 479
-w 90
+x 20
+y 460
+w 325
+h 120
+
+beginGroup
+
+# (Menu Button)
+object activeMenuButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 170
+y 535
+w 100
 h 20
-fgColor index 14
-onColor index 51
-offColor index 51
-topShadowColor index 0
-botShadowColor index 14
-controlPv "$(P)$(R)TSControl"
-pressValue "0"
-releaseValue 
-onLabel "Erase/Start"
-offLabel "Erase/Start"
-3d
-useEnumNumeric
-font "helvetica-medium-r-10.0"
+fgColor rgb 0 0 0
+bgColor rgb 29440 57088 65280
+inconsistentColor rgb 17920 17920 17920
+topShadowColor rgb 55808 55808 55808
+botShadowColor rgb 17920 17920 17920
+controlPv "$(P)$(R)TS:TSRead.SCAN"
+indicatorPv "$(P)$(R)TS:TSRead.SCAN"
+font "helvetica-medium-r-12.0"
 endObjectProperties
 
 # (Message Button)
@@ -738,48 +817,106 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 118
-y 479
+x 275
+y 535
+w 70
+h 20
+fgColor rgb 0 0 0
+onColor rgb 29440 57088 65280
+offColor rgb 29440 57088 65280
+topShadowColor rgb 65280 65280 65280
+botShadowColor rgb 0 0 0
+controlPv "$(P)$(R)TS:TSRead.PROC"
+pressValue "1"
+releaseValue 
+onLabel "Read"
+offLabel "Read"
+3d
+useEnumNumeric
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 95
+y 460
+w 90
+h 20
+fgColor rgb 0 0 0
+onColor rgb 29440 57088 65280
+offColor rgb 29440 57088 65280
+topShadowColor rgb 65280 65280 65280
+botShadowColor rgb 0 0 0
+controlPv "$(P)$(R)TS:TSAcquire"
+pressValue "1"
+releaseValue 
+onLabel "Erase/Start"
+offLabel "Erase/Start"
+3d
+useEnumNumeric
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 190
+y 460
 w 60
 h 20
-fgColor index 14
-onColor index 51
-offColor index 51
-topShadowColor index 0
-botShadowColor index 14
-controlPv "$(P)$(R)TSControl"
+fgColor rgb 0 0 0
+onColor rgb 29440 57088 65280
+offColor rgb 29440 57088 65280
+topShadowColor rgb 65280 65280 65280
+botShadowColor rgb 0 0 0
+controlPv "$(P)$(R)TS:TSAcquire"
 pressValue "2"
 releaseValue 
 onLabel "Stop"
 offLabel "Stop"
 3d
 useEnumNumeric
-font "helvetica-medium-r-10.0"
+font "helvetica-medium-r-12.0"
 endObjectProperties
 
-# (Message Button)
-object activeMessageButtonClass
+# (Related Display)
+object relatedDisplayClass
 beginObjectProperties
 major 4
 minor 0
 release 0
-x 183
-y 479
-w 60
+x 275
+y 560
+w 70
 h 20
-fgColor index 14
-onColor index 51
-offColor index 51
-topShadowColor index 0
-botShadowColor index 14
-controlPv "$(P)$(R)TSControl"
-pressValue "1"
-releaseValue 
-onLabel "Start"
-offLabel "Start"
-3d
-useEnumNumeric
-font "helvetica-medium-r-10.0"
+fgColor rgb 0 0 0
+bgColor rgb 29440 57088 65280
+topShadowColor rgb 55808 55808 55808
+botShadowColor rgb 17920 17920 17920
+font "helvetica-medium-r-12.0"
+icon
+buttonLabel "More"
+numPvs 2
+numDsps 1
+displayFileName {
+  0 NDPluginTimeSeries.edl
+}
+menuLabel {
+  0 Time series control
+}
+symbols {
+  0 "P=$(P),R=$(R)TS:"
+}
+replaceSymbols {
+  0 1
+}
 endObjectProperties
 
 # (Menu Button)
@@ -788,42 +925,22 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 118
-y 555
-w 80
-h 18
-fgColor index 14
-bgColor index 51
-inconsistentColor index 12
-topShadowColor index 2
-botShadowColor index 12
-controlPv "$(P)$(R)TSRead.SCAN"
-indicatorPv "$(P)$(R)TSRead.SCAN"
-font "helvetica-medium-r-10.0"
+x 170
+y 559
+w 100
+h 20
+fgColor rgb 0 0 0
+bgColor rgb 29440 57088 65280
+inconsistentColor rgb 17920 17920 17920
+topShadowColor rgb 55808 55808 55808
+botShadowColor rgb 17920 17920 17920
+controlPv "$(P)$(R)TS:TSAcquireMode"
+indicatorPv "$(P)$(R)TS:TSAcquireMode"
+font "helvetica-medium-r-12.0"
 endObjectProperties
 
-# (Message Button)
-object activeMessageButtonClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 203
-y 554
-w 60
-h 20
-fgColor index 14
-onColor index 51
-offColor index 51
-topShadowColor index 0
-botShadowColor index 14
-controlPv "$(P)$(R)TSControl"
-pressValue "3"
-releaseValue 
-onLabel "Read"
-offLabel "Read"
-3d
-useEnumNumeric
-font "helvetica-medium-r-10.0"
+endGroup
+
 endObjectProperties
+
 

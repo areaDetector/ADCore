@@ -16,9 +16,9 @@
     <h1>
       areaDetector: EPICS Area Detector Support</h1>
     <h2>
-      Release 3-3</h2>
+      Release 3-3-2</h2>
     <h2>
-      June 21, 2018</h2>
+      July 9, 2018</h2>
     <h2>
       Mark Rivers</h2>
     <h2>
@@ -1253,6 +1253,37 @@
         </td>
         <td>
           calc
+        </td>
+      </tr>
+      <tr>
+        <td>
+          NDPoolEmptyFreeList
+        </td>
+        <td>
+          asynInt32
+        </td>
+        <td>
+          r/w
+        </td>
+        <td>
+          Processing this record deletes all of the NDArrays on the freelist and sets the
+          freelist size to 0. This provides a mechanism to free large amounts of memory and
+          return it to the operating system, for example after a rapid acquisition with large
+          plugin queues. On Windows the memory is returned to the operating system immediately.
+          On Linux the freed memory may not actually be returned to the operating system even
+          though it has been freed in the areaDetector process. On Centos7 (and presumably
+          many other versions of Linux) setting the value of the environment variable MALLOC_TRIM_THRESHOLD_
+          to a small value will allow the memory to actually be returned to the operating
+          system.
+        </td>
+        <td>
+          POOL_EMPTY_FREELIST
+        </td>
+        <td>
+          $(P)$(R)EmptyFreeList
+        </td>
+        <td>
+          bo
         </td>
       </tr>
       <tr>

@@ -731,6 +731,12 @@ record(calc, "$(P)$(R)PoolUsedBuffers")
     field(CALC, "A-B")
 }
 
+record(bo, "$(P)$(R)EmptyFreeList")
+{
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))POOL_EMPTY_FREELIST")
+}
+
 record(longin, "$(P)$(R)NumQueuedArrays")
 {
    field(DTYP, "asynInt32")

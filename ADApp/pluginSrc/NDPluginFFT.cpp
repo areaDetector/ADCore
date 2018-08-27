@@ -60,7 +60,7 @@ NDPluginFFT::NDPluginFFT(const char *portName, int queueSize, int blockingCallba
              asynFloat64Mask | asynFloat64ArrayMask | asynGenericPointerMask,
              asynFloat64Mask | asynFloat64ArrayMask | asynGenericPointerMask,
              0, 1, priority, stackSize, maxThreads),
-    uniqueId_(0), FFTAbsValue_(0), timePerPoint_(0), timeAxis_(0), freqAxis_(0)
+    numAverage_(0), uniqueId_(0), nTimeXIn_(0), nTimeYIn_(0), FFTAbsValue_(0), timePerPoint_(0), timeAxis_(0), freqAxis_(0)
 {
   //const char *functionName = "NDPluginFFT::NDPluginFFT";
 

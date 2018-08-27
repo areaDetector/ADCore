@@ -25,7 +25,7 @@
 #include <macLib.h>
 #include <cantProceed.h>
 
-#include <asynDriver.h>
+#include <asynPortDriver.h>
 
 
 #define epicsExportSharedSymbols
@@ -603,6 +603,37 @@ asynStatus asynNDArrayDriver::writeGenericPointer(asynUser *pasynUser, void *gen
     return status;
 }
 
+/** Sets an int32 parameter.
+  * \param[in] pasynUser asynUser structure that contains the function code in pasynUser->reason. 
+  * \param[in] value The value for this parameter 
+  *
+  * Takes action if the function code requires it. */
+asynStatus asynNDArrayDriver::writeInt32(asynUser *pasynUser, epicsInt32 value)
+{
+    int function = pasynUser->reason;
+    asynStatus status = asynSuccess;
+    static const char *functionName = "writeInt32";
+
+    status = setIntegerParam(function, value);
+
+    if (function == NDPoolEmptyFreeList) {
+        this->pNDArrayPool->emptyFreeList();
+    }
+
+    /* Do callbacks so higher layers see any changes */
+    callParamCallbacks();
+
+    if (status)
+        asynPrint(pasynUser, ASYN_TRACE_ERROR,
+              "%s:%s: error, status=%d function=%d, value=%d\n",
+              driverName, functionName, status, function, value);
+    else
+        asynPrint(pasynUser, ASYN_TRACEIO_DRIVER,
+              "%s:%s: function=%d, value=%d\n",
+              driverName, functionName, function, value);
+    return status;
+}
+
 asynStatus asynNDArrayDriver::readInt32(asynUser *pasynUser, epicsInt32 *value)
 {
     int function = pasynUser->reason;
@@ -796,6 +827,7 @@ asynNDArrayDriver::asynNDArrayDriver(const char *portName, int maxAddr, int maxB
     createParam(NDPoolFreeBuffersString,      asynParamInt32,           &NDPoolFreeBuffers);
     createParam(NDPoolMaxMemoryString,        asynParamFloat64,         &NDPoolMaxMemory);
     createParam(NDPoolUsedMemoryString,       asynParamFloat64,         &NDPoolUsedMemory);
+    createParam(NDPoolEmptyFreeListString,    asynParamInt32,           &NDPoolEmptyFreeList);
     createParam(NDNumQueuedArraysString,      asynParamInt32,           &NDNumQueuedArrays);
 
     /* Here we set the values of read-only parameters and of read/write parameters that cannot

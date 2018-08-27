@@ -20,8 +20,6 @@
 #include "NDAttribute.h"
 #include "NDAttributeList.h"
 
-#include "asynNDArrayDriver.h"
-
 /** The maximum number of dimensions in an NDArray */
 #define ND_ARRAY_MAX_DIMS 10
 
@@ -163,23 +161,24 @@ class epicsShareClass NDArrayPool {
 public:
     NDArrayPool  (class asynNDArrayDriver *pDriver, size_t maxMemory);
     virtual ~NDArrayPool() {}
-    NDArray*     alloc     (int ndims, size_t *dims, NDDataType_t dataType, size_t dataSize, void *pData);
-    NDArray*     copy      (NDArray *pIn, NDArray *pOut, int copyData);
+    NDArray*     alloc(int ndims, size_t *dims, NDDataType_t dataType, size_t dataSize, void *pData);
+    NDArray*     copy(NDArray *pIn, NDArray *pOut, int copyData);
 
-    int          reserve   (NDArray *pArray);
-    int          release   (NDArray *pArray);
-    int          convert   (NDArray *pIn,
-                            NDArray **ppOut,
-                            NDDataType_t dataTypeOut,
-                            NDDimension_t *outDims);
-    int          convert   (NDArray *pIn,
-                            NDArray **ppOut,
-                            NDDataType_t dataTypeOut);
-    int          report     (FILE  *fp, int details);
-    int          getNumBuffers ();
-    size_t       getMaxMemory  ();
-    size_t       getMemorySize ();
-    int          getNumFree    ();
+    int          reserve(NDArray *pArray);
+    int          release(NDArray *pArray);
+    int          convert(NDArray *pIn,
+                         NDArray **ppOut,
+                         NDDataType_t dataTypeOut,
+                         NDDimension_t *outDims);
+    int          convert(NDArray *pIn,
+                         NDArray **ppOut,
+                         NDDataType_t dataTypeOut);
+    int          report(FILE  *fp, int details);
+    int          getNumBuffers();
+    size_t       getMaxMemory();
+    size_t       getMemorySize();
+    int          getNumFree();
+    void         emptyFreeList();
 
 protected:
     /** The following methods should be implemented by a pool class

@@ -9,9 +9,9 @@ typedef enum {
     profAverage,
     profThreshold,
     profCentroid,
-    profCursor
+    profCursor,
+    MAX_PROFILE_TYPES
 } NDStatProfileType;
-#define MAX_PROFILE_TYPES profCursor+1
 
 typedef enum {
     TSMinValue,
@@ -36,9 +36,9 @@ typedef enum {
     TSKurtosisY,
     TSEccentricity,
     TSOrientation,
-    TSTimestamp
+    TSTimestamp,
+    MAX_TIME_SERIES_TYPES
 } NDStatTSType;
-#define MAX_TIME_SERIES_TYPES TSTimestamp+1
 
 typedef enum {
     TSEraseStart,
@@ -119,36 +119,6 @@ typedef struct NDStats {
 #define NDPluginStatsEccentricityString       "ECCENTRICITY_VALUE"  /* (asynFloat64,      r/o) Eccentricity */
 #define NDPluginStatsOrientationString        "ORIENTATION_VALUE"   /* (asynFloat64,      r/o) Orientation */
     
-/* Time series of basic statistics and centroid statistics */
-#define NDPluginStatsTSControlString          "TS_CONTROL"          /* (asynInt32,        r/w) Erase/start, stop, start */
-#define NDPluginStatsTSNumPointsString        "TS_NUM_POINTS"       /* (asynInt32,        r/w) Number of time series points to use */
-#define NDPluginStatsTSCurrentPointString     "TS_CURRENT_POINT"    /* (asynInt32,        r/o) Current point in time series */
-#define NDPluginStatsTSAcquiringString        "TS_ACQUIRING"        /* (asynInt32,        r/o) Acquiring time series */
-#define NDPluginStatsTSMinValueString         "TS_MIN_VALUE"        /* (asynFloat64Array, r/o) Series of minimum counts */
-#define NDPluginStatsTSMinXString             "TS_MIN_X"            /* (asynFloat64Array, r/o) Series of X position of minimum counts */
-#define NDPluginStatsTSMinYString             "TS_MIN_Y"            /* (asynFloat64Array, r/o) Series of Y position of minimum counts */
-#define NDPluginStatsTSMaxValueString         "TS_MAX_VALUE"        /* (asynFloat64Array, r/o) Series of maximum counts */
-#define NDPluginStatsTSMaxXString             "TS_MAX_X"            /* (asynFloat64Array, r/o) Series of X position of maximum counts */
-#define NDPluginStatsTSMaxYString             "TS_MAX_Y"            /* (asynFloat64Array, r/o) Series of Y position of maximum counts */
-#define NDPluginStatsTSMeanValueString        "TS_MEAN_VALUE"       /* (asynFloat64Array, r/o) Series of mean counts */
-#define NDPluginStatsTSSigmaValueString       "TS_SIGMA_VALUE"      /* (asynFloat64Array, r/o) Series of sigma */
-#define NDPluginStatsTSTotalString            "TS_TOTAL"            /* (asynFloat64Array, r/o) Series of total */
-#define NDPluginStatsTSNetString              "TS_NET"              /* (asynFloat64Array, r/o) Series of net */
-#define NDPluginStatsTSSeriesMaxString        "TS_MAX_SUM"          /* (asynFloat64Array, r/o) Series of max elements sum */
-#define NDPluginStatsTSCentroidTotalString    "TS_CENTROIDTOTAL_VALUE"  /* (asynFloat64Array, r/o) Series of Total mass */
-#define NDPluginStatsTSCentroidXString        "TS_CENTROIDX_VALUE"  /* (asynFloat64Array, r/o) Series of X centroid */
-#define NDPluginStatsTSCentroidYString        "TS_CENTROIDY_VALUE"  /* (asynFloat64Array, r/o) Series of Y centroid */
-#define NDPluginStatsTSSigmaXString           "TS_SIGMAX_VALUE"     /* (asynFloat64Array, r/o) Series of sigma X */
-#define NDPluginStatsTSSigmaYString           "TS_SIGMAY_VALUE"     /* (asynFloat64Array, r/o) Series of sigma Y */
-#define NDPluginStatsTSSigmaXYString          "TS_SIGMAXY_VALUE"    /* (asynFloat64Array, r/o) Series of sigma XY */
-#define NDPluginStatsTSSkewXString            "TS_SKEWX_VALUE"      /* (asynFloat64Array, r/o) Series of skew X */
-#define NDPluginStatsTSSkewYString            "TS_SKEWY_VALUE"      /* (asynFloat64Array, r/o) Series of skew Y */
-#define NDPluginStatsTSKurtosisXString        "TS_KURTOSISX_VALUE"  /* (asynFloat64Array, r/o) Series of kurtosis X */
-#define NDPluginStatsTSKurtosisYString        "TS_KURTOSISY_VALUE"  /* (asynFloat64Array, r/o) Series of kurtosis Y */
-#define NDPluginStatsTSEccentricityString     "TS_ECCENTRICITY_VALUE"/* (asynFloat64Array, r/o) Series of eccentricity */
-#define NDPluginStatsTSOrientationString      "TS_ORIENTATION_VALUE"     /* (asynFloat64Array, r/o) Series of orientation */
-#define NDPluginStatsTSTimestampString        "TS_TIMESTAMP_VALUE"  /* (asynFloat64Array, r/o) Series of timestamps */
-
 /* Profiles*/   
 #define NDPluginStatsComputeProfilesString    "COMPUTE_PROFILES"    /* (asynInt32,        r/w) Compute profiles? */
 #define NDPluginStatsProfileSizeXString       "PROFILE_SIZE_X"      /* (asynInt32,        r/o) X profile size */
@@ -235,35 +205,6 @@ protected:
     int NDPluginStatsKurtosisY;
     int NDPluginStatsEccentricity;
     int NDPluginStatsOrientation;
-
-    /* Time Series */
-    int NDPluginStatsTSControl;
-    int NDPluginStatsTSNumPoints;
-    int NDPluginStatsTSCurrentPoint;
-    int NDPluginStatsTSAcquiring;
-    int NDPluginStatsTSMinValue;
-    int NDPluginStatsTSMinX;
-    int NDPluginStatsTSMinY;                
-    int NDPluginStatsTSMaxValue;
-    int NDPluginStatsTSMaxX;
-    int NDPluginStatsTSMaxY;            
-    int NDPluginStatsTSMeanValue;
-    int NDPluginStatsTSSigmaValue;
-    int NDPluginStatsTSTotal;
-    int NDPluginStatsTSNet;
-    int NDPluginStatsTSCentroidTotal;
-    int NDPluginStatsTSCentroidX;
-    int NDPluginStatsTSCentroidY;
-    int NDPluginStatsTSSigmaX;
-    int NDPluginStatsTSSigmaY;
-    int NDPluginStatsTSSigmaXY;
-    int NDPluginStatsTSSkewX;
-    int NDPluginStatsTSSkewY;
-    int NDPluginStatsTSKurtosisX;
-    int NDPluginStatsTSKurtosisY;
-    int NDPluginStatsTSEccentricity;
-    int NDPluginStatsTSOrientation;
-    int NDPluginStatsTSTimestamp;
     
     /* Profiles */
     int NDPluginStatsComputeProfiles;
@@ -292,8 +233,6 @@ protected:
     int NDPluginStatsHistXArray;
 
 private:
-    double  *timeSeries[MAX_TIME_SERIES_TYPES];
-    void doTimeSeriesCallbacks();
     asynStatus computeHistX();
 };
 
