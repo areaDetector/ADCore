@@ -35,6 +35,7 @@ NDArrayRing::NDArrayRing(int noOfBuffers)
 NDArrayRing::~NDArrayRing()
 {
   clear();
+  delete[] buffers_;
 }
 
 int NDArrayRing::size()
@@ -98,14 +99,15 @@ bool NDArrayRing::hasNext()
 void NDArrayRing::clear()
 {
   writeIndex_ = -1;
+  readIndex_  = -1;
   wrapped_ = 0;
   if (buffers_){
     for (int index = 0; index < noOfBuffers_; index++){
       if (buffers_[index]){
         buffers_[index]->release();
+        buffers_[index] = NULL;
       }
     }
-    delete[] buffers_;
   }
 }
 

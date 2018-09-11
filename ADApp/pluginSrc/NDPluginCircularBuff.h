@@ -63,6 +63,8 @@ protected:
     int NDCircBuffSoftTrigger;
     int NDCircBuffTriggered;
 
+    void flushPreBuffer();
+
 private:
 
     asynStatus calculateTrigger(NDArray *pArray, int *trig);

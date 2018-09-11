@@ -176,6 +176,7 @@ asynStatus NDFileTIFF::openFile(const char *fileName, NDFileOpenMode_t openMode,
             bitsPerSample = 64;
             break;
     }
+
     if (pArray->ndims == 2) {
         sizeX = pArray->dims[0].size;
         sizeY = pArray->dims[1].size;
@@ -439,6 +440,14 @@ asynStatus NDFileTIFF::readFile(NDArray **pArray)
     TIFFGetField(this->tiff, TIFFTAG_ROWSPERSTRIP,     &rowsPerStrip);   
     numStrips= TIFFNumberOfStrips(this->tiff);
 
+    if (0 == sampleFormat)
+    {
+        asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
+            "%s::%s Sample format is not defined! Default UINT is used.\n",
+            driverName, __FUNCTION__);
+    	sampleFormat = SAMPLEFORMAT_UINT;
+    }
+
     if      ((bitsPerSample == 8)  && (sampleFormat == SAMPLEFORMAT_INT))     dataType = NDInt8;
     else if ((bitsPerSample == 8)  && (sampleFormat == SAMPLEFORMAT_UINT))    dataType = NDUInt8;
     else if ((bitsPerSample == 16) && (sampleFormat == SAMPLEFORMAT_INT))     dataType = NDInt16;
@@ -453,9 +462,11 @@ asynStatus NDFileTIFF::readFile(NDArray **pArray)
             driverName, functionName, bitsPerSample, sampleFormat);
         return asynError;    
     }
-    if ((photoMetric == PHOTOMETRIC_MINISBLACK) && 
-        (planarConfig == PLANARCONFIG_CONTIG)   &&
-        (samplesPerPixel == 1)) {
+
+    if ((planarConfig == PLANARCONFIG_CONTIG)
+        && (samplesPerPixel == 1)
+		&& (photoMetric == PHOTOMETRIC_MINISBLACK))
+    {
         ndims = 2;
         dims[0] = sizeX;
         dims[1] = sizeY;
@@ -481,7 +492,7 @@ asynStatus NDFileTIFF::readFile(NDArray **pArray)
     }
     else {
         asynPrint(pasynUserSelf, ASYN_TRACE_ERROR, 
-            "%s::%s unsupport photoMetric=%dm planarConfig=%d, and samplesPerPixel=%d\n", 
+            "%s::%s unsupport photoMetric=%d, planarConfig=%d, and samplesPerPixel=%d\n",
             driverName, functionName, photoMetric, planarConfig, samplesPerPixel);
         return asynError;    
     }
