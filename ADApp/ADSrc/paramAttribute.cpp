@@ -17,7 +17,7 @@
 #include <epicsMutex.h>
 #include <epicsString.h>
 
-#include <asynDriver.h>
+#include <asynPortDriver.h>
 
 #define epicsExportSharedSymbols
 #include <shareLib.h>

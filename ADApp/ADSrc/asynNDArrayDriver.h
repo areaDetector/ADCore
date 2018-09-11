@@ -95,12 +95,16 @@ typedef enum {
 #define NDArrayDataString       "ARRAY_DATA"        /**< (asynGenericPointer,   r/w) NDArray data */
 #define NDArrayCallbacksString  "ARRAY_CALLBACKS"   /**< (asynInt32,    r/w) Do callbacks with array data (0=No, 1=Yes) */
 
-/* NDArray Pool status */
+/* NDArray Pool status and control */
 #define NDPoolMaxBuffersString      "POOL_MAX_BUFFERS"
 #define NDPoolAllocBuffersString    "POOL_ALLOC_BUFFERS"
 #define NDPoolFreeBuffersString     "POOL_FREE_BUFFERS"
 #define NDPoolMaxMemoryString       "POOL_MAX_MEMORY"
 #define NDPoolUsedMemoryString      "POOL_USED_MEMORY"
+#define NDPoolEmptyFreeListString   "POOL_EMPTY_FREELIST"
+
+/* Queued arrays */
+#define NDNumQueuedArraysString     "NUM_QUEUED_ARRAYS"
 
 /** This is the class from which NDArray drivers are derived; implements the asynGenericPointer functions 
   * for NDArray objects. 
@@ -118,6 +122,7 @@ public:
                           size_t *nActual);
     virtual asynStatus readGenericPointer(asynUser *pasynUser, void *genericPointer);
     virtual asynStatus writeGenericPointer(asynUser *pasynUser, void *genericPointer);
+    virtual asynStatus writeInt32(asynUser *pasynUser, epicsInt32 value);
     virtual asynStatus readInt32(asynUser *pasynUser, epicsInt32 *value);
     virtual asynStatus readFloat64(asynUser *pasynUser, epicsFloat64 *value);
     virtual void report(FILE *fp, int details);
@@ -130,6 +135,12 @@ public:
     virtual asynStatus createFileName(int maxChars, char *filePath, char *fileName);
     virtual asynStatus readNDAttributesFile();
     virtual asynStatus getAttributes(NDAttributeList *pAttributeList);
+
+    asynStatus incrementQueuedArrayCount();
+    asynStatus decrementQueuedArrayCount();
+    
+    class NDArrayPool *pNDArrayPool;     /**< An NDArrayPool pointer that is initialized to pNDArrayPoolPvt_ in the constructor.
+                                     * Plugins change this pointer to the one passed in NDArray::pNDArrayPool */
 
 protected:
     int NDPortNameSelf;
@@ -181,13 +192,17 @@ protected:
     int NDPoolFreeBuffers;
     int NDPoolMaxMemory;
     int NDPoolUsedMemory;
+    int NDPoolEmptyFreeList;
+    int NDNumQueuedArrays;
 
-    NDArray **pArrays;             /**< An array of NDArray pointers used to store data in the driver */
-    NDArrayPool *pNDArrayPool;     /**< An NDArrayPool object used to allocate and manipulate NDArray objects */
-    class NDAttributeList *pAttributeList;  /**< An NDAttributeList object used to obtain the current values of a set of
-                                          *  attributes */
+    class NDArray **pArrays;             /**< An array of NDArray pointers used to store data in the driver */
+    class NDAttributeList *pAttributeList;  /**< An NDAttributeList object used to obtain the current values of a set of attributes */
+    NDArrayPool *pNDArrayPoolPvt_;
+    epicsMutex *queuedArrayCountMutex_;
     int threadStackSize_;
     int threadPriority_;
+    
+    friend class NDArrayPool;
 
 };
 

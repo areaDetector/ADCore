@@ -111,7 +111,7 @@ static void appendTestCase(std::vector<overlayTestCaseStr> *pOut, overlayTempCas
 
 struct OverlayPluginTestFixture
 {
-  boost::shared_ptr<asynPortDriver> driver;
+  boost::shared_ptr<asynNDArrayDriver> driver;
   boost::shared_ptr<OverlayPluginWrapper> Overlay;
   boost::shared_ptr<asynGenericPointerClient> client;
   TestingPlugin* downstream_plugin; // TODO: we don't put this in a shared_ptr and purposefully leak memory because asyn ports cannot be deleted
@@ -123,7 +123,6 @@ struct OverlayPluginTestFixture
 
   OverlayPluginTestFixture()
   {
-    arrayPool = new NDArrayPool(100, 0);
     expectedArrayCounter=0;
 
     // Asyn manager doesn't like it if we try to reuse the same port name for multiple drivers
@@ -134,11 +133,12 @@ struct OverlayPluginTestFixture
 
     // We need some upstream driver for our test plugin so that calls to connectArrayPort
     // don't fail, but we can then ignore it and send arrays by calling processCallbacks directly.
-    driver = boost::shared_ptr<asynPortDriver>(new asynPortDriver(simport.c_str(),
-                                                                     1, 1,
+    driver = boost::shared_ptr<asynNDArrayDriver>(new asynNDArrayDriver(simport.c_str(),
+                                                                     1, 0, 0,
                                                                      asynGenericPointerMask,
                                                                      asynGenericPointerMask,
                                                                      0, 0, 0, 2000000));
+    arrayPool = driver->pNDArrayPool;
 
     // This is the plugin under test
     Overlay = boost::shared_ptr<OverlayPluginWrapper>(new OverlayPluginWrapper(testport.c_str(),
@@ -193,7 +193,6 @@ struct OverlayPluginTestFixture
 
   ~OverlayPluginTestFixture()
   {
-    delete arrayPool;
     client.reset();
     Overlay.reset();
     driver.reset();

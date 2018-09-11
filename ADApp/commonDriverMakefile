@@ -17,6 +17,12 @@ $(DBD_NAME)_DBD += ADSupport.dbd
 
 $(DBD_NAME)_DBD += NDFileNull.dbd
 
+# Note that if WITH_QSRV is YES then WITH_PVA must also be YES
+ifeq ($(WITH_QSRV),YES)
+  $(DBD_NAME)_DBD += qsrv.dbd
+  PROD_LIBS += qsrv
+endif
+
 ifeq ($(WITH_PVA),YES)
   $(DBD_NAME)_DBD += NDPluginPva.dbd
   $(DBD_NAME)_DBD += PVAServerRegister.dbd
@@ -174,6 +180,12 @@ ifeq ($(WITH_ZLIB),YES)
       PROD_SYS_LIBS += z
     endif
   endif
+endif
+
+ifdef FFMPEGSERVER
+  $(DBD_NAME)_DBD += ffmpegServer.dbd
+  PROD_LIBS       += ffmpegServer
+  PROD_LIBS       += avdevice avformat avcodec swresample swscale avutil
 endif
 
 ifdef ADPLUGINEDGE

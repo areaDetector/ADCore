@@ -1,14 +1,14 @@
 
 file {
 	name="/home/epics/devel/areaDetector/ADCore/ADApp/op/adl/ADBuffers.adl"
-	version=030107
+	version=030109
 }
 display {
 	object {
 		x=603
 		y=111
 		width=350
-		height=135
+		height=160
 	}
 	clr=14
 	bclr=4
@@ -122,38 +122,6 @@ text {
 	textix="Buffers"
 	align="horiz. centered"
 }
-"text update" {
-	object {
-		x=215
-		y=81
-		width=60
-		height=18
-	}
-	monitor {
-		chan="$(P)$(R)PoolMaxMem"
-		clr=54
-		bclr=4
-	}
-	align="horiz. right"
-	limits {
-	}
-}
-"text update" {
-	object {
-		x=280
-		y=81
-		width=60
-		height=18
-	}
-	monitor {
-		chan="$(P)$(R)PoolUsedMem"
-		clr=54
-		bclr=4
-	}
-	align="horiz. right"
-	limits {
-	}
-}
 text {
 	object {
 		x=50
@@ -164,28 +132,12 @@ text {
 	"basic attribute" {
 		clr=14
 	}
-	textix="Buffers max/used"
+	textix="Buffers used"
 	align="horiz. right"
 }
 "text update" {
 	object {
 		x=215
-		y=31
-		width=50
-		height=18
-	}
-	monitor {
-		chan="$(P)$(R)PoolMaxBuffers"
-		clr=54
-		bclr=4
-	}
-	align="horiz. right"
-	limits {
-	}
-}
-"text update" {
-	object {
-		x=270
 		y=31
 		width=50
 		height=18
@@ -244,6 +196,18 @@ text {
 	limits {
 	}
 }
+rectangle {
+	object {
+		x=0
+		y=0
+		width=350
+		height=160
+	}
+	"basic attribute" {
+		clr=14
+		fill="outline"
+	}
+}
 menu {
 	object {
 		x=245
@@ -270,16 +234,36 @@ text {
 	textix="Buffer & memory polling"
 	align="horiz. right"
 }
-rectangle {
+"text update" {
 	object {
-		x=0
-		y=0
-		width=350
-		height=135
+		x=215
+		y=81
+		width=60
+		height=18
 	}
-	"basic attribute" {
-		clr=14
-		fill="outline"
+	monitor {
+		chan="$(P)$(R)PoolMaxMem"
+		clr=54
+		bclr=4
+	}
+	align="horiz. right"
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=280
+		y=81
+		width=60
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)PoolUsedMem"
+		clr=54
+		bclr=4
+	}
+	align="horiz. right"
+	limits {
 	}
 }
 text {
@@ -294,4 +278,32 @@ text {
 	}
 	textix="Memory max/used (MB)"
 	align="horiz. right"
+}
+text {
+	object {
+		x=60
+		y=130
+		width=150
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Empty free list"
+	align="horiz. right"
+}
+"message button" {
+	object {
+		x=215
+		y=130
+		width=83
+		height=20
+	}
+	control {
+		chan="$(P)$(R)EmptyFreeList"
+		clr=14
+		bclr=51
+	}
+	label="Empty"
+	press_msg="1"
 }

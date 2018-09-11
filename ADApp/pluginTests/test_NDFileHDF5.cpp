@@ -31,14 +31,13 @@ static  NDArrayPool *arrayPool;
 
 struct NDFileHDF5TestFixture
 {
-  asynPortDriver* dummy_driver;
+  asynNDArrayDriver* dummy_driver;
   boost::shared_ptr<HDF5PluginWrapper> hdf5;
 
   static int testCase;
 
   NDFileHDF5TestFixture()
   {
-    arrayPool = new NDArrayPool(100, 0);
 
     // Asyn manager doesn't like it if we try to reuse the same port name for multiple drivers (even if only one is ever instantiated at once), so
     // change it slightly for each test case.
@@ -49,7 +48,8 @@ struct NDFileHDF5TestFixture
     // We need some upstream driver for our test plugin so that calls to connectToArrayPort don't fail, but we can then ignore it and send
     // arrays by calling processCallbacks directly.
     // Thus we instansiate a basic asynPortDriver object which is never used.
-    dummy_driver = new asynPortDriver(dummy_port.c_str(), 0, 1, asynGenericPointerMask, asynGenericPointerMask, 0, 0, 0, 2000000);
+    dummy_driver = new asynNDArrayDriver(dummy_port.c_str(), 1, 0, 0, asynGenericPointerMask, asynGenericPointerMask, 0, 0, 0, 0);
+    arrayPool = dummy_driver->pNDArrayPool;
 
     // This is the plugin under test
     hdf5 = boost::shared_ptr<HDF5PluginWrapper>(new HDF5PluginWrapper(testport.c_str(),
@@ -69,7 +69,6 @@ struct NDFileHDF5TestFixture
   }
   ~NDFileHDF5TestFixture()
   {
-    delete arrayPool;
     hdf5.reset();
     delete dummy_driver;
   }

@@ -1,14 +1,14 @@
 
 file {
-	name="/home/epics/devel/areaDetector-3-2/ADCore/ADApp/op/adl/NDStats.adl"
+	name="/home/epics/devel/areaDetector-3-3/ADCore/ADApp/op/adl/NDStats.adl"
 	version=030109
 }
 display {
 	object {
-		x=174
-		y=128
+		x=180
+		y=122
 		width=1120
-		height=700
+		height=675
 	}
 	clr=14
 	bclr=4
@@ -559,201 +559,6 @@ text {
 	textix="Plot"
 	align="horiz. right"
 }
-rectangle {
-	object {
-		x=875
-		y=570
-		width=120
-		height=21
-	}
-	"basic attribute" {
-		clr=2
-	}
-}
-rectangle {
-	object {
-		x=755
-		y=565
-		width=360
-		height=130
-	}
-	"basic attribute" {
-		clr=14
-		fill="outline"
-	}
-}
-text {
-	object {
-		x=880
-		y=570
-		width=110
-		height=20
-	}
-	"basic attribute" {
-		clr=54
-	}
-	textix="Time Series"
-	align="horiz. centered"
-}
-text {
-	object {
-		x=816
-		y=647
-		width=130
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Current point"
-	align="horiz. right"
-}
-"text update" {
-	object {
-		x=951
-		y=648
-		width=90
-		height=18
-	}
-	monitor {
-		chan="$(P)$(R)TSCurrentPoint"
-		clr=54
-		bclr=4
-	}
-	limits {
-	}
-}
-menu {
-	object {
-		x=951
-		y=673
-		width=80
-		height=18
-	}
-	control {
-		chan="$(P)$(R)TSRead.SCAN"
-		clr=14
-		bclr=51
-	}
-}
-"message button" {
-	object {
-		x=1036
-		y=672
-		width=60
-		height=20
-	}
-	control {
-		chan="$(P)$(R)TSControl"
-		clr=14
-		bclr=51
-	}
-	label="Read"
-	press_msg="3"
-}
-text {
-	object {
-		x=856
-		y=672
-		width=90
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Read rate"
-	align="horiz. right"
-}
-"message button" {
-	object {
-		x=778
-		y=597
-		width=90
-		height=20
-	}
-	control {
-		chan="$(P)$(R)TSControl"
-		clr=14
-		bclr=51
-	}
-	label="Erase/Start"
-	press_msg="0"
-}
-"message button" {
-	object {
-		x=873
-		y=597
-		width=60
-		height=20
-	}
-	control {
-		chan="$(P)$(R)TSControl"
-		clr=14
-		bclr=51
-	}
-	label="Stop"
-	press_msg="2"
-}
-"message button" {
-	object {
-		x=938
-		y=597
-		width=60
-		height=20
-	}
-	control {
-		chan="$(P)$(R)TSControl"
-		clr=14
-		bclr=51
-	}
-	label="Start"
-	press_msg="1"
-}
-"text update" {
-	object {
-		x=1003
-		y=598
-		width=90
-		height=18
-	}
-	monitor {
-		chan="$(P)$(R)TSAcquiring"
-		clr=54
-		bclr=12
-	}
-	clrmod="alarm"
-	format="string"
-	limits {
-	}
-}
-"text entry" {
-	object {
-		x=951
-		y=623
-		width=60
-		height=19
-	}
-	control {
-		chan="$(P)$(R)TSNumPoints"
-		clr=14
-		bclr=51
-	}
-	limits {
-	}
-}
-text {
-	object {
-		x=786
-		y=622
-		width=160
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Number of points"
-	align="horiz. right"
-}
 text {
 	object {
 		x=405
@@ -1043,55 +848,60 @@ text {
 	}
 	display[0] {
 		label="Total"
-		name="NDTimeSeries.adl"
-		args="P=$(P),R=$(R),PLT=TSTotal"
+		name="NDStatsTimeSeriesPlot.adl"
+		args="P=$(P),R=$(R)TS:,RN=$(R)TSTotal"
 	}
 	display[1] {
 		label="Net"
-		name="NDTimeSeries.adl"
-		args="P=$(P),R=$(R),PLT=TSNet"
+		name="NDStatsTimeSeriesPlot.adl"
+		args="P=$(P),R=$(R)TS:,RN=$(R)TSNet"
 	}
 	display[2] {
 		label="Min"
-		name="NDTimeSeries.adl"
-		args="P=$(P),R=$(R),PLT=TSMinValue"
+		name="NDStatsTimeSeriesPlot.adl"
+		args="P=$(P),R=$(R)TS:,RN=$(R)TSMinValue"
 	}
 	display[3] {
 		label="Min X"
-		name="NDTimeSeries.adl"
-		args="P=$(P),R=$(R),PLT=TSMinX"
+		name="NDStatsTimeSeriesPlot.adl"
+		args="P=$(P),R=$(R)TS:,RN=$(R)TSMinX"
 	}
 	display[4] {
 		label="Min Y"
-		name="NDTimeSeries.adl"
-		args="P=$(P),R=$(R),PLT=TSMinY"
+		name="NDStatsTimeSeriesPlot.adl"
+		args="P=$(P),R=$(R)TS:,RN=$(R)TSMinY"
 	}
 	display[5] {
 		label="Max"
-		name="NDTimeSeries.adl"
-		args="P=$(P),R=$(R),PLT=TSMaxValue"
+		name="NDStatsTimeSeriesPlot.adl"
+		args="P=$(P),R=$(R)TS:,RN=$(R)TSMaxValue"
 	}
 	display[6] {
 		label="Max X"
-		name="NDTimeSeries.adl"
-		args="P=$(P),R=$(R),PLT=TSMaxX"
+		name="NDStatsTimeSeriesPlot.adl"
+		args="P=$(P),R=$(R)TS:,RN=$(R)TSMaxX"
 	}
 	display[7] {
 		label="Max Y"
-		name="NDTimeSeries.adl"
-		args="P=$(P),R=$(R),PLT=TSMaxY"
+		name="NDStatsTimeSeriesPlot.adl"
+		args="P=$(P),R=$(R)TS:,RN=$(R)TSMaxY"
 	}
 	display[8] {
 		label="Mean"
-		name="NDTimeSeries.adl"
-		args="P=$(P),R=$(R),PLT=TSMeanValue"
+		name="NDStatsTimeSeriesPlot.adl"
+		args="P=$(P),R=$(R)TS:,RN=$(R)TSMeanValue"
 	}
 	display[9] {
 		label="Sigma"
-		name="NDTimeSeries.adl"
-		args="P=$(P),R=$(R),PLT=TSSigma"
+		name="NDStatsTimeSeriesPlot.adl"
+		args="P=$(P),R=$(R)TS:,RN=$(R)TSSigma"
 	}
 	display[10] {
+		label="Time stamp"
+		name="NDStatsTimeSeriesPlot.adl"
+		args="P=$(P),R=$(R)TS:,RN=$(R)TSTimestamp"
+	}
+	display[11] {
 		label="All"
 		name="NDStatsTimeSeriesBasicAll.adl"
 		args="P=$(P),R=$(R)"
@@ -1731,63 +1541,63 @@ text {
 	}
 	display[0] {
 		label="Total"
-		name="NDTimeSeries.adl"
-		args="P=$(P),R=$(R),PLT=TSCentroidTotal"
+		name="NDStatsTimeSeriesPlot.adl"
+		args="P=$(P),R=$(R)TS:,RN=$(R)TSCentroidTotal"
 	}
 	display[1] {
 		label="Centroid X"
-		name="NDTimeSeries.adl"
-		args="P=$(P),R=$(R),PLT=TSCentroidY"
+		name="NDStatsTimeSeriesPlot.adl"
+		args="P=$(P),R=$(R)TS:,RN=$(R)TSCentroidY"
 	}
 	display[2] {
 		label="Centroid Y"
-		name="NDTimeSeries.adl"
-		args="P=$(P),R=$(R),PLT=TSCentroidY"
+		name="NDStatsTimeSeriesPlot.adl"
+		args="P=$(P),R=$(R)TS:,RN=$(R)TSCentroidY"
 	}
 	display[3] {
 		label="Sigma X"
-		name="NDTimeSeries.adl"
-		args="P=$(P),R=$(R),PLT=TSSigmaX"
+		name="NDStatsTimeSeriesPlot.adl"
+		args="P=$(P),R=$(R)TS:,RN=$(R)TSSigmaX"
 	}
 	display[4] {
 		label="Sigma Y"
-		name="NDTimeSeries.adl"
-		args="P=$(P),R=$(R),PLT=TSSigmaY"
+		name="NDStatsTimeSeriesPlot.adl"
+		args="P=$(P),R=$(R)TS:,RN=$(R)TSSigmaY"
 	}
 	display[5] {
 		label="Skewness X"
-		name="NDTimeSeries.adl"
-		args="P=$(P),R=$(R),PLT=TSSkewX"
+		name="NDStatsTimeSeriesPlot.adl"
+		args="P=$(P),R=$(R)TS:,RN=$(R)TSSkewX"
 	}
 	display[6] {
 		label="Skewness Y"
-		name="NDTimeSeries.adl"
-		args="P=$(P),R=$(R),PLT=TSSkewY"
+		name="NDStatsTimeSeriesPlot.adl"
+		args="P=$(P),R=$(R)TS:,RN=$(R)TSSkewY"
 	}
 	display[7] {
 		label="Kurtosis X"
-		name="NDTimeSeries.adl"
-		args="P=$(P),R=$(R),PLT=TSKurtosisX"
+		name="NDStatsTimeSeriesPlot.adl"
+		args="P=$(P),R=$(R)TS:,RN=$(R)TSKurtosisX"
 	}
 	display[8] {
 		label="Kurtosis Y"
-		name="NDTimeSeries.adl"
-		args="P=$(P),R=$(R),PLT=TSKurtosisY"
+		name="NDStatsTimeSeriesPlot.adl"
+		args="P=$(P),R=$(R)TS:,RN=$(R)TSKurtosisY"
 	}
 	display[9] {
 		label="Sigma XY"
-		name="NDTimeSeries.adl"
-		args="P=$(P),R=$(R),PLT=TSSigmaXY"
+		name="NDStatsTimeSeriesPlot.adl"
+		args="P=$(P),R=$(R)TS:,RN=$(R)TSSigmaXY"
 	}
 	display[10] {
 		label="Eccentricity"
-		name="NDTimeSeries.adl"
-		args="P=$(P),R=$(R),PLT=TSEccentricity"
+		name="NDStatsTimeSeriesPlot.adl"
+		args="P=$(P),R=$(R)TS:,RN=$(R)TSEccentricity"
 	}
 	display[11] {
 		label="Orientation"
-		name="NDTimeSeries.adl"
-		args="P=$(P),R=$(R),PLT=TSOrientation"
+		name="NDStatsTimeSeriesPlot.adl"
+		args="P=$(P),R=$(R)TS:,RN=$(R)TSOrientation"
 	}
 	display[12] {
 		label="All"
@@ -1865,108 +1675,6 @@ text {
 	}
 	textix="Orientation"
 	align="horiz. right"
-}
-rectangle {
-	object {
-		x=882
-		y=482
-		width=107
-		height=21
-	}
-	"basic attribute" {
-		clr=2
-	}
-}
-text {
-	object {
-		x=910
-		y=482
-		width=50
-		height=20
-	}
-	"basic attribute" {
-		clr=54
-	}
-	textix="Reset"
-	align="horiz. centered"
-}
-text {
-	object {
-		x=890
-		y=509
-		width=50
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Reset"
-	align="horiz. right"
-}
-rectangle {
-	object {
-		x=755
-		y=480
-		width=360
-		height=80
-	}
-	"basic attribute" {
-		clr=14
-		fill="outline"
-	}
-}
-"related display" {
-	object {
-		x=951
-		y=534
-		width=60
-		height=20
-	}
-	display[0] {
-		label="Reset"
-		name="yySseq_full.adl"
-		args="P=$(P),S=$(R)Reset"
-	}
-	display[1] {
-		label="Reset1"
-		name="yySseq_full.adl"
-		args="P=$(P),S=$(R)Reset1"
-	}
-	display[2] {
-		label="Reset2"
-		name="yySseq_full.adl"
-		args="P=$(P),S=$(R)Reset2"
-	}
-	clr=14
-	bclr=51
-}
-text {
-	object {
-		x=850
-		y=534
-		width=90
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Configure"
-	align="horiz. right"
-}
-"message button" {
-	object {
-		x=951
-		y=509
-		width=60
-		height=20
-	}
-	control {
-		chan="$(P)$(R)Reset.PROC"
-		clr=14
-		bclr=51
-	}
-	label="Reset"
-	press_msg="1"
 }
 "text update" {
 	object {
@@ -2079,4 +1787,350 @@ text {
 	}
 	textix="Plot"
 	align="horiz. right"
+}
+composite {
+	object {
+		x=390
+		y=590
+		width=360
+		height=80
+	}
+	"composite name"=""
+	children {
+		rectangle {
+			object {
+				x=517
+				y=592
+				width=107
+				height=21
+			}
+			"basic attribute" {
+				clr=2
+			}
+		}
+		text {
+			object {
+				x=545
+				y=592
+				width=50
+				height=20
+			}
+			"basic attribute" {
+				clr=54
+			}
+			textix="Reset"
+			align="horiz. centered"
+		}
+		text {
+			object {
+				x=525
+				y=619
+				width=50
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Reset"
+			align="horiz. right"
+		}
+		rectangle {
+			object {
+				x=390
+				y=590
+				width=360
+				height=80
+			}
+			"basic attribute" {
+				clr=14
+				fill="outline"
+			}
+		}
+		"related display" {
+			object {
+				x=586
+				y=644
+				width=60
+				height=20
+			}
+			display[0] {
+				label="Reset"
+				name="yySseq_full.adl"
+				args="P=$(P),S=$(R)Reset"
+			}
+			display[1] {
+				label="Reset1"
+				name="yySseq_full.adl"
+				args="P=$(P),S=$(R)Reset1"
+			}
+			display[2] {
+				label="Reset2"
+				name="yySseq_full.adl"
+				args="P=$(P),S=$(R)Reset2"
+			}
+			clr=14
+			bclr=51
+		}
+		text {
+			object {
+				x=485
+				y=644
+				width=90
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Configure"
+			align="horiz. right"
+		}
+		"message button" {
+			object {
+				x=586
+				y=619
+				width=60
+				height=20
+			}
+			control {
+				chan="$(P)$(R)Reset.PROC"
+				clr=14
+				bclr=51
+			}
+			label="Reset"
+			press_msg="1"
+		}
+	}
+}
+rectangle {
+	object {
+		x=875
+		y=485
+		width=120
+		height=21
+	}
+	"basic attribute" {
+		clr=2
+	}
+}
+rectangle {
+	object {
+		x=755
+		y=480
+		width=360
+		height=155
+	}
+	"basic attribute" {
+		clr=14
+		fill="outline"
+	}
+}
+text {
+	object {
+		x=880
+		y=485
+		width=110
+		height=20
+	}
+	"basic attribute" {
+		clr=54
+	}
+	textix="Time Series"
+	align="horiz. centered"
+}
+text {
+	object {
+		x=816
+		y=562
+		width=130
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Current point"
+	align="horiz. right"
+}
+"text update" {
+	object {
+		x=951
+		y=563
+		width=90
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)TS:TSCurrentPoint"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+menu {
+	object {
+		x=931
+		y=587
+		width=100
+		height=20
+	}
+	control {
+		chan="$(P)$(R)TS:TSRead.SCAN"
+		clr=14
+		bclr=51
+	}
+}
+"message button" {
+	object {
+		x=1036
+		y=587
+		width=70
+		height=20
+	}
+	control {
+		chan="$(P)$(R)TS:TSRead.PROC"
+		clr=14
+		bclr=51
+	}
+	label="Read"
+	press_msg="1"
+}
+text {
+	object {
+		x=836
+		y=587
+		width=90
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Read rate"
+	align="horiz. right"
+}
+"text entry" {
+	object {
+		x=951
+		y=538
+		width=60
+		height=19
+	}
+	control {
+		chan="$(P)$(R)TS:TSNumPoints"
+		clr=14
+		bclr=51
+	}
+	limits {
+	}
+}
+text {
+	object {
+		x=786
+		y=537
+		width=160
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Number of points"
+	align="horiz. right"
+}
+"message button" {
+	object {
+		x=856
+		y=512
+		width=90
+		height=20
+	}
+	control {
+		chan="$(P)$(R)TS:TSAcquire"
+		clr=14
+		bclr=51
+	}
+	label="Erase/Start"
+	press_msg="1"
+}
+"message button" {
+	object {
+		x=951
+		y=512
+		width=60
+		height=20
+	}
+	control {
+		chan="$(P)$(R)TS:TSAcquire"
+		clr=14
+		bclr=51
+	}
+	label="Stop"
+	press_msg="0"
+}
+"text update" {
+	object {
+		x=1016
+		y=513
+		width=90
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)TS:TSAcquiring"
+		clr=54
+		bclr=12
+	}
+	clrmod="alarm"
+	format="string"
+	limits {
+	}
+}
+text {
+	object {
+		x=781
+		y=512
+		width=70
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Acquire"
+}
+"related display" {
+	object {
+		x=1036
+		y=612
+		width=70
+		height=20
+	}
+	display[0] {
+		label="Time series control"
+		name="NDPluginTimeSeries.adl"
+		args="P=$(P),R=$(R)TS:"
+	}
+	clr=14
+	bclr=51
+	label="More"
+}
+text {
+	object {
+		x=816
+		y=611
+		width=110
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="AcquireMode"
+}
+menu {
+	object {
+		x=931
+		y=611
+		width=100
+		height=20
+	}
+	control {
+		chan="$(P)$(R)TS:TSAcquireMode"
+		clr=14
+		bclr=51
+	}
 }

@@ -105,7 +105,7 @@ namespace hdf5
 
   void DataSource::set_datatype(DataType_t type)
   {
-	  this->datatype = type;
+    this->datatype = type;
   }
 
   bool DataSource::is_src_constant()

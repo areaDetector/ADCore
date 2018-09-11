@@ -131,16 +131,20 @@ struct AttrPlotPluginTestFixture
     static const int n_selected = 2;
     AttrPlotPluginWrapper* attrPlot;
     NDArrayPool * arrPool;
+    std::string dummy_port;
     std::string port;
 
     AttrPlotPluginTestFixture()
-        : arrPool(new NDArrayPool(100,0)),
-          port("TS")
+        : port("TS")
     {
 
         // Asyn manager doesn't like it if we try to reuse the same port name for multiple drivers
         // (even if only one is ever instantiated at once), so we change it slightly for each test case.
         uniqueAsynPortName(port);
+        uniqueAsynPortName(dummy_port);
+
+        asynNDArrayDriver *dummy_driver = new asynNDArrayDriver(dummy_port.c_str(), 1, 0, 0, asynGenericPointerMask, asynGenericPointerMask, 0, 0, 0, 0);
+        arrPool = dummy_driver->pNDArrayPool;
 
         // This is the plugin under test
         attrPlot = new AttrPlotPluginWrapper(

@@ -25,7 +25,7 @@
 #include <macLib.h>
 #include <cantProceed.h>
 
-#include <asynDriver.h>
+#include <asynPortDriver.h>
 
 
 #define epicsExportSharedSymbols
@@ -603,18 +603,47 @@ asynStatus asynNDArrayDriver::writeGenericPointer(asynUser *pasynUser, void *gen
     return status;
 }
 
+/** Sets an int32 parameter.
+  * \param[in] pasynUser asynUser structure that contains the function code in pasynUser->reason. 
+  * \param[in] value The value for this parameter 
+  *
+  * Takes action if the function code requires it. */
+asynStatus asynNDArrayDriver::writeInt32(asynUser *pasynUser, epicsInt32 value)
+{
+    int function = pasynUser->reason;
+    asynStatus status = asynSuccess;
+    static const char *functionName = "writeInt32";
+
+    status = setIntegerParam(function, value);
+
+    if (function == NDPoolEmptyFreeList) {
+        this->pNDArrayPool->emptyFreeList();
+    }
+
+    /* Do callbacks so higher layers see any changes */
+    callParamCallbacks();
+
+    if (status)
+        asynPrint(pasynUser, ASYN_TRACE_ERROR,
+              "%s:%s: error, status=%d function=%d, value=%d\n",
+              driverName, functionName, status, function, value);
+    else
+        asynPrint(pasynUser, ASYN_TRACEIO_DRIVER,
+              "%s:%s: function=%d, value=%d\n",
+              driverName, functionName, function, value);
+    return status;
+}
+
 asynStatus asynNDArrayDriver::readInt32(asynUser *pasynUser, epicsInt32 *value)
 {
     int function = pasynUser->reason;
     asynStatus status = asynSuccess;
 
     // Just read the status of the NDArrayPool
-    if (function == NDPoolMaxBuffers) {
-        setIntegerParam(function, this->pNDArrayPool->maxBuffers());
-    } else if (function == NDPoolAllocBuffers) {
-        setIntegerParam(function, this->pNDArrayPool->numBuffers());
+    if (function == NDPoolAllocBuffers) {
+        setIntegerParam(function, this->pNDArrayPool->getNumBuffers());
     } else if (function == NDPoolFreeBuffers) {
-        setIntegerParam(function, this->pNDArrayPool->numFree());
+        setIntegerParam(function, this->pNDArrayPool->getNumFree());
     }
 
     // Call base class
@@ -630,9 +659,9 @@ asynStatus asynNDArrayDriver::readFloat64(asynUser *pasynUser, epicsFloat64 *val
 
     // Just read the status of the NDArrayPool
     if (function == NDPoolMaxMemory) {
-        setDoubleParam(function, this->pNDArrayPool->maxMemory() / MEGABYTE_DBL);
+        setDoubleParam(function, this->pNDArrayPool->getMaxMemory() / MEGABYTE_DBL);
     } else if (function == NDPoolUsedMemory) {
-        setDoubleParam(function, this->pNDArrayPool->memorySize() / MEGABYTE_DBL);
+        setDoubleParam(function, this->pNDArrayPool->getMemorySize() / MEGABYTE_DBL);
     }
 
     // Call base class
@@ -657,12 +686,49 @@ void asynNDArrayDriver::report(FILE *fp, int details)
     }
     if (details > 5) {
         fprintf(fp, "\n");
-        fprintf(fp, "%s: NDArrayPool report\n", this->portName);
-        if (this->pNDArrayPool) this->pNDArrayPool->report(fp, details);
+        fprintf(fp, "%s: private NDArrayPool report\n", this->portName);
+        this->pNDArrayPoolPvt_->report(fp, details);
+        if (this->pNDArrayPool != this->pNDArrayPoolPvt_) {
+            fprintf(fp, "\n");
+            fprintf(fp, "%s: shared NDArrayPool report\n", this->portName);
+            this->pNDArrayPool->report(fp, details);
+        }
         fprintf(fp, "\n");
         fprintf(fp, "%s: pAttributeList report\n", this->portName);
         this->pAttributeList->report(fp, details);
     }
+}
+
+asynStatus asynNDArrayDriver::incrementQueuedArrayCount() 
+{ 
+    int arrayCount;
+  
+    queuedArrayCountMutex_->lock();
+    getIntegerParam(NDNumQueuedArrays, &arrayCount);
+    arrayCount++;
+    setIntegerParam(NDNumQueuedArrays, arrayCount);
+    callParamCallbacks();
+    queuedArrayCountMutex_->unlock();
+    return asynSuccess;
+}
+
+asynStatus asynNDArrayDriver::decrementQueuedArrayCount() 
+{
+    static const char *functionName = "decrementQueuedArrayCount";
+    int arrayCount;
+  
+    queuedArrayCountMutex_->lock();
+    getIntegerParam(NDNumQueuedArrays, &arrayCount);
+    if (arrayCount <= 0) {
+        asynPrint(pasynUserSelf, ASYN_TRACE_ERROR, 
+            "%s::%s error, numQueuedArrays already 0 or less (%d)\n",
+            driverName, functionName, arrayCount);
+    }
+    arrayCount--;
+    setIntegerParam(NDNumQueuedArrays, arrayCount);
+    callParamCallbacks();
+    queuedArrayCountMutex_->unlock();
+    return asynSuccess;
 }
 
 
@@ -675,6 +741,7 @@ void asynNDArrayDriver::report(FILE *fp, int details)
   * \param[in] maxAddr The maximum  number of asyn addr addresses this driver supports. 1 is minimum.
   * \param[in] maxBuffers The maximum number of NDArray buffers that the NDArrayPool for this driver is 
   *            allowed to allocate. Set this to 0 to allow an unlimited number of buffers.
+  *            This value is no longer used and is ignored.  It will be removed in a future major release.
   * \param[in] maxMemory The maximum amount of memory that the NDArrayPool for this driver is 
   *            allowed to allocate. Set this to 0 to allow an unlimited amount of memory.
   * \param[in] interfaceMask Bit mask defining the asyn interfaces that this driver supports.
@@ -694,7 +761,7 @@ asynNDArrayDriver::asynNDArrayDriver(const char *portName, int maxAddr, int maxB
                      interfaceMask | asynInt32Mask | asynFloat64Mask | asynOctetMask | asynInt32ArrayMask | asynGenericPointerMask | asynDrvUserMask, 
                      interruptMask | asynInt32Mask | asynFloat64Mask | asynOctetMask | asynInt32ArrayMask | asynGenericPointerMask,
                      asynFlags, autoConnect, priority, stackSize),
-      pNDArrayPool(NULL)
+      pNDArrayPool(NULL), queuedArrayCountMutex_(NULL)
 {
     char versionString[20];
 
@@ -704,7 +771,9 @@ asynNDArrayDriver::asynNDArrayDriver(const char *portName, int maxAddr, int maxB
     if (priority <= 0) priority = epicsThreadPriorityMedium;
     threadPriority_ = priority;
 
-    this->pNDArrayPool = new NDArrayPool(maxBuffers, maxMemory);
+    this->pNDArrayPoolPvt_ = new NDArrayPool(this, maxMemory);
+    this->pNDArrayPool = this->pNDArrayPoolPvt_;
+    this->queuedArrayCountMutex_ = new epicsMutex();
 
     /* Allocate pArray pointer array */
     this->pArrays = (NDArray **)calloc(maxAddr, sizeof(NDArray *));
@@ -758,6 +827,8 @@ asynNDArrayDriver::asynNDArrayDriver(const char *portName, int maxAddr, int maxB
     createParam(NDPoolFreeBuffersString,      asynParamInt32,           &NDPoolFreeBuffers);
     createParam(NDPoolMaxMemoryString,        asynParamFloat64,         &NDPoolMaxMemory);
     createParam(NDPoolUsedMemoryString,       asynParamFloat64,         &NDPoolUsedMemory);
+    createParam(NDPoolEmptyFreeListString,    asynParamInt32,           &NDPoolEmptyFreeList);
+    createParam(NDNumQueuedArraysString,      asynParamInt32,           &NDNumQueuedArrays);
 
     /* Here we set the values of read-only parameters and of read/write parameters that cannot
      * or should not get their values from the database.  Note that values set here will override
@@ -804,17 +875,21 @@ asynNDArrayDriver::asynNDArrayDriver(const char *portName, int maxAddr, int maxB
     setIntegerParam(NDAttributesStatus, NDAttributesFileNotFound);
     setStringParam (NDAttributesMacros, "");
 
-    setIntegerParam(NDPoolMaxBuffers, this->pNDArrayPool->maxBuffers());
-    setIntegerParam(NDPoolAllocBuffers, this->pNDArrayPool->numBuffers());
-    setIntegerParam(NDPoolFreeBuffers, this->pNDArrayPool->numFree());
+    setIntegerParam(NDPoolAllocBuffers, this->pNDArrayPool->getNumBuffers());
+    setIntegerParam(NDPoolFreeBuffers, this->pNDArrayPool->getNumFree());
+    setDoubleParam(NDPoolMaxMemory, 0);
+    setDoubleParam(NDPoolUsedMemory, 0);
+
+    setIntegerParam(NDNumQueuedArrays, 0);
 
 }
 
 
 asynNDArrayDriver::~asynNDArrayDriver()
 { 
-    delete this->pNDArrayPool;
+    delete this->pNDArrayPoolPvt_;
     free(this->pArrays);
     delete this->pAttributeList;
+    delete this->queuedArrayCountMutex_;
 }    
 

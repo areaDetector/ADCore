@@ -15,6 +15,8 @@
 #include <epicsThread.h>
 #include <asynStandardInterfaces.h>
 
+#include <asynPortDriver.h>
+
 #include <epicsExport.h>
 #include "ADDriver.h"
 

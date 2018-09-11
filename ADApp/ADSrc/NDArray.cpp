@@ -14,6 +14,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <ellLib.h>
+#include <vector>
 
 #include <epicsMutex.h>
 #include <epicsTypes.h>
@@ -28,15 +29,49 @@
 /** NDArray constructor, no parameters.
   * Initializes all fields to 0.  Creates the attribute linked list and linked list mutex. */
 NDArray::NDArray()
-  : referenceCount(0), pNDArrayPool(NULL),  
+  : referenceCount(0), pNDArrayPool(0), pDriver(0),
     uniqueId(0), timeStamp(0.0), ndims(0), dataType(NDInt8),
-    dataSize(0),  pData(NULL)
+    dataSize(0),  pData(0)
 {
   this->epicsTS.secPastEpoch = 0;
   this->epicsTS.nsec = 0;
   memset(this->dims, 0, sizeof(this->dims));
   memset(&this->node, 0, sizeof(this->node));
   this->pAttributeList = new NDAttributeList();
+}
+
+NDArray::NDArray(int nDims, size_t *dims, NDDataType_t dataType, size_t dataSize, void *pData)
+  : referenceCount(0), pNDArrayPool(0), pDriver(0),
+    uniqueId(0), timeStamp(0.0), ndims(nDims), dataType(dataType),
+    dataSize(dataSize),  pData(0)
+{
+  static const char *functionName = "NDArray::NDArray";
+  this->epicsTS.secPastEpoch = 0;
+  this->epicsTS.nsec = 0;
+  this->pAttributeList = new NDAttributeList();
+  this->referenceCount = 1;
+
+  memset(this->dims, 0, sizeof(this->dims));
+  for (int i=0; i<ndims && i<ND_ARRAY_MAX_DIMS; i++) {
+    this->dims[i].size = dims[i];
+    this->dims[i].offset = 0;
+    this->dims[i].binning = 1;
+    this->dims[i].reverse = 0;
+  }
+  NDArrayInfo arrayInfo;
+  this->getInfo(&arrayInfo);
+  if (dataSize == 0) dataSize = arrayInfo.totalBytes;
+  if (arrayInfo.totalBytes > dataSize) {
+    printf("%s: ERROR: required size=%d passed size=%d is too small\n",
+    functionName, (int)arrayInfo.totalBytes, (int)dataSize);
+  }
+  /* If the caller passed a valid buffer use that, trust that its size is correct */
+  if (pData) {
+    this->pData = pData;
+  } else {
+    this->pData = malloc(dataSize);
+    this->dataSize = dataSize;
+  }
 }
 
 /** NDArray destructor 
@@ -47,15 +82,10 @@ NDArray::~NDArray()
   delete this->pAttributeList;
 }
 
-/** Convenience method returns information about an NDArray, including the total number of elements, 
-  * the number of bytes per element, and the total number of bytes in the array.
-  \param[out] pInfo Pointer to an NDArrayInfo_t structure, must have been allocated by caller. */
-int NDArray::getInfo(NDArrayInfo_t *pInfo)
+/** Convenience method computes the total the total number of bytes in the array. */
+int NDArray::computeArrayInfo(int ndims, size_t *dims, NDDataType_t dataType, NDArrayInfo *pInfo)
 {
-  int i;
-  NDAttribute *pAttribute;
-
-  switch(this->dataType) {
+  switch(dataType) {
     case NDInt8:
       pInfo->bytesPerElement = sizeof(epicsInt8);
       break;
@@ -85,8 +115,23 @@ int NDArray::getInfo(NDArrayInfo_t *pInfo)
       break;
   }
   pInfo->nElements = 1;
-  for (i=0; i<this->ndims; i++) pInfo->nElements *= this->dims[i].size;
+  for (int i=0; i<ndims; i++) pInfo->nElements *= dims[i];
   pInfo->totalBytes = pInfo->nElements * pInfo->bytesPerElement;
+  return ND_SUCCESS;
+}
+/** Convenience method returns information about an NDArray, including the total number of elements, 
+  * the number of bytes per element, and the total number of bytes in the array.
+  \param[out] pInfo Pointer to an NDArrayInfo_t structure, must have been allocated by caller. */
+int NDArray::getInfo(NDArrayInfo_t *pInfo)
+{
+  int i;
+  NDAttribute *pAttribute;
+  size_t *dims_t = new size_t[this->ndims];
+  for (i=0; i<this->ndims; i++) dims_t[i] = this->dims[i].size;
+  int status = NDArray::computeArrayInfo(this->ndims, dims_t, this->dataType, pInfo);
+  delete[] dims_t;
+  if (status != ND_SUCCESS) return status;
+  
   pInfo->colorMode = NDColorModeMono;
   pAttribute = this->pAttributeList->find("ColorMode");
   if (pAttribute) pAttribute->getValue(NDAttrInt32, &pInfo->colorMode);

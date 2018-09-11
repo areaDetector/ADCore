@@ -19,12 +19,107 @@ files respectively, in the configure/ directory of the appropriate release of th
 
 Release Notes
 =============
-
-R3-3 (April XXX, 2018)
+R3-3-2 (July 9, 2018)
 ======================
-### NDArray
+### ADApp/commonDriverMakefile
+* Changed so that qsrv dbd and lib files are only included if WITH_QSRV=YES.
+  Previously they were included if WITH_PVA=YES.  However base 3.14.12 supports
+  WITH_PVA but does not support qsrv.  This allows WITH_PVA=YES to be used on 3.14.12
+  as long as WITH_QSRV=NO.
+
+R3-3-1 (July 1, 2018)
+======================
+### ADApp/commonDriverMakefile
+* Added qsrv dbd and lib files so that areaDetector IOCs can serve normal EPICS PVs using pvAccess.
+  Thanks to Pete Jemian for this.
+### ADApp/ADSrc
+* Changes in include statements in several files to eliminate warning when building dynamically with
+  Visual Studio.
+### ADApp/ADSrc/Makefile, ADApp/pluginSrc/Makefile, ADApp/pluginTests/Makefile
+* Changed USR_INCLUDES definitions for all user-defined include directories,
+  (for example XML_INCLUDE) from this:
+  ```
+  USR_INCLUDES += -I$(XML2_INCLUDE)
+  ```
+  to this:
+  ```
+  USR_INCLUDES += $(addprefix -I, $(XML2_INCLUDE))
+  ```
+  This allows XML2_INCLUDE to contain multiple directory paths. 
+  
+  Note that these user-defined include directories must __not__ contain the -I in their definitions.  
+  Prior to areaDetector R3-3-1 the areaDetector/configure/EXAMPLE_CONFIG_SITE.local* files incorrectly had
+  the -I flags in them, and these would not work correctly with the Makefiles in this release 
+  (or prior releases) of ADCore or other repositories.
+
+R3-3 (June 27, 2018)
+======================
+### NDArrayPool design changes
+* Previously each plugin used its own NDArrayPool. This design had the problem that it was not really possible 
+  to enforce the maxMemory limits for the driver and plugin chain.  It is the sum of the memory use by the driver 
+  and all plugins that matters, not the use by each individual driver and plugin.  
+* The NDPluginDriver base class was changed to set its pNDArrayPool pointer to the address passed to it in the 
+  NDArray.pNDArrayPool for the NDArray in the callback.  Ultimately all NDArrays are derived from the driver,
+  either directly, or via the NDArrayPool.copy() or NDArrayPool.convert() methods.  This means that plugins
+  now allocate NDArrays from the driver's NDArrayPool, not their own.  Any NDArrays allocated before the first
+  callback still use the plugin's private NDArrayPool, but only a few plugins do this, and these only allocate
+  a single NDArray so they don't use much memory.
+* This means that the maxMemory argument to the driver constuctor now controls
+  the total amount of memory that can be allocated for the driver and all downstream plugins.
+* The maxBuffers argument to all driver and plugin constructors is now ignored.
+  There is now no limit on the number of NDArrays, only on the total amount of memory.
+* The maxBuffers argument to the ADDriver and NDPluginDriver base class constructors are still present so existing drivers 
+  and plugins will work with no changes. This argument is simply ignored. 
+  A second constructor will be added to each base class in the future and the old one will be deprecated.
+* The maxMemory argument to the NDPluginDriver constructor is only used for NDArrays allocated before the
+  first callback, so it can safely be set to 0 (unlimited).
+* The freelist in NDArrayPool was changed from being an EPICS ellList to an std::multiset.  The freelist is 
+  now sorted by the size of the NDArray.  This allows quickly finding an NDArray of the correct size, 
+  and knowing if no such NDArray exists.
+* Previously there was no way to free the memory in the freelist, giving the memory back to the operating system
+  after a large number of NDArrays had been allocated, without restarting the IOC.  The NDArrayPool class now
+  has an emptyFreeList() method that deletes all of the NDArrays in the freelist.  asynNDArrayDriver has a
+  new NDPoolEmptyFreeList parameter, and NDArrayBase.template has a new bo record called $(P)$(R)EmptyFreeList
+  that will empty the freelist when processed.  Note that on Linux the freed memory may not actually be returned
+  to the operating system.  On Centos7 (and presumably many other versions of Linux) setting the value of the 
+  environment variable MALLOC_TRIM_THRESHOLD_ to a small value will allow the memory to actually be returned
+  to the operating system.
+* Improved the efficiency of memory allocation.  Previously the first NDArray that is large enough was returned.
+  Now if the size of the smallest available NDArray exceeds the requested size by a factor of 1.5 then the
+  memory in that NDArray is freed and reallocated to be the requested size.  Thanks to Michael Huth for the first
+  implementation of this.
+* These changes are generally backwards compatible. However, startup scripts that set a non-zero value for 
+  maxMemory in the driver may need to increase this value because all NDArrays are now allocated from this NDArrayPool.
+### Queued array counting and waiting for plugins to complete
+* Previously if one wanted to wait for plugins to complete before the driver indicated that acquisition was complete
+  then one needed to set CallbacksBlock=Yes for each plugin in the chain.
+  Waiting for plugins is needed in cases like the following, for example:
+  - One is doing a step scan and one of the counters for the step-scan is a PV from the statistics plugin. It is necessary to
+    wait for the statistics plugin to complete to be sure the PV value is for current NDArray and not the previous one.
+  - One is doing a scan and writing the NDArrays to a file with one of the file plugins. It is necessary to wait
+    for the file plugin to complete before changing the file name for the next point.
+* There are 2 problems with setting CallbacksBlock=Yes.
+  - It slows down the driver because the plugin is executing in the driver thread and not in its own thread.
+  - It is complicated to change all of the required plugin settings from CallbacksBlock=No to CallbacksBlock=Yes.
+* The NDPluginDriver base class now increments a NumQueuedArrays counter in the driver that owns each NDArray as it is queued, 
+  and decrements the counter after the processing is done. 
+* All drivers have 3 new records:
+  - NumQueuedArrays: This record indicates the total number of NDArrays that are currently processing or are queued
+    for processing by this driver.
+  - WaitForPlugins: This record determines whether AcquireBusy waits for NumQueuedArrays to go to 0 before changing to 0 when acquisition completes.
+  - AcquireBusy This is a busy record that is set to 1 when Acquire changes to 1. It changes back to 0 when acquisition completes, 
+    i.e. when Acquire_RBV=0. If WaitForPlugins is Yes then it also waits for NumQueuedArrays to go to 0 before changing to 0.
+* The ADCollect sub-screen now contains these 3 PVs.
+* The ADBase screen contains the ADCollect screen, so it shows these PVs.
+* Driver screens typically do not use the ADCollect sub-screen, so they need to be individually edited to contain these PVs.  
+  They are not yet all complete.
+* With this new design it should rarely be necessary to change plugins to use CallbacksBlock=Yes.
+### NDArray, NDArrayPool
+* Changes to allow the NDArray class to be inherited by derived classes.  Thanks to Sinisa Veseli for this. 
 * Added the epicsTS (EPICS time stamp) field to the report() output. 
   Previously the timeStamp field was in the report, but not the epicsTS field was not.
+* NDArrayPool::report() now prints a summary of the freeList entries if details>5 and shows the details
+  of each array in the freeList if details>10.  This information can be printed with "asynReport 6 driverName" for example.
 ### NDPluginPva
 * Added call to NDPluginDriver::endProcessCallbacks at the end of processCallbacks().
   This will do NDArray callbacks if enabled and will copy the last NDArray to pArrays[0] for asynReport.
@@ -58,11 +153,26 @@ R3-3 (April XXX, 2018)
   6. Restores the previous NDArrayPort from the temporary location.
 * Add an sseq record to load the flatfile from a TIFF file.  This executes the same steps as for the background
   above, except that in step 5 it loads the NDArray into the flatfile image.
+### NDPluginStats
+* Changed the time series to use NDPluginTimeSeries, rather than having the time series logic in NDPluginStats.
+  This reduced the code by 240 lines, while adding the capability of running in Circular Buffer mode, 
+  not just a fixed number of time points.
+* NOTE: The names of the time series arrays for each statistic have not changed.  However, the name of the PVs to control
+  the time series acquisition have changed, for example from $(P)$(R)TSControl, to $(P)$(R)TS:TSAcquire.  This may
+  require changes to clients that were controlling time series acquisitions.
+* EXAMPLE_commonPlugins.cmd has changed to load an NDPluginTimeSeries plugin and database for each NDPluginStats plugin,
+  so the local commonPlugins.cmd file must be updated.
 ### ADApp/Db/
 * Added default ADDR=0 and TIMEOUT=1 to many template files.  This means these values do not need to be specified
   when loading these databases if these defaults are acceptable, which is often the case.
 ### ADApp/op/adl
 * Fixes to a number of .adl files to set text widget size and alignment, etc. to improve conversion to .opi and .ui files.
+### ADApp/op/edl/autoconvert
+* Major improvement in quality of edm screens (colors, fonts, etc.) thanks to Bruce Hill.
+### ADApp/pluginTests
+* Added a new unit test, test_NDArrayPool to test NDArrayPool::alloc().
+* All unit tests were changed to create an asynNDArrayDriver and use the NDArrayPool from that, rather than directly
+  creating an NDArrayPool.
 
 R3-2 (January 28, 2018)
 ======================
