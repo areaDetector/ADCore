@@ -24,6 +24,7 @@
 #define NDCircBuffPostCountString           "CIRC_BUFF_POST_COUNT"            /* (asynInt32,        r/o) Number of the current post count image */
 #define NDCircBuffSoftTriggerString         "CIRC_BUFF_SOFT_TRIGGER"          /* (asynInt32,        r/w) Force a soft trigger */
 #define NDCircBuffTriggeredString           "CIRC_BUFF_TRIGGERED"             /* (asynInt32,        r/o) Have we had a trigger event */
+#define NDCircBuffFlushOnSoftTrigString     "CIRC_BUFF_FLUSH_ON_SOFTTRIGGER"  /* (asynInt32,        r/w) Flush buffer immediatelly when software trigger obtained */
 
 
 /** Performs a scope like capture.  Records a quantity
@@ -62,6 +63,7 @@ protected:
     int NDCircBuffPostCount;
     int NDCircBuffSoftTrigger;
     int NDCircBuffTriggered;
+    int NDCircBuffFlushOnSoftTrig;
 
     void flushPreBuffer();
 

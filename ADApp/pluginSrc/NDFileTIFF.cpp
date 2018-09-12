@@ -470,10 +470,9 @@ asynStatus NDFileTIFF::readFile(NDArray **pArray)
         return asynError;    
     }
 
-    if ((planarConfig == PLANARCONFIG_CONTIG)
-        && (samplesPerPixel == 1)
-		&& (photoMetric == PHOTOMETRIC_MINISBLACK))
-    {
+    if ((photoMetric == PHOTOMETRIC_MINISBLACK)  &&
+           (planarConfig == PLANARCONFIG_CONTIG) &&
+           (samplesPerPixel == 1)) {
         ndims = 2;
         dims[0] = sizeX;
         dims[1] = sizeY;
