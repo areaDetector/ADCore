@@ -148,6 +148,7 @@ void NDPluginCircularBuff::processCallbacks(NDArray *pArray)
 
         // Have we detected a trigger event yet?
         if (!triggered){
+
           // No trigger so add the NDArray to the pre-trigger ring
           pOldArray_ = preBuffer_->addToEnd(pArrayCpy);
           // If we overwrote an existing array in the ring, release it here
@@ -160,22 +161,18 @@ void NDPluginCircularBuff::processCallbacks(NDArray *pArray)
           if (preBuffer_->size() == preCount){
             setStringParam(NDCircBuffStatus, "Buffer Wrapping");
           }
+
         } else {
+
           // Trigger detected
           // Start making frames available if trigger has occured
           setStringParam(NDCircBuffStatus, "Flushing");
 
-          // Has the trigger occured on this frame?
+          // Has the trigger occurred on this frame?
           if (previousTrigger_ == 0){
             previousTrigger_ = 1;
             // Yes, so flush the ring first
-
-            if (preBuffer_->size() > 0){
-              doCallbacksGenericPointer(preBuffer_->readFromStart(), NDArrayData, 0);
-              while (preBuffer_->hasNext()) {
-                doCallbacksGenericPointer(preBuffer_->readNext(), NDArrayData, 0);
-              }
-            }
+            flushPreBuffer();
           }
       
           currentPostCount++;
@@ -215,6 +212,19 @@ void NDPluginCircularBuff::processCallbacks(NDArray *pArray)
     }
             
     callParamCallbacks();
+}
+
+void NDPluginCircularBuff::flushPreBuffer()
+{
+    if (preBuffer_->size() > 0)
+    {
+      doCallbacksGenericPointer(preBuffer_->readFromStart(), NDArrayData, 0);
+      while (preBuffer_->hasNext())
+      {
+        doCallbacksGenericPointer(preBuffer_->readNext(), NDArrayData, 0);
+      }
+      preBuffer_->clear();
+    }
 }
 
 /** Called when asyn clients call pasynInt32->write().
@@ -268,6 +278,8 @@ asynStatus NDPluginCircularBuff::writeInt32(asynUser *pasynUser, epicsInt32 valu
 
         // Set a soft trigger
         setIntegerParam(NDCircBuffTriggered, 1);
+
+        flushPreBuffer();
 
     }  else if (function == NDCircBuffPreTrigger){
         // Check the value of pretrigger does not exceed max buffers
