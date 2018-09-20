@@ -96,7 +96,7 @@ display {
 	}
 	plotcom {
 		title="$(P)$(RN) Time Series"
-		xlabel="Time point"
+		xlabel="Time (s)"
 		ylabel="$(P)$(RN)"
 		clr=14
 		bclr=2
@@ -104,6 +104,7 @@ display {
 	style="line"
 	erase_oldest="plot last n pts"
 	trace[0] {
+		xdata="$(P)$(R)TSTimeAxis"
 		ydata="$(P)$(RN)"
 		data_clr=27
 		yaxis=0

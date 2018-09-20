@@ -37,7 +37,7 @@ h 275
 # Appearance
 border
 graphTitle "$(P)$(RN) Time Series"
-xLabel "Time point"
+xLabel "Time (s)"
 yLabel "$(P)$(RN)"
 fgColor rgb 0 0 0
 bgColor rgb 55808 55808 55808
@@ -55,6 +55,9 @@ showYAxis
 yAxisSrc "AutoScale"
 #  Trace Properties
 numTraces 1
+xPv {
+  0 "$(P)$(R)TSTimeAxis"
+}
 yPv {
   0 "$(P)$(RN)"
 }

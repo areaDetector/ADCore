@@ -73,7 +73,7 @@ h 200
 # Appearance
 border
 graphTitle "$(P)$(R)TSTotal"
-xLabel "Time point"
+xLabel "Time (s)"
 yLabel "Value"
 fgColor rgb 0 0 0
 bgColor rgb 55808 55808 55808
@@ -91,6 +91,9 @@ showYAxis
 yAxisSrc "AutoScale"
 #  Trace Properties
 numTraces 1
+xPv {
+  0 "$(P)$(R)TS:TSTimeAxis"
+}
 yPv {
   0 "$(P)$(R)TSTotal"
 }
@@ -121,7 +124,7 @@ h 200
 # Appearance
 border
 graphTitle "$(P)$(R)TSNet"
-xLabel "Time point"
+xLabel "Time (s)"
 yLabel "Value"
 fgColor rgb 0 0 0
 bgColor rgb 55808 55808 55808
@@ -139,6 +142,9 @@ showYAxis
 yAxisSrc "AutoScale"
 #  Trace Properties
 numTraces 1
+xPv {
+  0 "$(P)$(R)TS:TSTimeAxis"
+}
 yPv {
   0 "$(P)$(R)TSNet"
 }
@@ -169,7 +175,7 @@ h 200
 # Appearance
 border
 graphTitle "$(P)$(R)TSMin"
-xLabel "Time point"
+xLabel "Time (s)"
 yLabel "Value"
 fgColor rgb 0 0 0
 bgColor rgb 55808 55808 55808
@@ -187,6 +193,9 @@ showYAxis
 yAxisSrc "AutoScale"
 #  Trace Properties
 numTraces 1
+xPv {
+  0 "$(P)$(R)TS:TSTimeAxis"
+}
 yPv {
   0 "$(P)$(R)TSMinValue"
 }
@@ -217,7 +226,7 @@ h 200
 # Appearance
 border
 graphTitle "$(P)$(R)TSMax"
-xLabel "Time point"
+xLabel "Time (s)"
 yLabel "Value"
 fgColor rgb 0 0 0
 bgColor rgb 55808 55808 55808
@@ -235,6 +244,9 @@ showYAxis
 yAxisSrc "AutoScale"
 #  Trace Properties
 numTraces 1
+xPv {
+  0 "$(P)$(R)TS:TSTimeAxis"
+}
 yPv {
   0 "$(P)$(R)TSMaxValue"
 }
@@ -265,7 +277,7 @@ h 200
 # Appearance
 border
 graphTitle "$(P)$(R)TSSigma"
-xLabel "Time point"
+xLabel "Time (s)"
 yLabel "Value"
 fgColor rgb 0 0 0
 bgColor rgb 55808 55808 55808
@@ -283,6 +295,9 @@ showYAxis
 yAxisSrc "AutoScale"
 #  Trace Properties
 numTraces 1
+xPv {
+  0 "$(P)$(R)TS:TSTimeAxis"
+}
 yPv {
   0 "$(P)$(R)TSSigma"
 }
@@ -313,7 +328,7 @@ h 200
 # Appearance
 border
 graphTitle "$(P)$(R)TSMean"
-xLabel "Time point"
+xLabel "Time (s)"
 yLabel "Value"
 fgColor rgb 0 0 0
 bgColor rgb 55808 55808 55808
@@ -331,6 +346,9 @@ showYAxis
 yAxisSrc "AutoScale"
 #  Trace Properties
 numTraces 1
+xPv {
+  0 "$(P)$(R)TS:TSTimeAxis"
+}
 yPv {
   0 "$(P)$(R)TSMeanValue"
 }
@@ -361,7 +379,7 @@ h 200
 # Appearance
 border
 graphTitle "$(P)$(R)TSMinX"
-xLabel "Time point"
+xLabel "Time (s)"
 yLabel "Value"
 fgColor rgb 0 0 0
 bgColor rgb 55808 55808 55808
@@ -379,6 +397,9 @@ showYAxis
 yAxisSrc "AutoScale"
 #  Trace Properties
 numTraces 1
+xPv {
+  0 "$(P)$(R)TS:TSTimeAxis"
+}
 yPv {
   0 "$(P)$(R)TSMinX"
 }
@@ -409,7 +430,7 @@ h 200
 # Appearance
 border
 graphTitle "$(P)$(R)TSMinY"
-xLabel "Time point"
+xLabel "Time (s)"
 yLabel "Value"
 fgColor rgb 0 0 0
 bgColor rgb 55808 55808 55808
@@ -427,6 +448,9 @@ showYAxis
 yAxisSrc "AutoScale"
 #  Trace Properties
 numTraces 1
+xPv {
+  0 "$(P)$(R)TS:TSTimeAxis"
+}
 yPv {
   0 "$(P)$(R)TSMinY"
 }
@@ -457,7 +481,7 @@ h 200
 # Appearance
 border
 graphTitle "$(P)$(R)TSMaxX"
-xLabel "Time point"
+xLabel "Time (s)"
 yLabel "Value"
 fgColor rgb 0 0 0
 bgColor rgb 55808 55808 55808
@@ -475,6 +499,9 @@ showYAxis
 yAxisSrc "AutoScale"
 #  Trace Properties
 numTraces 1
+xPv {
+  0 "$(P)$(R)TS:TSTimeAxis"
+}
 yPv {
   0 "$(P)$(R)TSMaxX"
 }
@@ -505,7 +532,7 @@ h 200
 # Appearance
 border
 graphTitle "$(P)$(R)TSMaxY"
-xLabel "Time point"
+xLabel "Time (s)"
 yLabel "Value"
 fgColor rgb 0 0 0
 bgColor rgb 55808 55808 55808
@@ -523,6 +550,9 @@ showYAxis
 yAxisSrc "AutoScale"
 #  Trace Properties
 numTraces 1
+xPv {
+  0 "$(P)$(R)TS:TSTimeAxis"
+}
 yPv {
   0 "$(P)$(R)TSMaxY"
 }
@@ -553,7 +583,7 @@ h 200
 # Appearance
 border
 graphTitle "$(P)$(R)TSTimestamp"
-xLabel "Time point"
+xLabel "Time (s)"
 yLabel "Value"
 fgColor rgb 0 0 0
 bgColor rgb 55808 55808 55808
@@ -571,6 +601,9 @@ showYAxis
 yAxisSrc "AutoScale"
 #  Trace Properties
 numTraces 1
+xPv {
+  0 "$(P)$(R)TS:TSTimeAxis"
+}
 yPv {
   0 "$(P)$(R)TSTimestamp"
 }
@@ -587,19 +620,6 @@ plotColor {
   0 rgb 19200 28160 50944
 }
 endObjectProperties
-
-# (Group)
-object activeGroupClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 20
-y 460
-w 325
-h 120
-
-beginGroup
 
 # (Static Text)
 object activeXTextClass
@@ -774,23 +794,6 @@ value {
 }
 endObjectProperties
 
-endGroup
-
-endObjectProperties
-
-# (Group)
-object activeGroupClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 20
-y 460
-w 325
-h 120
-
-beginGroup
-
 # (Menu Button)
 object activeMenuButtonClass
 beginObjectProperties
@@ -938,9 +941,4 @@ controlPv "$(P)$(R)TS:TSAcquireMode"
 indicatorPv "$(P)$(R)TS:TSAcquireMode"
 font "helvetica-medium-r-12.0"
 endObjectProperties
-
-endGroup
-
-endObjectProperties
-
 

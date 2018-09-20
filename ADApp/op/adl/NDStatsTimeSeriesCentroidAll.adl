@@ -129,7 +129,7 @@ composite {
 			}
 			plotcom {
 				title="$(P)$(R)TSCentroidX"
-				xlabel="Time point"
+				xlabel="Time (s)"
 				ylabel="Value"
 				clr=14
 				bclr=2
@@ -137,6 +137,7 @@ composite {
 			style="line"
 			erase_oldest="plot last n pts"
 			trace[0] {
+        xdata="$(P)$(R)TS:TSTimeAxis"
 				ydata="$(P)$(R)TSCentroidX"
 				data_clr=27
 				yaxis=0
@@ -160,7 +161,7 @@ composite {
 			}
 			plotcom {
 				title="$(P)$(R)TSCentroidY"
-				xlabel="Time point"
+				xlabel="Time (s)"
 				ylabel="Value"
 				clr=14
 				bclr=2
@@ -168,6 +169,7 @@ composite {
 			style="line"
 			erase_oldest="plot last n pts"
 			trace[0] {
+		xdata="$(P)$(R)TS:TSTimeAxis"
 				ydata="$(P)$(R)TSCentroidY"
 				data_clr=27
 				yaxis=0
@@ -191,7 +193,7 @@ composite {
 			}
 			plotcom {
 				title="$(P)$(R)TSSigmaX"
-				xlabel="Time point"
+				xlabel="Time (s)"
 				ylabel="Value"
 				clr=14
 				bclr=2
@@ -199,6 +201,7 @@ composite {
 			style="line"
 			erase_oldest="plot last n pts"
 			trace[0] {
+		xdata="$(P)$(R)TS:TSTimeAxis"
 				ydata="$(P)$(R)TSSigmaX"
 				data_clr=27
 				yaxis=0
@@ -222,7 +225,7 @@ composite {
 			}
 			plotcom {
 				title="$(P)$(R)TSSigmaY"
-				xlabel="Time point"
+				xlabel="Time (s)"
 				ylabel="Value"
 				clr=14
 				bclr=2
@@ -230,6 +233,7 @@ composite {
 			style="line"
 			erase_oldest="plot last n pts"
 			trace[0] {
+		xdata="$(P)$(R)TS:TSTimeAxis"
 				ydata="$(P)$(R)TSSigmaY"
 				data_clr=27
 				yaxis=0
@@ -253,7 +257,7 @@ composite {
 			}
 			plotcom {
 				title="$(P)$(R)TSCentroidTotal"
-				xlabel="Time point"
+				xlabel="Time (s)"
 				ylabel="Value"
 				clr=14
 				bclr=2
@@ -261,6 +265,7 @@ composite {
 			style="line"
 			erase_oldest="plot last n pts"
 			trace[0] {
+		xdata="$(P)$(R)TS:TSTimeAxis"
 				ydata="$(P)$(R)TSCentroidTotal"
 				data_clr=27
 				yaxis=0
@@ -284,7 +289,7 @@ composite {
 			}
 			plotcom {
 				title="$(P)$(R)TSSigmaXY"
-				xlabel="Time point"
+				xlabel="Time (s)"
 				ylabel="Value"
 				clr=14
 				bclr=2
@@ -292,6 +297,7 @@ composite {
 			style="line"
 			erase_oldest="plot last n pts"
 			trace[0] {
+		xdata="$(P)$(R)TS:TSTimeAxis"
 				ydata="$(P)$(R)TSSigmaXY"
 				data_clr=27
 				yaxis=0
@@ -315,7 +321,7 @@ composite {
 			}
 			plotcom {
 				title="$(P)$(R)TSSkewX"
-				xlabel="Time point"
+				xlabel="Time (s)"
 				ylabel="Value"
 				clr=14
 				bclr=2
@@ -323,6 +329,7 @@ composite {
 			style="line"
 			erase_oldest="plot last n pts"
 			trace[0] {
+		xdata="$(P)$(R)TS:TSTimeAxis"
 				ydata="$(P)$(R)TSSkewX"
 				data_clr=27
 				yaxis=0
@@ -346,7 +353,7 @@ composite {
 			}
 			plotcom {
 				title="$(P)$(R)TSSkewY"
-				xlabel="Time point"
+				xlabel="Time (s)"
 				ylabel="Value"
 				clr=14
 				bclr=2
@@ -354,6 +361,7 @@ composite {
 			style="line"
 			erase_oldest="plot last n pts"
 			trace[0] {
+		xdata="$(P)$(R)TS:TSTimeAxis"
 				ydata="$(P)$(R)TSSkewY"
 				data_clr=27
 				yaxis=0
@@ -377,7 +385,7 @@ composite {
 			}
 			plotcom {
 				title="$(P)$(R)TSKurtosisX"
-				xlabel="Time point"
+				xlabel="Time (s)"
 				ylabel="Value"
 				clr=14
 				bclr=2
@@ -385,6 +393,7 @@ composite {
 			style="line"
 			erase_oldest="plot last n pts"
 			trace[0] {
+		xdata="$(P)$(R)TS:TSTimeAxis"
 				ydata="$(P)$(R)TSKurtosisX"
 				data_clr=27
 				yaxis=0
@@ -408,7 +417,7 @@ composite {
 			}
 			plotcom {
 				title="$(P)$(R)TSKurtosisY"
-				xlabel="Time point"
+				xlabel="Time (s)"
 				ylabel="Value"
 				clr=14
 				bclr=2
@@ -416,6 +425,7 @@ composite {
 			style="line"
 			erase_oldest="plot last n pts"
 			trace[0] {
+		xdata="$(P)$(R)TS:TSTimeAxis"
 				ydata="$(P)$(R)TSKurtosisY"
 				data_clr=27
 				yaxis=0
@@ -439,7 +449,7 @@ composite {
 			}
 			plotcom {
 				title="$(P)$(R)TSEccentricity"
-				xlabel="Time point"
+				xlabel="Time (s)"
 				ylabel="Value"
 				clr=14
 				bclr=2
@@ -447,6 +457,7 @@ composite {
 			style="line"
 			erase_oldest="plot last n pts"
 			trace[0] {
+		xdata="$(P)$(R)TS:TSTimeAxis"
 				ydata="$(P)$(R)TSEccentricity"
 				data_clr=27
 				yaxis=0
@@ -470,7 +481,7 @@ composite {
 			}
 			plotcom {
 				title="$(P)$(R)TSOrientation"
-				xlabel="Time point"
+				xlabel="Time (s)"
 				ylabel="Value"
 				clr=14
 				bclr=2
@@ -478,6 +489,7 @@ composite {
 			style="line"
 			erase_oldest="plot last n pts"
 			trace[0] {
+		xdata="$(P)$(R)TS:TSTimeAxis"
 				ydata="$(P)$(R)TSOrientation"
 				data_clr=27
 				yaxis=0
