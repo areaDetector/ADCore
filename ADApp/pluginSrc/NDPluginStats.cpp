@@ -531,6 +531,9 @@ void NDPluginStats::processCallbacks(NDArray *pArray)
     size_t dims=MAX_TIME_SERIES_TYPES;
     NDArray *pTimeSeriesArray = this->pNDArrayPool->alloc(1, &dims, NDFloat64, 0, NULL);
     epicsFloat64 *timeSeries = (epicsFloat64 *)pTimeSeriesArray->pData;
+    pTimeSeriesArray->uniqueId  = pArray->uniqueId;
+    pTimeSeriesArray->timeStamp = pArray->timeStamp;
+    pTimeSeriesArray->epicsTS   = pArray->epicsTS;
 
     timeSeries[TSMinValue]        = pStats->min;
     timeSeries[TSMinX]            = (double)pStats->minX;
