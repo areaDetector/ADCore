@@ -67,16 +67,16 @@ ifeq ($(WITH_BOOST),YES)
   plugin-test_LIBS += ADTestUtility
 
   ifdef HDF5_INCLUDE
-    USR_INCLUDES += -I$(HDF5_INCLUDE)
+    USR_INCLUDES += $(addprefix -I, $(HDF5_INCLUDE))
   endif
   ifdef SZIP_INCLUDE
-    USR_INCLUDES += -I$(SZIP_INCLUDE)
+    USR_INCLUDES += $(addprefix -I, $(SZIP_INCLUDE))
   endif
   ifdef XML2_INCLUDE
-    USR_INCLUDES += -I$(XML2_INCLUDE)
+    USR_INCLUDES += $(addprefix -I, $(XML2_INCLUDE))
   endif
   ifdef BOOST_INCLUDE
-    USR_INCLUDES += -I$(BOOST_INCLUDE)
+    USR_INCLUDES += $(addprefix -I, $(BOOST_INCLUDE))
   endif
   ifeq ($(BOOST_USE_STATIC_LINK),YES)
 	USR_CXXFLAGS_Linux += -DBOOST_USE_STATIC_LINK
@@ -87,7 +87,7 @@ endif
 ## hdf5-1.10.1 seems to have fixed these SWMR problems
 ## We keep the test files but don't  build them for now
 #ifeq ($(WITH_HDF5),YES)
-#  USR_INCLUDES += -I$(HDF5_INCLUDE)
+#  USR_INCLUDES += $(addprefix -I, $(HDF5_INCLUDE))
 #  PROD += test_SWMR_works
 #  PROD += test_SWMR_fail
 #  PROD += test_SWMR_fail_min

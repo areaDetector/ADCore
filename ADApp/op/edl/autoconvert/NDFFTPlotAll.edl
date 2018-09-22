@@ -1,45 +1,46 @@
-4 0 0
+4 0 1
 beginScreenProperties
 major 4
 minor 0
-release 0
+release 1
 x 560
 y 223
 w 915
 h 630
 font "helvetica-medium-r-18.0"
-ctlFont "helvetica-medium-r-8.0"
+ctlFont "helvetica-bold-r-10.0"
 btnFont "helvetica-medium-r-18.0"
-fgColor index 14
-bgColor index 4
-textColor index 14
-ctlFgColor1 index 30
-ctlFgColor2 index 32
-ctlBgColor1 index 34
-ctlBgColor2 index 35
-topShadowColor index 37
-botShadowColor index 44
+fgColor rgb 0 0 0
+bgColor rgb 47872 47872 47872
+textColor rgb 0 0 0
+ctlFgColor1 rgb 64256 62208 18944
+ctlFgColor2 rgb 60928 46592 11008
+ctlBgColor1 rgb 52480 24832 0
+ctlBgColor2 rgb 65280 45056 65280
+topShadowColor rgb 44544 19968 48128
+botShadowColor rgb 13312 13056 34304
+showGrid
 snapToGrid
-gridSize 5
+gridSize 4
 endScreenProperties
-
 
 # (Static Text)
 object activeXTextClass
 beginObjectProperties
 major 4
-minor 0
-release 0
+minor 1
+release 1
 x 0
 y 10
 w 450
 h 25
-font "helvetica-medium-r-8.0"
+font "helvetica-medium-r-18.0"
 fontAlign "center"
-fgColor index 54
+fgColor rgb 2560 0 47104
+bgColor index 3
 useDisplayBg
 value {
- "$(P)$(R)"
+  "$(P)$(R)"
 }
 endObjectProperties
 
@@ -58,9 +59,9 @@ border
 graphTitle "$(P)$(R)TimeSeries"
 xLabel "Time (s)"
 yLabel "$(P)$(R)TimeSeries"
-fgColor index 14
-bgColor index 2
-gridColor index 14
+fgColor rgb 0 0 0
+bgColor rgb 55808 55808 55808
+gridColor rgb 0 0 0
 font "helvetica-medium-r-10.0"
 # Operating Modes
 plotMode "plotLastNPts"
@@ -90,7 +91,7 @@ plotSymbolType {
   0 "circle"
 }
 plotColor {
-  0 index 27
+  0 rgb 19200 28160 50944
 }
 endObjectProperties
 
@@ -98,18 +99,19 @@ endObjectProperties
 object activeXTextClass
 beginObjectProperties
 major 4
-minor 0
-release 0
-x 210
+minor 1
+release 1
+x 208
 y 65
-w 40
+w 45
 h 20
-font "helvetica-medium-r-8.0"
+font "helvetica-medium-r-14.0"
 fontAlign "center"
-fgColor index 54
+fgColor rgb 2560 0 47104
+bgColor index 3
 useDisplayBg
 value {
- "Time"
+  "Time"
 }
 endObjectProperties
 
@@ -128,9 +130,9 @@ border
 graphTitle "$(P)$(R)FFTAbsValue"
 xLabel "Frequency (Hz)"
 yLabel "$(P)$(R)FFTAbsValue"
-fgColor index 14
-bgColor index 2
-gridColor index 14
+fgColor rgb 0 0 0
+bgColor rgb 55808 55808 55808
+gridColor rgb 0 0 0
 font "helvetica-medium-r-10.0"
 # Operating Modes
 plotMode "plotLastNPts"
@@ -160,7 +162,7 @@ plotSymbolType {
   0 "circle"
 }
 plotColor {
-  0 index 27
+  0 rgb 19200 28160 50944
 }
 endObjectProperties
 
@@ -168,18 +170,19 @@ endObjectProperties
 object activeXTextClass
 beginObjectProperties
 major 4
-minor 0
-release 0
+minor 1
+release 1
 x 605
 y 65
 w 160
 h 20
-font "helvetica-medium-r-8.0"
+font "helvetica-medium-r-14.0"
 fontAlign "center"
-fgColor index 54
+fgColor rgb 2560 0 47104
+bgColor index 3
 useDisplayBg
 value {
- "FFT Power Spectrum"
+  "FFT Power Spectrum"
 }
 endObjectProperties
 
@@ -198,9 +201,9 @@ border
 graphTitle "$(P)$(R)FFTReal"
 xLabel "Frequency (Hz)"
 yLabel "$(P)$(R)FFTReal"
-fgColor index 14
-bgColor index 2
-gridColor index 14
+fgColor rgb 0 0 0
+bgColor rgb 55808 55808 55808
+gridColor rgb 0 0 0
 font "helvetica-medium-r-10.0"
 # Operating Modes
 plotMode "plotLastNPts"
@@ -230,7 +233,7 @@ plotSymbolType {
   0 "circle"
 }
 plotColor {
-  0 index 27
+  0 rgb 19200 28160 50944
 }
 endObjectProperties
 
@@ -238,18 +241,19 @@ endObjectProperties
 object activeXTextClass
 beginObjectProperties
 major 4
-minor 0
-release 0
+minor 1
+release 1
 x 190
 y 350
 w 80
 h 20
-font "helvetica-medium-r-8.0"
+font "helvetica-medium-r-14.0"
 fontAlign "center"
-fgColor index 54
+fgColor rgb 2560 0 47104
+bgColor index 3
 useDisplayBg
 value {
- "FFT Real"
+  "FFT Real"
 }
 endObjectProperties
 
@@ -268,9 +272,9 @@ border
 graphTitle "$(P)$(R)FFTImaginary"
 xLabel "Frequency (Hz)"
 yLabel "$(P)$(R)FFTImaginary"
-fgColor index 14
-bgColor index 2
-gridColor index 14
+fgColor rgb 0 0 0
+bgColor rgb 55808 55808 55808
+gridColor rgb 0 0 0
 font "helvetica-medium-r-10.0"
 # Operating Modes
 plotMode "plotLastNPts"
@@ -300,7 +304,7 @@ plotSymbolType {
   0 "circle"
 }
 plotColor {
-  0 index 27
+  0 rgb 19200 28160 50944
 }
 endObjectProperties
 
@@ -308,43 +312,43 @@ endObjectProperties
 object activeXTextClass
 beginObjectProperties
 major 4
-minor 0
-release 0
+minor 1
+release 1
 x 620
 y 350
 w 130
 h 20
-font "helvetica-medium-r-8.0"
+font "helvetica-medium-r-14.0"
 fontAlign "center"
-fgColor index 54
+fgColor rgb 2560 0 47104
+bgColor index 3
 useDisplayBg
 value {
- "FFT Imaginary"
+  "FFT Imaginary"
 }
 endObjectProperties
 
-# (Text Control)
-object activeXTextDspClass
+# (Text Monitor)
+object activeXTextDspClass:noedit
 beginObjectProperties
 major 4
-minor 0
+minor 7
 release 0
 x 450
 y 10
 w 450
 h 25
 controlPv "$(P)$(R)Name"
-font "helvetica-medium-r-8.0"
+format "decimal"
+font "helvetica-medium-r-18.0"
 fontAlign "center"
+fgColor rgb 2560 0 47104
+bgColor rgb 47872 47872 47872
+limitsFromDb
+nullColor rgb 60928 46592 11008
 smartRefresh
 fastUpdate
-fgColor index 54
-bgColor index 4
-autoHeight
-format decimal
-nullColor index 32
-useHexPrefix
-objType "controls"
 newPos
+objType "controls"
 endObjectProperties
 

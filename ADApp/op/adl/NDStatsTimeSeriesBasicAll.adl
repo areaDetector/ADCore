@@ -111,309 +111,16 @@ text {
 	textix="$(P)$(R)"
 	align="horiz. centered"
 }
-composite {
-	object {
-		x=10
-		y=40
-		width=1415
-		height=200
-	}
-	"composite name"=""
-	children {
-		"cartesian plot" {
-			object {
-				x=10
-				y=40
-				width=350
-				height=200
-			}
-			plotcom {
-				title="$(P)$(R)TSTotal"
-				xlabel="Time point"
-				ylabel="Value"
-				clr=14
-				bclr=2
-			}
-			style="line"
-			erase_oldest="plot last n pts"
-			trace[0] {
-				ydata="$(P)$(R)TSTotal"
-				data_clr=27
-				yaxis=0
-			}
-			x_axis {
-				rangeStyle="auto-scale"
-			}
-			y1_axis {
-				rangeStyle="auto-scale"
-			}
-			y2_axis {
-				rangeStyle="auto-scale"
-			}
-		}
-		"cartesian plot" {
-			object {
-				x=365
-				y=40
-				width=350
-				height=200
-			}
-			plotcom {
-				title="$(P)$(R)TSNet"
-				xlabel="Time point"
-				ylabel="Value"
-				clr=14
-				bclr=2
-			}
-			style="line"
-			erase_oldest="plot last n pts"
-			trace[0] {
-				ydata="$(P)$(R)TSNet"
-				data_clr=27
-				yaxis=0
-			}
-			x_axis {
-				rangeStyle="auto-scale"
-			}
-			y1_axis {
-				rangeStyle="auto-scale"
-			}
-			y2_axis {
-				rangeStyle="auto-scale"
-			}
-		}
-		"cartesian plot" {
-			object {
-				x=720
-				y=40
-				width=350
-				height=200
-			}
-			plotcom {
-				title="$(P)$(R)TSMin"
-				xlabel="Time point"
-				ylabel="Value"
-				clr=14
-				bclr=2
-			}
-			style="line"
-			erase_oldest="plot last n pts"
-			trace[0] {
-				ydata="$(P)$(R)TSMinValue"
-				data_clr=27
-				yaxis=0
-			}
-			x_axis {
-				rangeStyle="auto-scale"
-			}
-			y1_axis {
-				rangeStyle="auto-scale"
-			}
-			y2_axis {
-				rangeStyle="auto-scale"
-			}
-		}
-		"cartesian plot" {
-			object {
-				x=1075
-				y=40
-				width=350
-				height=200
-			}
-			plotcom {
-				title="$(P)$(R)TSMax"
-				xlabel="Time point"
-				ylabel="Value"
-				clr=14
-				bclr=2
-			}
-			style="line"
-			erase_oldest="plot last n pts"
-			trace[0] {
-				ydata="$(P)$(R)TSMaxValue"
-				data_clr=27
-				yaxis=0
-			}
-			x_axis {
-				rangeStyle="auto-scale"
-			}
-			y1_axis {
-				rangeStyle="auto-scale"
-			}
-			y2_axis {
-				rangeStyle="auto-scale"
-			}
-		}
-	}
-}
-"message button" {
-	object {
-		x=23
-		y=479
-		width=90
-		height=20
-	}
-	control {
-		chan="$(P)$(R)TSControl"
-		clr=14
-		bclr=51
-	}
-	label="Erase/Start"
-	press_msg="0"
-}
-"message button" {
-	object {
-		x=118
-		y=479
-		width=60
-		height=20
-	}
-	control {
-		chan="$(P)$(R)TSControl"
-		clr=14
-		bclr=51
-	}
-	label="Stop"
-	press_msg="2"
-}
-"message button" {
-	object {
-		x=183
-		y=479
-		width=60
-		height=20
-	}
-	control {
-		chan="$(P)$(R)TSControl"
-		clr=14
-		bclr=51
-	}
-	label="Start"
-	press_msg="1"
-}
-"text update" {
-	object {
-		x=248
-		y=480
-		width=90
-		height=18
-	}
-	monitor {
-		chan="$(P)$(R)TSAcquiring"
-		clr=54
-		bclr=12
-	}
-	clrmod="alarm"
-	format="string"
-	limits {
-	}
-}
-"text entry" {
-	object {
-		x=188
-		y=505
-		width=60
-		height=19
-	}
-	control {
-		chan="$(P)$(R)TSNumPoints"
-		clr=14
-		bclr=51
-	}
-	limits {
-	}
-}
-text {
-	object {
-		x=23
-		y=504
-		width=160
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Number of points"
-	align="horiz. right"
-}
-text {
-	object {
-		x=23
-		y=529
-		width=130
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Current point"
-	align="horiz. right"
-}
-"text update" {
-	object {
-		x=158
-		y=530
-		width=90
-		height=18
-	}
-	monitor {
-		chan="$(P)$(R)TSCurrentPoint"
-		clr=54
-		bclr=4
-	}
-	limits {
-	}
-}
-menu {
-	object {
-		x=118
-		y=555
-		width=80
-		height=18
-	}
-	control {
-		chan="$(P)$(R)TSRead.SCAN"
-		clr=14
-		bclr=51
-	}
-}
-"message button" {
-	object {
-		x=203
-		y=554
-		width=60
-		height=20
-	}
-	control {
-		chan="$(P)$(R)TSControl"
-		clr=14
-		bclr=51
-	}
-	label="Read"
-	press_msg="3"
-}
-text {
-	object {
-		x=23
-		y=554
-		width=90
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Read rate"
-}
 "cartesian plot" {
 	object {
-		x=720
-		y=450
+		x=5
+		y=40
 		width=350
 		height=200
 	}
 	plotcom {
-		title="$(P)$(R)TSSigma"
-		xlabel="Time point"
+		title="$(P)$(R)TSTotal"
+		xlabel="Time (s)"
 		ylabel="Value"
 		clr=14
 		bclr=2
@@ -421,6 +128,135 @@ text {
 	style="line"
 	erase_oldest="plot last n pts"
 	trace[0] {
+		xdata="$(P)$(R)TS:TSTimeAxis"
+		ydata="$(P)$(R)TSTotal"
+		data_clr=27
+		yaxis=0
+	}
+	x_axis {
+		rangeStyle="auto-scale"
+	}
+	y1_axis {
+		rangeStyle="auto-scale"
+	}
+	y2_axis {
+		rangeStyle="auto-scale"
+	}
+}
+"cartesian plot" {
+	object {
+		x=360
+		y=40
+		width=350
+		height=200
+	}
+	plotcom {
+		title="$(P)$(R)TSNet"
+		xlabel="Time (s)"
+		ylabel="Value"
+		clr=14
+		bclr=2
+	}
+	style="line"
+	erase_oldest="plot last n pts"
+	trace[0] {
+		xdata="$(P)$(R)TS:TSTimeAxis"
+		ydata="$(P)$(R)TSNet"
+		data_clr=27
+		yaxis=0
+	}
+	x_axis {
+		rangeStyle="auto-scale"
+	}
+	y1_axis {
+		rangeStyle="auto-scale"
+	}
+	y2_axis {
+		rangeStyle="auto-scale"
+	}
+}
+"cartesian plot" {
+	object {
+		x=715
+		y=40
+		width=350
+		height=200
+	}
+	plotcom {
+		title="$(P)$(R)TSMin"
+		xlabel="Time (s)"
+		ylabel="Value"
+		clr=14
+		bclr=2
+	}
+	style="line"
+	erase_oldest="plot last n pts"
+	trace[0] {
+		xdata="$(P)$(R)TS:TSTimeAxis"
+		ydata="$(P)$(R)TSMinValue"
+		data_clr=27
+		yaxis=0
+	}
+	x_axis {
+		rangeStyle="auto-scale"
+	}
+	y1_axis {
+		rangeStyle="auto-scale"
+	}
+	y2_axis {
+		rangeStyle="auto-scale"
+	}
+}
+"cartesian plot" {
+	object {
+		x=1070
+		y=40
+		width=350
+		height=200
+	}
+	plotcom {
+		title="$(P)$(R)TSMax"
+		xlabel="Time (s)"
+		ylabel="Value"
+		clr=14
+		bclr=2
+	}
+	style="line"
+	erase_oldest="plot last n pts"
+	trace[0] {
+		xdata="$(P)$(R)TS:TSTimeAxis"
+		ydata="$(P)$(R)TSMaxValue"
+		data_clr=27
+		yaxis=0
+	}
+	x_axis {
+		rangeStyle="auto-scale"
+	}
+	y1_axis {
+		rangeStyle="auto-scale"
+	}
+	y2_axis {
+		rangeStyle="auto-scale"
+	}
+}
+"cartesian plot" {
+	object {
+		x=715
+		y=450
+		width=350
+		height=200
+	}
+	plotcom {
+		title="$(P)$(R)TSSigma"
+		xlabel="Time (s)"
+		ylabel="Value"
+		clr=14
+		bclr=2
+	}
+	style="line"
+	erase_oldest="plot last n pts"
+	trace[0] {
+		xdata="$(P)$(R)TS:TSTimeAxis"
 		ydata="$(P)$(R)TSSigma"
 		data_clr=27
 		yaxis=0
@@ -437,14 +273,14 @@ text {
 }
 "cartesian plot" {
 	object {
-		x=365
+		x=360
 		y=450
 		width=350
 		height=200
 	}
 	plotcom {
 		title="$(P)$(R)TSMean"
-		xlabel="Time point"
+		xlabel="Time (s)"
 		ylabel="Value"
 		clr=14
 		bclr=2
@@ -452,6 +288,7 @@ text {
 	style="line"
 	erase_oldest="plot last n pts"
 	trace[0] {
+		xdata="$(P)$(R)TS:TSTimeAxis"
 		ydata="$(P)$(R)TSMeanValue"
 		data_clr=27
 		yaxis=0
@@ -475,7 +312,7 @@ text {
 	}
 	plotcom {
 		title="$(P)$(R)TSMinX"
-		xlabel="Time point"
+		xlabel="Time (s)"
 		ylabel="Value"
 		clr=14
 		bclr=2
@@ -483,6 +320,7 @@ text {
 	style="line"
 	erase_oldest="plot last n pts"
 	trace[0] {
+		xdata="$(P)$(R)TS:TSTimeAxis"
 		ydata="$(P)$(R)TSMinX"
 		data_clr=27
 		yaxis=0
@@ -506,7 +344,7 @@ text {
 	}
 	plotcom {
 		title="$(P)$(R)TSMinY"
-		xlabel="Time point"
+		xlabel="Time (s)"
 		ylabel="Value"
 		clr=14
 		bclr=2
@@ -514,6 +352,7 @@ text {
 	style="line"
 	erase_oldest="plot last n pts"
 	trace[0] {
+		xdata="$(P)$(R)TS:TSTimeAxis"
 		ydata="$(P)$(R)TSMinY"
 		data_clr=27
 		yaxis=0
@@ -537,7 +376,7 @@ text {
 	}
 	plotcom {
 		title="$(P)$(R)TSMaxX"
-		xlabel="Time point"
+		xlabel="Time (s)"
 		ylabel="Value"
 		clr=14
 		bclr=2
@@ -545,6 +384,7 @@ text {
 	style="line"
 	erase_oldest="plot last n pts"
 	trace[0] {
+		xdata="$(P)$(R)TS:TSTimeAxis"
 		ydata="$(P)$(R)TSMaxX"
 		data_clr=27
 		yaxis=0
@@ -568,7 +408,7 @@ text {
 	}
 	plotcom {
 		title="$(P)$(R)TSMaxY"
-		xlabel="Time point"
+		xlabel="Time (s)"
 		ylabel="Value"
 		clr=14
 		bclr=2
@@ -576,6 +416,7 @@ text {
 	style="line"
 	erase_oldest="plot last n pts"
 	trace[0] {
+		xdata="$(P)$(R)TS:TSTimeAxis"
 		ydata="$(P)$(R)TSMaxY"
 		data_clr=27
 		yaxis=0
@@ -588,5 +429,234 @@ text {
 	}
 	y2_axis {
 		rangeStyle="auto-scale"
+	}
+}
+"cartesian plot" {
+	object {
+		x=1070
+		y=450
+		width=350
+		height=200
+	}
+	plotcom {
+		title="$(P)$(R)TSTimestamp"
+		xlabel="Time (s)"
+		ylabel="Value"
+		clr=14
+		bclr=2
+	}
+	style="line"
+	erase_oldest="plot last n pts"
+	trace[0] {
+		xdata="$(P)$(R)TS:TSTimeAxis"
+		ydata="$(P)$(R)TSTimestamp"
+		data_clr=27
+		yaxis=0
+	}
+	x_axis {
+		rangeStyle="auto-scale"
+	}
+	y1_axis {
+		rangeStyle="auto-scale"
+	}
+	y2_axis {
+		rangeStyle="auto-scale"
+	}
+}
+text {
+	object {
+		x=55
+		y=510
+		width=130
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Current point"
+	align="horiz. right"
+}
+"text update" {
+	object {
+		x=190
+		y=511
+		width=90
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)TS:TSCurrentPoint"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+menu {
+	object {
+		x=170
+		y=535
+		width=100
+		height=20
+	}
+	control {
+		chan="$(P)$(R)TS:TSRead.SCAN"
+		clr=14
+		bclr=51
+	}
+}
+"message button" {
+	object {
+		x=275
+		y=535
+		width=70
+		height=20
+	}
+	control {
+		chan="$(P)$(R)TS:TSRead.PROC"
+		clr=14
+		bclr=51
+	}
+	label="Read"
+	press_msg="1"
+}
+text {
+	object {
+		x=75
+		y=535
+		width=90
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Read rate"
+	align="horiz. right"
+}
+"text entry" {
+	object {
+		x=190
+		y=486
+		width=60
+		height=19
+	}
+	control {
+		chan="$(P)$(R)TS:TSNumPoints"
+		clr=14
+		bclr=51
+	}
+	limits {
+	}
+}
+text {
+	object {
+		x=25
+		y=485
+		width=160
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Number of points"
+	align="horiz. right"
+}
+"message button" {
+	object {
+		x=95
+		y=460
+		width=90
+		height=20
+	}
+	control {
+		chan="$(P)$(R)TS:TSAcquire"
+		clr=14
+		bclr=51
+	}
+	label="Erase/Start"
+	press_msg="1"
+}
+"message button" {
+	object {
+		x=190
+		y=460
+		width=60
+		height=20
+	}
+	control {
+		chan="$(P)$(R)TS:TSAcquire"
+		clr=14
+		bclr=51
+	}
+	label="Stop"
+	press_msg="2"
+}
+"text update" {
+	object {
+		x=255
+		y=461
+		width=90
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)TS:TSAcquiring"
+		clr=54
+		bclr=12
+	}
+	clrmod="alarm"
+	format="string"
+	limits {
+	}
+}
+text {
+	object {
+		x=20
+		y=460
+		width=70
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Acquire"
+}
+"related display" {
+	object {
+		x=275
+		y=560
+		width=70
+		height=20
+	}
+	display[0] {
+		label="Time series control"
+		name="NDPluginTimeSeries.adl"
+		args="P=$(P),R=$(R)TS:"
+	}
+	clr=14
+	bclr=51
+	label="More"
+}
+text {
+	object {
+		x=55
+		y=559
+		width=110
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="AcquireMode"
+}
+menu {
+	object {
+		x=170
+		y=559
+		width=100
+		height=20
+	}
+	control {
+		chan="$(P)$(R)TS:TSAcquireMode"
+		clr=14
+		bclr=51
 	}
 }

@@ -56,7 +56,7 @@ ifeq ($(XML2_EXTERNAL),NO)
   LIB_LIBS += xml2
 else
   ifdef XML2_INCLUDE
-    USR_INCLUDES += -I$(XML2_INCLUDE)
+    USR_INCLUDES += $(addprefix -I, $(XML2_INCLUDE))
   endif
   ifdef XML2_LIB
     xml2_DIR     = $(XML2_LIB)

@@ -95,12 +95,13 @@ typedef enum {
 #define NDArrayDataString       "ARRAY_DATA"        /**< (asynGenericPointer,   r/w) NDArray data */
 #define NDArrayCallbacksString  "ARRAY_CALLBACKS"   /**< (asynInt32,    r/w) Do callbacks with array data (0=No, 1=Yes) */
 
-/* NDArray Pool status */
+/* NDArray Pool status and control */
 #define NDPoolMaxBuffersString      "POOL_MAX_BUFFERS"
 #define NDPoolAllocBuffersString    "POOL_ALLOC_BUFFERS"
 #define NDPoolFreeBuffersString     "POOL_FREE_BUFFERS"
 #define NDPoolMaxMemoryString       "POOL_MAX_MEMORY"
 #define NDPoolUsedMemoryString      "POOL_USED_MEMORY"
+#define NDPoolEmptyFreeListString   "POOL_EMPTY_FREELIST"
 
 /* Queued arrays */
 #define NDNumQueuedArraysString     "NUM_QUEUED_ARRAYS"
@@ -121,6 +122,7 @@ public:
                           size_t *nActual);
     virtual asynStatus readGenericPointer(asynUser *pasynUser, void *genericPointer);
     virtual asynStatus writeGenericPointer(asynUser *pasynUser, void *genericPointer);
+    virtual asynStatus writeInt32(asynUser *pasynUser, epicsInt32 value);
     virtual asynStatus readInt32(asynUser *pasynUser, epicsInt32 *value);
     virtual asynStatus readFloat64(asynUser *pasynUser, epicsFloat64 *value);
     virtual void report(FILE *fp, int details);
@@ -190,6 +192,7 @@ protected:
     int NDPoolFreeBuffers;
     int NDPoolMaxMemory;
     int NDPoolUsedMemory;
+    int NDPoolEmptyFreeList;
     int NDNumQueuedArrays;
 
     class NDArray **pArrays;             /**< An array of NDArray pointers used to store data in the driver */

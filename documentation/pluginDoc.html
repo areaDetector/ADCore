@@ -88,7 +88,7 @@
       of this pipeline can be executing in its own threads, and on modern multi-core processors
       each can be executing on its own cores.</li>
     <li>In non-blocking mode the maximum allowed number of threads is fixed when the plugin
-      is created, but the actual number of threads to us can be changed from 1 to this
+      is created, but the actual number of threads to use can be changed from 1 to this
       upper limit at run time.</li>
     <li>When there are multiple threads in use it is likely that the output NDArrays will
       not be in the correct order of ascending values of NDArray::UniqueId because each
