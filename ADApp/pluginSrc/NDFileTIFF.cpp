@@ -176,7 +176,15 @@ asynStatus NDFileTIFF::openFile(const char *fileName, NDFileOpenMode_t openMode,
             bitsPerSample = 64;
             break;
     }
-    if (pArray->ndims == 2) {
+    if (pArray->ndims == 1) {
+        sizeX = pArray->dims[0].size;
+        sizeY = 1;
+        rowsPerStrip = sizeY;
+        samplesPerPixel = 1;
+        photoMetric = PHOTOMETRIC_MINISBLACK;
+        planarConfig = PLANARCONFIG_CONTIG;
+        this->colorMode = NDColorModeMono;
+    } else if (pArray->ndims == 2) {
         sizeX = pArray->dims[0].size;
         sizeY = pArray->dims[1].size;
         rowsPerStrip = sizeY;
