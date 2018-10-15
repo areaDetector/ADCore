@@ -496,7 +496,7 @@ asynStatus NDPluginTimeSeries::writeFloat64(asynUser *pasynUser, epicsFloat64 va
   int signal;
   asynStatus status=asynSuccess;
   bool stat = true;
-  static const char* functionName = "NDPluginTimeSeries::writeInt32";
+  static const char* functionName = "NDPluginTimeSeries::writeFloat64";
 
   status = getAddress(pasynUser, &signal); 
   if (status != asynSuccess) {
