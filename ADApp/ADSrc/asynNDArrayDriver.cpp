@@ -703,14 +703,12 @@ asynStatus asynNDArrayDriver::incrementQueuedArrayCount()
 { 
     int arrayCount;
   
-//    queuedArrayCountMutex_->lock();
-lock();
+    queuedArrayCountMutex_->lock();
     getIntegerParam(NDNumQueuedArrays, &arrayCount);
     arrayCount++;
     setIntegerParam(NDNumQueuedArrays, arrayCount);
     callParamCallbacks();
-//    queuedArrayCountMutex_->unlock();
-unlock();
+    queuedArrayCountMutex_->unlock();
     return asynSuccess;
 }
 
@@ -719,8 +717,7 @@ asynStatus asynNDArrayDriver::decrementQueuedArrayCount()
     static const char *functionName = "decrementQueuedArrayCount";
     int arrayCount;
   
-//    queuedArrayCountMutex_->lock();
-lock();
+    queuedArrayCountMutex_->lock();
     getIntegerParam(NDNumQueuedArrays, &arrayCount);
     if (arrayCount <= 0) {
         asynPrint(pasynUserSelf, ASYN_TRACE_ERROR, 
@@ -730,8 +727,7 @@ lock();
     arrayCount--;
     setIntegerParam(NDNumQueuedArrays, arrayCount);
     callParamCallbacks();
-//    queuedArrayCountMutex_->unlock();
-unlock();
+    queuedArrayCountMutex_->unlock();
     return asynSuccess;
 }
 
