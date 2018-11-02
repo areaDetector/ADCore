@@ -1,6 +1,9 @@
 #ifndef asynNDArrayDriver_H
 #define asynNDArrayDriver_H
 
+#include <epicsMutex.h>
+#include <epicsEvent.h>
+
 #include "asynPortDriver.h"
 #include "NDArray.h"
 #include "ADCoreVersion.h"
@@ -138,6 +141,7 @@ public:
 
     asynStatus incrementQueuedArrayCount();
     asynStatus decrementQueuedArrayCount();
+    void updateQueuedArrayCount();
     
     class NDArrayPool *pNDArrayPool;     /**< An NDArrayPool pointer that is initialized to pNDArrayPoolPvt_ in the constructor.
                                      * Plugins change this pointer to the one passed in NDArray::pNDArrayPool */
@@ -197,10 +201,14 @@ protected:
 
     class NDArray **pArrays;             /**< An array of NDArray pointers used to store data in the driver */
     class NDAttributeList *pAttributeList;  /**< An NDAttributeList object used to obtain the current values of a set of attributes */
-    NDArrayPool *pNDArrayPoolPvt_;
-    epicsMutex *queuedArrayCountMutex_;
     int threadStackSize_;
     int threadPriority_;
+
+private:
+    NDArrayPool *pNDArrayPoolPvt_;
+    epicsMutex *queuedArrayCountMutex_;
+    epicsEventId queuedArrayEvent_;
+    int queuedArrayCount_;
     
     friend class NDArrayPool;
 
