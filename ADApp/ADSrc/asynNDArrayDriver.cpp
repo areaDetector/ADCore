@@ -711,11 +711,13 @@ void asynNDArrayDriver::updateQueuedArrayCount()
     int arrayCount;
     while (1) {
         epicsEventWait(queuedArrayEvent_);
+        lock();
         queuedArrayCountMutex_->lock();
         arrayCount = queuedArrayCount_;
         queuedArrayCountMutex_->unlock();
         setIntegerParam(NDNumQueuedArrays, arrayCount);
         callParamCallbacks();
+        unlock();
     }       
 }
 
