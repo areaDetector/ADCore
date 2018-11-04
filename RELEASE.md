@@ -19,6 +19,28 @@ files respectively, in the configure/ directory of the appropriate release of th
 
 Release Notes
 =============
+R3-4 (November XXX, 2018)
+======================
+### ADSrc/asynNDArrayDriver.h, asynNDArrayDriver.cpp
+* Fixed a serious problem caused by failure to lock the correct mutex when plugins called incrementQueuedArrayCount()
+  and decrementQueuedArrayCount().
+  This caused the Acquire and Acquire_RBV PVs to occasionally get stuck in the 1 (Acquire) state when acquistion
+  was complete.  It might have also caused other problems that were not reported.
+  This problem was introduced in R3-3.
+### NDFileTIFF
+* Allow saving NDArrays with a single dimension.
+### NDPluginStats
+* Set NDArray uniqueId, timeStamp, and epicsTS fields for output time series NDArrays.
+### OPI files
+* ADTop.adl
+  * Added ADVimba and GenICam
+* NDStatsTimeSeriesBasicAll.adl, NDStatsTimeSeriesCentroidAll.adl, NDStatsTimeSeriesPlot.adl
+  * Changed X axis from point number to time.
+* NDPluginBase.adl
+  * Fixed text widget type to string
+### EXAMPLE_commonPlugins.cmd
+* Added optional lines for ffmpegServer (commented out).  
+  
 R3-3-2 (July 9, 2018)
 ======================
 ### ADApp/commonDriverMakefile
