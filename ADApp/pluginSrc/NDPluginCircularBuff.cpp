@@ -292,9 +292,6 @@ asynStatus NDPluginCircularBuff::writeInt32(asynUser *pasynUser, epicsInt32 valu
           // Set the parameter in the parameter library.
           status = (asynStatus) setIntegerParam(function, value);
         }
-    }  else if (function == NDCircBuffFlushOnSoftTrig) {
-        // Set the parameter in the parameter library.
-        status = (asynStatus) setIntegerParam(function, value);
     } else {
         // Set the parameter in the parameter library.
         status = (asynStatus) setIntegerParam(function, value);
