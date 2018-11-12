@@ -148,7 +148,6 @@ void NDPluginCircularBuff::processCallbacks(NDArray *pArray)
 
         // Have we detected a trigger event yet?
         if (!triggered){
-
           // No trigger so add the NDArray to the pre-trigger ring
           pOldArray_ = preBuffer_->addToEnd(pArrayCpy);
           // If we overwrote an existing array in the ring, release it here
@@ -161,9 +160,7 @@ void NDPluginCircularBuff::processCallbacks(NDArray *pArray)
           if (preBuffer_->size() == preCount){
             setStringParam(NDCircBuffStatus, "Buffer Wrapping");
           }
-
         } else {
-
           // Trigger detected
           // Start making frames available if trigger has occured
           setStringParam(NDCircBuffStatus, "Flushing");
