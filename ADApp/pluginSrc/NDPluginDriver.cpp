@@ -87,7 +87,8 @@ static void sortingTaskC(void *drvPvt)
 NDPluginDriver::NDPluginDriver(const char *portName, int queueSize, int blockingCallbacks, 
                                const char *NDArrayPort, int NDArrayAddr, int maxAddr,
                                int maxBuffers, size_t maxMemory, int interfaceMask, int interruptMask,
-                               int asynFlags, int autoConnect, int priority, int stackSize, int maxThreads)
+                               int asynFlags, int autoConnect, int priority, int stackSize, int maxThreads,
+                               bool compressionAware)
 
     : asynNDArrayDriver(portName, maxAddr, maxBuffers, maxMemory,
           interfaceMask | asynInt32Mask | asynFloat64Mask | asynOctetMask | asynInt32ArrayMask | asynDrvUserMask,
@@ -99,7 +100,8 @@ NDPluginDriver::NDPluginDriver(const char *portName, int queueSize, int blocking
     pToThreadMsgQ_(NULL),
     pFromThreadMsgQ_(NULL),
     prevUniqueId_(-1000),
-    sortingThreadId_(0)  
+    sortingThreadId_(0),
+    compressionAware_(compressionAware)
 {
     asynUser *pasynUser;
     //static const char *functionName = "NDPluginDriver";
@@ -344,6 +346,19 @@ void NDPluginDriver::driverCallback(asynUser *pasynUser, void *genericPointer)
     static const char *functionName = "driverCallback";
 
     this->lock();
+
+    if (!compressionAware_ && !pArray->codec.empty()) {
+        getIntegerParam(NDPluginDriverDroppedArrays, &droppedArrays);
+        asynPrint(pasynUser, ASYN_TRACE_ERROR,
+            "%s::%s got compressed array, dropped array uniqueId=%d\n",
+            driverName, functionName, pArray->uniqueId);
+        droppedArrays++;
+        setIntegerParam(NDPluginDriverDroppedArrays, droppedArrays);
+
+        callParamCallbacks();
+        this->unlock();
+        return;
+    }
 
     status |= getDoubleParam(NDPluginDriverMinCallbackTime, &minCallbackTime);
     status |= getIntegerParam(NDPluginDriverBlockingCallbacks, &blockingCallbacks);

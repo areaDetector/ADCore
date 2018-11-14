@@ -124,6 +124,8 @@ public:
                                   * The data is assumed to be stored in the order of dims[0] changing fastest, and 
                                   * dims[ndims-1] changing slowest. */
     NDAttributeList *pAttributeList;  /**< Linked list of attributes */
+    std::string codec;          /**< Name of the codec used to compress the data. Empty string if uncompressed. */
+    size_t compressedSize;      /**< Size of the compressed data. Should be equal to dataSize if pData is uncompressed. */
 };
 
 // This class defines the object that is contained in the std::multilist for sorting NDArrays in the freeList_.

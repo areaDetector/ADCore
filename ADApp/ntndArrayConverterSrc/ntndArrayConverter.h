@@ -9,6 +9,7 @@ typedef struct NTNDArrayInfo
     int bytesPerElement;
     NDColorMode_t colorMode;
     NDDataType_t dataType;
+    std::string codec;
 
     struct
     {

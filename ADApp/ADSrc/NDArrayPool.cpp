@@ -186,6 +186,7 @@ NDArray* NDArrayPool::alloc(int ndims, size_t *dims, NDDataType_t dataType, size
       pArray->pData = malloc(dataSize);
       if (pArray->pData) {
         pArray->dataSize = dataSize;
+        pArray->compressedSize = dataSize;
         memorySize_ += dataSize;
       }
     }
@@ -234,9 +235,11 @@ NDArray* NDArrayPool::copy(NDArray *pIn, NDArray *pOut, int copyData)
   pOut->ndims = pIn->ndims;
   memcpy(pOut->dims, pIn->dims, sizeof(pIn->dims));
   pOut->dataType = pIn->dataType;
+  pOut->codec = pIn->codec;
+  pOut->compressedSize = pIn->compressedSize;
   if (copyData) {
     pIn->getInfo(&arrayInfo);
-    numCopy = arrayInfo.totalBytes;
+    numCopy = pIn->codec.empty() ? arrayInfo.totalBytes : pIn->compressedSize;
     if (pOut->dataSize < numCopy) numCopy = pOut->dataSize;
     memcpy(pOut->pData, pIn->pData, numCopy);
   }
@@ -540,6 +543,13 @@ int NDArrayPool::convert(NDArray *pIn,
 
   /* Initialize failure */
   *ppOut = NULL;
+
+  /* Can't convert compressed data */
+  if (!pIn->codec.empty()) {
+    fprintf(stderr, "%s:%s: can't convert compressed data [%s]\n",
+            driverName, functionName, pIn->codec.c_str());
+    return ND_ERROR;
+  }
 
   /* Copy the input dimension array because we need to modify it
    * but don't want to affect caller */

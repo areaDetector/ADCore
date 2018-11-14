@@ -41,6 +41,18 @@ static const NDAttrDataType_t scalarToNDAttrDataType[pvString+1] = {
         NDAttrString,   // 11: pvString
 };
 
+// Maps NDDataType to ScalarType
+static const ScalarType NDDataTypeToScalar[NDFloat64 + 1] = {
+        pvByte,     // 0:  NDInt8
+        pvUByte,    // 1:  NDUInt8
+        pvShort,    // 2:  NDInt16
+        pvUShort,   // 3:  NDUInt16
+        pvInt,      // 4:  NDInt32
+        pvUInt,     // 5:  NDUInt32
+        pvFloat,    // 6:  NDFloat32
+        pvDouble,   // 7:  NDFloat64
+};
+
 static const PVDataCreatePtr PVDC = getPVDataCreate();
 
 template <typename dataType>
@@ -102,9 +114,23 @@ NTNDArrayInfo_t NTNDArrayConverter::getInfo (void)
         info.nElements *= info.dims[i];
     }
 
+    PVStructurePtr codec(m_array->getCodec());
+
+    info.codec = codec->getSubField<PVString>("name")->get();
+
+    ScalarType dataType;
+
+    if (info.codec.empty())
+        dataType = getValueType();
+    else {
+        // Read uncompressed data type
+        PVIntPtr udt(codec->getSubField<PVUnion>("parameters")->get<PVInt>());
+        dataType = static_cast<ScalarType>(udt->get());
+    }
+
     NDDataType_t dt;
     int bpe;
-    switch(getValueType())
+    switch(dataType)
     {
     case pvByte:    dt = NDInt8;     bpe = sizeof(epicsInt8);    break;
     case pvUByte:   dt = NDUInt8;    bpe = sizeof(epicsUInt8);   break;
@@ -213,8 +239,6 @@ void NTNDArrayConverter::fromArray (NDArray *src)
     fromDataTimeStamp(src);
     fromAttributes(src);
 
-    m_array->getCodec()->getSubField<PVString>("name")->put("");
-
     // getUniqueId not implemented yet
     // m_array->getUniqueId()->put(src->uniqueId);
     PVIntPtr uniqueId(m_array->getPVStructure()->getSubField<PVInt>("uniqueId"));
@@ -230,6 +254,13 @@ void NTNDArrayConverter::toValue (NDArray *dest)
     PVUnionPtr src(m_array->getValue());
     arrayVecType srcVec(src->get<arrayType>()->view());
     memcpy(dest->pData, srcVec.data(), srcVec.size()*sizeof(arrayValType));
+
+    NTNDArrayInfo_t info = getInfo();
+    dest->codec = info.codec;
+    dest->dataType = info.dataType;
+
+    if (!info.codec.empty())
+        dest->compressedSize = srcVec.size()*sizeof(arrayValType);
 }
 
 void NTNDArrayConverter::toValue (NDArray *dest)
@@ -252,6 +283,7 @@ void NTNDArrayConverter::toValue (NDArray *dest)
         throw std::runtime_error("invalid value data type");
         break;
     }
+
 }
 
 void NTNDArrayConverter::toDimensions (NDArray *dest)
@@ -377,18 +409,28 @@ void NTNDArrayConverter::fromValue (NDArray *src)
 {
     typedef typename arrayType::value_type arrayValType;
 
-    NDArrayInfo_t arrayInfo;
-    size_t count, nBytes;
-
     string unionField(string(ScalarTypeFunc::name(arrayType::typeCode)) +
             string("Value"));
 
+    NDArrayInfo_t arrayInfo;
     src->getInfo(&arrayInfo);
-    count = arrayInfo.nElements;
-    nBytes = arrayInfo.totalBytes;
 
-    m_array->getCompressedDataSize()->put(static_cast<int64>(nBytes));
-    m_array->getUncompressedDataSize()->put(static_cast<int64>(nBytes));
+    int64 compressedSize = src->compressedSize;
+    int64 uncompressedSize = arrayInfo.totalBytes;
+
+    m_array->getCompressedDataSize()->put(compressedSize);
+    m_array->getUncompressedDataSize()->put(uncompressedSize);
+
+    // The uncompressed data type would be lost when converting to NTNDArray,
+    // so we must store it somewhere. codec.parameters seems like a good place.
+    PVScalarPtr uncompressedType(PVDC->createPVScalar(pvInt));
+    uncompressedType->putFrom<int32>(NDDataTypeToScalar[src->dataType]);
+
+    PVStructurePtr codec(m_array->getCodec());
+    codec->getSubField<PVUnion>("parameters")->set(uncompressedType);
+    codec->getSubField<PVString>("name")->put(src->codec);
+
+    size_t count = src->codec.empty() ? arrayInfo.nElements : compressedSize;
 
     src->reserve();
     shared_vector<arrayValType> temp((srcDataType*)src->pData,

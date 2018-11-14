@@ -55,7 +55,8 @@ public:
     NDPluginDriver(const char *portName, int queueSize, int blockingCallbacks, 
                    const char *NDArrayPort, int NDArrayAddr, int maxAddr,
                    int maxBuffers, size_t maxMemory, int interfaceMask, int interruptMask,
-                   int asynFlags, int autoConnect, int priority, int stackSize, int maxThreads);
+                   int asynFlags, int autoConnect, int priority, int stackSize, int maxThreads,
+                   bool compressionAware = false);
     ~NDPluginDriver();
 
     /* These are the methods that we override from asynNDArrayDriver */
@@ -128,6 +129,7 @@ private:
     epicsThreadId sortingThreadId_;
     epicsTimeStamp lastProcessTime_;
     int dimsPrev_[ND_ARRAY_MAX_DIMS];
+    bool compressionAware_;
 };
 
     
