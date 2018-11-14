@@ -62,11 +62,7 @@ using std::string;
 
 static const char *driverName="NDPluginCodec";
 
-static string codecName[] = {
-    [NDCODEC_NONE]  = "",
-    [NDCODEC_JPEG]  = "jpeg",
-    [NDCODEC_BLOSC] = "blosc",
-};
+static string codecName[] = {"", "jpeg", "blosc"};
 
 /* Allocate a new NDArray to hold [un]compressed data.
  * Since there's no way to know the final size of the compressed data, always
@@ -81,7 +77,7 @@ static NDArray *alloc(NDArrayPool *pool, NDArray *input, int dataType = -1)
     else
         dt = static_cast<NDDataType_t>(dataType);
 
-    size_t dims[input->ndims];
+    size_t dims[ND_ARRAY_MAX_DIMS];
 
     for (int i = 0; i < input->ndims; ++i)
         dims[i] = input->dims[i].size;
@@ -287,7 +283,7 @@ NDArray *decompressJPEG(NDArrayPool *pool, NDArray *input)
     jpegInfo.err = jpeg_std_error(&jpegErr);
 
     jpeg_mem_src(&jpegInfo, static_cast<unsigned char*>(input->pData),
-            input->compressedSize);
+            static_cast<unsigned long>(input->compressedSize));
     jpeg_read_header(&jpegInfo, TRUE);
     jpeg_start_decompress(&jpegInfo);
 
@@ -336,13 +332,12 @@ NDArray *decompressJPEG(NDArrayPool*, NDArray*)
 #include <blosc.h>
 
 static const char* bloscCompName[] = {
-
-    [NDCODEC_BLOSC_BLOSCLZ] = "blosclz",
-    [NDCODEC_BLOSC_LZ4]     = "lz4",
-    [NDCODEC_BLOSC_LZ4HC]   = "lz4hc",
-    [NDCODEC_BLOSC_SNAPPY]  = "snappy",
-    [NDCODEC_BLOSC_ZLIB]    = "zlib",
-    [NDCODEC_BLOSC_ZSTD]    = "zstd",
+    "blosclz",
+    "lz4",
+    "lz4hc",
+    "snappy",
+    "zlib",
+    "zstd",
 };
 
 NDArray *compressBlosc(NDArrayPool *pool, NDArray *input, int clevel,
@@ -497,7 +492,7 @@ void NDPluginCodec::processCallbacks(NDArray *pArray)
             getIntegerParam(NDCodecBloscCompressor, &compressor);
 
             unlock();
-            result = compressBlosc(pool, pArray, clevel, shuffle,
+            result = compressBlosc(pool, pArray, clevel, shuffle ? true : false,
                     static_cast<NDCodecBloscComp_t>(compressor), numThreads);
             lock();
             break;
