@@ -165,17 +165,11 @@ void NDPluginCircularBuff::processCallbacks(NDArray *pArray)
           // Start making frames available if trigger has occured
           setStringParam(NDCircBuffStatus, "Flushing");
 
-          // Has the trigger occured on this frame?
+          // Has the trigger occurred on this frame?
           if (previousTrigger_ == 0){
             previousTrigger_ = 1;
             // Yes, so flush the ring first
-
-            if (preBuffer_->size() > 0){
-              doCallbacksGenericPointer(preBuffer_->readFromStart(), NDArrayData, 0);
-              while (preBuffer_->hasNext()) {
-                doCallbacksGenericPointer(preBuffer_->readNext(), NDArrayData, 0);
-              }
-            }
+            flushPreBuffer();
           }
       
           currentPostCount++;
@@ -215,6 +209,17 @@ void NDPluginCircularBuff::processCallbacks(NDArray *pArray)
     }
             
     callParamCallbacks();
+}
+
+void NDPluginCircularBuff::flushPreBuffer()
+{
+    if (preBuffer_->size() > 0) {
+      doCallbacksGenericPointer(preBuffer_->readFromStart(), NDArrayData, 0);
+      while (preBuffer_->hasNext()) {
+        doCallbacksGenericPointer(preBuffer_->readNext(), NDArrayData, 0);
+      }
+      preBuffer_->clear();
+    }
 }
 
 /** Called when asyn clients call pasynInt32->write().
@@ -269,6 +274,13 @@ asynStatus NDPluginCircularBuff::writeInt32(asynUser *pasynUser, epicsInt32 valu
         // Set a soft trigger
         setIntegerParam(NDCircBuffTriggered, 1);
 
+        epicsInt32 flushOn;
+        getIntegerParam(NDCircBuffFlushOnSoftTrig, &flushOn);
+
+        if (flushOn > 0){
+        	flushPreBuffer();
+        }
+
     }  else if (function == NDCircBuffPreTrigger){
         // Check the value of pretrigger does not exceed max buffers
         if (value > (maxBuffers_ - 1)){
@@ -277,8 +289,7 @@ asynStatus NDPluginCircularBuff::writeInt32(asynUser *pasynUser, epicsInt32 valu
           // Set the parameter in the parameter library.
           status = (asynStatus) setIntegerParam(function, value);
         }
-    }  else {
-
+    } else {
         // Set the parameter in the parameter library.
         status = (asynStatus) setIntegerParam(function, value);
 
@@ -411,6 +422,7 @@ NDPluginCircularBuff::NDPluginCircularBuff(const char *portName, int queueSize, 
     createParam(NDCircBuffPostCountString,          asynParamInt32,      &NDCircBuffPostCount);
     createParam(NDCircBuffSoftTriggerString,        asynParamInt32,      &NDCircBuffSoftTrigger);
     createParam(NDCircBuffTriggeredString,          asynParamInt32,      &NDCircBuffTriggered);
+    createParam(NDCircBuffFlushOnSoftTrigString,    asynParamInt32,      &NDCircBuffFlushOnSoftTrig);
 
     // Set the plugin type string
     setStringParam(NDPluginDriverPluginType, "NDPluginCircularBuff");
@@ -432,6 +444,8 @@ NDPluginCircularBuff::NDPluginCircularBuff(const char *portName, int queueSize, 
     // Init the preset trigger count to 1
     setIntegerParam(NDCircBuffPresetTriggerCount, 1);
     setIntegerParam(NDCircBuffActualTriggerCount, 0);
+
+    setIntegerParam(NDCircBuffFlushOnSoftTrig, 0);
     
     // Enable ArrayCallbacks.  
     // This plugin currently ignores this setting and always does callbacks, so make the setting reflect the behavior
