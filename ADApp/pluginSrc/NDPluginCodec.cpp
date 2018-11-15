@@ -68,7 +68,8 @@ static string codecName[] = {"", "jpeg", "blosc"};
  * Since there's no way to know the final size of the compressed data, always
  * allocate an array of the same size as the uncompressed one.
  */
-static NDArray *alloc(NDArrayPool *pool, NDArray *input, int dataType = -1)
+static NDArray *alloc(NDArrayPool *pool, NDArray *input, int dataType = -1,
+        size_t dataSize=0, void *pData=NULL)
 {
     NDDataType_t dt;
 
@@ -82,7 +83,7 @@ static NDArray *alloc(NDArrayPool *pool, NDArray *input, int dataType = -1)
     for (int i = 0; i < input->ndims; ++i)
         dims[i] = input->dims[i].size;
 
-    return pool->alloc(input->ndims, dims, dt, 0, NULL);
+    return pool->alloc(input->ndims, dims, dt, dataSize, pData);
 }
 
 static int jpeg_clamp_quality(int quality)
@@ -109,8 +110,8 @@ static int jpeg_clamp_quality(int quality)
 
 NDArray *compressJPEG(NDArrayPool *pool, NDArray *input, int quality)
 {
-    struct jpeg_compress_struct jpegInfo;
-    struct jpeg_error_mgr jpegErr;
+    struct jpeg_compress_struct jpegInfo = {};
+    struct jpeg_error_mgr jpegErr = {};
 
     jpeg_create_compress(&jpegInfo);
     jpegInfo.err = jpeg_std_error(&jpegErr);
@@ -121,12 +122,10 @@ NDArray *compressJPEG(NDArrayPool *pool, NDArray *input, int quality)
     if (pAttribute)
         pAttribute->getValue(NDAttrInt32, &colorMode);
 
-    NDArray *output = alloc(pool, input);
+    unsigned char *outData = NULL;
+    unsigned long outSize = 0;
 
-    if (!output) {
-        fprintf(stderr, "%s: failed to allocate array\n", __func__);
-        return NULL;
-    }
+    NDArray *output = NULL;
 
     JSAMPROW row_pointer[1];
     int nwrite=0;
@@ -172,8 +171,8 @@ NDArray *compressJPEG(NDArrayPool *pool, NDArray *input, int quality)
     jpeg_set_defaults(&jpegInfo);
     jpeg_set_quality(&jpegInfo, jpeg_clamp_quality(quality), TRUE);
     jpeg_mem_dest(&jpegInfo,
-                  (unsigned char **)&output->pData,
-                  (unsigned long*) &output->compressedSize);
+                  (unsigned char **)&outData,
+                  (unsigned long*) &outSize);
     jpeg_start_compress(&jpegInfo, TRUE);
 
     sizeX = (int)jpegInfo.image_width;
@@ -242,7 +241,15 @@ NDArray *compressJPEG(NDArrayPool *pool, NDArray *input, int quality)
 
     jpeg_finish_compress(&jpegInfo);
 
+    output = alloc(pool, input, -1, outSize, outData);
+
+    if (!output) {
+        fprintf(stderr, "%s: failed to allocate array\n", __func__);
+        return NULL;
+    }
+
     output->codec = codecName[NDCODEC_JPEG];
+    output->compressedSize = outSize;
 
     return output;
 
@@ -526,8 +533,13 @@ void NDPluginCodec::processCallbacks(NDArray *pArray)
         }
     }
 
-    if (result)
+    if (result) {
+        if (result != pArray) {
+            result->uniqueId = pArray->uniqueId;
+            result->timeStamp = pArray->timeStamp;
+        }
         NDPluginDriver::endProcessCallbacks(result, result == pArray, true);
+    }
 
     setDoubleParam(NDCodecCompFactor, factor);
     callParamCallbacks();
