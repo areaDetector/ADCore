@@ -156,6 +156,9 @@ NDArray* NDArrayPool::alloc(int ndims, size_t *dims, NDDataType_t dataType, size
 
   /* Erase the attributes if that global flag is set */
   if (eraseNDAttributes) pArray->pAttributeList->clear();
+  
+  /* Set the codec field to "" */
+  pArray->codec = "";
 
   /* At this point pArray exists, but pArray->pData may be NULL */
   /* If the caller passed a valid buffer use that */
