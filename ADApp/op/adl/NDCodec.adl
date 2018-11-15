@@ -5,8 +5,8 @@ file {
 }
 display {
 	object {
-		x=190
-		y=313
+		x=194
+		y=277
 		width=775
 		height=605
 	}
@@ -133,369 +133,336 @@ composite {
 	"composite name"=""
 	"composite file"="NDPluginBase.adl"
 }
-composite {
+"text update" {
+	object {
+		x=666
+		y=136
+		width=100
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)JPEGQuality_RBV"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=666
+		y=176
+		width=100
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)BloscCompressor_RBV"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
+	format="string"
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=666
+		y=201
+		width=100
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)BloscCLevel_RBV"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=666
+		y=226
+		width=100
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)BloscShuffle_RBV"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
+	format="string"
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=666
+		y=251
+		width=100
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)BloscNumThreads_RBV"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
+	limits {
+	}
+}
+"text update" {
 	object {
 		x=666
 		y=51
 		width=100
-		height=218
+		height=18
 	}
-	"composite name"=""
-	children {
-		"text update" {
-			object {
-				x=666
-				y=136
-				width=100
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)JPEGQuality_RBV"
-				clr=54
-				bclr=4
-			}
-			align="horiz. centered"
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=666
-				y=176
-				width=100
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)BloscCompressor_RBV"
-				clr=54
-				bclr=4
-			}
-			align="horiz. centered"
-			format="string"
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=666
-				y=201
-				width=100
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)BloscCLevel_RBV"
-				clr=54
-				bclr=4
-			}
-			align="horiz. centered"
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=666
-				y=226
-				width=100
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)BloscShuffle_RBV"
-				clr=54
-				bclr=4
-			}
-			align="horiz. centered"
-			format="string"
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=666
-				y=251
-				width=100
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)BloscNumThreads_RBV"
-				clr=54
-				bclr=4
-			}
-			align="horiz. centered"
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=666
-				y=51
-				width=100
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)Mode_RBV"
-				clr=54
-				bclr=4
-			}
-			align="horiz. centered"
-			format="string"
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=666
-				y=76
-				width=100
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)Compressor_RBV"
-				clr=54
-				bclr=4
-			}
-			align="horiz. centered"
-			format="string"
-			limits {
-			}
-		}
+	monitor {
+		chan="$(P)$(R)Mode_RBV"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
+	format="string"
+	limits {
 	}
 }
-composite {
+"text update" {
+	object {
+		x=666
+		y=76
+		width=100
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)Compressor_RBV"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
+	format="string"
+	limits {
+	}
+}
+"text entry" {
+	object {
+		x=581
+		y=135
+		width=80
+		height=20
+	}
+	control {
+		chan="$(P)$(R)JPEGQuality"
+		clr=14
+		bclr=51
+	}
+	limits {
+	}
+}
+menu {
+	object {
+		x=581
+		y=176
+		width=80
+		height=18
+	}
+	control {
+		chan="$(P)$(R)BloscCompressor"
+		clr=14
+		bclr=51
+	}
+}
+"text entry" {
+	object {
+		x=581
+		y=200
+		width=80
+		height=20
+	}
+	control {
+		chan="$(P)$(R)BloscCLevel"
+		clr=14
+		bclr=51
+	}
+	limits {
+	}
+}
+menu {
+	object {
+		x=581
+		y=226
+		width=80
+		height=18
+	}
+	control {
+		chan="$(P)$(R)BloscShuffle"
+		clr=14
+		bclr=51
+	}
+}
+"text entry" {
+	object {
+		x=581
+		y=250
+		width=80
+		height=20
+	}
+	control {
+		chan="$(P)$(R)BloscNumThreads"
+		clr=14
+		bclr=51
+	}
+	limits {
+	}
+}
+menu {
 	object {
 		x=581
 		y=51
 		width=80
-		height=219
+		height=18
 	}
-	"composite name"=""
-	children {
-		"text entry" {
-			object {
-				x=581
-				y=135
-				width=80
-				height=20
-			}
-			control {
-				chan="$(P)$(R)JPEGQuality"
-				clr=14
-				bclr=51
-			}
-			limits {
-			}
-		}
-		menu {
-			object {
-				x=581
-				y=176
-				width=80
-				height=18
-			}
-			control {
-				chan="$(P)$(R)BloscCompressor"
-				clr=14
-				bclr=51
-			}
-		}
-		"text entry" {
-			object {
-				x=581
-				y=200
-				width=80
-				height=20
-			}
-			control {
-				chan="$(P)$(R)BloscCLevel"
-				clr=14
-				bclr=51
-			}
-			limits {
-			}
-		}
-		menu {
-			object {
-				x=581
-				y=226
-				width=80
-				height=18
-			}
-			control {
-				chan="$(P)$(R)BloscShuffle"
-				clr=14
-				bclr=51
-			}
-		}
-		"text entry" {
-			object {
-				x=581
-				y=250
-				width=80
-				height=20
-			}
-			control {
-				chan="$(P)$(R)BloscNumThreads"
-				clr=14
-				bclr=51
-			}
-			limits {
-			}
-		}
-		menu {
-			object {
-				x=581
-				y=51
-				width=80
-				height=18
-			}
-			control {
-				chan="$(P)$(R)Mode"
-				clr=14
-				bclr=51
-			}
-		}
-		menu {
-			object {
-				x=581
-				y=76
-				width=80
-				height=18
-			}
-			control {
-				chan="$(P)$(R)Compressor"
-				clr=14
-				bclr=51
-			}
-		}
-		"text update" {
-			object {
-				x=581
-				y=101
-				width=80
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)CompFactor_RBV"
-				clr=54
-				bclr=4
-			}
-			align="horiz. centered"
-			limits {
-			}
-		}
+	control {
+		chan="$(P)$(R)Mode"
+		clr=14
+		bclr=51
 	}
 }
-composite {
+menu {
+	object {
+		x=581
+		y=76
+		width=80
+		height=18
+	}
+	control {
+		chan="$(P)$(R)Compressor"
+		clr=14
+		bclr=51
+	}
+}
+"text update" {
+	object {
+		x=581
+		y=101
+		width=80
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)CompFactor_RBV"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
+	limits {
+	}
+}
+text {
+	object {
+		x=456
+		y=135
+		width=120
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="JPEG Quality"
+	align="horiz. right"
+}
+text {
+	object {
+		x=416
+		y=175
+		width=160
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Blosc Compressor"
+	align="horiz. right"
+}
+text {
+	object {
+		x=406
+		y=200
+		width=170
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Blosc Comp. Level"
+	align="horiz. right"
+}
+text {
+	object {
+		x=446
+		y=225
+		width=130
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Blosc Shuffle"
+	align="horiz. right"
+}
+text {
+	object {
+		x=406
+		y=250
+		width=170
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Blosc Num Threads"
+	align="horiz. right"
+}
+text {
+	object {
+		x=536
+		y=50
+		width=40
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Mode"
+	align="horiz. right"
+}
+text {
+	object {
+		x=476
+		y=75
+		width=100
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Compressor"
+	align="horiz. right"
+}
+text {
 	object {
 		x=396
-		y=50
+		y=100
 		width=180
-		height=220
+		height=20
 	}
-	"composite name"=""
-	children {
-		text {
-			object {
-				x=456
-				y=135
-				width=120
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="JPEG Quality"
-			align="horiz. right"
-		}
-		text {
-			object {
-				x=416
-				y=175
-				width=160
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Blosc Compressor"
-			align="horiz. right"
-		}
-		text {
-			object {
-				x=406
-				y=201
-				width=170
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Blosc Comp. Level"
-			align="horiz. right"
-		}
-		text {
-			object {
-				x=446
-				y=225
-				width=130
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Blosc Shuffle"
-			align="horiz. right"
-		}
-		text {
-			object {
-				x=406
-				y=250
-				width=170
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Blosc Num Threads"
-			align="horiz. right"
-		}
-		text {
-			object {
-				x=536
-				y=50
-				width=40
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Mode"
-			align="horiz. right"
-		}
-		text {
-			object {
-				x=476
-				y=75
-				width=100
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Compressor"
-			align="horiz. right"
-		}
-		text {
-			object {
-				x=396
-				y=100
-				width=180
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Compression Factor"
-			align="horiz. right"
-		}
+	"basic attribute" {
+		clr=14
 	}
+	textix="Compression Factor"
+	align="horiz. right"
 }
