@@ -112,26 +112,26 @@ NDArray* NDArrayPool::alloc(int ndims, size_t *dims, NDDataType_t dataType, size
   NDArray::computeArrayInfo(ndims, dims, dataType, &arrayInfo);
   if (dataSize == 0) {
     dataSize = arrayInfo.totalBytes;
-  } 
-  else if (dataSize < arrayInfo.totalBytes) {
-    asynPrint(pDriver_->pasynUserSelf, ASYN_TRACE_ERROR,
-      "%s: ERROR: required size=%d passed size=%d is too small, using required size\n",
-      functionName, (int)arrayInfo.totalBytes, (int)dataSize);
-    dataSize = arrayInfo.totalBytes;
-    // Since the passed dataSize was wrong we don't trust the passed pointer either
-    if (pData != NULL) pData = NULL;
   }
 
-  // Try to find an array in the free list which is big enough.
-  freeListElement testElement(NULL, dataSize);
-  std::multiset<freeListElement>::iterator pListElement = freeList_.lower_bound(testElement);
+  std::multiset<freeListElement>::iterator pListElement;
+
+  if (!pData) {
+    // Try to find an array in the free list which is big enough.
+    freeListElement testElement(NULL, dataSize);
+    pListElement = freeList_.lower_bound(testElement);
+  } else {
+    // dataSize doesn't matter, pData will get replaced. Pick smallest one.
+    pListElement = freeList_.begin();
+  }
+
   if (pListElement == freeList_.end()) {
     /* We did not find a free image that is large enough, allocate a new one */
     numBuffers_++;
     pArray = this->createArray();
   } else {
     pArray = pListElement->pArray_;
-    if (pListElement->dataSize_ > (dataSize * THRESHOLD_SIZE_RATIO)) {
+    if (pData || (pListElement->dataSize_ > (dataSize * THRESHOLD_SIZE_RATIO))) {
       // We found an array but it is too large.  Set the size to 0 so it will be allocated below.
       memorySize_ -= pArray->dataSize;
       free(pArray->pData);
@@ -164,6 +164,8 @@ NDArray* NDArrayPool::alloc(int ndims, size_t *dims, NDDataType_t dataType, size
   /* If the caller passed a valid buffer use that */
   if (pData) {
     pArray->pData = pData;
+    pArray->dataSize = dataSize;
+    memorySize_ += dataSize;
   } else if (pArray->pData == NULL) {
     if ((maxMemory_ > 0) && ((memorySize_ + dataSize) > maxMemory_)) {
       // We don't have enough memory to allocate the array
