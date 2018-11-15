@@ -316,13 +316,13 @@ NDArray *decompressJPEG(NDArrayPool *pool, NDArray *input)
 
 NDArray *compressJPEG(NDArrayPool*, NDArray*, int)
 {
-    fprintf(stderr, "No JPEG support");
+    fprintf(stderr, "No JPEG support\n");
     return NULL;
 }
 
 NDArray *decompressJPEG(NDArrayPool*, NDArray*)
 {
-    fprintf(stderr, "No JPEG support");
+    fprintf(stderr, "No JPEG support\n");
     return NULL;
 }
 
@@ -416,13 +416,13 @@ NDArray *decompressBlosc(NDArrayPool *pool, NDArray *input, int numThreads)
 NDArray *compressBlosc(NDArrayPool*, NDArray*, int , bool , NDCodecBloscComp_t,
         int)
 {
-    fprintf(stderr, "No Blosc support");
+    fprintf(stderr, "No Blosc support\n");
     return NULL;
 }
 
 NDArray *decompressBlosc(NDArrayPool*, NDArray*, int)
 {
-    fprintf(stderr, "No Blosc support");
+    fprintf(stderr, "No Blosc support\n");
     return NULL;
 }
 
