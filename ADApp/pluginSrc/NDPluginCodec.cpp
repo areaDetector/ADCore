@@ -257,8 +257,6 @@ failure:
     if (buffer)
         free(buffer);
 
-    output->release();
-
     return NULL;
 }
 
@@ -459,7 +457,7 @@ void NDPluginCodec::processCallbacks(NDArray *pArray)
     NDPluginDriver::beginProcessCallbacks(pArray);
 
     NDArray *result;
-    NDArrayPool *pool = pNDArrayPool;
+    NDArrayPool *pool = pArray->pNDArrayPool;
 
     int mode, algo;
     getIntegerParam(NDCodecMode, &mode);
@@ -509,8 +507,7 @@ void NDPluginCodec::processCallbacks(NDArray *pArray)
         if (result && result != pArray) {
             NDArrayInfo_t info;
             pArray->getInfo(&info);
-            factor = 1.0 - (1.0*result->compressedSize) / (1.0*info.totalBytes);
-            factor *= 100.0;
+            factor = (double)info.totalBytes / (double)result->compressedSize;
         }
     } else {
         if (pArray->codec.empty()) {
