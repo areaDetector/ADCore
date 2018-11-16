@@ -26,24 +26,24 @@
   <p>
     NDPluginCodec is a tool for compressing and decomppressing NDArray data
     according to a user selectable codec. Compression information is stored
-    in the <code>codec</code> and <code>compressionSize</code> fields of the 
+    in the <code>codec</code> and <code>compressionSize</code> fields of the
     NDArray.
   </p>
   <h2 id="Semantics">Compressed NDArray Semantics</h2>
   <p>
-    The new NDArray field <code>codec</code> is used to indicate if an NDArray 
+    The new NDArray field <code>codec</code> is used to indicate if an NDArray
     holds compressed or uncompressed data.
   </p>
 
   <h3>Uncompressed NDArrays</h3>
-    
+
   <ul>
     <li><code>codec</code> is empty (<code>codec.empty()==true</code>).</li>
     <li><code>compressedSize</code> is equal to <code>dataSize</code>.</li>
   </ul>
 
   <h3>Compressed NDArrays</h3>
-    
+
   <ul>
     <li>
       <code>codec</code> holds the name of the codec that was used to compress
@@ -54,11 +54,11 @@
       <code>pData</code>.
     </li>
     <li>
-      <code>dataSize</code> holds the length of the allocated 
+      <code>dataSize</code> holds the length of the allocated
       <code>pData</code> buffer, as usual.
     </li>
     <li>
-      <code>pData</code> holds the compressed data as 
+      <code>pData</code> holds the compressed data as
       <code>unsigned char</code>.
     </li>
     <li>
@@ -66,9 +66,9 @@
       data. This will be used for decompression.
     </li>
   </ul>
-  
+
   <h2 id="Compression">Compression</h2>
-  
+
   <p>
     To compress the data, the Mode parameter must be set to Compress. Also, the
     parameter Compressor must be set to something other than None. After the
@@ -82,7 +82,7 @@
   <p>
     Currently, three choices are available for the Compressor parameter:
   </p>
-  
+
   <ul>
     <li>
       None: No compression will be performed. The NDArray will be passed
@@ -113,45 +113,45 @@
           BloscCLevel: the compression level for the selected algorithm.
         </li>
         <li>
-          BloscShuffle: controls whether data will be shuffled before 
+          BloscShuffle: controls whether data will be shuffled before
           compression.
         </li>
       </ul>
     </li>
   </ul>
-  
+
   <p>
     It is important to note that plugins downstream of NDCodec that are receiving
     compressed NDArrays <b>must</b> have been constructed with NDPluginDriver's
     <code>compressionAware=true</code>, otherwise compressed arrays <b>will be
      dropped</b> by them at runtime.
   </p>
-    
+
   <h2 id="Decompression">Decompression</h2>
-  
+
   <p>
     If Mode is set to Decompress, decompression happens automatically and
     transparently if the codec is supported. No other parameter needs to be set
     for the decompression to work.
   </p>
-    
+
   <h2 id="Parameters">Parameters</h2>
   <p>
-    NDPluginCodec inherits from NDPluginDriver. The 
+    NDPluginCodec inherits from NDPluginDriver. The
     <a href="areaDetectorDoxygenHTML/class_n_d_plugin_color_convert.html">
     NDPluginCodec class documentation</a> describes this class in detail.
   </p>
   <p>
     NDPluginCodec defines the following parameters. It also implements all of
     the standard plugin parameters from <a href="pluginDoc.html#NDPluginDriver">
-    NDPluginDriver</a>. The EPICS database NDCodec.template provides access to 
+    NDPluginDriver</a>. The EPICS database NDCodec.template provides access to
     these parameters, listed in the following table.
   </p>
   <table border="1" cellpadding="2" cellspacing="2" style="text-align: left">
     <tbody>
       <tr>
         <td align="center" colspan="7,">
-          <b>Parameter Definitions in NDPluginCodec.h and EPICS Record 
+          <b>Parameter Definitions in NDPluginCodec.h and EPICS Record
           Definitions in NDCodec.template</b>
         </td>
       </tr>
@@ -262,15 +262,21 @@
         <td>NDCodecBloscShuffle</td>
         <td>asynInt32</td>
         <td>r/w</td>
-        <td>Blosc shuffle data before compression.</td>
+        <td>Blosc shuffle data before compression:<br>
+            <ul>
+                <li>None</li>
+                <li>Bit Shuffle</li>
+                <li>Byte Shuffle</li>
+            <ul>
+        </td>
         <td>BLOSC_SHUFFLE</td>
         <td>
           $(P)$(R)BloscShuffle<br/>
           $(P)$(R)BloscShuffle_RBV
         </td>
         <td>
-          bo<br/>
-          bi
+          mbbo<br/>
+          mbbi
         </td>
       </tr>
       <tr>
@@ -296,8 +302,8 @@
     The NDPluginCodec plugin is created with the following command, either from
     C/C++ or from the EPICS IOC shell.
   </p>
-  <pre> int NDCodecConfigure(const char *portName, int queueSize, int blockingCallbacks, 
-                             const char *NDArrayPort, int NDArrayAddr, 
+  <pre> int NDCodecConfigure(const char *portName, int queueSize, int blockingCallbacks,
+                             const char *NDArrayPort, int NDArrayAddr,
                              int maxBuffers, size_t maxMemory,
                              int priority, int stackSize)
   </pre>

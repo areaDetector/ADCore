@@ -1,6 +1,6 @@
 /*
  * NDPluginCodec.cpp
- * 
+ *
  * Plugin to compress/decompress NDArrays
  *
  * Author: Bruno Martins
@@ -346,7 +346,7 @@ static const char* bloscCompName[] = {
 };
 
 NDArray *compressBlosc(NDArrayPool *pool, NDArray *input, int clevel,
-        bool shuffle, NDCodecBloscComp_t compressor, int numThreads)
+        int shuffle, NDCodecBloscComp_t compressor, int numThreads)
 {
     if (!input->codec.empty()) {
         fprintf(stderr, "%s: input already compressed\n", __func__);
@@ -442,7 +442,7 @@ NDArray *decompressBlosc(NDArrayPool*, NDArray*, int)
   * being changed.  Does callbacks to all registered clients on the asynGenericPointer
   * interface with the output array.
   * \param[in] pArray  The NDArray from the callback.
-  */ 
+  */
 void NDPluginCodec::processCallbacks(NDArray *pArray)
 {
     /* This function converts the color mode.
@@ -452,7 +452,7 @@ void NDPluginCodec::processCallbacks(NDArray *pArray)
      */
 
     static const char* functionName = "processCallbacks";
-         
+
     /* Call the base class method */
     NDPluginDriver::beginProcessCallbacks(pArray);
 
@@ -497,7 +497,7 @@ void NDPluginCodec::processCallbacks(NDArray *pArray)
             getIntegerParam(NDCodecBloscCompressor, &compressor);
 
             unlock();
-            result = compressBlosc(pool, pArray, clevel, shuffle ? true : false,
+            result = compressBlosc(pool, pArray, clevel, shuffle,
                     static_cast<NDCodecBloscComp_t>(compressor), numThreads);
             lock();
             break;
@@ -565,7 +565,8 @@ asynStatus NDPluginCodec::writeInt32(asynUser *pasynUser, epicsInt32 value)
         if (value < 0)
             value = 0;
     } else if (function == NDCodecBloscShuffle) {
-        value = !!value;
+        if (value < 0)
+            value = 0;
     } else if (function == NDCodecBloscNumThreads) {
         if (value < 1)
             value = 1;
@@ -598,10 +599,10 @@ asynStatus NDPluginCodec::writeInt32(asynUser *pasynUser, epicsInt32 value)
 }
 
 /** Constructor for NDPluginCodec; most parameters are simply passed to NDPluginDriver::NDPluginDriver.
-  * After calling the base class constructor this method sets reasonable default values for all of the 
+  * After calling the base class constructor this method sets reasonable default values for all of the
   * ROI parameters.
   * \param[in] portName The name of the asyn port driver to be created.
-  * \param[in] queueSize The number of NDArrays that the input queue for this plugin can hold when 
+  * \param[in] queueSize The number of NDArrays that the input queue for this plugin can hold when
   *            NDPluginDriverBlockingCallbacks=0.  Larger queues can decrease the number of dropped arrays,
   *            at the expense of more NDArray buffers being allocated from the underlying driver's NDArrayPool.
   * \param[in] blockingCallbacks Initial setting for the NDPluginDriverBlockingCallbacks flag.
@@ -609,22 +610,22 @@ asynStatus NDPluginCodec::writeInt32(asynUser *pasynUser, epicsInt32 value)
   *            of the driver doing the callbacks.
   * \param[in] NDArrayPort Name of asyn port driver for initial source of NDArray callbacks.
   * \param[in] NDArrayAddr asyn port driver address for initial source of NDArray callbacks.
-  * \param[in] maxBuffers The maximum number of NDArray buffers that the NDArrayPool for this driver is 
+  * \param[in] maxBuffers The maximum number of NDArray buffers that the NDArrayPool for this driver is
   *            allowed to allocate. Set this to 0 to allow an unlimited number of buffers.
-  * \param[in] maxMemory The maximum amount of memory that the NDArrayPool for this driver is 
+  * \param[in] maxMemory The maximum amount of memory that the NDArrayPool for this driver is
   *            allowed to allocate. Set this to 0 to allow an unlimited amount of memory.
   * \param[in] priority The thread priority for the asyn port driver thread if ASYN_CANBLOCK is set in asynFlags.
   * \param[in] stackSize The stack size for the asyn port driver thread if ASYN_CANBLOCK is set in asynFlags.
   * \param[in] maxThreads The maximum number of threads this driver is allowed to use. If 0 then 1 will be used.
   */
 NDPluginCodec::NDPluginCodec(const char *portName, int queueSize, int blockingCallbacks,
-                                           const char *NDArrayPort, int NDArrayAddr, 
+                                           const char *NDArrayPort, int NDArrayAddr,
                                            int maxBuffers, size_t maxMemory,
                                            int priority, int stackSize, int maxThreads)
     /* Invoke the base class constructor */
-    : NDPluginDriver(portName, queueSize, blockingCallbacks, 
+    : NDPluginDriver(portName, queueSize, blockingCallbacks,
                    NDArrayPort, NDArrayAddr, 1, maxBuffers, maxMemory,
-                   asynGenericPointerMask, 
+                   asynGenericPointerMask,
                    asynGenericPointerMask,
                    0, 1, priority, stackSize, maxThreads,
                    true)
@@ -642,7 +643,7 @@ NDPluginCodec::NDPluginCodec(const char *portName, int queueSize, int blockingCa
 
     /* Set the plugin type string */
     setStringParam(NDPluginDriverPluginType, "NDPluginCodec");
-    
+
     setIntegerParam(NDCodecCompressor,      NDCODEC_NONE);
     setDoubleParam (NDCodecCompFactor,      0.0);
     setIntegerParam(NDCodecJPEGQuality,     85);
@@ -650,7 +651,7 @@ NDPluginCodec::NDPluginCodec(const char *portName, int queueSize, int blockingCa
     setIntegerParam(NDCodecBloscCLevel,     5);
     setIntegerParam(NDCodecBloscNumThreads, 1);
 
-    // Enable ArrayCallbacks.  
+    // Enable ArrayCallbacks.
     // This plugin currently ignores this setting and always does callbacks, so make the setting reflect the behavior
     setIntegerParam(NDArrayCallbacks, 1);
 
@@ -659,7 +660,7 @@ NDPluginCodec::NDPluginCodec(const char *portName, int queueSize, int blockingCa
 }
 
 extern "C" int NDCodecConfigure(const char *portName, int queueSize, int blockingCallbacks,
-                                          const char *NDArrayPort, int NDArrayAddr, 
+                                          const char *NDArrayPort, int NDArrayAddr,
                                           int maxBuffers, size_t maxMemory,
                                           int priority, int stackSize, int maxThreads)
 {
@@ -693,7 +694,7 @@ static const iocshFuncDef initFuncDef = {"NDCodecConfigure",10,initArgs};
 static void initCallFunc(const iocshArgBuf *args)
 {
     NDCodecConfigure(args[0].sval, args[1].ival, args[2].ival,
-                               args[3].sval, args[4].ival, args[5].ival, 
+                               args[3].sval, args[4].ival, args[5].ival,
                                args[6].ival, args[7].ival, args[8].ival,
                                args[9].ival);
 }
