@@ -213,6 +213,7 @@ void NDPluginCircularBuff::processCallbacks(NDArray *pArray)
 
 void NDPluginCircularBuff::flushPreBuffer()
 {
+    if (NULL == preBuffer_) return;
     if (preBuffer_->size() > 0) {
       doCallbacksGenericPointer(preBuffer_->readFromStart(), NDArrayData, 0);
       while (preBuffer_->hasNext()) {
