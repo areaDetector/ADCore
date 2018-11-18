@@ -202,7 +202,7 @@ record(longin, "$(P)$(R)ActualTriggerCount_RBV") {
 record(bo, "$(P)$(R)FlushOnSoftTrg") {
   field(DTYP, "asynInt32")
   field(OUT, "@asyn($(PORT) 0)CIRC_BUFF_FLUSH_ON_SOFTTRIGGER")
-  field(ZNAM, "On new image")
+  field(ZNAM, "OnNewImage")
   field(ONAM, "Immediately")
   field(VAL,  "0")
   field(PINI, "1")
@@ -213,7 +213,7 @@ record(bi, "$(P)$(R)FlushOnSoftTrg_RBV") {
   field(SCAN, "I/O Intr")
   field(DTYP, "asynInt32")
   field(INP, "@asyn($(PORT) 0)CIRC_BUFF_FLUSH_ON_SOFTTRIGGER")
-  field(ZNAM, "On new image")
+  field(ZNAM, "OnNewImage")
   field(ONAM, "Immediately")
 }
 
