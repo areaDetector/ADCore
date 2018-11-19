@@ -27,6 +27,20 @@ R3-4 (November XXX, 2018)
   This caused the Acquire and Acquire_RBV PVs to occasionally get stuck in the 1 (Acquire) state when acquistion
   was complete.  It might have also caused other problems that were not reported.
   This problem was introduced in R3-3.
+### NDPluginCodec
+* New plugin written by Bruno Martins to support compressing and decompressing NDArrays.
+* Compressors currently supported are JPEG (lossy) and BLOSC (lossless).
+* NDArray has a new .codec field that is the string name for the compression in use.  It is empty() for no compression.
+  It also has a new .compressedSize field that stores the compressed size in bytes.
+  This may be less than .dataSize, which is the actual allocated size of .pData.
+* The converters between NDArrays and NTNDArrays support this new codec field.
+* Currently the main use case will be to transport compressed NTNDArrays using pvAccess.
+* We plan to enhance the ImageJ pvAccess viewer to directly support decompression.  
+* We also plan to enhance the HDF5 file plugin to support writing NDArrays that are already compressed, 
+  using the Direct Chunk Write feature,  This should should improve performance.
+### NDPluginCircularBuff
+* Added new FlushOnSoftTrg record that controls whether the pre-buffer is flushed OnNewArray (previous behavior, default),
+  or Immediately when a software trigger is received.  Thanks to Slava Isaev for this.
 ### NDFileTIFF
 * Allow saving NDArrays with a single dimension.
 ### NDPluginStats
