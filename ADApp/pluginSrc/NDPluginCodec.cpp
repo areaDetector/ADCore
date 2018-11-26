@@ -360,23 +360,26 @@ NDArray *compressBlosc(NDArrayPool *pool, NDArray *input, int clevel,
         return NULL;
     }
 
-    NDArray *output = alloc(pool, input);
+    NDArrayInfo_t info;
+    input->getInfo(&info);
+
+    NDArray *output = alloc(pool, input, -1,
+            info.totalBytes + BLOSC_MAX_OVERHEAD);
 
     if (!output) {
         fprintf(stderr, "%s: failed to allocate output array\n", __func__);
         return NULL;
     }
 
-    NDArrayInfo_t info;
-    input->getInfo(&info);
+    size_t blockSize = 0;
 
     int compSize = blosc_compress_ctx(clevel, shuffle, info.bytesPerElement,
             info.totalBytes, input->pData, output->pData, output->dataSize,
-            compname, 0, numThreads);
+            compname, blockSize, numThreads);
 
-    if (compSize <= 0) {
+    if (compSize < 0) {
         output->release();
-        fprintf(stderr, "%s: failed to compress\n", __func__);
+        fprintf(stderr, "%s: failed to compress: internal error\n", __func__);
         return NULL;
     }
 
@@ -528,15 +531,21 @@ void NDPluginCodec::processCallbacks(NDArray *pArray)
                     pArray->codec.c_str());
             result = NULL;
         }
+
+        if (!result)
+            result = pArray;
     }
 
-    if (result) {
-        if (result != pArray) {
-            result->uniqueId = pArray->uniqueId;
-            result->timeStamp = pArray->timeStamp;
-        }
-        NDPluginDriver::endProcessCallbacks(result, result == pArray, true);
+    // If the {de,}compression fails, set the result to the original array
+    if (!result)
+        result = pArray;
+
+    if (result != pArray) {
+        result->uniqueId = pArray->uniqueId;
+        result->timeStamp = pArray->timeStamp;
     }
+
+    NDPluginDriver::endProcessCallbacks(result, result == pArray, true);
 
     setDoubleParam(NDCodecCompFactor, factor);
     callParamCallbacks();
