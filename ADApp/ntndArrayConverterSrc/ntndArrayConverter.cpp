@@ -443,16 +443,22 @@ void NTNDArrayConverter::fromValue (NDArray *src)
 
 void NTNDArrayConverter::fromValue (NDArray *src)
 {
-    switch(src->dataType)
-    {
-    case NDInt8:    fromValue<PVByteArray,   int8_t>   (src); break;
-    case NDUInt8:   fromValue<PVUByteArray,  uint8_t>  (src); break;
-    case NDInt16:   fromValue<PVShortArray,  int16_t>  (src); break;
-    case NDUInt16:  fromValue<PVUShortArray, uint16_t> (src); break;
-    case NDInt32:   fromValue<PVIntArray,    int32_t>  (src); break;
-    case NDUInt32:  fromValue<PVUIntArray,   uint32_t> (src); break;
-    case NDFloat32: fromValue<PVFloatArray,  float>    (src); break;
-    case NDFloat64: fromValue<PVDoubleArray, double>   (src); break;
+    // Uncompressed
+    if (src->codec.empty()) {
+        switch(src->dataType)
+        {
+        case NDInt8:    fromValue<PVByteArray,   int8_t>   (src); break;
+        case NDUInt8:   fromValue<PVUByteArray,  uint8_t>  (src); break;
+        case NDInt16:   fromValue<PVShortArray,  int16_t>  (src); break;
+        case NDUInt16:  fromValue<PVUShortArray, uint16_t> (src); break;
+        case NDInt32:   fromValue<PVIntArray,    int32_t>  (src); break;
+        case NDUInt32:  fromValue<PVUIntArray,   uint32_t> (src); break;
+        case NDFloat32: fromValue<PVFloatArray,  float>    (src); break;
+        case NDFloat64: fromValue<PVDoubleArray, double>   (src); break;
+        }
+    // Compressed
+    } else {
+        fromValue<PVUByteArray, uint8_t>(src);
     }
 }
 
