@@ -133,9 +133,6 @@ ifeq ($(WITH_JPEG),YES)
   INC      += NDFileJPEG.h
   LIB_SRCS += NDFileJPEG.cpp
   USR_CXXFLAGS += -DHAVE_JPEG
-  LIBRARY_IOC  += decompressJPEG
-  decompressJPEG_SRCS += decompressJPEG.cpp
-  decompressJPEG_SYS_LIBS_WIN32 += ws2_32
   ifdef JPEG_INCLUDE
     USR_INCLUDES += $(addprefix -I, $(JPEG_INCLUDE))
   endif
