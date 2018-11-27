@@ -5,8 +5,8 @@ file {
 }
 display {
 	object {
-		x=194
-		y=277
+		x=330
+		y=189
 		width=775
 		height=605
 	}
@@ -116,7 +116,7 @@ rectangle {
 		x=390
 		y=40
 		width=380
-		height=235
+		height=260
 	}
 	"basic attribute" {
 		clr=14
@@ -136,88 +136,6 @@ composite {
 "text update" {
 	object {
 		x=666
-		y=136
-		width=100
-		height=18
-	}
-	monitor {
-		chan="$(P)$(R)JPEGQuality_RBV"
-		clr=54
-		bclr=4
-	}
-	align="horiz. centered"
-	limits {
-	}
-}
-"text update" {
-	object {
-		x=666
-		y=176
-		width=100
-		height=18
-	}
-	monitor {
-		chan="$(P)$(R)BloscCompressor_RBV"
-		clr=54
-		bclr=4
-	}
-	align="horiz. centered"
-	format="string"
-	limits {
-	}
-}
-"text update" {
-	object {
-		x=666
-		y=201
-		width=100
-		height=18
-	}
-	monitor {
-		chan="$(P)$(R)BloscCLevel_RBV"
-		clr=54
-		bclr=4
-	}
-	align="horiz. centered"
-	limits {
-	}
-}
-"text update" {
-	object {
-		x=666
-		y=226
-		width=100
-		height=18
-	}
-	monitor {
-		chan="$(P)$(R)BloscShuffle_RBV"
-		clr=54
-		bclr=4
-	}
-	align="horiz. centered"
-	format="string"
-	limits {
-	}
-}
-"text update" {
-	object {
-		x=666
-		y=251
-		width=100
-		height=18
-	}
-	monitor {
-		chan="$(P)$(R)BloscNumThreads_RBV"
-		clr=54
-		bclr=4
-	}
-	align="horiz. centered"
-	limits {
-	}
-}
-"text update" {
-	object {
-		x=666
 		y=51
 		width=100
 		height=18
@@ -227,7 +145,6 @@ composite {
 		clr=54
 		bclr=4
 	}
-	align="horiz. centered"
 	format="string"
 	limits {
 	}
@@ -244,79 +161,7 @@ composite {
 		clr=54
 		bclr=4
 	}
-	align="horiz. centered"
 	format="string"
-	limits {
-	}
-}
-"text entry" {
-	object {
-		x=581
-		y=135
-		width=80
-		height=20
-	}
-	control {
-		chan="$(P)$(R)JPEGQuality"
-		clr=14
-		bclr=51
-	}
-	limits {
-	}
-}
-menu {
-	object {
-		x=581
-		y=176
-		width=80
-		height=18
-	}
-	control {
-		chan="$(P)$(R)BloscCompressor"
-		clr=14
-		bclr=51
-	}
-}
-"text entry" {
-	object {
-		x=581
-		y=200
-		width=80
-		height=20
-	}
-	control {
-		chan="$(P)$(R)BloscCLevel"
-		clr=14
-		bclr=51
-	}
-	limits {
-	}
-}
-menu {
-	object {
-		x=581
-		y=226
-		width=80
-		height=18
-	}
-	control {
-		chan="$(P)$(R)BloscShuffle"
-		clr=14
-		bclr=51
-	}
-}
-"text entry" {
-	object {
-		x=581
-		y=250
-		width=80
-		height=20
-	}
-	control {
-		chan="$(P)$(R)BloscNumThreads"
-		clr=14
-		bclr=51
-	}
 	limits {
 	}
 }
@@ -346,87 +191,6 @@ menu {
 		bclr=51
 	}
 }
-"text update" {
-	object {
-		x=581
-		y=101
-		width=80
-		height=18
-	}
-	monitor {
-		chan="$(P)$(R)CompFactor_RBV"
-		clr=54
-		bclr=4
-	}
-	align="horiz. centered"
-	limits {
-	}
-}
-text {
-	object {
-		x=456
-		y=135
-		width=120
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="JPEG Quality"
-	align="horiz. right"
-}
-text {
-	object {
-		x=416
-		y=175
-		width=160
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Blosc Compressor"
-	align="horiz. right"
-}
-text {
-	object {
-		x=406
-		y=200
-		width=170
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Blosc Comp. Level"
-	align="horiz. right"
-}
-text {
-	object {
-		x=446
-		y=225
-		width=130
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Blosc Shuffle"
-	align="horiz. right"
-}
-text {
-	object {
-		x=406
-		y=250
-		width=170
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Blosc Num Threads"
-	align="horiz. right"
-}
 text {
 	object {
 		x=536
@@ -453,6 +217,219 @@ text {
 	textix="Compressor"
 	align="horiz. right"
 }
+"text update" {
+	object {
+		x=666
+		y=126
+		width=100
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)JPEGQuality_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+"text entry" {
+	object {
+		x=581
+		y=125
+		width=80
+		height=20
+	}
+	control {
+		chan="$(P)$(R)JPEGQuality"
+		clr=14
+		bclr=51
+	}
+	limits {
+	}
+}
+text {
+	object {
+		x=456
+		y=125
+		width=120
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="JPEG Quality"
+	align="horiz. right"
+}
+"text update" {
+	object {
+		x=666
+		y=151
+		width=100
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)BloscCompressor_RBV"
+		clr=54
+		bclr=4
+	}
+	format="string"
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=666
+		y=176
+		width=100
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)BloscCLevel_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=666
+		y=201
+		width=100
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)BloscShuffle_RBV"
+		clr=54
+		bclr=4
+	}
+	format="string"
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=666
+		y=226
+		width=100
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)BloscNumThreads_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+menu {
+	object {
+		x=581
+		y=151
+		width=80
+		height=18
+	}
+	control {
+		chan="$(P)$(R)BloscCompressor"
+		clr=14
+		bclr=51
+	}
+}
+"text entry" {
+	object {
+		x=581
+		y=175
+		width=80
+		height=20
+	}
+	control {
+		chan="$(P)$(R)BloscCLevel"
+		clr=14
+		bclr=51
+	}
+	limits {
+	}
+}
+menu {
+	object {
+		x=581
+		y=201
+		width=80
+		height=18
+	}
+	control {
+		chan="$(P)$(R)BloscShuffle"
+		clr=14
+		bclr=51
+	}
+}
+"text entry" {
+	object {
+		x=581
+		y=225
+		width=80
+		height=20
+	}
+	control {
+		chan="$(P)$(R)BloscNumThreads"
+		clr=14
+		bclr=51
+	}
+	limits {
+	}
+}
+text {
+	object {
+		x=416
+		y=150
+		width=160
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Blosc Compressor"
+	align="horiz. right"
+}
+text {
+	object {
+		x=406
+		y=175
+		width=170
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Blosc Comp. Level"
+	align="horiz. right"
+}
+text {
+	object {
+		x=446
+		y=200
+		width=130
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Blosc Shuffle"
+	align="horiz. right"
+}
+text {
+	object {
+		x=406
+		y=225
+		width=170
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Blosc Num Threads"
+	align="horiz. right"
+}
 text {
 	object {
 		x=396
@@ -465,4 +442,79 @@ text {
 	}
 	textix="Compression Factor"
 	align="horiz. right"
+}
+"text update" {
+	object {
+		x=581
+		y=101
+		width=80
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)CompFactor_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+text {
+	object {
+		x=456
+		y=250
+		width=120
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Codec Status"
+	align="horiz. right"
+}
+"text update" {
+	object {
+		x=581
+		y=251
+		width=80
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)CodecStatus"
+		clr=54
+		bclr=12
+	}
+	clrmod="alarm"
+	align="horiz. centered"
+	format="string"
+	limits {
+	}
+}
+text {
+	object {
+		x=396
+		y=275
+		width=110
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Codec Error"
+	align="horiz. right"
+}
+"text update" {
+	object {
+		x=511
+		y=278
+		width=255
+		height=14
+	}
+	monitor {
+		chan="$(P)$(R)CodecError"
+		clr=54
+		bclr=4
+	}
+	format="string"
+	limits {
+	}
 }
