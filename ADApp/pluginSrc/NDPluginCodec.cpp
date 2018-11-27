@@ -563,6 +563,11 @@ void NDPluginCodec::processCallbacks(NDArray *pArray)
             setStringParam(NDCodecCodecError, errorMessage);
             result = NULL;
         }
+        if (result && result != pArray) {
+            NDArrayInfo_t info;
+            result->getInfo(&info);
+            factor = (double)info.totalBytes / (double)pArray->compressedSize;
+        }
     }
 
     // If the {de,}compression fails, set the result to the original array
@@ -673,8 +678,8 @@ NDPluginCodec::NDPluginCodec(const char *portName, int queueSize, int blockingCa
     createParam(NDCodecModeString,            asynParamInt32,   &NDCodecMode);
     createParam(NDCodecCompressorString,      asynParamInt32,   &NDCodecCompressor);
     createParam(NDCodecCompFactorString,      asynParamFloat64, &NDCodecCompFactor);
-    createParam(NDCodecCodecStatusString,      asynParamInt32,   &NDCodecCodecStatus);
-    createParam(NDCodecCodecErrorString,       asynParamOctet,   &NDCodecCodecError);
+    createParam(NDCodecCodecStatusString,     asynParamInt32,   &NDCodecCodecStatus);
+    createParam(NDCodecCodecErrorString,      asynParamOctet,   &NDCodecCodecError);
     createParam(NDCodecJPEGQualityString,     asynParamInt32,   &NDCodecJPEGQuality);
     createParam(NDCodecBloscCompressorString, asynParamInt32,   &NDCodecBloscCompressor);
     createParam(NDCodecBloscCLevelString,     asynParamInt32,   &NDCodecBloscCLevel);
@@ -685,7 +690,7 @@ NDPluginCodec::NDPluginCodec(const char *portName, int queueSize, int blockingCa
     setStringParam(NDPluginDriverPluginType, "NDPluginCodec");
 
     setIntegerParam(NDCodecCompressor,      NDCODEC_NONE);
-    setDoubleParam (NDCodecCompFactor,      0.0);
+    setDoubleParam (NDCodecCompFactor,      1.0);
     setIntegerParam(NDCodecCodecStatus,      NDCodec_Success);
     setStringParam(NDCodecCodecError,        "");
     setIntegerParam(NDCodecJPEGQuality,     85);
