@@ -8,6 +8,8 @@
 #define NDCodecModeString             "MODE"             /* (NDCodecMode_t r/w) Mode: Compress/Decompress */
 #define NDCodecCompressorString       "COMPRESSOR"       /* (NDCodecCompressor_t r/w) Which codec to use */
 #define NDCodecCompFactorString       "COMP_FACTOR"      /* (double r/o) Compression percentage (0 = no compression) */
+#define NDCodecCodecStatusString      "CODEC_STATUS"     /* (int r/o) Compression status: success or failure */
+#define NDCodecCodecErrorString       "CODEC_ERROR"      /* (string r/o) Error message if compression fails */
 #define NDCodecJPEGQualityString      "JPEG_QUALITY"     /* (int r/w) JPEG Compression quality */
 #define NDCodecBloscCompressorString  "BLOSC_COMPRESSOR" /* (NDCodecBloscComp_t r/w) Which Blosc compressor to use */
 #define NDCodecBloscCLevelString      "BLOSC_CLEVEL"     /* (int r/w) Blosc compression level */
@@ -75,11 +77,22 @@ protected:
     #define FIRST_NDCODEC_PARAM NDCodecMode
     int NDCodecCompressor;
     int NDCodecCompFactor;
+    int NDCodecCodecStatus;
+    int NDCodecCodecError;
     int NDCodecJPEGQuality;
     int NDCodecBloscCompressor;
     int NDCodecBloscCLevel;
     int NDCodecBloscShuffle;
     int NDCodecBloscNumThreads;
+
+    NDArray *compressJPEG(NDArrayPool *pool, NDArray *input, int quality);
+    NDArray *decompressJPEG(NDArrayPool *pool, NDArray *input);
+    NDArray *compressBlosc(NDArrayPool *pool, NDArray *input, int clevel,
+             int shuffle, NDCodecBloscComp_t compressor, int numThreads);
+    NDArray *decompressBlosc(NDArrayPool *pool, NDArray *input, int numThreads);
+
+private:
+    char errorMessage[256];
 };
  
 #endif
