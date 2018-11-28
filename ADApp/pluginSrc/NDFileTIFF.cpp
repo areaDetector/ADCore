@@ -507,7 +507,7 @@ asynStatus NDFileTIFF::readFile(NDArray **pArray)
     *pArray = pImage;
     buffer = (char *)pImage->pData;
     for (strip=0; strip < numStrips; strip++) {
-        size = TIFFReadEncodedStrip(this->tiff, strip, buffer, pImage->dataSize-totalSize);
+        size = (int)TIFFReadEncodedStrip(this->tiff, strip, buffer, pImage->dataSize-totalSize);
         if (size == -1) {
             asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW,
                 "%s::%s, error reading TIFF file\n",
@@ -547,7 +547,7 @@ asynStatus NDFileTIFF::readFile(NDArray **pArray)
         fieldStat = TIFFGetField(this->tiff, i, &tempString);
         if (fieldStat == 1) {
             std::string ts = tempString;
-            int pc = ts.find(':');
+            int pc = (int)ts.find(':');
             std::string attrName = ts.substr(0, pc);
             std::string attrValue = ts.substr(pc+1);
             // Don't process ColorMode attribute from the attributes in the TIFF file, already done above.
