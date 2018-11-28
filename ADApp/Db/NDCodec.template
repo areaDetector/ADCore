@@ -185,14 +185,19 @@ record(longin, "$(P)$(R)BloscNumThreads_RBV")
     field(SCAN, "I/O Intr")
 }
 
-record(bi, "$(P)$(R)CodecStatus")
+record(mbbi, "$(P)$(R)CodecStatus")
 {
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))CODEC_STATUS")
-    field(ZNAM, "Success")
-    field(ONAM, "Failure")
-    field(ZSV,  "NO_ALARM")
-    field(OSV,  "MAJOR")
+    field(ZRVL, "0")
+    field(ZRST, "Success")
+    field(ZRSV, "NO_ALARM")
+    field(ONVL, "1")
+    field(ONST, "Warning")
+    field(ONSV, "MINOR")
+    field(TWVL, "2")
+    field(TWST, "Error")
+    field(TWSV, "MAJOR")
     field(SCAN, "I/O Intr")
 }
 
