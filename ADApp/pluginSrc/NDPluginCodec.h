@@ -85,14 +85,6 @@ protected:
     int NDCodecBloscShuffle;
     int NDCodecBloscNumThreads;
 
-    NDArray *compressJPEG(NDArrayPool *pool, NDArray *input, int quality);
-    NDArray *decompressJPEG(NDArrayPool *pool, NDArray *input);
-    NDArray *compressBlosc(NDArrayPool *pool, NDArray *input, int clevel,
-             int shuffle, NDCodecBloscComp_t compressor, int numThreads);
-    NDArray *decompressBlosc(NDArrayPool *pool, NDArray *input, int numThreads);
-
-private:
-    char errorMessage[256];
 };
  
 #endif
