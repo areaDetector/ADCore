@@ -64,11 +64,6 @@ static const char *driverName="NDPluginCodec";
 
 static string codecName[] = {"", "jpeg", "blosc"};
 
-typedef enum {
-  NDCodec_Success,
-  NDCodec_Error
-} NDCodec_Status_t;
-
 /* Allocate a new NDArray to hold [un]compressed data.
  * Since there's no way to know the final size of the compressed data, always
  * allocate an array of the same size as the uncompressed one.
@@ -119,7 +114,7 @@ static int jpeg_clamp_quality(int quality)
     }
 #endif
 
-NDArray *compressJPEG(NDArray *input, int quality, char *errorMessage)
+NDArray *compressJPEG(NDArray *input, int quality, NDCodecStatus_t *status, char *errorMessage)
 {
     struct jpeg_compress_struct jpegInfo = {};
     struct jpeg_error_mgr jpegErr = {};
@@ -150,7 +145,8 @@ NDArray *compressJPEG(NDArray *input, int quality, char *errorMessage)
         case NDUInt8:
             break;
         default:
-            sprintf(errorMessage, "Only 8-bit data is supported");
+            sprintf(errorMessage, "JPEG only supports 8-bit data");
+            *status = NDCODEC_ERROR;
             goto failure;
     }
 
@@ -176,6 +172,7 @@ NDArray *compressJPEG(NDArray *input, int quality, char *errorMessage)
         }
     } else {
         sprintf(errorMessage, "Unsupported array structure");
+        *status = NDCODEC_ERROR;
         goto failure;
     }
 
@@ -210,6 +207,7 @@ NDArray *compressJPEG(NDArray *input, int quality, char *errorMessage)
             break;
         default:
             sprintf(errorMessage, "Unknown color mode %d", colorMode);
+            *status = NDCODEC_ERROR;
             goto failure;
     }
 
@@ -237,11 +235,13 @@ NDArray *compressJPEG(NDArray *input, int quality, char *errorMessage)
                 break;
             default:
                 sprintf(errorMessage, "Unknown color mode %d", colorMode);
+                *status = NDCODEC_ERROR;
                 goto failure;
         }
 
         if (nwrite != 1) {
             sprintf(errorMessage, "Error writing JPEG data");
+            *status = NDCODEC_ERROR;
             goto failure;
         }
     }
@@ -254,7 +254,8 @@ NDArray *compressJPEG(NDArray *input, int quality, char *errorMessage)
     output = alloc(input, -1, outSize, outData);
 
     if (!output) {
-        sprintf(errorMessage, "Failed to allocate array");
+        sprintf(errorMessage, "Failed to allocate JPEG array");
+        *status = NDCODEC_ERROR;
         return NULL;
     }
 
@@ -275,19 +276,21 @@ failure:
  *   - 8-bit mono
  *   - 8-bit RGB1
  */
-NDArray *decompressJPEG(NDArray *input, char *errorMessage)
+NDArray *decompressJPEG(NDArray *input, NDCodecStatus_t *status, char *errorMessage)
 {
     // Sanity check
     if (input->codec != codecName[NDCODEC_JPEG]) {
         sprintf(errorMessage, "Invalid codec '%s', expected '%s'", 
                 input->codec.c_str(), codecName[NDCODEC_JPEG].c_str());
+        *status = NDCODEC_ERROR;
         return NULL;
     }
 
     NDArray *output = alloc(input, NDUInt8);
 
     if (!output) {
-        sprintf(errorMessage, "Failed to allocate output array");
+        sprintf(errorMessage, "Failed to allocate JPEG output array");
+        *status = NDCODEC_ERROR;
         return NULL;
     }
 
@@ -309,6 +312,7 @@ NDArray *decompressJPEG(NDArray *input, char *errorMessage)
 
         if (jpeg_read_scanlines(&jpegInfo, row_pointer, 1) != 1) {
             sprintf(errorMessage, "Error decoding JPEG");
+            *status = NDCODEC_ERROR;
             break;
         }
 
@@ -329,13 +333,13 @@ NDArray *decompressJPEG(NDArray *input, char *errorMessage)
 
 #else
 
-NDArray *NDPluginCode::compressJPEG(NDArray*, int)
+NDArray *NDPluginCode::compressJPEG(NDArray*, int, NDCodecStatus_t *status, char *errorMessage)
 {
     sprintf(errorMessage, "No JPEG support");
     return NULL;
 }
 
-NDArray *decompressJPEG(NDArray*, char *errorMessage)
+NDArray *decompressJPEG(NDArray*, NDCodecStatus_t *status, char *errorMessage)
 {
     sprintf(errorMessage, "No JPEG support");
     return NULL;
@@ -355,18 +359,20 @@ static const char* bloscCompName[] = {
     "zstd",
 };
 
-NDArray *compressBlosc(NDArray *input, int clevel,
-        int shuffle, NDCodecBloscComp_t compressor, int numThreads, char *errorMessage)
+NDArray *compressBlosc(NDArray *input, int clevel, int shuffle, NDCodecBloscComp_t compressor, 
+                       int numThreads, NDCodecStatus_t *status, char *errorMessage)
 {
     if (!input->codec.empty()) {
-        sprintf(errorMessage, "Input already compressed");
+        sprintf(errorMessage, "Array is already compressed");
+        *status = NDCODEC_WARNING;
         return NULL;
     }
 
     const char *compname = bloscCompName[compressor];
 
     if (blosc_compname_to_compcode(compname) < 0) {
-        sprintf(errorMessage, "Unsupported compressor %s", compname);
+        sprintf(errorMessage, "Unsupported Blosc compressor %s", compname);
+        *status = NDCODEC_ERROR;
         return NULL;
     }
 
@@ -377,7 +383,8 @@ NDArray *compressBlosc(NDArray *input, int clevel,
             info.totalBytes + BLOSC_MAX_OVERHEAD);
 
     if (!output) {
-        sprintf(errorMessage, "Failed to allocate output array");
+        sprintf(errorMessage, "Failed to allocate Blosc output array");
+        *status = NDCODEC_ERROR;
         return NULL;
     }
 
@@ -389,7 +396,8 @@ NDArray *compressBlosc(NDArray *input, int clevel,
 
     if (compSize < 0) {
         output->release();
-        sprintf(errorMessage, "Failed to compress: internal error");
+        sprintf(errorMessage, "Internal Blosc error");
+        *status = NDCODEC_ERROR;
         return NULL;
     }
 
@@ -399,19 +407,21 @@ NDArray *compressBlosc(NDArray *input, int clevel,
     return output;
 }
 
-NDArray *decompressBlosc(NDArray *input, int numThreads, char *errorMessage)
+NDArray *decompressBlosc(NDArray *input, int numThreads, NDCodecStatus_t *status, char *errorMessage)
 {
     // Sanity check
     if (input->codec != codecName[NDCODEC_BLOSC]) {
         sprintf(errorMessage, "Invalid codec '%s', expected '%s'",
                 input->codec.c_str(), codecName[NDCODEC_BLOSC].c_str());
+        *status = NDCODEC_ERROR;
         return NULL;
     }
 
     NDArray *output = alloc(input);
 
     if (!output) {
-        sprintf(errorMessage, "Failed to allocate output array");
+        sprintf(errorMessage, "Failed to allocate Blosc output array");
+        *status = NDCODEC_ERROR;
         return NULL;
     }
 
@@ -420,7 +430,8 @@ NDArray *decompressBlosc(NDArray *input, int numThreads, char *errorMessage)
 
     if (ret <= 0){
         output->release();
-        sprintf(errorMessage, "Failed to decompress");
+        sprintf(errorMessage, "Failed to Blosc decompress");
+        *status = NDCODEC_ERROR;
         return NULL;
     }
 
@@ -432,15 +443,17 @@ NDArray *decompressBlosc(NDArray *input, int numThreads, char *errorMessage)
 #else
 
 NDArray *compressBlosc(NDArray*, int , bool , NDCodecBloscComp_t, 
-                       int, char *errormessage)
+                       int, NDCodecStatus_t *status, char *errormessage)
 {
     sprintf(errorMessage, "No Blosc support");
+    *status = NDCODEC_ERROR;
     return NULL;
 }
 
-NDArray *decompressBlosc(NDArray*, int, char *errorMessage)
+NDArray *decompressBlosc(NDArray*, int, NDCodecStatus_t *status, char *errorMessage)
 {
     sprintf(errorMessage, "No Blosc support");
+    *status = NDCODEC_ERROR;
     return NULL;
 }
 
@@ -464,11 +477,13 @@ void NDPluginCodec::processCallbacks(NDArray *pArray)
 
     //static const char* functionName = "processCallbacks";
     char errorMessage[256] = "";
+    NDCodecStatus_t codecStatus = NDCODEC_SUCCESS;
 
     /* Call the base class method */
     NDPluginDriver::beginProcessCallbacks(pArray);
 
-    NDArray *result;
+    NDArray *result = NULL;
+    double factor = 1.0;
 
     int mode, algo;
     getIntegerParam(NDCodecMode, &mode);
@@ -477,10 +492,9 @@ void NDPluginCodec::processCallbacks(NDArray *pArray)
     if (algo && mode == NDCODEC_COMPRESS && !pArray->codec.empty()) {
         sprintf(errorMessage, "Array already compressed");
         setStringParam(NDCodecCodecError, errorMessage);
-        return;
+        codecStatus = NDCODEC_WARNING;
+        goto finish;
     }
-
-    double factor = 1.0;
 
     if (mode == NDCODEC_COMPRESS) {
         switch(algo) {
@@ -494,7 +508,7 @@ void NDPluginCodec::processCallbacks(NDArray *pArray)
             getIntegerParam(NDCodecJPEGQuality, &quality);
 
             unlock();
-            result = compressJPEG(pArray, quality, errorMessage);
+            result = compressJPEG(pArray, quality, &codecStatus, errorMessage);
             lock();
             break;
         }
@@ -509,7 +523,7 @@ void NDPluginCodec::processCallbacks(NDArray *pArray)
 
             unlock();
             result = compressBlosc(pArray, clevel, shuffle,
-                    static_cast<NDCodecBloscComp_t>(compressor), numThreads, errorMessage);
+                    static_cast<NDCodecBloscComp_t>(compressor), numThreads, &codecStatus, errorMessage);
             lock();
             break;
         }
@@ -525,17 +539,18 @@ void NDPluginCodec::processCallbacks(NDArray *pArray)
             result = pArray;
         } else if (pArray->codec == codecName[NDCODEC_JPEG]) {
             unlock();
-            result = decompressJPEG(pArray, errorMessage);
+            result = decompressJPEG(pArray, &codecStatus, errorMessage);
             lock();
         } else if (pArray->codec == codecName[NDCODEC_BLOSC]) {
             int numThreads;
             getIntegerParam(NDCodecBloscNumThreads, &numThreads);
 
             unlock();
-            result = decompressBlosc(pArray, numThreads, errorMessage);
+            result = decompressBlosc(pArray, numThreads, &codecStatus, errorMessage);
             lock();
         } else {
             sprintf(errorMessage, "Unexpected codec: '%s'", pArray->codec.c_str());
+            codecStatus = NDCODEC_ERROR;
             result = NULL;
         }
         if (result && result != pArray) {
@@ -545,15 +560,13 @@ void NDPluginCodec::processCallbacks(NDArray *pArray)
         }
     }
 
+finish:
     // If the {de,}compression fails, set the result to the original array
     if (!result) {
         result = pArray;
-        setIntegerParam(NDCodecCodecStatus, NDCodec_Error);
-        setStringParam(NDCodecCodecError, errorMessage);
-    } else {
-        setIntegerParam(NDCodecCodecStatus, NDCodec_Success);
-        setStringParam(NDCodecCodecError, "");
     }
+    setStringParam(NDCodecCodecError, errorMessage);
+    setIntegerParam(NDCodecCodecStatus, (int)codecStatus);
 
     NDPluginDriver::endProcessCallbacks(result, result == pArray, true);
 
@@ -667,7 +680,7 @@ NDPluginCodec::NDPluginCodec(const char *portName, int queueSize, int blockingCa
 
     setIntegerParam(NDCodecCompressor,      NDCODEC_NONE);
     setDoubleParam (NDCodecCompFactor,      1.0);
-    setIntegerParam(NDCodecCodecStatus,      NDCodec_Success);
+    setIntegerParam(NDCodecCodecStatus,     NDCODEC_SUCCESS);
     setStringParam(NDCodecCodecError,        "");
     setIntegerParam(NDCodecJPEGQuality,     85);
     setIntegerParam(NDCodecBloscCompressor, NDCODEC_BLOSC_BLOSCLZ);

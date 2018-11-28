@@ -47,18 +47,25 @@ typedef enum {
     NDCODEC_BLOSC_ZSTD,
 }NDCodecBloscComp_t;
 
+typedef enum {
+  NDCODEC_SUCCESS,
+  NDCODEC_WARNING,
+  NDCODEC_ERROR
+}NDCodecStatus_t;
+
+
 /*
  * The [de]compress* functions below take an input array and return a
  * pool-allocated output array on success or NULL on error. They are
  * thread-safe.
  */
 
-NDArray *compressJPEG(NDArray *input, int quality);
-NDArray *decompressJPEG(NDArray *input);
+NDArray *compressJPEG(NDArray *input, int quality, NDCodecStatus_t *status, char *errorMessage);
+NDArray *decompressJPEG(NDArray *input, NDCodecStatus_t *status, char *errorMessage);
 
-NDArray *compressBlosc(NDArray *input, int clevel,
-        bool shuffle, NDCodecBloscComp_t compressor, int numThreads);
-NDArray *decompressBlosc(NDArray *input, int numThreads);
+NDArray *compressBlosc(NDArray *input, int clevel, bool shuffle, NDCodecBloscComp_t compressor, 
+                       int numThreads, NDCodecStatus_t *status, char *errorMessage);
+NDArray *decompressBlosc(NDArray *input, int numThreads, NDCodecStatus_t *status, char *errorMessage);
 
 
 class epicsShareClass NDPluginCodec : public NDPluginDriver {
