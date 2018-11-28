@@ -220,7 +220,7 @@ NDArray* NDArrayPool::alloc(int ndims, size_t *dims, NDDataType_t dataType, size
   * object already exists (pOut!=NULL) then it must have sufficient memory allocated to
   * it to hold the data.
   */
-NDArray* NDArrayPool::copy(NDArray *pIn, NDArray *pOut, int copyData)
+NDArray* NDArrayPool::copy(NDArray *pIn, NDArray *pOut, bool copyData, bool copyDimensions, bool copyDataType)
 {
   //const char *functionName = "copy";
   size_t dimSizeOut[ND_ARRAY_MAX_DIMS];
@@ -237,9 +237,13 @@ NDArray* NDArrayPool::copy(NDArray *pIn, NDArray *pOut, int copyData)
   pOut->uniqueId = pIn->uniqueId;
   pOut->timeStamp = pIn->timeStamp;
   pOut->epicsTS = pIn->epicsTS;
-  pOut->ndims = pIn->ndims;
-  memcpy(pOut->dims, pIn->dims, sizeof(pIn->dims));
-  pOut->dataType = pIn->dataType;
+  if (copyDimensions) {
+    pOut->ndims = pIn->ndims;
+    memcpy(pOut->dims, pIn->dims, sizeof(pIn->dims));
+  }
+  if (copyDataType) {
+    pOut->dataType = pIn->dataType;
+  }
   pOut->codec = pIn->codec;
   pOut->compressedSize = pIn->compressedSize;
   if (copyData) {
@@ -251,6 +255,11 @@ NDArray* NDArrayPool::copy(NDArray *pIn, NDArray *pOut, int copyData)
   pOut->pAttributeList->clear();
   pIn->pAttributeList->copy(pOut->pAttributeList);
   return(pOut);
+}
+
+NDArray* NDArrayPool::copy(NDArray *pIn, NDArray *pOut, int copyData)
+{
+  return this->copy(pIn, pOut, copyData ? true : false, true, true);
 }
 
 /** This method increases the reference count for the NDArray object.
