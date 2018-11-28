@@ -2336,7 +2336,7 @@ asynStatus NDFileHDF5::createPerformanceDataset()
     // Check the chunking value
     calculateAttributeChunking(&chunking, mdchunking);
     hid_t hdfcparm   = H5Pcreate(H5P_DATASET_CREATE);
-    hsize_t chunk[2] = {chunking, 5};
+    hsize_t chunk[2] = {(hsize_t)chunking, 5};
     int hdfrank  = 2;
     H5Pset_chunk(hdfcparm, hdfrank, chunk);
 
