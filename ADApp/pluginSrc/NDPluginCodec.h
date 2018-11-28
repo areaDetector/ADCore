@@ -53,12 +53,12 @@ typedef enum {
  * thread-safe.
  */
 
-NDArray *compressJPEG(NDArrayPool *pool, NDArray *input, int quality);
-NDArray *decompressJPEG(NDArrayPool *pool, NDArray *input);
+NDArray *compressJPEG(NDArray *input, int quality);
+NDArray *decompressJPEG(NDArray *input);
 
-NDArray *compressBlosc(NDArrayPool *pool, NDArray *input, int clevel,
+NDArray *compressBlosc(NDArray *input, int clevel,
         bool shuffle, NDCodecBloscComp_t compressor, int numThreads);
-NDArray *decompressBlosc(NDArrayPool *pool, NDArray *input, int numThreads);
+NDArray *decompressBlosc(NDArray *input, int numThreads);
 
 
 class epicsShareClass NDPluginCodec : public NDPluginDriver {
