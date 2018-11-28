@@ -8,6 +8,8 @@
 #define NDCodecModeString             "MODE"             /* (NDCodecMode_t r/w) Mode: Compress/Decompress */
 #define NDCodecCompressorString       "COMPRESSOR"       /* (NDCodecCompressor_t r/w) Which codec to use */
 #define NDCodecCompFactorString       "COMP_FACTOR"      /* (double r/o) Compression percentage (0 = no compression) */
+#define NDCodecCodecStatusString      "CODEC_STATUS"     /* (int r/o) Compression status: success or failure */
+#define NDCodecCodecErrorString       "CODEC_ERROR"      /* (string r/o) Error message if compression fails */
 #define NDCodecJPEGQualityString      "JPEG_QUALITY"     /* (int r/w) JPEG Compression quality */
 #define NDCodecBloscCompressorString  "BLOSC_COMPRESSOR" /* (NDCodecBloscComp_t r/w) Which Blosc compressor to use */
 #define NDCodecBloscCLevelString      "BLOSC_CLEVEL"     /* (int r/w) Blosc compression level */
@@ -45,18 +47,25 @@ typedef enum {
     NDCODEC_BLOSC_ZSTD,
 }NDCodecBloscComp_t;
 
+typedef enum {
+  NDCODEC_SUCCESS,
+  NDCODEC_WARNING,
+  NDCODEC_ERROR
+}NDCodecStatus_t;
+
+
 /*
  * The [de]compress* functions below take an input array and return a
  * pool-allocated output array on success or NULL on error. They are
  * thread-safe.
  */
 
-NDArray *compressJPEG(NDArrayPool *pool, NDArray *input, int quality);
-NDArray *decompressJPEG(NDArrayPool *pool, NDArray *input);
+NDArray *compressJPEG(NDArray *input, int quality, NDCodecStatus_t *status, char *errorMessage);
+NDArray *decompressJPEG(NDArray *input, NDCodecStatus_t *status, char *errorMessage);
 
-NDArray *compressBlosc(NDArrayPool *pool, NDArray *input, int clevel,
-        bool shuffle, NDCodecBloscComp_t compressor, int numThreads);
-NDArray *decompressBlosc(NDArrayPool *pool, NDArray *input, int numThreads);
+NDArray *compressBlosc(NDArray *input, int clevel, bool shuffle, NDCodecBloscComp_t compressor, 
+                       int numThreads, NDCodecStatus_t *status, char *errorMessage);
+NDArray *decompressBlosc(NDArray *input, int numThreads, NDCodecStatus_t *status, char *errorMessage);
 
 
 class epicsShareClass NDPluginCodec : public NDPluginDriver {
@@ -75,11 +84,14 @@ protected:
     #define FIRST_NDCODEC_PARAM NDCodecMode
     int NDCodecCompressor;
     int NDCodecCompFactor;
+    int NDCodecCodecStatus;
+    int NDCodecCodecError;
     int NDCodecJPEGQuality;
     int NDCodecBloscCompressor;
     int NDCodecBloscCLevel;
     int NDCodecBloscShuffle;
     int NDCodecBloscNumThreads;
+
 };
  
 #endif

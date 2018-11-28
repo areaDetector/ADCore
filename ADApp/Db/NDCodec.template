@@ -184,3 +184,28 @@ record(longin, "$(P)$(R)BloscNumThreads_RBV")
     field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))BLOSC_NUMTHREADS")
     field(SCAN, "I/O Intr")
 }
+
+record(mbbi, "$(P)$(R)CodecStatus")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))CODEC_STATUS")
+    field(ZRVL, "0")
+    field(ZRST, "Success")
+    field(ZRSV, "NO_ALARM")
+    field(ONVL, "1")
+    field(ONST, "Warning")
+    field(ONSV, "MINOR")
+    field(TWVL, "2")
+    field(TWST, "Error")
+    field(TWSV, "MAJOR")
+    field(SCAN, "I/O Intr")
+}
+
+record(waveform, "$(P)$(R)CodecError")
+{
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))CODEC_ERROR")
+    field(SCAN, "I/O Intr")
+    field(FTVL, "CHAR")
+    field(NELM, "256")
+}
