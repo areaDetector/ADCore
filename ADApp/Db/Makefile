@@ -51,6 +51,7 @@ DB += NDAttrPlotAttr.template
 DB += NDAttrPlotData.template
 DB += NDAttrPlot.template
 DB += NDCodec.template
+DB += NDRateLimit.template
 
 #----------------------------------------------------
 # If <anyname>.db template is not named <anyname>*.template add

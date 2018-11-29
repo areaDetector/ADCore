@@ -1,0 +1,91 @@
+#=================================================================#
+# Template file: NDRateLimit.template
+# Database for the NDRateLimit plugin
+# Bruno Martins
+# November 28, 2018
+
+include "NDPluginBase.template"
+
+record(mbbo, "$(P)$(R)Mode")
+{
+    field(PINI, "YES")
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))MODE")
+    field(ZRST, "Off")
+    field(ZRVL, "0")
+    field(ONST, "Array Rate")
+    field(ONVL, "1")
+    field(TWST, "Byte Rate")
+    field(TWVL, "2")
+    field(VAL,  "0")
+    info(autosaveFields, "VAL")
+}
+
+record(mbbi, "$(P)$(R)Mode_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))MODE")
+    field(ZRST, "Off")
+    field(ZRVL, "0")
+    field(ONST, "Array Rate")
+    field(ONVL, "1")
+    field(TWST, "Byte Rate")
+    field(TWVL, "2")
+    field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)Limit")
+{
+    field(PINI, "YES")
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))LIMIT")
+    field(VAL,  "1")
+    field(DRVL, "1")
+    field(EGU,  "/s")
+    info(autosaveFields, "VAL")
+}
+
+record(longin, "$(P)$(R)Limit_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))LIMIT")
+    field(EGU,  "/s")
+    field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(R)RefillTime_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))REFILL_TIME")
+    field(EGU,  "ms")
+    field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(R)RefillAmount_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))REFILL_AMOUNT")
+    field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(R)NumTokens_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))NUM_TOKENS")
+    field(SCAN, "1 second")
+}
+
+record(longout, "$(P)$(R)Dropped")
+{
+    field(PINI, "YES")
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))DROPPED")
+    field(VAL,  "0")
+}
+
+record(longin, "$(P)$(R)Dropped_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))DROPPED")
+    field(SCAN, "1 second")
+}

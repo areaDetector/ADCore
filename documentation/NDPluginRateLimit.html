@@ -1,0 +1,212 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>areaDetector Plugin NDPluginRateLimit</title>
+  <meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type" />
+</head>
+<body>
+  <div style="text-align: center">
+    <h1>
+      areaDetector Plugin NDPluginRateLimit</h1>
+    <h2>
+      November 29, 2018</h2>
+    <h2>
+      Bruno Martins</h2>
+    <h2>
+      Facility for Rare Isotope Beams</h2>
+  </div>
+  <h2>
+    Contents</h2>
+  <ul>
+    <li><a href="#Overview">Overview</a></li>
+    <li><a href="#Usage">Usage</a></li>
+    <li><a href="#Parameters">Parameters</a></li>
+    <li><a href="#Configuration">Configuration</a></li>
+    <li><a href="#Screens">Screenshots</a></li>
+  </ul>
+  <h2 id="Overview">Overview</h2>
+  <p>
+    NDPluginRateLimit limits the amount of data flowing through it. It can
+    currently limit either the number of arrays per second or the number of
+    bytes per second passing through.
+  </p>
+  <p>
+    This plugin implements the token bucket algorithm:
+    <ul>
+        <li>Initialization: <code>NumTokens=Limit</code>.</li>
+        <li>
+          Every <code>RefillTime</code> milliseconds: add <code>RefillAmount</code>
+          to <code>NumTokens</code>, ensuring that <code>NumTokens&lt;=Limit</code>
+        </li>
+        <li>
+          On every processCallbacks:
+          <ul>
+            <li>
+              Figure out the number of tokens needed:
+              <ul>
+                <li>1 if Mode==Array Rate</li>
+                <li>number of bytes in the NDArray's pData if Mode==Byte Rate.</li>
+              </ul>
+            </li>
+            <li>
+              Attempt to subtract the number of needed tokens from
+              <code>NumTokens</code>.
+              <ul>
+                <li>If it succeeds, pass the array forward.</li>
+                <li>If not, drop the array and increment <code>Dropped</code>.</li>
+               </ul>
+            </li>
+          </ul>
+        </li>
+    </ul>
+  </p>
+  <h2 id="Usage">Usage</h2>
+  <p><ul>
+    <li>Disable rate limiting:
+      <p><ul><li>Set Mode to 0 (Off)</li></ul></p>
+    </li>
+    <li>Limit the rate of arrays per second:
+      <p><ul>
+        <li>Set Mode to 1 (Array Rate)</li>
+        <li>Set Limit to the desired number of arrays per second</li>
+      </ul></p>
+    </li>
+    <li>Limit the rate of bytes per second:
+      <p><ul>
+        <li>Set Mode to 2 (Byte Rate)</li>
+        <li>Set Limit to the desired number of bytes per second</li>
+      </ul></p>
+    </li>
+  </ul></p>
+  <h2 id="Parameters">Parameters</h2>
+  <p>
+    NDPluginRateLimit inherits from NDPluginDriver. The <a href="areaDetectorDoxygenHTML/class_n_d_plugin_rate_limit_.html">
+      NDPluginRateLimit class documentation</a> describes this class in detail.
+  </p>
+  <p>
+    NDPluginRateLimit defines the following parameters. It also implements all of the standard
+    plugin parameters from <a href="pluginDoc.html#NDPluginDriver">NDPluginDriver</a>.
+    The EPICS database NDRateLimit.template provides access to these parameters, listed
+    in the following table.
+  </p>
+  <table border="1" cellpadding="2" cellspacing="2" style="text-align: left">
+    <tbody>
+      <tr>
+        <td align="center" colspan="7,">
+          <b>Parameter Definitions in NDPluginRateLimit.h and EPICS Record Definitions in NDRateLimit.template</b>
+        </td>
+      </tr>
+      <tr>
+        <th> Parameter index variable </th>
+        <th> asyn interface </th>
+        <th> Access </th>
+        <th> Description </th>
+        <th> drvInfo string </th>
+        <th> EPICS record name </th>
+        <th> EPICS record type </th>
+      </tr>
+      <tr>
+        <td> NDRateLimitMode</td>
+        <td> asynInt32</td>
+        <td> r/w</td>
+        <td>
+          The plugin mode (NDRateLimitMode_t). Three choices are available:
+          <ul>
+            <li> Off: no rate limiting is applied; all arrays flow through.</li>
+            <li> Array Rate: limits the array rate, according to Limit.</li>
+            <li> Byte Rate: limits the byte rate, according to Limit.</li>
+          </ul>
+        </td>
+        <td> MODE</td>
+        <td> $(P)$(R)Mode<br /> $(P)$(R)Mode_RBV </td>
+        <td> mbbo<br /> mbbi </td>
+      </tr>
+      <tr>
+        <td> NDRateLimitLimit</td>
+        <td> asynInt32</td>
+        <td> r/w</td>
+        <td>
+          The rate limit to be applied. Its unit depends on Mode:
+          <ul>
+            <li> If Mode==Array Rate: number of arrays per second.</li>
+            <li> If Mode==Byte Rate: number of bytes per second.</li>
+          </ul>
+        </td>
+        <td> LIMIT</td>
+        <td> $(P)$(R)Limit <br/> $(P)$(R)Limit_RBV </td>
+        <td> longout <br/> longin </td>
+      </tr>
+      <tr>
+        <td> NDRateLimitRefillTime</td>
+        <td> asynInt32</td>
+        <td> r/o</td>
+        <td> Time between token refills, in ms. Calculated from Limit. </td>
+        <td> REFILL_TIME</td>
+        <td> $(P)$(R)RefillTime_RBV </td>
+        <td> longin </td>
+      </tr>
+      <tr>
+        <td> NDRateLimitRefillAmount</td>
+        <td> asynInt32</td>
+        <td> r/o</td>
+        <td>
+            Number of tokens to be added to NumTokens every RefillTime.
+            Calculated from Limit.
+        </td>
+        <td> REFILL_AMOUNT</td>
+        <td> $(P)$(R)RefillAmount_RBV </td>
+        <td> longin </td>
+      </tr>
+      <tr>
+        <td> NDRateLimitNumTokens</td>
+        <td> asynInt32</td>
+        <td> r/o</td>
+        <td> Number of tokens currently available in the bucket. </td>
+        <td> NUM_TOKENS</td>
+        <td> $(P)$(R)NumTokens_RBV </td>
+        <td> longin </td>
+      </tr>
+      <tr>
+        <td> NDRateLimitDropped</td>
+        <td> asynInt32</td>
+        <td> r/w</td>
+        <td> Number of dropped arrays so far. </td>
+        <td> DROPPED</td>
+        <td> $(P)$(R)Dropped </br>$(P)$(R)Dropped_RBV </td>
+        <td> longout </br> longin </td>
+      </tr>
+
+    </tbody>
+  </table>
+  <h2 id="Configuration">
+    Configuration</h2>
+  <p>
+    The NDPluginRateLimit plugin is created with the following command, either from C/C++
+    or from the EPICS IOC shell.
+  </p>
+  <pre> int NDRateLimitConfigure(const char *portName, int queueSize, int blockingCallbacks,
+                             const char *NDArrayPort, int NDArrayAddr,
+                             int maxBuffers, size_t maxMemory,
+                             int priority, int stackSize)
+  </pre>
+  <p>
+    For details on the meaning of the parameters to this function refer to the detailed
+    documentation on the NDRateLimitConfigure function in the <a href="areaDetectorDoxygenHTML/_n_d_plugin_rate_limit_8cpp.html">
+      NDPluginRateLimit.cpp documentation</a> and in the documentation for the constructor
+    for the <a href="areaDetectorDoxygenHTML/class_n_d_plugin_rate_limit.html">NDPluginRateLimit
+      class</a>.
+  </p>
+  <h2 id="Screens">Screen shots</h2>
+  <p>
+    The following is the MEDM screen that provides access to the parameters in NDPluginDriver.h
+    and NDPluginRateLimit.h through records in NDPluginBase.template and NDRateLimit.template.
+  </p>
+  <div style="text-align: center">
+    <h3>
+      NDRateLimit.adl</h3>
+    <p>
+      <img alt="NDRateLimit.png" src="NDRateLimit.png" /></p>
+  </div>
+</body>
+</html>

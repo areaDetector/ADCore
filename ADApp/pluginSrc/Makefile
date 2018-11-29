@@ -82,6 +82,10 @@ NDPluginSupport_DBD += NDPluginCodec.dbd
 INC      += NDPluginCodec.h
 LIB_SRCS += NDPluginCodec.cpp
 
+NDPluginSupport_DBD += NDPluginRateLimit.dbd
+INC      += NDPluginRateLimit.h
+LIB_SRCS += NDPluginRateLimit.cpp
+
 DBD      += NDPosPlugin.dbd
 INC      += NDPosPlugin.h
 INC      += NDPosPluginFileReader.h
