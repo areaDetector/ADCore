@@ -30,7 +30,7 @@ R3-4 (November XXX, 2018)
 ### NDPluginCodec
 * New plugin written by Bruno Martins to support compressing and decompressing NDArrays.
 * Compressors currently supported are JPEG (lossy) and BLOSC (lossless).
-* NDArray has a new .codec field that is the string name for the compression in use.  
+* NDArray has a new .codec field that is the string name for the compression in use.
   It is empty() for no compression.
   It also has a new .compressedSize field that stores the compressed size in bytes.
   This may be less than .dataSize, which is the actual allocated size of .pData.
