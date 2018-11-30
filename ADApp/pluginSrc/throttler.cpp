@@ -4,25 +4,25 @@
 
 typedef epicsMutex::guard_t Guard;
 
-Throttler::Throttler(double limit) {
+Throttler::Throttler(double limit)
+{
     reset(limit);
 }
 
-void Throttler::reset(double limit) {
-    Guard G(mutex_);
-
+void Throttler::reset(double limit)
+{
     available_ = limit_ = limit;
     refillAmount_ = limit / 1000.0;
     epicsTimeGetCurrent(&lastRefill_);
 }
 
-double Throttler::refill() {
-    Guard G(mutex_);
-
+double Throttler::refill()
+{
     epicsTimeStamp now;
     epicsTimeGetCurrent(&now);
 
     int refillCount = epicsTimeDiffInSeconds(&now, &lastRefill_)*1000;
+
     if (refillCount) {
         available_ = std::min(limit_, available_ + refillCount*refillAmount_);
         lastRefill_ = now;
@@ -31,12 +31,9 @@ double Throttler::refill() {
     return available_;
 }
 
-bool Throttler::tryTake(double tokens) {
-    Guard G(mutex_);
-
-    double available = refill();
-
-    if (tokens > available)
+bool Throttler::tryTake(double tokens)
+{
+    if (tokens > refill())
         return false;
 
     available_ -= tokens;

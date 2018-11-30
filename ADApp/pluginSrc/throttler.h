@@ -13,7 +13,6 @@ public:
     bool tryTake(double tokens);
 
 private:
-    epicsMutex mutex_;
     double limit_;              // Max tokens per second
     double available_;          // Available tokens
     double refillAmount_;       // How much to refill every msec
