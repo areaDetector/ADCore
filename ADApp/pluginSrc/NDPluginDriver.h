@@ -9,6 +9,7 @@
 
 #include "asynNDArrayDriver.h"
 
+class Throttler;
 
 // This class defines the object that is contained in the std::multilist for sorting output NDArrays
 // It contains a pointer to the NDArray and the time that the object was added to the list
@@ -29,13 +30,22 @@ class sortedListElement {
         epicsTimeStamp insertionTime_;
 };
 
+typedef enum {
+    NDDRIVERTHROTTLE_OFF,
+    NDDRIVERTHROTTLE_MINTIME,
+    NDDRIVERTHROTTLE_ARRAYRATE,
+    NDDRIVERTHROTTLE_BYTERATE,
+
+    NDDRIVERTHROTTLE_MODE_MAX
+}NDDriverThrottleMode_t;
+
 #define NDPluginDriverArrayPortString           "NDARRAY_PORT"          /**< (asynOctet,    r/w) The port for the NDArray interface */
 #define NDPluginDriverArrayAddrString           "NDARRAY_ADDR"          /**< (asynInt32,    r/w) The address on the port */
 #define NDPluginDriverPluginTypeString          "PLUGIN_TYPE"           /**< (asynOctet,    r/o) The type of plugin */
 #define NDPluginDriverDroppedArraysString       "DROPPED_ARRAYS"        /**< (asynInt32,    r/w) Number of dropped input arrays */
-#define NDPluginDriverQueueSizeString           "QUEUE_SIZE"            /**< (asynInt32,    r/w) Total queue elements */ 
+#define NDPluginDriverQueueSizeString           "QUEUE_SIZE"            /**< (asynInt32,    r/w) Total queue elements */
 #define NDPluginDriverQueueFreeString           "QUEUE_FREE"            /**< (asynInt32,    r/w) Free queue elements */
-#define NDPluginDriverMaxThreadsString          "MAX_THREADS"           /**< (asynInt32,    r/w) Maximum number of threads */ 
+#define NDPluginDriverMaxThreadsString          "MAX_THREADS"           /**< (asynInt32,    r/w) Maximum number of threads */
 #define NDPluginDriverNumThreadsString          "NUM_THREADS"           /**< (asynInt32,    r/w) Number of threads */
 #define NDPluginDriverSortModeString            "SORT_MODE"             /**< (asynInt32,    r/w) sorted callback mode */
 #define NDPluginDriverSortTimeString            "SORT_TIME"             /**< (asynFloat64,  r/w) sorted callback time */
@@ -47,12 +57,12 @@ class sortedListElement {
 #define NDPluginDriverBlockingCallbacksString   "BLOCKING_CALLBACKS"    /**< (asynInt32,    r/w) Callbacks block (1=Yes, 0=No) */
 #define NDPluginDriverProcessPluginString       "PROCESS_PLUGIN"        /**< (asynInt32,    r/w) Process plugin with last callback array */
 #define NDPluginDriverExecutionTimeString       "EXECUTION_TIME"        /**< (asynFloat64,  r/o) The last execution time (milliseconds) */
-#define NDPluginDriverMinCallbackTimeString     "MIN_CALLBACK_TIME"     /**< (asynFloat64,  r/w) Minimum time between calling processCallbacks 
-                                                                         *  to execute plugin code */
+#define NDPluginDriverThrottleModeString        "THROTTLE_MODE"         /**< (asynInt32,    r/w) (NDDriverThrottleMode_t) Which throttling mode to use */
+#define NDPluginDriverThrottleValueString       "THROTTLE_VALUE"        /**< (asynFloat64,  r/w) Value used for the different kinds of throttling */
 /** Class from which actual plugin drivers are derived; derived from asynNDArrayDriver */
 class epicsShareClass NDPluginDriver : public asynNDArrayDriver, public epicsThreadRunable {
 public:
-    NDPluginDriver(const char *portName, int queueSize, int blockingCallbacks, 
+    NDPluginDriver(const char *portName, int queueSize, int blockingCallbacks,
                    const char *NDArrayPort, int NDArrayAddr, int maxAddr,
                    int maxBuffers, size_t maxMemory, int interfaceMask, int interruptMask,
                    int asynFlags, int autoConnect, int priority, int stackSize, int maxThreads,
@@ -61,11 +71,12 @@ public:
 
     /* These are the methods that we override from asynNDArrayDriver */
     virtual asynStatus writeInt32(asynUser *pasynUser, epicsInt32 value);
+    virtual asynStatus writeFloat64(asynUser *pasynUser, epicsFloat64 value);
     virtual asynStatus writeOctet(asynUser *pasynUser, const char *value, size_t maxChars,
                           size_t *nActual);
     virtual asynStatus readInt32Array(asynUser *pasynUser, epicsInt32 *value,
                                         size_t nElements, size_t *nIn);
-                                     
+
     /* These are the methods that are new to this class */
     virtual void driverCallback(asynUser *pasynUser, void *genericPointer);
     virtual void run(void);
@@ -76,7 +87,7 @@ protected:
     virtual void processCallbacks(NDArray *pArray) = 0;
     virtual void beginProcessCallbacks(NDArray *pArray);
     virtual asynStatus endProcessCallbacks(NDArray *pArray, bool copyArray=false, bool readAttributes=true);
-    virtual asynStatus connectToArrayPort(void);    
+    virtual asynStatus connectToArrayPort(void);
     virtual asynStatus setArrayInterrupt(int connect);
 
 protected:
@@ -99,7 +110,8 @@ protected:
     int NDPluginDriverBlockingCallbacks;
     int NDPluginDriverProcessPlugin;
     int NDPluginDriverExecutionTime;
-    int NDPluginDriverMinCallbackTime;
+    int NDPluginDriverThrottleMode;
+    int NDPluginDriverThrottleValue;
 
     NDArray *pPrevInputArray_;
 
@@ -109,7 +121,9 @@ private:
     asynStatus startCallbackThreads();
     asynStatus deleteCallbackThreads();
     asynStatus createSortingThread();
-     
+
+    bool throttled(NDArray *pArray);
+
     /* The asyn interfaces we access as a client */
     void *asynGenericPointerInterruptPvt_;
 
@@ -130,7 +144,8 @@ private:
     epicsTimeStamp lastProcessTime_;
     int dimsPrev_[ND_ARRAY_MAX_DIMS];
     bool compressionAware_;
+    Throttler *throttler_;
 };
 
-    
+
 #endif

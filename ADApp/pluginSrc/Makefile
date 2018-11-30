@@ -12,6 +12,7 @@ USR_CXXFLAGS_Linux += -DH5_NO_DEPRECATED_SYMBOLS -DH5Gopen_vers=2
 
 INC      += NDPluginDriver.h
 LIB_SRCS += NDPluginDriver.cpp
+LIB_SRCS += throttler.cpp
 
 NDPluginSupport_DBD += NDPluginAttribute.dbd
 INC      += NDPluginAttribute.h
