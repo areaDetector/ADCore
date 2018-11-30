@@ -83,6 +83,7 @@ static void sortingTaskC(void *drvPvt)
   * \param[in] stackSize The stack size for the asyn port driver thread if ASYN_CANBLOCK is set in asynFlags.
   *            This value should also be used for any other threads this object creates.
   * \param[in] maxThreads The maximum number of threads this plugin is allowed to use.
+  * \param[in] compressionAware true if the plugin can handle compressed input arrays, false if not.
   */
 NDPluginDriver::NDPluginDriver(const char *portName, int queueSize, int blockingCallbacks, 
                                const char *NDArrayPort, int NDArrayAddr, int maxAddr,
