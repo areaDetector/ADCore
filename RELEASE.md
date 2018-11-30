@@ -43,8 +43,8 @@ R3-4 (November XXX, 2018)
 ### NDPluginDriver
 * Optimization improvement when output arrays are sorted.
   Previously it always put the array in the sort queue, even if the order of this array was OK. 
-  That introduced an unneeded latency because the sort tasks only runs periodically.  
-  It caused ImageJ updated rates to be slow, because the PVA output then comes in bursts,
+  That introduced an unneeded latency because the sort task only runs periodically.  
+  It caused ImageJ update rates to be slow, because the PVA output then comes in bursts,
   and some arrays are dropped either in the pvAccess server or client (not sure which).
   Now if the array is in the correct order it is output immediately.
 ### NDPluginCircularBuff
