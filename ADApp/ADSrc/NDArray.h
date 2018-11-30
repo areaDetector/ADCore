@@ -162,8 +162,7 @@ public:
     NDArrayPool  (class asynNDArrayDriver *pDriver, size_t maxMemory);
     virtual ~NDArrayPool() {}
     NDArray*     alloc(int ndims, size_t *dims, NDDataType_t dataType, size_t dataSize, void *pData);
-    NDArray*     copy(NDArray *pIn, NDArray *pOut, bool copyData, bool copyDimensions, bool copyDataType);
-    NDArray*     copy(NDArray *pIn, NDArray *pOut, int copyData);
+    NDArray*     copy(NDArray *pIn, NDArray *pOut, bool copyData, bool copyDimensions=true, bool copyDataType=true);
 
     int          reserve(NDArray *pArray);
     int          release(NDArray *pArray);
