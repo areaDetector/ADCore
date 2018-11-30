@@ -2,8 +2,6 @@
 
 #include <algorithm>
 
-typedef epicsMutex::guard_t Guard;
-
 Throttler::Throttler(double limit)
 {
     reset(limit);
