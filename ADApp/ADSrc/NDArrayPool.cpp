@@ -211,9 +211,11 @@ NDArray* NDArrayPool::alloc(int ndims, size_t *dims, NDDataType_t dataType, size
 
 /** This method makes a copy of an NDArray object.
   * \param[in] pIn The input array to be copied.
-  * \param[in] pOut The output array that will be copied to.
-  * \param[in] copyData If this flag is 1 then everything including the array data is copied;
+  * \param[in] pOut The output array that will be copied to; can be NULL or a pointer to an existing NDArray.
+  * \param[in] copyData If this flag is true then everything including the array data is copied;
   * if 0 then everything except the data (including attributes) is copied.
+  * \param[in] copyDimensions If this flag is true then the dimensions are copied even if pOut is not NULL; default=true.
+  * \param[in] copyDataType If this flag is true then the dataType is copied even if pOut is not NULL; default=true.
   * \return Returns a pointer to the output array.
   *
   * If pOut is NULL then it is first allocated. If the output array
@@ -255,11 +257,6 @@ NDArray* NDArrayPool::copy(NDArray *pIn, NDArray *pOut, bool copyData, bool copy
   pOut->pAttributeList->clear();
   pIn->pAttributeList->copy(pOut->pAttributeList);
   return(pOut);
-}
-
-NDArray* NDArrayPool::copy(NDArray *pIn, NDArray *pOut, int copyData)
-{
-  return this->copy(pIn, pOut, copyData ? true : false, true, true);
 }
 
 /** This method increases the reference count for the NDArray object.
