@@ -278,7 +278,9 @@ asynStatus NDPluginDriver::endProcessCallbacks(NDArray *pArray, bool copyArray, 
             driverName, functionName);
         return asynError;
     }
-    if (callbacksSorted) {
+    bool orderOK = (pArrayOut->uniqueId == prevUniqueId_)   ||
+                   (pArrayOut->uniqueId == prevUniqueId_+1);
+    if (callbacksSorted && !orderOK) {
         int sortSize;
         int listSize = (int)sortedNDArrayList_.size();
         getIntegerParam(NDPluginDriverSortSize, &sortSize);
@@ -300,8 +302,6 @@ asynStatus NDPluginDriver::endProcessCallbacks(NDArray *pArray, bool copyArray, 
         }
     } else {
         doCallbacksGenericPointer(pArrayOut, NDArrayData, 0);
-        bool orderOK = (pArrayOut->uniqueId == prevUniqueId_)   ||
-                       (pArrayOut->uniqueId == prevUniqueId_+1);
         if (!firstOutputArray_ && !orderOK) {
             int disorderedArrays;
             getIntegerParam(NDPluginDriverDisorderedArrays, &disorderedArrays);
