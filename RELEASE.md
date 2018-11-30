@@ -22,30 +22,30 @@ Release Notes
 R3-4 (November XXX, 2018)
 ======================
 ### ADSrc/asynNDArrayDriver.h, asynNDArrayDriver.cpp
-* Fixed a serious problem caused by failure to lock the correct mutex when plugins called incrementQueuedArrayCount()
-  and decrementQueuedArrayCount().
+* Fixed a serious problem caused by failure to lock the correct mutex when plugins called 
+  incrementQueuedArrayCount() and decrementQueuedArrayCount().
   This caused the Acquire and Acquire_RBV PVs to occasionally get stuck in the 1 (Acquire) state when acquistion
   was complete.  It might have also caused other problems that were not reported.
   This problem was introduced in R3-3.
 ### NDPluginCodec
 * New plugin written by Bruno Martins to support compressing and decompressing NDArrays.
 * Compressors currently supported are JPEG (lossy) and BLOSC (lossless).
-* NDArray has a new .codec field that is the string name for the compression in use.  It is empty() for no compression.
+* NDArray has a new .codec field that is the string name for the compression in use.  
+  It is empty() for no compression.
   It also has a new .compressedSize field that stores the compressed size in bytes.
   This may be less than .dataSize, which is the actual allocated size of .pData.
 * The converters between NDArrays and NTNDArrays support this new codec field.
 * Currently the main use case will be to transport compressed NTNDArrays using pvAccess.
-* We plan to enhance the ImageJ pvAccess viewer to directly support decompression.  
+* The ImageJ pvAccess viewer now supports decompression of all of the compressors supported by this plugin.
+  This can greatly reduce network bandwidth usage when the IOC and viewer are on different machines.  
 * We also plan to enhance the HDF5 file plugin to support writing NDArrays that are already compressed, 
   using the Direct Chunk Write feature,  This should should improve performance.
 ### NDPluginDriver
 * Optimization improvement when output arrays are sorted.
-  Previously it always put the array in the sort queue, even if
-  the order of this array was OK. That introduced an unneeded latency
-  because the sort tasks only runs periodically.  It caused ImageJ
-  updated rates to be slow, because the PVA output then comes in
-  bursts, and some arrays are dropped either in the pvAccess server
-  or client, not sure which.
+  Previously it always put the array in the sort queue, even if the order of this array was OK. 
+  That introduced an unneeded latency because the sort tasks only runs periodically.  
+  It caused ImageJ updated rates to be slow, because the PVA output then comes in bursts,
+  and some arrays are dropped either in the pvAccess server or client (not sure which).
   Now if the array is in the correct order it is output immediately.
 ### NDPluginCircularBuff
 * Added new FlushOnSoftTrg record that controls whether the pre-buffer is flushed OnNewArray (previous behavior, default),
