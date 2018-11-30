@@ -539,16 +539,16 @@ border-radius: 2px;
                 <enum>Menu</enum>
             </property>
             <property name="labels">
-                <string>Image #1;Image #2;Process #1;Transform #1;Color convert #1;Color convert #2;Overlay #1;Overlays 1-8;Circular buffer #1;ROI Statistics #1;Attribute #1;FFT #1;Scatter #1;Gather #1;Pva</string>
+                <string>Image #1;Pva #1;Process #1;Transform #1;Color convert #1;Color convert #2;Overlay #1;Overlays 1-8;Circular buffer #1;ROI Statistics #1;Attribute #1;FFT #1;Scatter #1;Gather #1;Codec #1;Codec #2</string>
             </property>
             <property name="files">
-                <string>NDStdArrays.adl;NDStdArrays.adl;NDProcess.adl;NDTransform.adl;NDColorConvert.adl;NDColorConvert.adl;NDOverlay.adl;NDOverlay8.adl;NDCircularBuff.adl;NDROIStat.adl;NDPluginAttribute.adl;NDFFT.adl;NDScatter.adl;NDGather8.adl;NDPva.adl</string>
+                <string>NDStdArrays.adl;NDPva.adl;NDProcess.adl;NDTransform.adl;NDColorConvert.adl;NDColorConvert.adl;NDOverlay.adl;NDOverlay8.adl;NDCircularBuff.adl;NDROIStat.adl;NDPluginAttribute.adl;NDFFT.adl;NDScatter.adl;NDGather8.adl;NDCodec.adl;NDCodec.adl</string>
             </property>
             <property name="args">
-                <string>P=$(P), R=image1:;P=$(P), R=image2:;P=$(P), R=Proc1:;P=$(P), R=Trans1:;P=$(P), R=CC1:;P=$(P), R=CC2:;P=$(P), R=Over1:;P=$(P), R=Over1:,O1=Over1:1:,O2=Over1:2:,O3=Over1:3:,O4=Over1:4:,O5=Over1:5:,O6=Over1:6:,O7=Over1:7:,O8=Over1:8:;P=$(P), R=CB1:;P=$(P), R=ROIStat1:;P=$(P), R=Attr1:;P=$(P), R=FFT1:;P=$(P), R=Scatter1:;P=$(P), R=Gather1:;P=$(P), R=Pva1:</string>
+                <string>P=$(P), R=image1:;P=$(P), R=Pva1:;P=$(P), R=Proc1:;P=$(P), R=Trans1:;P=$(P), R=CC1:;P=$(P), R=CC2:;P=$(P), R=Over1:;P=$(P), R=Over1:,O1=Over1:1:,O2=Over1:2:,O3=Over1:3:,O4=Over1:4:,O5=Over1:5:,O6=Over1:6:,O7=Over1:7:,O8=Over1:8:;P=$(P), R=CB1:;P=$(P), R=ROIStat1:;P=$(P), R=Attr1:;P=$(P), R=FFT1:;P=$(P), R=Scatter1:;P=$(P), R=Gather1:;P=$(P), R=Codec1:;P=$(P), R=Codec2:</string>
             </property>
             <property name="removeParent">
-                <string>false;false;false;false;false;false;false;false;false;false;false;false;false;false;false</string>
+                <string>false;false;false;false;false;false;false;false;false;false;false;false;false;false;false;false</string>
             </property>
         </widget>
         <widget class="caRelatedDisplay" name="caRelatedDisplay_5">

@@ -356,11 +356,11 @@ botShadowColor rgb 17920 17920 17920
 font "helvetica-medium-r-12.0"
 icon
 buttonLabel "Other #1"
-numPvs 30
-numDsps 15
+numPvs 32
+numDsps 16
 displayFileName {
   0 NDStdArrays.edl
-  1 NDStdArrays.edl
+  1 NDPva.edl
   2 NDProcess.edl
   3 NDTransform.edl
   4 NDColorConvert.edl
@@ -373,11 +373,12 @@ displayFileName {
   11 NDFFT.edl
   12 NDScatter.edl
   13 NDGather8.edl
-  14 NDPva.edl
+  14 NDCodec.edl
+  15 NDCodec.edl
 }
 menuLabel {
   0 Image #1
-  1 Image #2
+  1 Pva #1
   2 Process #1
   3 Transform #1
   4 Color convert #1
@@ -390,11 +391,12 @@ menuLabel {
   11 FFT #1
   12 Scatter #1
   13 Gather #1
-  14 Pva
+  14 Codec #1
+  15 Codec #2
 }
 symbols {
   0 "P=$(P),R=image1:"
-  1 "P=$(P),R=image2:"
+  1 "P=$(P),R=Pva1:"
   2 "P=$(P),R=Proc1:"
   3 "P=$(P),R=Trans1:"
   4 "P=$(P),R=CC1:"
@@ -407,7 +409,8 @@ symbols {
   11 "P=$(P),R=FFT1:"
   12 "P=$(P),R=Scatter1:"
   13 "P=$(P),R=Gather1:"
-  14 "P=$(P),R=Pva1:"
+  14 "P=$(P),R=Codec1:"
+  15 "P=$(P),R=Codec2:"
 }
 replaceSymbols {
   0 1
@@ -425,6 +428,7 @@ replaceSymbols {
   12 1
   13 1
   14 1
+  15 1
 }
 endObjectProperties
 
