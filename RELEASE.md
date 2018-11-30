@@ -38,6 +38,15 @@ R3-4 (November XXX, 2018)
 * We plan to enhance the ImageJ pvAccess viewer to directly support decompression.  
 * We also plan to enhance the HDF5 file plugin to support writing NDArrays that are already compressed, 
   using the Direct Chunk Write feature,  This should should improve performance.
+### NDPluginDriver
+* Optimization improvement when output arrays are sorted.
+  Previously it always put the array in the sort queue, even if
+  the order of this array was OK. That introduced an unneeded latency
+  because the sort tasks only runs periodically.  It caused ImageJ
+  updated rates to be slow, because the PVA output then comes in
+  bursts, and some arrays are dropped either in the pvAccess server
+  or client, not sure which.
+  Now if the array is in the correct order it is output immediately.
 ### NDPluginCircularBuff
 * Added new FlushOnSoftTrg record that controls whether the pre-buffer is flushed OnNewArray (previous behavior, default),
   or Immediately when a software trigger is received.  Thanks to Slava Isaev for this.
