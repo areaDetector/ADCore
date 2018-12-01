@@ -26,6 +26,7 @@
     <li><a href="#Parameters">Parameters</a></li>
     <li><a href="#Configuration">Configuration</a></li>
     <li><a href="#Screens">Screen shots</a></li>
+    <li><a href="#Performance">Performance</a></li>
   </ul>
   <h2 id="Overview">
     Overview</h2>
@@ -57,7 +58,7 @@
       as usual. </li>
     <li><code>pData</code> holds the compressed data as <code>unsigned char</code>.
     </li>
-    <li><code>dataType</code> holds the data type of the <b>uncompressed</b> data. This
+    <li><code>dataType</code> holds the data type of the <b>compressed</b> data. This
       will be used for decompression. </li>
   </ul>
   <h2 id="Compression">
@@ -94,9 +95,16 @@
         <li>BloscCLevel: the compression level for the selected algorithm. </li>
         <li>BloscShuffle: controls whether data will be shuffled before compression. Choices
           are None, Bit, and Byte. </li>
+        <li>BloscNumThreads: controls how many threads will be used by the Blosc compressor
+          to improve performance. </li>
       </ul>
     </li>
   </ul>
+  <p>
+    Note that BloscNumThreads controls the number of threads created from a single NDPluginCodec
+    thread. The performance of both the JPEG and Blosc compressors can also be increased
+    by running multiple NDPluginCodec threads within a single plugin instance. This
+    is controlled with the NumThreads record, as for most other plugins.</p>
   <p>
     It is important to note that plugins downstream of NDCodec that are receiving compressed
     NDArrays <b>must</b> have been constructed with NDPluginDriver's <code>compressionAware=true</code>,
@@ -308,6 +316,43 @@
           longout<br />
           longin </td>
       </tr>
+      <tr>
+        <td align="center" colspan="7,">
+          <b>Parameters for Diagnostics</b> </td>
+      </tr>
+      <tr>
+        <td>
+          NDCodecCodecStatus</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/o</td>
+        <td>
+          Status of the compression/decompression. Values are "Success", "Warning", and "Error".
+        </td>
+        <td>
+          CODEC_STATUS</td>
+        <td>
+          $(P)$(R)CodecStatus</td>
+        <td>
+          mbbi</td>
+      </tr>
+      <tr>
+        <td>
+          NDCodecCodecError</td>
+        <td>
+          asynOctet</td>
+        <td>
+          r/o</td>
+        <td>
+          Error message if CodecStatus is "Warning" or "Error". </td>
+        <td>
+          CODEC_ERROR</td>
+        <td>
+          $(P)$(R)CodecError</td>
+        <td>
+          waveform</td>
+      </tr>
     </tbody>
   </table>
   <h2 id="Configuration">
@@ -339,6 +384,32 @@
       NDCodec.adl</h3>
     <p>
       <img alt="NDCodec.png" src="NDCodec.png" /></p>
+  </div>
+  <h2 id="Performance">
+    Performance</h2>
+  <p>
+    The following screens show the performance that can be achieved with NDPluginCodec.
+    For this test the simDetector driver was generating 1024x1024 UInt32 arrays at ~1280
+    arrays/s. These were compressed using Blosc LZ4 compression with Bit shuffle and
+    6 Blosc threads. The compression factor was ~42, so the output arrays were 25 KB,
+    compared to the input size of 1 MB. When running with a single plugin thread (NumThreads=1)
+    the plugin sometimes could not keep up. By increasing numThreads to 2 the plugin
+    could always process the full 1280 arrays/s without dropping any arrays. The test
+    was run on a 20-core Linux machine, and the simDetector IOC was using ~7 cores.
+    NDPluginCodec was using ~6 of these. Since each array is 4 MB, this is a compression
+    rate of ~5.0 GB/s, or about 5 times the capacity of 10 Gbit Ethernet.
+  </p>
+  <div style="text-align: center">
+    <h3>
+      NDCodec performance with ~1280 32-bit frames/s
+    </h3>
+    <p>
+      <img alt="NDCodec_Performance.png" src="NDCodec_Performance.png" /></p>
+    <h3>
+      NDPluginBaseFull.adl showing that NumThreads was set to 2
+    </h3>
+    <p>
+      <img alt="NDCodec_Performance_More.png" src="NDCodec_Performance_More.png" /></p>
   </div>
 </body>
 </html>
