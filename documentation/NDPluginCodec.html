@@ -273,7 +273,17 @@
           BLOSC_CLEVEL</td>
         <td>
           $(P)$(R)BloscCLevel<br />
-          $(P)$(R)BloscCLevel_RBV </td>
+          $(P)$(R)BloscCLevel_RBV </td>Hi,
+
+
+This is what I see with IOS 12.1. It is not working, I don't see Reply All, only Reply.
+
+
+I don't know much about mail, but could the difference be that my Mail App is using a Microsoft Exchange Server?
+
+
+Mark
+
         <td>
           longout<br />
           longin </td>
@@ -395,8 +405,8 @@
     The following screens show the performance that can be achieved with NDPluginCodec.
     For this test the simDetector driver was generating 1024x1024 UInt32 arrays at ~1280
     arrays/s. These were compressed using Blosc LZ4 compression with Bit shuffle and
-    6 Blosc threads. The compression factor was ~42, so the output arrays were 25 KB,
-    compared to the input size of 1 MB. When running with a single plugin thread (NumThreads=1)
+    6 Blosc threads. The compression factor was ~42, so the output arrays were 98 KB,
+    compared to the input size of 4 MB. When running with a single plugin thread (NumThreads=1)
     the plugin sometimes could not keep up. By increasing numThreads to 2 the plugin
     could always process the full 1280 arrays/s without dropping any arrays. The test
     was run on a 20-core Linux machine, and the simDetector IOC was using ~7 cores.
