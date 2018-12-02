@@ -146,8 +146,8 @@ NDPluginDriver::NDPluginDriver(const char *portName, int queueSize, int blocking
     createParam(NDPluginDriverBlockingCallbacksString, asynParamInt32, &NDPluginDriverBlockingCallbacks);
     createParam(NDPluginDriverProcessPluginString,     asynParamInt32, &NDPluginDriverProcessPlugin);
     createParam(NDPluginDriverExecutionTimeString,     asynParamFloat64, &NDPluginDriverExecutionTime);
-    createParam(NDPluginDriverThrottleModeString,      asynParamInt32,   &NDPluginDriverThrottleMode);
-    createParam(NDPluginDriverThrottleValueString,     asynParamFloat64, &NDPluginDriverThrottleValue);
+    createParam(NDPluginDriverMinCallbackTimeString,   asynParamFloat64, &NDPluginDriverMinCallbackTime);
+    createParam(NDPluginDriverMaxByteRateString,       asynParamFloat64, &NDPluginDriverMaxByteRate);
 
     /* Here we set the values of read-only parameters and of read/write parameters that cannot
      * or should not get their values from the database.  Note that values set here will override
@@ -254,6 +254,7 @@ asynStatus NDPluginDriver::endProcessCallbacks(NDArray *pArray, bool copyArray, 
 {
     int arrayCallbacks;
     int callbacksSorted;
+    int droppedOutputArrays;
     NDArray *pArrayOut = pArray;
     static const char *functionName = "endProcessCallbacks";
 
@@ -268,6 +269,7 @@ asynStatus NDPluginDriver::endProcessCallbacks(NDArray *pArray, bool copyArray, 
     }
 
     getIntegerParam(NDPluginDriverSortMode, &callbacksSorted);
+    getIntegerParam(NDPluginDriverDroppedOutputArrays, &droppedOutputArrays);
     if (copyArray) {
         pArrayOut = this->pNDArrayPool->copy(pArray, NULL, 1);
     }
@@ -284,6 +286,16 @@ asynStatus NDPluginDriver::endProcessCallbacks(NDArray *pArray, bool copyArray, 
             driverName, functionName);
         return asynError;
     }
+    
+    // If this array would exceed the maximum output byte rate don't output it
+    if (throttled(pArrayOut)) {
+        asynPrint(pasynUserSelf, ASYN_TRACE_WARNING,
+            "%s::%s maximum byte rate exceeded, dropped array uniqueId=%d\n",
+            driverName, functionName, pArrayOut->uniqueId);
+        droppedOutputArrays++;
+        setIntegerParam(NDPluginDriverDroppedOutputArrays, droppedOutputArrays);
+        return asynSuccess;
+    }
     bool orderOK = (pArrayOut->uniqueId == prevUniqueId_)   ||
                    (pArrayOut->uniqueId == prevUniqueId_+1);
     if (callbacksSorted && !orderOK) {
@@ -292,8 +304,6 @@ asynStatus NDPluginDriver::endProcessCallbacks(NDArray *pArray, bool copyArray, 
         getIntegerParam(NDPluginDriverSortSize, &sortSize);
         setIntegerParam(NDPluginDriverSortFree, sortSize-listSize);
         if (listSize >= sortSize) {
-            int droppedOutputArrays;
-            getIntegerParam(NDPluginDriverDroppedOutputArrays, &droppedOutputArrays);
             asynPrint(pasynUserSelf, ASYN_TRACE_WARNING,
                 "%s::%s std::multilist size exceeded, dropped array uniqueId=%d\n",
                 driverName, functionName, pArrayOut->uniqueId);
@@ -331,49 +341,24 @@ extern "C" {static void driverCallback(void *drvPvt, asynUser *pasynUser, void *
 }}
 
 /* Called with the lock held.
- * Returns true if this pluginis throttled (pArray should be dropped),
+ * Returns true if this plugin is throttled (pArray should be dropped),
  * false otherwise. */
 bool NDPluginDriver::throttled(NDArray *pArray)
 {
-    int throttleMode;
-    double throttleValue;
-    epicsTimeStamp now;
+    double needed;
+    double maxByteRate;
+    
+    getDoubleParam(NDPluginDriverMaxByteRate, &maxByteRate);
+    if (maxByteRate == 0) return false;
 
-    getIntegerParam(NDPluginDriverThrottleMode, &throttleMode);
-    getDoubleParam(NDPluginDriverThrottleValue, &throttleValue);
-
-    epicsTimeGetCurrent(&now);
-
-    switch (throttleMode) {
-    case NDDRIVERTHROTTLE_OFF:
-        return false;
-
-    case NDDRIVERTHROTTLE_ARRAYRATE:
-        // Convert throttleValue: (arrays / s) to (s / array)
-        throttleValue = 1.0 / throttleValue;
-        /* no break */
-
-    case NDDRIVERTHROTTLE_MINTIME: {
-        double deltaTime = epicsTimeDiffInSeconds(&now, &this->lastProcessTime_);
-        return deltaTime <= throttleValue;
+    if (pArray->codec.empty()) {
+        NDArrayInfo info;
+        pArray->getInfo(&info);
+        needed = info.totalBytes;
+    } else {
+        needed = pArray->compressedSize;
     }
-
-    case NDDRIVERTHROTTLE_BYTERATE: {
-        double needed;
-
-        if (pArray->codec.empty()) {
-            NDArrayInfo info;
-            pArray->getInfo(&info);
-            needed = info.totalBytes;
-        } else {
-            needed = pArray->compressedSize;
-        }
-
-        return !throttler_->tryTake(needed);
-    }
-    }
-
-    return false;
+    return !throttler_->tryTake(needed);
 }
 
 /** Method that is called from the driver with a new NDArray.
@@ -390,6 +375,7 @@ void NDPluginDriver::driverCallback(asynUser *pasynUser, void *genericPointer)
 
     NDArray *pArray = (NDArray *)genericPointer;
     epicsTimeStamp tNow, tEnd;
+    double minCallbackTime, deltaTime;
     int status=0;
     int blockingCallbacks;
     int droppedArrays, queueSize, queueFree;
@@ -398,75 +384,73 @@ void NDPluginDriver::driverCallback(asynUser *pasynUser, void *genericPointer)
 
     this->lock();
 
-    bool dropIt = false;
-
     if (!compressionAware_ && !pArray->codec.empty()) {
+        getIntegerParam(NDPluginDriverDroppedArrays, &droppedArrays);
         asynPrint(pasynUser, ASYN_TRACE_ERROR,
                     "%s::%s got compressed array, dropped array uniqueId=%d\n",
                     driverName, functionName, pArray->uniqueId);
-        dropIt = true;
-    } else if (throttled(pArray)) {
-        dropIt = true;
-    }
-
-    if (dropIt) {
-        getIntegerParam(NDPluginDriverDroppedArrays, &droppedArrays);
-        setIntegerParam(NDPluginDriverDroppedArrays, droppedArrays + 1);
+        droppedArrays++;
+        setIntegerParam(NDPluginDriverDroppedArrays, droppedArrays);
 
         callParamCallbacks();
         this->unlock();
         return;
     }
 
+    status |= getDoubleParam(NDPluginDriverMinCallbackTime, &minCallbackTime);
     status |= getIntegerParam(NDPluginDriverBlockingCallbacks, &blockingCallbacks);
     status |= getIntegerParam(NDPluginDriverQueueSize, &queueSize);
 
+    epicsTimeGetCurrent(&tNow);
+    deltaTime = epicsTimeDiffInSeconds(&tNow, &this->lastProcessTime_);
+
     this->pNDArrayPool = pArray->pNDArrayPool;
 
-    if (pasynUser->auxStatus == asynOverflow) ignoreQueueFull = true;
-    pasynUser->auxStatus = asynSuccess;
-
-    /* Time to process the next array */
-
-    /* The callbacks can operate in 2 modes: blocking or non-blocking.
-     * If blocking we call processCallbacks directly, executing them
-     * in the detector callback thread.
-     * If non-blocking we put the array on the queue and it executes
-     * in our background thread. */
-    /* Update the time we last posted an array */
-    epicsTimeGetCurrent(&tNow);
-    memcpy(&this->lastProcessTime_, &tNow, sizeof(tNow));
-    if (blockingCallbacks) {
-        processCallbacks(pArray);
-        epicsTimeGetCurrent(&tEnd);
-        setDoubleParam(NDPluginDriverExecutionTime, epicsTimeDiffInSeconds(&tEnd, &tNow)*1e3);
-    } else {
-        /* Increase the reference count again on this array
-         * It will be released in the background task when processing is done */
-        pArray->reserve();
-        /* Try to put this array on the message queue.  If there is no room then return
-         * immediately. */
-        ToThreadMessage_t msg = {ToThreadMessageData, pArray};
-        status = pToThreadMsgQ_->trySend(&msg, sizeof(msg));
-        queueFree = queueSize - pToThreadMsgQ_->pending();
-        setIntegerParam(NDPluginDriverQueueFree, queueFree);
-        if (status) {
-            pasynUser->auxStatus = asynOverflow;
-            if (!ignoreQueueFull) {
-                status |= getIntegerParam(NDPluginDriverDroppedArrays, &droppedArrays);
-                asynPrint(pasynUser, ASYN_TRACE_FLOW,
-                    "%s::%s message queue full, dropped array uniqueId=%d\n",
-                    driverName, functionName, pArray->uniqueId);
-                droppedArrays++;
-                status |= setIntegerParam(NDPluginDriverDroppedArrays, droppedArrays);
-            }
-            /* This buffer needs to be released */
-            pArray->release();
+    if ((minCallbackTime == 0.) || (deltaTime > minCallbackTime)) {
+        if (pasynUser->auxStatus == asynOverflow) ignoreQueueFull = true;
+        pasynUser->auxStatus = asynSuccess;
+    
+        /* Time to process the next array */
+    
+        /* The callbacks can operate in 2 modes: blocking or non-blocking.
+         * If blocking we call processCallbacks directly, executing them
+         * in the detector callback thread.
+         * If non-blocking we put the array on the queue and it executes
+         * in our background thread. */
+        /* Update the time we last posted an array */
+        epicsTimeGetCurrent(&tNow);
+        memcpy(&this->lastProcessTime_, &tNow, sizeof(tNow));
+        if (blockingCallbacks) {
+            processCallbacks(pArray);
+            epicsTimeGetCurrent(&tEnd);
+            setDoubleParam(NDPluginDriverExecutionTime, epicsTimeDiffInSeconds(&tEnd, &tNow)*1e3);
         } else {
-            pArray->pDriver->incrementQueuedArrayCount();
+            /* Increase the reference count again on this array
+             * It will be released in the background task when processing is done */
+            pArray->reserve();
+            /* Try to put this array on the message queue.  If there is no room then return
+             * immediately. */
+            ToThreadMessage_t msg = {ToThreadMessageData, pArray};
+            status = pToThreadMsgQ_->trySend(&msg, sizeof(msg));
+            queueFree = queueSize - pToThreadMsgQ_->pending();
+            setIntegerParam(NDPluginDriverQueueFree, queueFree);
+            if (status) {
+                pasynUser->auxStatus = asynOverflow;
+                if (!ignoreQueueFull) {
+                    status |= getIntegerParam(NDPluginDriverDroppedArrays, &droppedArrays);
+                    asynPrint(pasynUser, ASYN_TRACE_FLOW,
+                        "%s::%s message queue full, dropped array uniqueId=%d\n",
+                        driverName, functionName, pArray->uniqueId);
+                    droppedArrays++;
+                    status |= setIntegerParam(NDPluginDriverDroppedArrays, droppedArrays);
+                }
+                /* This buffer needs to be released */
+                pArray->release();
+            } else {
+                pArray->pDriver->incrementQueuedArrayCount();
+            }
         }
     }
-
     callParamCallbacks();
     this->unlock();
 }
@@ -765,12 +749,6 @@ asynStatus NDPluginDriver::writeInt32(asynUser *pasynUser, epicsInt32 value)
             status = asynError;
             goto done;
         }
-    } else if (function == NDPluginDriverThrottleMode) {
-        if (value == NDDRIVERTHROTTLE_BYTERATE) {
-            double limit;
-            getDoubleParam(NDPluginDriverThrottleValue, &limit);
-            throttler_->reset(limit);
-        }
     }
 
     done:
@@ -789,7 +767,7 @@ asynStatus NDPluginDriver::writeInt32(asynUser *pasynUser, epicsInt32 value)
 }
 
 /** Called when asyn clients call pasynFloat64->write().
-  * This function performs actions for NDPluginDriverThrottleValue.
+  * This function performs actions for NDPluginDriverMaxByteRate.
   * For all parameters it sets the value in the parameter library and calls any registered callbacks..
   * \param[in] pasynUser pasynUser structure that encodes the reason and address.
   * \param[in] value Value to write. */
@@ -811,12 +789,8 @@ asynStatus NDPluginDriver::writeFloat64(asynUser *pasynUser, epicsFloat64 value)
         return asynNDArrayDriver::writeFloat64(pasynUser, value);
     }
 
-    if (function == NDPluginDriverThrottleValue) {
-        int mode;
-        getIntegerParam(NDPluginDriverThrottleMode, &mode);
-
-        if (mode == NDDRIVERTHROTTLE_BYTERATE)
-            throttler_->reset(value);
+    if (function == NDPluginDriverMaxByteRate) {
+        throttler_->reset(value);
     }
 
 done:
