@@ -2,7 +2,6 @@
 #define THROTTLER_H
 
 #include <epicsTime.h>
-#include <epicsMutex.h>
 
 class Throttler {
 
