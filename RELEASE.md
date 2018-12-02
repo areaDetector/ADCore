@@ -29,7 +29,7 @@ R3-4 (December XXX, 2018)
   This problem was introduced in R3-3.
 ### NDPluginCodec
 * New plugin written by Bruno Martins to support compressing and decompressing NDArrays.
-* Compressors currently supported are JPEG (lossy) and BLOSC (lossless).
+* Compressors currently supported are JPEG (lossy) and Blosc (lossless).
 * NDArray has a new .codec field that is the string name for the compression in use.
   It is empty() for no compression.
   It also has a new .compressedSize field that stores the compressed size in bytes.
@@ -39,9 +39,10 @@ R3-4 (December XXX, 2018)
 * The ImageJ pvAccess viewer now supports decompression of all of the compressors supported by this plugin.
   This can greatly reduce network bandwidth usage when the IOC and viewer are on different machines.  
 * We also plan to enhance the HDF5 file plugin to support writing NDArrays that are already compressed, 
-  using the Direct Chunk Write feature,  This should should improve performance.
-### NDPluginDriver
-* Added new parameter and record MaxByteRate. This allows control of the maximum data output rate in bytes/s. 
+  using the Direct Chunk Write feature. This should should improve performance.
+### NDPluginDriver, NDPluginPva, NDPluginStdArrays
+* Added new base class parameter and record MaxByteRate.
+  This allows control of the maximum data output rate in bytes/s. 
   If the output rate would exceed this then the output array is dropped and DroppedOutputArrays is incremented.
   This can be useful, for example, to limit the network bandwidth from a plugin.
   * For most plugins this logic is implemented in NDPluginDriver::endProcessCallbacks() when the plugin
