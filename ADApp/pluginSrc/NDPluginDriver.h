@@ -30,15 +30,6 @@ class sortedListElement {
         epicsTimeStamp insertionTime_;
 };
 
-typedef enum {
-    NDDRIVERTHROTTLE_OFF,
-    NDDRIVERTHROTTLE_MINTIME,
-    NDDRIVERTHROTTLE_ARRAYRATE,
-    NDDRIVERTHROTTLE_BYTERATE,
-
-    NDDRIVERTHROTTLE_MODE_MAX
-}NDDriverThrottleMode_t;
-
 #define NDPluginDriverArrayPortString           "NDARRAY_PORT"          /**< (asynOctet,    r/w) The port for the NDArray interface */
 #define NDPluginDriverArrayAddrString           "NDARRAY_ADDR"          /**< (asynInt32,    r/w) The address on the port */
 #define NDPluginDriverPluginTypeString          "PLUGIN_TYPE"           /**< (asynOctet,    r/o) The type of plugin */
@@ -57,8 +48,9 @@ typedef enum {
 #define NDPluginDriverBlockingCallbacksString   "BLOCKING_CALLBACKS"    /**< (asynInt32,    r/w) Callbacks block (1=Yes, 0=No) */
 #define NDPluginDriverProcessPluginString       "PROCESS_PLUGIN"        /**< (asynInt32,    r/w) Process plugin with last callback array */
 #define NDPluginDriverExecutionTimeString       "EXECUTION_TIME"        /**< (asynFloat64,  r/o) The last execution time (milliseconds) */
-#define NDPluginDriverThrottleModeString        "THROTTLE_MODE"         /**< (asynInt32,    r/w) (NDDriverThrottleMode_t) Which throttling mode to use */
-#define NDPluginDriverThrottleValueString       "THROTTLE_VALUE"        /**< (asynFloat64,  r/w) Value used for the different kinds of throttling */
+#define NDPluginDriverMinCallbackTimeString     "MIN_CALLBACK_TIME"     /**< (asynFloat64,  r/w) Minimum time between calling processCallbacks
+                                                                         *to execute plugin code */
+#define NDPluginDriverMaxByteRateString         "MAX_BYTE_RATE"         /**< (asynFloat64,  r/w) Limit on byte rate output of plugin */
 /** Class from which actual plugin drivers are derived; derived from asynNDArrayDriver */
 class epicsShareClass NDPluginDriver : public asynNDArrayDriver, public epicsThreadRunable {
 public:
@@ -110,10 +102,11 @@ protected:
     int NDPluginDriverBlockingCallbacks;
     int NDPluginDriverProcessPlugin;
     int NDPluginDriverExecutionTime;
-    int NDPluginDriverThrottleMode;
-    int NDPluginDriverThrottleValue;
+    int NDPluginDriverMinCallbackTime;
+    int NDPluginDriverMaxByteRate;
 
     NDArray *pPrevInputArray_;
+    bool throttled(NDArray *pArray);
 
 private:
     void processTask();
@@ -121,8 +114,6 @@ private:
     asynStatus startCallbackThreads();
     asynStatus deleteCallbackThreads();
     asynStatus createSortingThread();
-
-    bool throttled(NDArray *pArray);
 
     /* The asyn interfaces we access as a client */
     void *asynGenericPointerInterruptPvt_;
