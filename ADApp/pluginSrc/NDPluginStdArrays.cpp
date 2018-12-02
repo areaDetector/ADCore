@@ -30,7 +30,7 @@ static const char *driverName="NDPluginStdArrays";
 
 template <typename epicsType, typename interruptType>
 void NDPluginStdArrays::arrayInterruptCallback(NDArray *pArray, NDArrayPool *pNDArrayPool, 
-                            void *interruptPvt, int *initialized, NDDataType_t signedType)
+                            void *interruptPvt, int *initialized, NDDataType_t signedType, bool *wasThrottled)
 {
     ELLLIST *pclientList;
     interruptNode *pnode;
@@ -38,6 +38,7 @@ void NDPluginStdArrays::arrayInterruptCallback(NDArray *pArray, NDArrayPool *pND
     epicsType *pData=NULL;
     NDArray *pOutput=NULL;
     NDArrayInfo_t arrayInfo;
+    static const char* functionName="arrayInterruptCallback";
 
     pasynManager->interruptStart(interruptPvt, &pclientList);
     pnode = (interruptNode *)ellFirst(pclientList);
@@ -56,10 +57,21 @@ void NDPluginStdArrays::arrayInterruptCallback(NDArray *pArray, NDArrayPool *pND
                 }
                 pData = (epicsType *)pOutput->pData;
             }
-            pInterrupt->pasynUser->timestamp = pArray->epicsTS;
-            pInterrupt->callback(pInterrupt->userPvt,
-                                 pInterrupt->pasynUser,
-                                 pData, arrayInfo.nElements);
+            if (throttled(pOutput)) {
+                int droppedOutputArrays;
+                *wasThrottled = true;
+                getIntegerParam(NDPluginDriverDroppedOutputArrays, &droppedOutputArrays);
+                asynPrint(pasynUserSelf, ASYN_TRACE_WARNING,
+                    "%s::%s maximum byte rate exceeded, dropped array uniqueId=%d\n",
+                    driverName, functionName, pArray->uniqueId);
+                droppedOutputArrays++;
+                setIntegerParam(NDPluginDriverDroppedOutputArrays, droppedOutputArrays);
+            } else {
+                pInterrupt->pasynUser->timestamp = pArray->epicsTS;
+                pInterrupt->callback(pInterrupt->userPvt,
+                                     pInterrupt->pasynUser,
+                                     pData, arrayInfo.nElements);
+            }
         }
         pnode = (interruptNode *)ellNext(&pnode->node);
     }
@@ -132,6 +144,7 @@ void NDPluginStdArrays::processCallbacks(NDArray *pArray)
     int int32Initialized=0;
     int float32Initialized=0;
     int float64Initialized=0;
+    bool wasThrottled=false;
     NDArrayInfo_t arrayInfo;
     asynStandardInterfaces *pInterfaces = this->getAsynStdInterfaces();
     /* static const char* functionName = "processCallbacks"; */
@@ -148,37 +161,45 @@ void NDPluginStdArrays::processCallbacks(NDArray *pArray)
     /* Pass interrupts for int8Array data*/
     arrayInterruptCallback<epicsInt8, asynInt8ArrayInterrupt>(pArray, this->pNDArrayPool, 
                              pInterfaces->int8ArrayInterruptPvt,
-                             &int8Initialized, NDInt8);
+                             &int8Initialized, NDInt8, &wasThrottled);
     
     /* Pass interrupts for int16Array data*/
     arrayInterruptCallback<epicsInt16,  asynInt16ArrayInterrupt>(pArray, this->pNDArrayPool, 
                              pInterfaces->int16ArrayInterruptPvt,
-                             &int16Initialized, NDInt16);
+                             &int16Initialized, NDInt16, &wasThrottled);
     
     /* Pass interrupts for int32Array data*/
     arrayInterruptCallback<epicsInt32, asynInt32ArrayInterrupt>(pArray, this->pNDArrayPool, 
                              pInterfaces->int32ArrayInterruptPvt,
-                             &int32Initialized, NDInt32);
+                             &int32Initialized, NDInt32, &wasThrottled);
     
     /* Pass interrupts for float32Array data*/
     arrayInterruptCallback<epicsFloat32, asynFloat32ArrayInterrupt>(pArray, this->pNDArrayPool, 
                              pInterfaces->float32ArrayInterruptPvt,
-                             &float32Initialized, NDFloat32);
+                             &float32Initialized, NDFloat32, &wasThrottled);
     
     /* Pass interrupts for float64Array data*/
     arrayInterruptCallback<epicsFloat64, asynFloat64ArrayInterrupt>(pArray, this->pNDArrayPool, 
                              pInterfaces->float64ArrayInterruptPvt,
-                             &float64Initialized, NDFloat64);
+                             &float64Initialized, NDFloat64, &wasThrottled);
 
     /* We must exit with the mutex locked */
     this->lock();
-    /* We always keep the last array so read() can use it.  
-     * Release previous one, reserve new one */
-    if (this->pArrays[0]) this->pArrays[0]->release();
-    pArray->reserve();
-    this->pArrays[0] = pArray;
-    /* Update the parameters.  The counter should be updated after data are posted
-     * because clients might use that to detect new data */
+
+    // If any of the callbacks were throttled decrement the array counter.  
+    // This gives the user feedback that the ArrayRate has dropped.  
+    // It is also important because clients like ImageJ monitor the ArrayCounter field to decide if new data is available
+    // Not entirely accurate, but the best we can do.
+    if (wasThrottled) {
+        int arrayCounter;
+        getIntegerParam(NDArrayCounter, &arrayCounter);
+        arrayCounter--;
+        setIntegerParam(NDArrayCounter, arrayCounter);
+    }
+
+    // Do NDArray callbacks (rarely needed for this plugin).  We need to copy the array and get the attributes
+    NDPluginDriver::endProcessCallbacks(pArray, true, true);
+
     callParamCallbacks();
 }
 
