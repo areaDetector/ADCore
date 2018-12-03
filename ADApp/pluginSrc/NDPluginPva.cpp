@@ -3,7 +3,6 @@
 #include <pv/channelProviderLocal.h>
 
 #include <epicsThread.h>
-#include <epicsExport.h>
 #include <iocsh.h>
 
 #include <ntndArrayConverter.h>
@@ -14,6 +13,7 @@
 #include <string.h>
 #include <stdio.h>
 
+#include <epicsExport.h>
 #include "NDPluginDriver.h"
 #include "NDPluginPva.h"
 
