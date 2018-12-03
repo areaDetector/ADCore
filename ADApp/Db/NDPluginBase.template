@@ -102,6 +102,33 @@ record(ai, "$(P)$(R)MinCallbackTime_RBV")
     field(SCAN, "I/O Intr")
 }
 
+record(ao, "$(P)$(R)MaxArrayRate")
+{
+    field(DTYP, "Soft Channel")
+    field(OUT,  "$(P)$(R)MaxArrayRate_COUT PP")
+    field(EGU,  "Hz")
+    field(PREC, "3")
+    field(VAL,  "0.0")
+    info(autosaveFields, "VAL")
+}
+
+record(calcout, "$(P)$(R)MaxArrayRate_COUT")
+{
+    field(INPA, "$(P)$(R)MaxArrayRate")
+    field(CALC, "A=0?0:1.0/A")
+    field(OUT,  "$(P)$(R)MinCallbackTime PP")
+}
+
+record(calc, "$(P)$(R)MaxArrayRate_RBV")
+{
+    field(DTYP, "Soft Channel")
+    field(INPA, "$(P)$(R)MinCallbackTime_RBV CP")
+    field(CALC, "A=0?0:1.0/A")
+    field(EGU,  "Hz")
+    field(PREC, "3")
+    field(SCAN, "Passive")
+}
+
 record(ao, "$(P)$(R)MaxByteRate")
 {
     field(PINI, "YES")
