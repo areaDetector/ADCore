@@ -709,8 +709,12 @@ static void updateQueuedArrayCountC(void *drvPvt)
 void asynNDArrayDriver::updateQueuedArrayCount()
 {
     int arrayCount;
-    while (1) {
+    while (queuedArrayUpdateRun_) {
         epicsEventWait(queuedArrayEvent_);
+        // Exit early
+        if (!queuedArrayUpdateRun_)
+            break;
+
         lock();
         queuedArrayCountMutex_->lock();
         arrayCount = queuedArrayCount_;
@@ -718,7 +722,8 @@ void asynNDArrayDriver::updateQueuedArrayCount()
         setIntegerParam(NDNumQueuedArrays, arrayCount);
         callParamCallbacks();
         unlock();
-    }       
+    }
+    epicsEventSignal(queuedArrayUpdateDone_);
 }
 
 asynStatus asynNDArrayDriver::incrementQueuedArrayCount() 
@@ -776,7 +781,8 @@ asynNDArrayDriver::asynNDArrayDriver(const char *portName, int maxAddr, int maxB
                      interfaceMask | asynInt32Mask | asynFloat64Mask | asynOctetMask | asynInt32ArrayMask | asynGenericPointerMask | asynDrvUserMask, 
                      interruptMask | asynInt32Mask | asynFloat64Mask | asynOctetMask | asynInt32ArrayMask | asynGenericPointerMask,
                      asynFlags, autoConnect, priority, stackSize),
-      pNDArrayPool(NULL), queuedArrayCountMutex_(NULL), queuedArrayCount_(0)
+      pNDArrayPool(NULL), queuedArrayCountMutex_(NULL), queuedArrayCount_(0),
+      queuedArrayUpdateRun_(true)
 {
     char versionString[20];
     static const char *functionName = "asynNDArrayDriver";
@@ -899,6 +905,7 @@ asynNDArrayDriver::asynNDArrayDriver(const char *portName, int maxAddr, int maxB
     setIntegerParam(NDNumQueuedArrays, 0);
 
     queuedArrayEvent_ = epicsEventCreate(epicsEventEmpty);
+    queuedArrayUpdateDone_ = epicsEventCreate(epicsEventEmpty);
     /* Create the thread that updates the queued array count */
     
     char taskName[100];
@@ -918,6 +925,10 @@ asynNDArrayDriver::asynNDArrayDriver(const char *portName, int maxAddr, int maxB
 
 asynNDArrayDriver::~asynNDArrayDriver()
 { 
+    queuedArrayUpdateRun_ = false;
+    epicsEventSignal(queuedArrayEvent_);
+    epicsEventWait(queuedArrayUpdateDone_);
+
     delete this->pNDArrayPoolPvt_;
     free(this->pArrays);
     delete this->pAttributeList;

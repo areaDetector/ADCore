@@ -210,6 +210,9 @@ private:
     epicsEventId queuedArrayEvent_;
     int queuedArrayCount_;
     
+    bool queuedArrayUpdateRun_;
+    epicsEventId queuedArrayUpdateDone_;
+
     friend class NDArrayPool;
 
 };
