@@ -38,7 +38,7 @@ private:
                                         size_t nElements, size_t *nIn, NDDataType_t outputType);
     template <typename epicsType, typename interruptType> void arrayInterruptCallback(NDArray *pArray, 
                             NDArrayPool *pNDArrayPool, 
-                            void *interruptPvt, int *initialized, NDDataType_t signedType);
+                            void *interruptPvt, int *initialized, NDDataType_t signedType, bool *wasThrottled);
                                         
 };
 

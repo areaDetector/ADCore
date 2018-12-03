@@ -1,6 +1,6 @@
 
 file {
-	name="/home/epics/devel/areaDetector-3-3-2/ADCore/ADApp/op/adl/ADPlugins.adl"
+	name="/home/epics/devel/areaDetector/ADCore/ADApp/op/adl/ADPlugins.adl"
 	version=030109
 }
 display {
@@ -405,16 +405,21 @@ text {
 		height=20
 	}
 	display[0] {
+		label="Image #2"
+		name="NDStdArrays.adl"
+		args="P=$(P), R=image2:"
+	}
+	display[1] {
 		label="Scan #1"
 		name="scan_more.adl"
 		args="P=$(P), S=scan1, N=1"
 	}
-	display[1] {
+	display[2] {
 		label="Acquire Sequence"
 		name="yySseq.adl"
 		args="P=$(P), S=AcquireSequence"
 	}
-	display[2] {
+	display[3] {
 		label="devIocStats"
 		name="ioc_stats_soft.adl"
 		args="ioc=$(P)"

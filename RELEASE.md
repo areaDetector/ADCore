@@ -19,7 +19,7 @@ files respectively, in the configure/ directory of the appropriate release of th
 
 Release Notes
 =============
-R3-4 (November XXX, 2018)
+R3-4 (December XXX, 2018)
 ======================
 ### ADSrc/asynNDArrayDriver.h, asynNDArrayDriver.cpp
 * Fixed a serious problem caused by failure to lock the correct mutex when plugins called 
@@ -27,9 +27,11 @@ R3-4 (November XXX, 2018)
   This caused the Acquire and Acquire_RBV PVs to occasionally get stuck in the 1 (Acquire) state when acquistion
   was complete.  It might have also caused other problems that were not reported.
   This problem was introduced in R3-3.
+* Fixed a race condition in the asynNDArrayDriver destructor.
+  This was causing occasional failures in the Travis unit tests.
 ### NDPluginCodec
 * New plugin written by Bruno Martins to support compressing and decompressing NDArrays.
-* Compressors currently supported are JPEG (lossy) and BLOSC (lossless).
+* Compressors currently supported are JPEG (lossy) and Blosc (lossless).
 * NDArray has a new .codec field that is the string name for the compression in use.
   It is empty() for no compression.
   It also has a new .compressedSize field that stores the compressed size in bytes.
@@ -39,8 +41,24 @@ R3-4 (November XXX, 2018)
 * The ImageJ pvAccess viewer now supports decompression of all of the compressors supported by this plugin.
   This can greatly reduce network bandwidth usage when the IOC and viewer are on different machines.  
 * We also plan to enhance the HDF5 file plugin to support writing NDArrays that are already compressed, 
-  using the Direct Chunk Write feature,  This should should improve performance.
-### NDPluginDriver
+  using the Direct Chunk Write feature. This should should improve performance.
+### NDPluginDriver, NDPluginPva, NDPluginStdArrays
+* Added new base class parameter and record MaxByteRate.
+  This allows control of the maximum data output rate in bytes/s. 
+  If the output rate would exceed this then the output array is dropped and DroppedOutputArrays is incremented.
+  This can be useful, for example, to limit the network bandwidth from a plugin.
+  * For most plugins this logic is implemented in NDPluginDriver::endProcessCallbacks() when the plugin
+    is finishing its operation and is doing callbacks to any downstream plugins. 
+    However, the NDPluginPva and NDPluginStdArrays plugins are treated differently because the
+    output we generally want to throttle is not the NDArray passed to downstream plugins,
+    but rather the size of the output for the pvaServer (NDPluginPva) or the size of
+    the arrays passed back to device support for waveform records (NDPluginStdArrays).
+  * For these plugins the throttling logic is thus also implemented inside the plugin.
+    If these plugins are throttled then they really do no useful work, and so ArrayCounter
+    is not incremented. This makes the ArrayRate reflect the rate at which the plugin
+    is actually doing useful work.
+    For NDPluginStdArrays this is also important because clients (e.g. ImageJ) may monitor
+    the ArrayCounter_RBV field to decide when to read the array and update the display.
 * Optimization improvement when output arrays are sorted.
   Previously it always put the array in the sort queue, even if the order of this array was OK. 
   That introduced an unneeded latency because the sort task only runs periodically.  

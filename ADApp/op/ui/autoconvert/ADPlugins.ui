@@ -581,16 +581,16 @@ border-radius: 2px;
                 <enum>Menu</enum>
             </property>
             <property name="labels">
-                <string>Scan #1;Acquire Sequence;devIocStats</string>
+                <string>Image #2;Scan #1;Acquire Sequence;devIocStats</string>
             </property>
             <property name="files">
-                <string>scan_more.adl;yySseq.adl;ioc_stats_soft.adl</string>
+                <string>NDStdArrays.adl;scan_more.adl;yySseq.adl;ioc_stats_soft.adl</string>
             </property>
             <property name="args">
-                <string>P=$(P), S=scan1, N=1;P=$(P), S=AcquireSequence;ioc=$(P)</string>
+                <string>P=$(P), R=image2:;P=$(P), S=scan1, N=1;P=$(P), S=AcquireSequence;ioc=$(P)</string>
             </property>
             <property name="removeParent">
-                <string>false;false;false</string>
+                <string>false;false;false;false</string>
             </property>
         </widget>
         <zorder>caLabel_0</zorder>

@@ -17,6 +17,8 @@
 #include "NDPluginDriver.h"
 #include "NDPluginPva.h"
 
+static const char *driverName="NDPluginPva";
+
 using namespace epics;
 using namespace epics::pvData;
 using namespace epics::pvAccess;
@@ -98,11 +100,30 @@ void NTNDArrayRecord::update(NDArray *pArray)
   */
 void NDPluginPva::processCallbacks(NDArray *pArray)
 {
-    NDPluginDriver::beginProcessCallbacks(pArray);   // Base class method
+    static const char *functionName = "processCallbacks";
 
-    this->unlock();             // Function called with the lock taken
-    m_record->update(pArray);
-    this->lock();               // Must return locked
+    NDPluginDriver::beginProcessCallbacks(pArray);   // Base class method
+    
+    // Most plugins can rely on endProcessCallbacks() to check for throttling, but this one cannot
+    // because the output is not an NDArray but a pvAccess server.  Need to check here.
+    if (throttled(pArray)) {
+        int droppedOutputArrays;
+        int arrayCounter;
+        getIntegerParam(NDPluginDriverDroppedOutputArrays, &droppedOutputArrays);
+        asynPrint(pasynUserSelf, ASYN_TRACE_WARNING,
+            "%s::%s maximum byte rate exceeded, dropped array uniqueId=%d\n",
+            driverName, functionName, pArray->uniqueId);
+        droppedOutputArrays++;
+        setIntegerParam(NDPluginDriverDroppedOutputArrays, droppedOutputArrays);
+        // Since this plugin has done no useful work we also decrement ArrayCounter
+        getIntegerParam(NDArrayCounter, &arrayCounter);
+        arrayCounter--;
+        setIntegerParam(NDArrayCounter, arrayCounter);
+    } else {
+        this->unlock();             // Function called with the lock taken
+        m_record->update(pArray);
+        this->lock();               // Must return locked
+    }  
 
     // Do NDArray callbacks.  We need to copy the array and get the attributes
     NDPluginDriver::endProcessCallbacks(pArray, true, true);

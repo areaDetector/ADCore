@@ -443,7 +443,7 @@ NDArray *decompressBlosc(NDArray *input, int numThreads, NDCodecStatus_t *status
 #else
 
 NDArray *compressBlosc(NDArray*, int , bool , NDCodecBloscComp_t, 
-                       int, NDCodecStatus_t *status, char *errormessage)
+                       int, NDCodecStatus_t *status, char *errorMessage)
 {
     sprintf(errorMessage, "No Blosc support");
     *status = NDCODEC_ERROR;
