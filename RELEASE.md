@@ -19,7 +19,7 @@ files respectively, in the configure/ directory of the appropriate release of th
 
 Release Notes
 =============
-R3-4 (December XXX, 2018)
+R3-4 (December 3, 2018)
 ======================
 ### ADSrc/asynNDArrayDriver.h, asynNDArrayDriver.cpp
 * Fixed a serious problem caused by failure to lock the correct mutex when plugins called 
@@ -59,6 +59,9 @@ R3-4 (December XXX, 2018)
     is actually doing useful work.
     For NDPluginStdArrays this is also important because clients (e.g. ImageJ) may monitor
     the ArrayCounter_RBV field to decide when to read the array and update the display.
+* Added new MaxArrayRate and MaxArrayRate_RBV records.
+  These are implemented in the database with calc records. 
+  They write and read from MinCallbackTime but provide units of arrays/sec rather than sec/array.
 * Optimization improvement when output arrays are sorted.
   Previously it always put the array in the sort queue, even if the order of this array was OK. 
   That introduced an unneeded latency because the sort task only runs periodically.  
