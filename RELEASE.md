@@ -27,6 +27,8 @@ R3-4 (December XXX, 2018)
   This caused the Acquire and Acquire_RBV PVs to occasionally get stuck in the 1 (Acquire) state when acquistion
   was complete.  It might have also caused other problems that were not reported.
   This problem was introduced in R3-3.
+* Fixed a race condition in the asynNDArrayDriver destructor.
+  This was causing occasional failures in the Travis unit tests.
 ### NDPluginCodec
 * New plugin written by Bruno Martins to support compressing and decompressing NDArrays.
 * Compressors currently supported are JPEG (lossy) and Blosc (lossless).
