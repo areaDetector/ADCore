@@ -68,7 +68,7 @@ static string codecName[] = {"", "jpeg", "blosc"};
  * Since there's no way to know the final size of the compressed data, always
  * allocate an array of the same size as the uncompressed one.
  */
-static NDArray *alloc(NDArray *input, int dataType = -1,
+static NDArray *allocArray(NDArray *input, int dataType = -1,
         size_t dataSize=0, void *pData=NULL)
 {
     NDDataType_t dt;
@@ -251,7 +251,7 @@ NDArray *compressJPEG(NDArray *input, int quality, NDCodecStatus_t *status, char
 
     jpeg_finish_compress(&jpegInfo);
 
-    output = alloc(input, -1, outSize, outData);
+    output = allocArray(input, -1, outSize, outData);
 
     if (!output) {
         sprintf(errorMessage, "Failed to allocate JPEG array");
@@ -286,7 +286,7 @@ NDArray *decompressJPEG(NDArray *input, NDCodecStatus_t *status, char *errorMess
         return NULL;
     }
 
-    NDArray *output = alloc(input, NDUInt8);
+    NDArray *output = allocArray(input, NDUInt8);
 
     if (!output) {
         sprintf(errorMessage, "Failed to allocate JPEG output array");
@@ -379,7 +379,7 @@ NDArray *compressBlosc(NDArray *input, int clevel, int shuffle, NDCodecBloscComp
     NDArrayInfo_t info;
     input->getInfo(&info);
 
-    NDArray *output = alloc(input, -1,
+    NDArray *output = allocArray(input, -1,
             info.totalBytes + BLOSC_MAX_OVERHEAD);
 
     if (!output) {
@@ -417,7 +417,7 @@ NDArray *decompressBlosc(NDArray *input, int numThreads, NDCodecStatus_t *status
         return NULL;
     }
 
-    NDArray *output = alloc(input);
+    NDArray *output = allocArray(input);
 
     if (!output) {
         sprintf(errorMessage, "Failed to allocate Blosc output array");
