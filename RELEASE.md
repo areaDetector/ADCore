@@ -19,6 +19,12 @@ files respectively, in the configure/ directory of the appropriate release of th
 
 Release Notes
 =============
+
+R3-5 (January XXX, 2018)
+======================
+### commonDriverMakefile
+* Added support for bitshuffle.  This was added in ADSupport R1-7. 
+
 R3-4 (December 3, 2018)
 ======================
 ### ADSrc/asynNDArrayDriver.h, asynNDArrayDriver.cpp
