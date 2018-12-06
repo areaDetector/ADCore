@@ -143,6 +143,19 @@ ifeq ($(WITH_HDF5),YES)
   endif
 endif
 
+ifeq ($(WITH_BITSHUFFLE),YES)
+  ifeq ($(BITSHUFFLE_EXTERNAL),NO)
+    PROD_LIBS += bitshuffle
+  else
+    ifdef BITSHUFFLE_LIB
+      bitshuffle_DIR = $(BITSHUFFLE_LIB)
+      PROD_LIBS     += bitshuffle
+    else
+      PROD_SYS_LIBS += bitshuffle
+    endif
+  endif
+endif
+
 ifeq ($(WITH_BLOSC),YES)
   ifeq ($(BLOSC_EXTERNAL),NO)
     PROD_LIBS += blosc
