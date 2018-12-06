@@ -3,8 +3,8 @@ beginScreenProperties
 major 4
 minor 0
 release 1
-x 247
-y 151
+x 332
+y 156
 w 775
 h 600
 font "helvetica-medium-r-18.0"
@@ -1214,7 +1214,7 @@ release 0
 x 390
 y 390
 w 380
-h 180
+h 205
 lineColor rgb 11520 11520 11520
 fillColor rgb 11520 11520 11520
 lineWidth 0
@@ -1855,24 +1855,28 @@ newPos
 objType "controls"
 endObjectProperties
 
-# (Static Text)
-object activeXTextClass
+# (Text Monitor)
+object activeXTextDspClass:noedit
 beginObjectProperties
 major 4
-minor 1
-release 1
-x 405
-y 445
-w 150
-h 20
+minor 7
+release 0
+x 700
+y 446
+w 60
+h 18
+controlPv "$(P)$(R)ActualTriggerCount_RBV"
+format "decimal"
 font "helvetica-medium-r-14.0"
-fontAlign "right"
-fgColor rgb 0 0 0
-bgColor index 3
-useDisplayBg
-value {
-  "Preset triggers"
-}
+fontAlign "left"
+fgColor rgb 2560 0 47104
+bgColor rgb 47872 47872 47872
+limitsFromDb
+nullColor rgb 60928 46592 11008
+smartRefresh
+fastUpdate
+newPos
+objType "controls"
 endObjectProperties
 
 # (Static Text)
@@ -1882,7 +1886,7 @@ major 4
 minor 1
 release 1
 x 415
-y 470
+y 495
 w 140
 h 20
 font "helvetica-medium-r-14.0"
@@ -1902,7 +1906,7 @@ major 4
 minor 1
 release 1
 x 415
-y 495
+y 520
 w 140
 h 20
 font "helvetica-medium-r-14.0"
@@ -1922,7 +1926,7 @@ major 4
 minor 7
 release 0
 x 560
-y 521
+y 546
 w 200
 h 18
 controlPv "$(P)$(R)StatusMessage"
@@ -1946,7 +1950,7 @@ major 4
 minor 7
 release 0
 x 560
-y 496
+y 521
 w 120
 h 18
 controlPv "$(P)$(R)Trigger_RBV"
@@ -1971,7 +1975,7 @@ major 4
 minor 7
 release 0
 x 560
-y 471
+y 496
 w 120
 h 18
 controlPv "$(P)$(R)Capture_RBV"
@@ -1996,7 +2000,7 @@ major 4
 minor 1
 release 1
 x 495
-y 520
+y 545
 w 60
 h 20
 font "helvetica-medium-r-14.0"
@@ -2006,6 +2010,26 @@ bgColor index 3
 useDisplayBg
 value {
   "Status"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 405
+y 445
+w 150
+h 20
+font "helvetica-medium-r-14.0"
+fontAlign "right"
+fgColor rgb 0 0 0
+bgColor index 3
+useDisplayBg
+value {
+  "Preset triggers"
 }
 endObjectProperties
 
@@ -2059,17 +2083,37 @@ newPos
 objType "controls"
 endObjectProperties
 
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 405
+y 470
+w 150
+h 20
+font "helvetica-medium-r-14.0"
+fontAlign "right"
+fgColor rgb 0 0 0
+bgColor index 3
+useDisplayBg
+value {
+  "Flush on trigger"
+}
+endObjectProperties
+
 # (Text Monitor)
 object activeXTextDspClass:noedit
 beginObjectProperties
 major 4
 minor 7
 release 0
-x 700
-y 446
-w 60
+x 665
+y 471
+w 100
 h 18
-controlPv "$(P)$(R)ActualTriggerCount_RBV"
+controlPv "$(P)$(R)FlushOnSoftTrg_RBV"
 format "decimal"
 font "helvetica-medium-r-14.0"
 fontAlign "left"
@@ -2274,7 +2318,7 @@ major 4
 minor 0
 release 0
 x 565
-y 545
+y 570
 w 60
 h 20
 fgColor rgb 0 0 0
@@ -2299,7 +2343,7 @@ major 4
 minor 0
 release 0
 x 465
-y 545
+y 570
 w 60
 h 20
 fgColor rgb 0 0 0
@@ -2324,7 +2368,7 @@ major 4
 minor 0
 release 0
 x 665
-y 545
+y 570
 w 60
 h 20
 fgColor rgb 0 0 0
@@ -2339,6 +2383,26 @@ onLabel "Trigger"
 offLabel "Trigger"
 3d
 useEnumNumeric
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Menu Button)
+object activeMenuButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 560
+y 470
+w 100
+h 20
+fgColor rgb 0 0 0
+bgColor rgb 29440 57088 65280
+inconsistentColor rgb 17920 17920 17920
+topShadowColor rgb 55808 55808 55808
+botShadowColor rgb 17920 17920 17920
+controlPv "$(P)$(R)FlushOnSoftTrg"
+indicatorPv "$(P)$(R)FlushOnSoftTrg"
 font "helvetica-medium-r-12.0"
 endObjectProperties
 

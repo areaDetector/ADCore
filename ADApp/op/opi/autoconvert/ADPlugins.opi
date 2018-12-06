@@ -721,13 +721,13 @@ $(pv_value)</tooltip>
         <description>Image #1</description>
       </action>
       <action type="OPEN_DISPLAY">
-        <path>NDStdArrays.opi</path>
+        <path>NDPva.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
-          <R>image2:</R>
+          <R>Pva1:</R>
         </macros>
         <mode>1</mode>
-        <description>Image #2</description>
+        <description>Pva #1</description>
       </action>
       <action type="OPEN_DISPLAY">
         <path>NDProcess.opi</path>
@@ -846,13 +846,22 @@ $(pv_value)</tooltip>
         <description>Gather #1</description>
       </action>
       <action type="OPEN_DISPLAY">
-        <path>NDPva.opi</path>
+        <path>NDCodec.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
-          <R>Pva1:</R>
+          <R>Codec1:</R>
         </macros>
         <mode>1</mode>
-        <description>Pva</description>
+        <description>Codec #1</description>
+      </action>
+      <action type="OPEN_DISPLAY">
+        <path>NDCodec.opi</path>
+        <macros>
+          <include_parent_macros>true</include_parent_macros>
+          <R>Codec2:</R>
+        </macros>
+        <mode>1</mode>
+        <description>Codec #2</description>
       </action>
     </actions>
     <actions_from_pv>false</actions_from_pv>
@@ -899,6 +908,15 @@ $(pv_value)</tooltip>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.MenuButton" version="1.0.0">
     <actions hook="false" hook_all="false">
+      <action type="OPEN_DISPLAY">
+        <path>NDStdArrays.opi</path>
+        <macros>
+          <include_parent_macros>true</include_parent_macros>
+          <R>image2:</R>
+        </macros>
+        <mode>1</mode>
+        <description>Image #2</description>
+      </action>
       <action type="OPEN_DISPLAY">
         <path>scan_more.opi</path>
         <macros>

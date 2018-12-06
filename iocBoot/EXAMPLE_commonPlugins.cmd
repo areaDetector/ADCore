@@ -147,8 +147,14 @@ dbLoadRecords("NDAttributeN.template", "P=$(PREFIX),R=Attr1:7:,  PORT=ATTR1,ADDR
 dbLoadRecords("NDAttributeN.template", "P=$(PREFIX),R=Attr1:8:,  PORT=ATTR1,ADDR=7,TIMEOUT=1,NCHANS=$(NCHANS)")
 
 # Create an FFT plugin
-NDFFTConfigure("FFT1", 3, 0, "$(PORT)", 0, 0, 0, 0, 0, 5)
+NDFFTConfigure("FFT1", $(QSIZE), 0, "$(PORT)", 0, 0, 0, 0, 0, 5)
 dbLoadRecords("NDFFT.template", "P=$(PREFIX), R=FFT1:, PORT=FFT1, ADDR=0, TIMEOUT=1, NDARRAY_PORT=$(PORT), NAME=FFT1, NCHANS=$(XSIZE)")
+
+# Create 2 Codec plugins
+NDCodecConfigure("CODEC1", $(QSIZE), 0, "$(PORT)", 0, 0, 0, 0, 0, 5)
+dbLoadRecords("NDCodec.template", "P=$(PREFIX), R=Codec1:, PORT=CODEC1, ADDR=0, TIMEOUT=1, NDARRAY_PORT=$(PORT)")
+NDCodecConfigure("CODEC2", $(QSIZE), 0, "$(PORT)", 0, 0, 0, 0, 0, 5)
+dbLoadRecords("NDCodec.template", "P=$(PREFIX), R=Codec2:, PORT=CODEC2, ADDR=0, TIMEOUT=1, NDARRAY_PORT=$(PORT)")
 
 set_requestfile_path("./")
 set_requestfile_path("$(ADCORE)/ADApp/Db")

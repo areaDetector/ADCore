@@ -2,8 +2,8 @@
 #define ADCoreVersion_H
 
 #define ADCORE_VERSION      3
-#define ADCORE_REVISION     3
-#define ADCORE_MODIFICATION 2
+#define ADCORE_REVISION     4
+#define ADCORE_MODIFICATION 0
 
 #endif
 

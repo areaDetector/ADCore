@@ -319,9 +319,9 @@ text {
 		args="P=$(P), R=image1:"
 	}
 	display[1] {
-		label="Image #2"
-		name="NDStdArrays.adl"
-		args="P=$(P), R=image2:"
+		label="Pva #1"
+		name="NDPva.adl"
+		args="P=$(P), R=Pva1:"
 	}
 	display[2] {
 		label="Process #1"
@@ -383,10 +383,15 @@ text {
 		name="NDGather8.adl"
 		args="P=$(P), R=Gather1:"
 	}
+	display[14] {
+		label="Codec #1"
+		name="NDCodec.adl"
+		args="P=$(P), R=Codec1:"
+	}
 	display[15] {
-		label="Pva"
-		name="NDPva.adl"
-		args="P=$(P), R=Pva1:"
+		label="Codec #2"
+		name="NDCodec.adl"
+		args="P=$(P), R=Codec2:"
 	}
 	clr=14
 	bclr=51
@@ -400,16 +405,21 @@ text {
 		height=20
 	}
 	display[0] {
+		label="Image #2"
+		name="NDStdArrays.adl"
+		args="P=$(P), R=image2:"
+	}
+	display[1] {
 		label="Scan #1"
 		name="scan_more.adl"
 		args="P=$(P), S=scan1, N=1"
 	}
-	display[1] {
+	display[2] {
 		label="Acquire Sequence"
 		name="yySseq.adl"
 		args="P=$(P), S=AcquireSequence"
 	}
-	display[2] {
+	display[3] {
 		label="devIocStats"
 		name="ioc_stats_soft.adl"
 		args="ioc=$(P)"

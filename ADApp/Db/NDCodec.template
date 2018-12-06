@@ -1,0 +1,211 @@
+#=================================================================#
+# Template file: NDCodec.template
+# Database for the NDCodec plugin
+# Bruno Martins
+# June 18, 2018
+
+include "NDPluginBase.template"
+
+record(mbbo, "$(P)$(R)Mode")
+{
+    field(PINI, "YES")
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))MODE")
+    field(ZRST, "Compress")
+    field(ZRVL, "0")
+    field(ONST, "Decompress")
+    field(ONVL, "1")
+    info(autosaveFields, "VAL")
+}
+
+record(mbbi, "$(P)$(R)Mode_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))MODE")
+    field(ZRST, "Compress")
+    field(ZRVL, "0")
+    field(ONST, "Decompress")
+    field(ONVL, "1")
+    field(SCAN, "I/O Intr")
+}
+
+record(mbbo, "$(P)$(R)Compressor")
+{
+    field(PINI, "YES")
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))COMPRESSOR")
+    field(ZRST, "None")
+    field(ZRVL, "0")
+    field(ONST, "JPEG")
+    field(ONVL, "1")
+    field(TWST, "Blosc")
+    field(TWVL, "2")
+    info(autosaveFields, "VAL")
+}
+
+record(mbbi, "$(P)$(R)Compressor_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))COMPRESSOR")
+    field(ZRST, "None")
+    field(ZRVL, "0")
+    field(ONST, "JPEG")
+    field(ONVL, "1")
+    field(TWST, "Blosc")
+    field(TWVL, "2")
+    field(SCAN, "I/O Intr")
+}
+
+record(ai, "$(P)$(R)CompFactor_RBV")
+{
+    field(DTYP, "asynFloat64")
+    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))COMP_FACTOR")
+    field(EGU,  "%")
+    field(PREC, "2")
+    field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)JPEGQuality")
+{
+    field(PINI, "YES")
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))JPEG_QUALITY")
+    field(VAL,  "85")
+    field(DRVH, "100")
+    field(DRVL, "1")
+    info(autosaveFields, "VAL")
+}
+
+record(longin, "$(P)$(R)JPEGQuality_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))JPEG_QUALITY")
+    field(SCAN, "I/O Intr")
+}
+
+record(mbbo, "$(P)$(R)BloscCompressor")
+{
+    field(PINI, "YES")
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))BLOSC_COMPRESSOR")
+    field(ZRST, "BloscLZ")
+    field(ZRVL, "0")
+    field(ONST, "LZ4")
+    field(ONVL, "1")
+    field(TWST, "LZ4HC")
+    field(TWVL, "2")
+    field(THST, "SNAPPY")
+    field(THVL, "3")
+    field(FRST, "ZLIB")
+    field(FRVL, "4")
+    field(FVST, "ZSTD")
+    field(FVVL, "5")
+    info(autosaveFields, "VAL")
+}
+
+record(mbbi, "$(P)$(R)BloscCompressor_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))BLOSC_COMPRESSOR")
+    field(ZRST, "BloscLZ")
+    field(ZRVL, "0")
+    field(ONST, "LZ4")
+    field(ONVL, "1")
+    field(TWST, "LZ4HC")
+    field(TWVL, "2")
+    field(THST, "SNAPPY")
+    field(THVL, "3")
+    field(FRST, "ZLIB")
+    field(FRVL, "4")
+    field(FVST, "ZSTD")
+    field(FVVL, "5")
+    field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)BloscCLevel")
+{
+    field(PINI, "YES")
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))BLOSC_CLEVEL")
+    field(VAL,  "3")
+    field(DRVH, "9")
+    field(DRVL, "0")
+    info(autosaveFields, "VAL")
+}
+
+record(longin, "$(P)$(R)BloscCLevel_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))BLOSC_CLEVEL")
+    field(SCAN, "I/O Intr")
+}
+
+record(mbbo, "$(P)$(R)BloscShuffle")
+{
+    field(PINI, "YES")
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))BLOSC_SHUFFLE")
+    field(ZRST, "None")
+    field(ZRVL, "0")
+    field(ONST, "Bit")
+    field(ONVL, "1")
+    field(TWST, "Byte")
+    field(TWVL, "2")
+    field(VAL,  "0")
+    info(autosaveFields, "VAL")
+}
+
+record(mbbi, "$(P)$(R)BloscShuffle_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))BLOSC_SHUFFLE")
+    field(ZRST, "None")
+    field(ZRVL, "0")
+    field(ONST, "Bit")
+    field(ONVL, "1")
+    field(TWST, "Byte")
+    field(TWVL, "2")
+    field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)BloscNumThreads")
+{
+    field(PINI, "YES")
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))BLOSC_NUMTHREADS")
+    field(VAL,  "1")
+    field(DRVL, "1")
+    info(autosaveFields, "VAL")
+}
+
+record(longin, "$(P)$(R)BloscNumThreads_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))BLOSC_NUMTHREADS")
+    field(SCAN, "I/O Intr")
+}
+
+record(mbbi, "$(P)$(R)CodecStatus")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))CODEC_STATUS")
+    field(ZRVL, "0")
+    field(ZRST, "Success")
+    field(ZRSV, "NO_ALARM")
+    field(ONVL, "1")
+    field(ONST, "Warning")
+    field(ONSV, "MINOR")
+    field(TWVL, "2")
+    field(TWST, "Error")
+    field(TWSV, "MAJOR")
+    field(SCAN, "I/O Intr")
+}
+
+record(waveform, "$(P)$(R)CodecError")
+{
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))CODEC_ERROR")
+    field(SCAN, "I/O Intr")
+    field(FTVL, "CHAR")
+    field(NELM, "256")
+}

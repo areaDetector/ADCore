@@ -69,19 +69,26 @@
       </tr>
       <tr>
         <th>
-          Parameter index variable</th>
+          Parameter index variable
+        </th>
         <th>
-          asyn interface</th>
+          asyn interface
+        </th>
         <th>
-          Access</th>
+          Access
+        </th>
         <th>
-          Description</th>
+          Description
+        </th>
         <th>
-          drvInfo string</th>
+          drvInfo string
+        </th>
         <th>
-          EPICS record name</th>
+          EPICS record name
+        </th>
         <th>
-          EPICS record type</th>
+          EPICS record type
+        </th>
       </tr>
       <tr>
         <td>
@@ -376,6 +383,30 @@
         <td>
           bi</td>
       </tr>
+      <tr>
+        <td>
+          NDCircBuffFlushOnSoftTrig</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/o</td>
+        <td>
+          Defines behaviour of the flush functionality. Choices are:
+          <ul>
+            <li>"OnNewImage" (0, default) Flushes on new image.</li>
+            <li>"Immediately" (1) Flushes immediately on software trigger.</li>
+          </ul>
+        </td>
+        <td>
+          CIRC_BUFF_FLUSH_ON_SOFTTRIGGER</td>
+        <td>
+          $(P)$(R)FlushOnSoftTrg<br />
+          $(P)$(R)FlushOnSoftTrg_RBV</td>
+        <td>
+          bo
+          <br />
+          bi</td>
+      </tr>
     </tbody>
   </table>
   <p>
@@ -410,9 +441,11 @@
     <tbody>
       <tr>
         <th>
-          Expression</th>
+          Expression
+        </th>
         <th>
-          Description</th>
+          Description
+        </th>
       </tr>
       <tr>
         <td>

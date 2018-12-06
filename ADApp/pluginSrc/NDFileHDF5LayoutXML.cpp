@@ -20,6 +20,11 @@
 #ifdef __MINGW32__
   #define xmlFree free
 #endif
+// Also a problem in Visual Studio.  The warning is:
+// warning LNK4217: locally defined symbol xmlFree imported in function "private: int __cdecl hdf5::LayoutXML::parse_root(void)" 
+#ifdef _MSC_VER
+  #define xmlFree free
+#endif
 
 namespace hdf5
 {

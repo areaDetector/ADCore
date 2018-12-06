@@ -699,35 +699,55 @@ void asynNDArrayDriver::report(FILE *fp, int details)
     }
 }
 
+static void updateQueuedArrayCountC(void *drvPvt)
+{
+    asynNDArrayDriver *pPvt = (asynNDArrayDriver *)drvPvt;
+
+    pPvt->updateQueuedArrayCount();
+}
+
+void asynNDArrayDriver::updateQueuedArrayCount()
+{
+    int arrayCount;
+    while (queuedArrayUpdateRun_) {
+        epicsEventWait(queuedArrayEvent_);
+        // Exit early
+        if (!queuedArrayUpdateRun_)
+            break;
+
+        lock();
+        queuedArrayCountMutex_->lock();
+        arrayCount = queuedArrayCount_;
+        queuedArrayCountMutex_->unlock();
+        setIntegerParam(NDNumQueuedArrays, arrayCount);
+        callParamCallbacks();
+        unlock();
+    }
+    epicsEventSignal(queuedArrayUpdateDone_);
+}
+
 asynStatus asynNDArrayDriver::incrementQueuedArrayCount() 
 { 
-    int arrayCount;
-  
     queuedArrayCountMutex_->lock();
-    getIntegerParam(NDNumQueuedArrays, &arrayCount);
-    arrayCount++;
-    setIntegerParam(NDNumQueuedArrays, arrayCount);
-    callParamCallbacks();
+    queuedArrayCount_++;
     queuedArrayCountMutex_->unlock();
+    epicsEventSignal(queuedArrayEvent_);
     return asynSuccess;
 }
 
 asynStatus asynNDArrayDriver::decrementQueuedArrayCount() 
 {
     static const char *functionName = "decrementQueuedArrayCount";
-    int arrayCount;
   
     queuedArrayCountMutex_->lock();
-    getIntegerParam(NDNumQueuedArrays, &arrayCount);
-    if (arrayCount <= 0) {
+    if (queuedArrayCount_ <= 0) {
         asynPrint(pasynUserSelf, ASYN_TRACE_ERROR, 
             "%s::%s error, numQueuedArrays already 0 or less (%d)\n",
-            driverName, functionName, arrayCount);
+            driverName, functionName, queuedArrayCount_);
     }
-    arrayCount--;
-    setIntegerParam(NDNumQueuedArrays, arrayCount);
-    callParamCallbacks();
+    queuedArrayCount_--;
     queuedArrayCountMutex_->unlock();
+    epicsEventSignal(queuedArrayEvent_);
     return asynSuccess;
 }
 
@@ -761,9 +781,11 @@ asynNDArrayDriver::asynNDArrayDriver(const char *portName, int maxAddr, int maxB
                      interfaceMask | asynInt32Mask | asynFloat64Mask | asynOctetMask | asynInt32ArrayMask | asynGenericPointerMask | asynDrvUserMask, 
                      interruptMask | asynInt32Mask | asynFloat64Mask | asynOctetMask | asynInt32ArrayMask | asynGenericPointerMask,
                      asynFlags, autoConnect, priority, stackSize),
-      pNDArrayPool(NULL), queuedArrayCountMutex_(NULL)
+      pNDArrayPool(NULL), queuedArrayCountMutex_(NULL), queuedArrayCount_(0),
+      queuedArrayUpdateRun_(true)
 {
     char versionString[20];
+    static const char *functionName = "asynNDArrayDriver";
 
     /* Save the stack size and priority for other threads that this object may create */
     if (stackSize <= 0) stackSize = epicsThreadGetStackSize(epicsThreadStackMedium);
@@ -882,11 +904,31 @@ asynNDArrayDriver::asynNDArrayDriver(const char *portName, int maxAddr, int maxB
 
     setIntegerParam(NDNumQueuedArrays, 0);
 
+    queuedArrayEvent_ = epicsEventCreate(epicsEventEmpty);
+    queuedArrayUpdateDone_ = epicsEventCreate(epicsEventEmpty);
+    /* Create the thread that updates the queued array count */
+    
+    char taskName[100];
+    epicsSnprintf(taskName, sizeof(taskName)-1, "%s_updateQueuedArrayCount", portName);
+    epicsThreadId queuedArrayThreadId = epicsThreadCreate(taskName,
+                                                          this->threadPriority_,
+                                                          this->threadStackSize_,
+                                                          (EPICSTHREADFUNC)updateQueuedArrayCountC, this);
+    if (queuedArrayThreadId == 0) {
+        asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
+            "%s::%s error creating updateQueuedArrayCount thread\n", 
+            driverName, functionName);
+    }
+
 }
 
 
 asynNDArrayDriver::~asynNDArrayDriver()
 { 
+    queuedArrayUpdateRun_ = false;
+    epicsEventSignal(queuedArrayEvent_);
+    epicsEventWait(queuedArrayUpdateDone_);
+
     delete this->pNDArrayPoolPvt_;
     free(this->pArrays);
     delete this->pAttributeList;

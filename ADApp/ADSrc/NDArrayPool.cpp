@@ -112,26 +112,26 @@ NDArray* NDArrayPool::alloc(int ndims, size_t *dims, NDDataType_t dataType, size
   NDArray::computeArrayInfo(ndims, dims, dataType, &arrayInfo);
   if (dataSize == 0) {
     dataSize = arrayInfo.totalBytes;
-  } 
-  else if (dataSize < arrayInfo.totalBytes) {
-    asynPrint(pDriver_->pasynUserSelf, ASYN_TRACE_ERROR,
-      "%s: ERROR: required size=%d passed size=%d is too small, using required size\n",
-      functionName, (int)arrayInfo.totalBytes, (int)dataSize);
-    dataSize = arrayInfo.totalBytes;
-    // Since the passed dataSize was wrong we don't trust the passed pointer either
-    if (pData != NULL) pData = NULL;
   }
 
-  // Try to find an array in the free list which is big enough.
-  freeListElement testElement(NULL, dataSize);
-  std::multiset<freeListElement>::iterator pListElement = freeList_.lower_bound(testElement);
+  std::multiset<freeListElement>::iterator pListElement;
+
+  if (!pData) {
+    // Try to find an array in the free list which is big enough.
+    freeListElement testElement(NULL, dataSize);
+    pListElement = freeList_.lower_bound(testElement);
+  } else {
+    // dataSize doesn't matter, pData will get replaced. Pick smallest one.
+    pListElement = freeList_.begin();
+  }
+
   if (pListElement == freeList_.end()) {
     /* We did not find a free image that is large enough, allocate a new one */
     numBuffers_++;
     pArray = this->createArray();
   } else {
     pArray = pListElement->pArray_;
-    if (pListElement->dataSize_ > (dataSize * THRESHOLD_SIZE_RATIO)) {
+    if (pData || (pListElement->dataSize_ > (dataSize * THRESHOLD_SIZE_RATIO))) {
       // We found an array but it is too large.  Set the size to 0 so it will be allocated below.
       memorySize_ -= pArray->dataSize;
       free(pArray->pData);
@@ -156,11 +156,16 @@ NDArray* NDArrayPool::alloc(int ndims, size_t *dims, NDDataType_t dataType, size
 
   /* Erase the attributes if that global flag is set */
   if (eraseNDAttributes) pArray->pAttributeList->clear();
+  
+  /* Set the codec field to "" */
+  pArray->codec = "";
 
   /* At this point pArray exists, but pArray->pData may be NULL */
   /* If the caller passed a valid buffer use that */
   if (pData) {
     pArray->pData = pData;
+    pArray->dataSize = dataSize;
+    memorySize_ += dataSize;
   } else if (pArray->pData == NULL) {
     if ((maxMemory_ > 0) && ((memorySize_ + dataSize) > maxMemory_)) {
       // We don't have enough memory to allocate the array
@@ -186,6 +191,7 @@ NDArray* NDArrayPool::alloc(int ndims, size_t *dims, NDDataType_t dataType, size
       pArray->pData = malloc(dataSize);
       if (pArray->pData) {
         pArray->dataSize = dataSize;
+        pArray->compressedSize = dataSize;
         memorySize_ += dataSize;
       }
     }
@@ -205,16 +211,18 @@ NDArray* NDArrayPool::alloc(int ndims, size_t *dims, NDDataType_t dataType, size
 
 /** This method makes a copy of an NDArray object.
   * \param[in] pIn The input array to be copied.
-  * \param[in] pOut The output array that will be copied to.
-  * \param[in] copyData If this flag is 1 then everything including the array data is copied;
+  * \param[in] pOut The output array that will be copied to; can be NULL or a pointer to an existing NDArray.
+  * \param[in] copyData If this flag is true then everything including the array data is copied;
   * if 0 then everything except the data (including attributes) is copied.
+  * \param[in] copyDimensions If this flag is true then the dimensions are copied even if pOut is not NULL; default=true.
+  * \param[in] copyDataType If this flag is true then the dataType is copied even if pOut is not NULL; default=true.
   * \return Returns a pointer to the output array.
   *
   * If pOut is NULL then it is first allocated. If the output array
   * object already exists (pOut!=NULL) then it must have sufficient memory allocated to
   * it to hold the data.
   */
-NDArray* NDArrayPool::copy(NDArray *pIn, NDArray *pOut, int copyData)
+NDArray* NDArrayPool::copy(NDArray *pIn, NDArray *pOut, bool copyData, bool copyDimensions, bool copyDataType)
 {
   //const char *functionName = "copy";
   size_t dimSizeOut[ND_ARRAY_MAX_DIMS];
@@ -231,12 +239,18 @@ NDArray* NDArrayPool::copy(NDArray *pIn, NDArray *pOut, int copyData)
   pOut->uniqueId = pIn->uniqueId;
   pOut->timeStamp = pIn->timeStamp;
   pOut->epicsTS = pIn->epicsTS;
-  pOut->ndims = pIn->ndims;
-  memcpy(pOut->dims, pIn->dims, sizeof(pIn->dims));
-  pOut->dataType = pIn->dataType;
+  if (copyDimensions) {
+    pOut->ndims = pIn->ndims;
+    memcpy(pOut->dims, pIn->dims, sizeof(pIn->dims));
+  }
+  if (copyDataType) {
+    pOut->dataType = pIn->dataType;
+  }
+  pOut->codec = pIn->codec;
+  pOut->compressedSize = pIn->compressedSize;
   if (copyData) {
     pIn->getInfo(&arrayInfo);
-    numCopy = arrayInfo.totalBytes;
+    numCopy = pIn->codec.empty() ? arrayInfo.totalBytes : pIn->compressedSize;
     if (pOut->dataSize < numCopy) numCopy = pOut->dataSize;
     memcpy(pOut->pData, pIn->pData, numCopy);
   }
@@ -540,6 +554,13 @@ int NDArrayPool::convert(NDArray *pIn,
 
   /* Initialize failure */
   *ppOut = NULL;
+
+  /* Can't convert compressed data */
+  if (!pIn->codec.empty()) {
+    fprintf(stderr, "%s:%s: can't convert compressed data [%s]\n",
+            driverName, functionName, pIn->codec.c_str());
+    return ND_ERROR;
+  }
 
   /* Copy the input dimension array because we need to modify it
    * but don't want to affect caller */

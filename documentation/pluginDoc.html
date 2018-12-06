@@ -78,6 +78,10 @@
     <li>They can be throttled to only execute at a limited rate. This means, for example,
       that a detector can be saving data to disk at full speed, but images can be posted
       to EPICS at a reduced rate.</li>
+    <li>They can be throttled to limit their output data rate. This means, for example,
+      that a detector can be saving data to disk at full speed, but images sent across
+      the netword at a fixed network bandwidth. The number of images/s may vary with detector
+      ROI, binning, and data compression.</li>
     <li>They can be unplugged from one driver, and plugged into another driver at run
       time. For example, the NDPluginROI driver is itself a source of NDArray data callbacks,
       so a file saving plugin could be unplugged from a detector driver (where it would
@@ -128,19 +132,26 @@
       </tr>
       <tr>
         <th>
-          Parameter index variable</th>
+          Parameter index variable
+        </th>
         <th>
-          asyn interface</th>
+          asyn interface
+        </th>
         <th>
-          Access</th>
+          Access
+        </th>
         <th>
-          Description</th>
+          Description
+        </th>
         <th>
-          drvInfo string</th>
+          drvInfo string
+        </th>
         <th>
-          EPICS record name</th>
+          EPICS record name
+        </th>
         <th>
-          EPICS record type</th>
+          EPICS record type
+        </th>
       </tr>
       <tr>
         <td align="center" colspan="7,">
@@ -490,7 +501,7 @@
       </tr>
       <tr>
         <td align="center" colspan="7,">
-          <b>Callback enable, minimum time, and statistics</b></td>
+          <b>Callback enable, throttling, and statistics</b></td>
       </tr>
       <tr>
         <td>
@@ -594,6 +605,39 @@
         <td>
           $(P)$(R)MinCallbackTime<br />
           $(P)$(R)MinCallbackTime_RBV</td>
+        <td>
+          ao<br />
+          ai</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginDriver<br />
+          MaxByteRate</td>
+        <td>
+          asynFloat64</td>
+        <td>
+          r/w</td>
+        <td>
+          The maximum data output rate in bytes/s. If the output rate would exceed this then
+          the output array is dropped and DroppedOutputArrays is incremented. This can be
+          useful, for example, to limit the network bandwidth from a plugin. For most plugins
+          this logic is implemented in NDPluginDriver::endProcessCallbacks() when the plugin
+          is finishing its operation and is doing callbacks to any downstream plugins. However,
+          the NDPluginPva and NDPluginStdArrays plugins are treated differently because the
+          output we generally want to throttle is not the NDArray passed to downstream plugins,
+          but rather the size of the output for the pvaServer (NDPluginPva) or the size of
+          the arrays passed back to device support for waveform records (NDPluginStdArrays).
+          For these plugins the throttling logic is thus also implemented inside the plugin.
+          If these plugins are throttled then they really do no useful work, and so ArrayCounter
+          is not incremented. This makes the ArrayRate reflect the rate at which the plugin
+          is actually doing useful work. For NDPluginStdArrays this is also important because
+          clients (e.g. ImageJ) may monitor the ArrayCounter_RBV field to decide when to read
+          the array and update the display.</td>
+        <td>
+          MAX_BYTE_RATE</td>
+        <td>
+          $(P)$(R)MaxByteRate<br />
+          $(P)$(R)MaxByteRate_RBV</td>
         <td>
           ao<br />
           ai</td>
