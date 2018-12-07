@@ -35,7 +35,9 @@ typedef enum {
 typedef enum {
     NDCODEC_NONE,
     NDCODEC_JPEG,
-    NDCODEC_BLOSC
+    NDCODEC_BLOSC,
+    NDCODEC_LZ4,
+    NDCODEC_BSLZ4
 }NDCodecCompressor_t;
 
 typedef enum {
@@ -63,9 +65,13 @@ typedef enum {
 NDArray *compressJPEG(NDArray *input, int quality, NDCodecStatus_t *status, char *errorMessage);
 NDArray *decompressJPEG(NDArray *input, NDCodecStatus_t *status, char *errorMessage);
 
-NDArray *compressBlosc(NDArray *input, int clevel, bool shuffle, NDCodecBloscComp_t compressor, 
+NDArray *compressBlosc(NDArray *input, int clevel, int shuffle, NDCodecBloscComp_t compressor, 
                        int numThreads, NDCodecStatus_t *status, char *errorMessage);
 NDArray *decompressBlosc(NDArray *input, int numThreads, NDCodecStatus_t *status, char *errorMessage);
+NDArray *compressLZ4(NDArray *input, NDCodecStatus_t *status, char *errorMessage);
+NDArray *decompressLZ4(NDArray *input, NDCodecStatus_t *status, char *errorMessage);
+NDArray *compressBSLZ4(NDArray *input, NDCodecStatus_t *status, char *errorMessage);
+NDArray *decompressBSLZ4(NDArray *input, NDCodecStatus_t *status, char *errorMessage);
 
 
 class epicsShareClass NDPluginCodec : public NDPluginDriver {
