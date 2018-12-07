@@ -180,16 +180,24 @@ ifeq ($(WITH_BLOSC), YES)
   USR_CXXFLAGS += -DHAVE_BLOSC
 endif
 
+ifeq ($(WITH_BITSHUFFLE), YES)
+  USR_CXXFLAGS += -DHAVE_BITSHUFFLE
+endif
+
 ifdef BLOSC_INCLUDE
-  USR_INCLUDES += -I$(BLOSC_INCLUDE)
+  USR_INCLUDES += $(addprefix -I, $(BLOSC_INCLUDE))
+endif
+
+ifdef BITSHUFFLE_INCLUDE
+  USR_INCLUDES += $(addprefix -I, $(BITSHUFFLE_INCLUDE))
 endif
 
 ifdef HDF5_INCLUDE
-  USR_INCLUDES += -I$(HDF5_INCLUDE)
+  USR_INCLUDES += $(addprefix -I, $(HDF5_INCLUDE))
 endif
 
 ifdef SZIP_INCLUDE
-  USR_INCLUDES += -I$(SZIP_INCLUDE)
+  USR_INCLUDES += $(addprefix -I, $(HDF5_INCLUDE))
 endif
 
 ifdef XML2_INCLUDE
