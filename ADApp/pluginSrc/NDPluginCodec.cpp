@@ -607,6 +607,35 @@ NDArray *decompressBSLZ4(NDArray *input, NDCodecStatus_t *status, char *errorMes
 
     return output;
 }
+#else
+
+NDArray *compressLZ4(NDArray *input, NDCodecStatus_t *status, char *errorMessage)
+{
+    sprintf(errorMessage, "No LZ4 support");
+    *status = NDCODEC_ERROR;
+    return NULL;
+}
+
+NDArray *decompressLZ4(NDArray *input, NDCodecStatus_t *status, char *errorMessage)
+{
+    sprintf(errorMessage, "No LZ4 support");
+    *status = NDCODEC_ERROR;
+    return NULL;
+}
+
+NDArray *compressBSLZ4(NDArray *input, NDCodecStatus_t *status, char *errorMessage)
+{
+    sprintf(errorMessage, "No Bitshuffle support");
+    *status = NDCODEC_ERROR;
+    return NULL;
+}
+
+NDArray *decompressBSLZ4(NDArray *input, NDCodecStatus_t *status, char *errorMessage)
+{
+    sprintf(errorMessage, "No Bitshuffle support");
+    *status = NDCODEC_ERROR;
+    return NULL;
+}
 
 #endif // ifdef HAVE_BITSHUFFLE
 
