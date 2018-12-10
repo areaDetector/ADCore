@@ -332,7 +332,7 @@ NDArray *decompressJPEG(NDArray *input, NDCodecStatus_t *status, char *errorMess
 
 #else
 
-NDArray *NDPluginCode::compressJPEG(NDArray*, int, NDCodecStatus_t *status, char *errorMessage)
+NDArray *compressJPEG(NDArray*, int, NDCodecStatus_t *status, char *errorMessage)
 {
     sprintf(errorMessage, "No JPEG support");
     return NULL;
