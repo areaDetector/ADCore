@@ -731,10 +731,12 @@ void NDPluginCodec::processCallbacks(NDArray *pArray)
     } else {
         if (pArray->codec.empty()) {
             result = pArray;
+            setIntegerParam(NDCodecCompressor, NDCODEC_NONE);
         } else if (pArray->codec == codecName[NDCODEC_JPEG]) {
             unlock();
             result = decompressJPEG(pArray, &codecStatus, errorMessage);
             lock();
+            setIntegerParam(NDCodecCompressor, NDCODEC_JPEG);
         } else if (pArray->codec == codecName[NDCODEC_BLOSC]) {
             int numThreads;
             getIntegerParam(NDCodecBloscNumThreads, &numThreads);
@@ -742,14 +744,17 @@ void NDPluginCodec::processCallbacks(NDArray *pArray)
             unlock();
             result = decompressBlosc(pArray, numThreads, &codecStatus, errorMessage);
             lock();
+            setIntegerParam(NDCodecCompressor, NDCODEC_BLOSC);
         } else if (pArray->codec == codecName[NDCODEC_LZ4]) {
             unlock();
             result = decompressLZ4(pArray, &codecStatus, errorMessage);
             lock();
+            setIntegerParam(NDCodecCompressor, NDCODEC_LZ4);
         } else if (pArray->codec == codecName[NDCODEC_BSLZ4]) {
             unlock();
             result = decompressBSLZ4(pArray, &codecStatus, errorMessage);
             lock();
+            setIntegerParam(NDCodecCompressor, NDCODEC_BSLZ4);
         } else {
             sprintf(errorMessage, "Unexpected codec: '%s'", pArray->codec.c_str());
             codecStatus = NDCODEC_ERROR;
