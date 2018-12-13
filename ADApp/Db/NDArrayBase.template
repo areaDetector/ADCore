@@ -441,6 +441,24 @@ record(longin, "$(P)$(R)ArraySize_RBV")
 }
 
 ###################################################################
+#  These records have information on the compression              # 
+###################################################################
+record(stringin, "$(P)$(R)Codec_RBV")
+{
+   field(DTYP, "asynOctetRead")
+   field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))CODEC")
+   field(VAL,  "")
+   field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(R)CompressedSize_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))COMPRESSED_SIZE")
+   field(SCAN, "I/O Intr")
+}
+
+###################################################################
 #  These records control the data type                            # 
 ###################################################################
 
