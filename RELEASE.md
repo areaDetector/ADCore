@@ -35,6 +35,9 @@ R3-5 (January XXX, 2018)
 * Previously the size of the XMLFileName waveform record was set to 1048576.  
   This only needs to be large if using it to transmit the actual XML content, which is not typical.
   Changed the size to be controlled by the macro XMLSIZE with a default of 2048.
+### asynNDArrayDriver, NDPluginDriver, NDArrayBase.template, NDPluginBaseFull.adl
+* Added support for new parameters NDCodec and NDCompressedSize and new records Codec_RBV and CompressedSize_RBV.
+  These contain the values of NDArray.codec and NDArray.compressedSize.
 ### NDPluginBase.template
 * Removed DTYP from )MaxArrayRate_RBV calc record which does not support DTYP.
 
