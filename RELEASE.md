@@ -22,8 +22,21 @@ Release Notes
 
 R3-5 (January XXX, 2018)
 ======================
+### NDPluginCodec
+* Added support for the lz4 and bitshuffle/lz4 codecs.  
+  These are the compressors that the Eiger uses, so compressed NDArrays from ADEiger can
+  now be decompressed by NDPluginCodec.
+  The ImageJ pvAccess plugin in ADViewers now also supports decompressing lz4 and bitshuffle/lz4.
+  These codecs are independent of Blosc, which also supports lz4 and bitshuffle but with some differences.
 ### commonDriverMakefile
-* Added support for bitshuffle.  This was added in ADSupport R1-7. 
+* Added support for bitshuffle.  This was added in ADSupport R1-7.
+  To use it set WITH_BITSHUFFLE=YES in areaDetector/configure/CONFIG_SITE.local.
+### NDFileHDF5.template
+* Previously the size of the XMLFileName waveform record was set to 1048576.  
+  This only needs to be large if using it to transmit the actual XML content, which is not typical.
+  Changed the size to be controlled by the macro XMLSIZE with a default of 2048.
+### NDPluginBase.template
+* Removed DTYP from )MaxArrayRate_RBV calc record which does not support DTYP.
 
 R3-4 (December 3, 2018)
 ======================
