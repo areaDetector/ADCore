@@ -216,6 +216,8 @@ NDPluginDriver::~NDPluginDriver()
     setIntegerParam(NDDataType, pArray->dataType);
     setIntegerParam(NDColorMode, colorMode);
     setIntegerParam(NDBayerPattern, bayerPattern);
+    setStringParam(NDCodec, pArray->codec);
+    setIntegerParam(NDCompressedSize, pArray->compressedSize);
     setIntegerParam(NDUniqueId, pArray->uniqueId);
     setTimeStamp(&pArray->epicsTS);
     setDoubleParam(NDTimeStamp, pArray->timeStamp);
