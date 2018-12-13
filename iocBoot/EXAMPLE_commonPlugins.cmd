@@ -31,7 +31,7 @@ dbLoadRecords("NDFileNexus.template", "P=$(PREFIX),R=Nexus1:,PORT=FileNexus1,ADD
 
 # Create an HDF5 file saving plugin
 NDFileHDF5Configure("FileHDF1", $(QSIZE), 0, "$(PORT)", 0)
-dbLoadRecords("NDFileHDF5.template",  "P=$(PREFIX),R=HDF1:,PORT=FileHDF1,ADDR=0,TIMEOUT=1,NDARRAY_PORT=$(PORT)")
+dbLoadRecords("NDFileHDF5.template",  "P=$(PREFIX),R=HDF1:,PORT=FileHDF1,ADDR=0,TIMEOUT=1,XMLSIZE=2048,NDARRAY_PORT=$(PORT)")
 
 # Create a Magick file saving plugin
 #NDFileMagickConfigure("FileMagick1", $(QSIZE), 0, "$(PORT)", 0)
