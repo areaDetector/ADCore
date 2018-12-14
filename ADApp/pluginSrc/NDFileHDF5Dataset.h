@@ -16,6 +16,7 @@ class NDFileHDF5Dataset
     asynStatus configureDims(NDArray *pArray, bool multiframe, int extradimensions, int *extra_dims, int *user_chunking);
     asynStatus extendDataSet(int extradims);
     asynStatus extendDataSet(int extradims, hsize_t *offsets);
+    asynStatus verifyChunking(NDArray *pArray);
     asynStatus writeFile(NDArray *pArray, hid_t datatype, hid_t dataspace, hsize_t *framesize);
     hid_t getHandle();
     asynStatus flushDataset();
@@ -31,6 +32,7 @@ class NDFileHDF5Dataset
     int         arrayDims[ND_ARRAY_MAX_DIMS];
     int         rank_;         // number of dimensions
     hsize_t     *dims_;        // Array of current dimension sizes. This updates as various dimensions grow.
+    hsize_t     *chunkdims_;   // Array of current configured chunk dimension sizes.
     hsize_t     *maxdims_;     // Array of maximum dimension sizes. The value -1 is HDF5 term for infinite.
     hsize_t     *offset_;      // Array of current offset in each dimension. The frame dimensions always have
                                // 0 offset but additional dimensions may grow as new frames are added.

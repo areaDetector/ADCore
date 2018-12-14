@@ -14,6 +14,7 @@ NDFileHDF5Dataset::NDFileHDF5Dataset(asynUser *pAsynUser, const std::string& nam
 {
   this->maxdims_     = NULL;
   this->dims_        = NULL;
+  this->chunkdims_   = (hsize_t*) calloc(3, sizeof(hsize_t));
   this->offset_      = NULL;
   this->virtualdims_ = NULL;
 }
@@ -34,6 +35,11 @@ asynStatus NDFileHDF5Dataset::configureDims(NDArray *pArray, bool multiframe, in
   extradims = extradimensions;
 
   ndims = pArray->ndims + extradims;
+
+  // Store chunk dimensions
+  this->chunkdims_[0] = user_chunking[0];
+  this->chunkdims_[1] = user_chunking[1];
+  this->chunkdims_[2] = user_chunking[2];
 
   // first check whether the dimension arrays have been allocated
   // or the number of dimensions have changed.
@@ -149,6 +155,34 @@ asynStatus NDFileHDF5Dataset::extendDataSet(int extradims, hsize_t *offsets)
   return status;
 }
 
+/**
+ * Check if pArray dimensions match configured chunk dimensions
+ * \param[in] pArray - The NDArray containing the data to verify.
+ */
+asynStatus NDFileHDF5Dataset::verifyChunking(NDArray *pArray)
+{
+  if (pArray->ndims > 2) {
+    return asynError;
+  }
+  // If chunk spans multiple frames (or multiple rows of a 1D dataset), then we require the HDF5
+  // processing pipeline to stitch together the NDArrays
+  if (this->chunkdims_[2] != 1 ||
+      (pArray->ndims == 1 && this->chunkdims_[1] != 1)) {
+    return asynError;
+  }
+  if (this->chunkdims_[1] != 1 &&
+      pArray->dims[0].size != this->chunkdims_[0]) {
+    return asynError;
+  }
+  // Remaining dimensions must match chunk definition
+  for (int index = 0; index < pArray->ndims; index++) {
+    if (pArray->dims[index].size != this->chunkdims_[index]) {
+      return asynError;
+    }
+  }
+  return asynSuccess;
+}
+
 /** writeFile.
  * Write the data using the HDF5 library calls.
  * \param[in] pArray - The NDArray containing the data to write.
@@ -188,8 +222,22 @@ asynStatus NDFileHDF5Dataset::writeFile(NDArray *pArray, hid_t datatype, hid_t d
               fileName, functionName);
     return asynError;
   }
+
   // Write the data to the hyperslab.
-  hdfstatus = H5Dwrite(this->dataset_, datatype, dataspace, fspace, H5P_DEFAULT, pArray->pData);
+  if (verifyChunking(pArray) == asynSuccess){
+    // If the dimensions of this NDArray match the configured chunking, then use direct chunk write
+    asynPrint(this->pAsynUser_, ASYN_TRACE_FLOW,
+              "%s::%s NDArray correctly chunked. Using direct chunk write\n",
+              fileName, functionName);
+    hdfstatus = H5Dwrite_chunk(this->dataset_, H5P_DEFAULT, 0x0,
+                               this->offset_, pArray->dataSize, pArray->pData);
+  } else {
+    asynPrint(this->pAsynUser_, ASYN_TRACE_FLOW,
+              "%s::%s NDArray not correctly chunked. Using standard write\n",
+              fileName, functionName);
+    hdfstatus = H5Dwrite(this->dataset_, datatype, dataspace, fspace, H5P_DEFAULT, pArray->pData);
+  }
+
   if (hdfstatus){
     asynPrint(this->pAsynUser_, ASYN_TRACE_ERROR, 
               "%s::%s ERROR Unable to write data to hyperslab\n", 
