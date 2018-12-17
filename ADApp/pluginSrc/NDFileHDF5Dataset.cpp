@@ -156,31 +156,61 @@ asynStatus NDFileHDF5Dataset::extendDataSet(int extradims, hsize_t *offsets)
 }
 
 /**
- * Check if pArray dimensions match configured chunk dimensions
+ * Check if pArray dimensions and codec match hdf5 dataset definition
  * \param[in] pArray - The NDArray containing the data to verify.
  */
 asynStatus NDFileHDF5Dataset::verifyChunking(NDArray *pArray)
 {
+  // If compression is enabled, it must match our configuration
+  if (!pArray->codec.empty() || !this->codec.empty()) {
+    if (pArray->codec != this->codec) {
+      asynPrint(this->pAsynUser_, ASYN_TRACE_FLOW,
+                "Dataset codec '%s' [%d, %d, %d] does not match NDArray codec '%s' [%d, %d, %d]\n",
+                this->codec.name.c_str(), this->codec.level, this->codec.shuffle, this->codec.compressor,
+                pArray->codec.name.c_str(), pArray->codec.level, pArray->codec.shuffle, pArray->codec.compressor);
+      return asynError;
+    }
+  }
+  // Check dimensions of data
   if (pArray->ndims > 2) {
+    asynPrint(this->pAsynUser_, ASYN_TRACE_FLOW,
+              "Data must be 1D or 2D to use direct chunk write\n");
     return asynError;
   }
   // If chunk spans multiple frames (or multiple rows of a 1D dataset), then we require the HDF5
   // processing pipeline to stitch together the NDArrays
+  bool mismatch = false;
   if (this->chunkdims_[2] != 1 ||
       (pArray->ndims == 1 && this->chunkdims_[1] != 1)) {
-    return asynError;
+    mismatch = true;
   }
   if (this->chunkdims_[1] != 1 &&
       pArray->dims[0].size != this->chunkdims_[0]) {
-    return asynError;
+    mismatch = true;
   }
   // Remaining dimensions must match chunk definition
   for (int index = 0; index < pArray->ndims; index++) {
     if (pArray->dims[index].size != this->chunkdims_[index]) {
-      return asynError;
+      mismatch = true;
     }
   }
+  if (mismatch) {
+    asynPrint(this->pAsynUser_, ASYN_TRACE_FLOW,
+              "Dataset chunk dimensions [%d, %d, %d] do not match Array dimensions [%d, %d]\n",
+              (int)this->chunkdims_[0], (int)this->chunkdims_[1], (int)this->chunkdims_[2],
+              (int)pArray->dims[0].size, (int)pArray->dims[1].size);
+      return asynError;
+  }
   return asynSuccess;
+}
+
+/**
+ * Store codec definition
+ * \param[in] codec - Codec definition.
+ */
+void NDFileHDF5Dataset::configureCompression(Codec_t codec)
+{
+  this->codec = codec;
 }
 
 /** writeFile.
@@ -224,14 +254,22 @@ asynStatus NDFileHDF5Dataset::writeFile(NDArray *pArray, hid_t datatype, hid_t d
   }
 
   // Write the data to the hyperslab.
-  if (verifyChunking(pArray) == asynSuccess){
-    // If the dimensions of this NDArray match the configured chunking, then use direct chunk write
+  if (verifyChunking(pArray) == asynSuccess) {
+    // The chunking and compression settings match - use direct chunk write
     asynPrint(this->pAsynUser_, ASYN_TRACE_FLOW,
               "%s::%s NDArray correctly chunked. Using direct chunk write\n",
               fileName, functionName);
     hdfstatus = H5Dwrite_chunk(this->dataset_, H5P_DEFAULT, 0x0,
-                               this->offset_, pArray->dataSize, pArray->pData);
+                               this->offset_, pArray->compressedSize, pArray->pData);
   } else {
+    // We need to perform compression and/or chunk buffering using the HDF5 pipeline - use standard write
+    if (!pArray->codec.empty()) {
+      // We can't use the standard write method for pre-compressed data
+      asynPrint(this->pAsynUser_, ASYN_TRACE_ERROR,
+                "%s::%s ERROR Unable to write pre-compressed data - mismatched chunk definition\n",
+                fileName, functionName);
+      return asynError;
+    }
     asynPrint(this->pAsynUser_, ASYN_TRACE_FLOW,
               "%s::%s NDArray not correctly chunked. Using standard write\n",
               fileName, functionName);

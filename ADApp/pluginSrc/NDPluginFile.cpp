@@ -922,7 +922,8 @@ asynStatus NDPluginFile::writeNDArray(asynUser *pasynUser, void *genericPointer)
 NDPluginFile::NDPluginFile(const char *portName, int queueSize, int blockingCallbacks, 
                            const char *NDArrayPort, int NDArrayAddr, int maxAddr,
                            int maxBuffers, size_t maxMemory, int interfaceMask, int interruptMask,
-                           int asynFlags, int autoConnect, int priority, int stackSize, int maxThreads)
+                           int asynFlags, int autoConnect, int priority, int stackSize, int maxThreads,
+                           bool compressionAware)
 
     /* Invoke the base class constructor.
      * We allocate 1 NDArray of unlimited size in the NDArray pool.
@@ -931,7 +932,7 @@ NDPluginFile::NDPluginFile(const char *portName, int queueSize, int blockingCall
     : NDPluginDriver(portName, queueSize, blockingCallbacks, 
                      NDArrayPort, NDArrayAddr, maxAddr, maxBuffers, maxMemory, 
                      asynGenericPointerMask, asynGenericPointerMask,
-                     asynFlags, autoConnect, priority, stackSize, maxThreads),
+                     asynFlags, autoConnect, priority, stackSize, maxThreads, compressionAware),
     pCapture(NULL), captureBufferSize(0)
 {
     //static const char *functionName = "NDPluginFile";

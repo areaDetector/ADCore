@@ -17,6 +17,7 @@ class NDFileHDF5Dataset
     asynStatus extendDataSet(int extradims);
     asynStatus extendDataSet(int extradims, hsize_t *offsets);
     asynStatus verifyChunking(NDArray *pArray);
+    void configureCompression(Codec_t codec);
     asynStatus writeFile(NDArray *pArray, hid_t datatype, hid_t dataspace, hsize_t *framesize);
     hid_t getHandle();
     asynStatus flushDataset();
@@ -37,6 +38,7 @@ class NDFileHDF5Dataset
     hsize_t     *offset_;      // Array of current offset in each dimension. The frame dimensions always have
                                // 0 offset but additional dimensions may grow as new frames are added.
     hsize_t     *virtualdims_; // The desired sizes of the extra (virtual) dimensions: {Y, X, n}
+    Codec_t codec;             // Definition of codec used to compress the data.
     char        *ptrDimensionNames[ND_ARRAY_MAX_DIMS]; // Array of strings with human readable names for each dimension
     char        *dimsreport_;  // A string which contain a verbose report of all dimension sizes. The method getDimsReport fill in this
 };

@@ -53,6 +53,7 @@
 #include <asynDriver.h>
 
 #include <epicsExport.h>
+#include "Codec.h"
 #include "NDPluginCodec.h"
 
 #define JPEG_MIN_QUALITY 1
@@ -61,8 +62,6 @@
 using std::string;
 
 static const char *driverName="NDPluginCodec";
-
-static string codecName[] = {"", "jpeg", "blosc", "lz4", "bslz4"};
 
 /* Allocate a new NDArray to hold [un]compressed data.
  * Since there's no way to know the final size of the compressed data, always
@@ -258,7 +257,7 @@ NDArray *compressJPEG(NDArray *input, int quality, NDCodecStatus_t *status, char
         return NULL;
     }
 
-    output->codec = codecName[NDCODEC_JPEG];
+    output->codec.name = codecName[NDCODEC_JPEG];
     output->compressedSize = outSize;
 
     return output;
@@ -278,9 +277,9 @@ failure:
 NDArray *decompressJPEG(NDArray *input, NDCodecStatus_t *status, char *errorMessage)
 {
     // Sanity check
-    if (input->codec != codecName[NDCODEC_JPEG]) {
+    if (input->codec.name != codecName[NDCODEC_JPEG]) {
         sprintf(errorMessage, "Invalid codec '%s', expected '%s'", 
-                input->codec.c_str(), codecName[NDCODEC_JPEG].c_str());
+                input->codec.name.c_str(), codecName[NDCODEC_JPEG].c_str());
         *status = NDCODEC_ERROR;
         return NULL;
     }
@@ -325,7 +324,7 @@ NDArray *decompressJPEG(NDArray *input, NDCodecStatus_t *status, char *errorMess
 
     output->pAttributeList->add("ColorMode", "Color Mode", NDAttrInt32,
             &colorMode);
-    output->codec = codecName[NDCODEC_NONE];
+    output->codec.clear();
 
     return output;
 }
@@ -399,7 +398,10 @@ NDArray *compressBlosc(NDArray *input, int clevel, int shuffle, NDCodecBloscComp
         return NULL;
     }
 
-    output->codec = codecName[NDCODEC_BLOSC];
+    output->codec.name = codecName[NDCODEC_BLOSC];
+    output->codec.level = clevel;
+    output->codec.shuffle = shuffle;
+    output->codec.compressor = compressor;
     output->compressedSize = compSize;
 
     return output;
@@ -408,9 +410,9 @@ NDArray *compressBlosc(NDArray *input, int clevel, int shuffle, NDCodecBloscComp
 NDArray *decompressBlosc(NDArray *input, int numThreads, NDCodecStatus_t *status, char *errorMessage)
 {
     // Sanity check
-    if (input->codec != codecName[NDCODEC_BLOSC]) {
+    if (input->codec.name != codecName[NDCODEC_BLOSC]) {
         sprintf(errorMessage, "Invalid codec '%s', expected '%s'",
-                input->codec.c_str(), codecName[NDCODEC_BLOSC].c_str());
+                input->codec.name.c_str(), codecName[NDCODEC_BLOSC].c_str());
         *status = NDCODEC_ERROR;
         return NULL;
     }
@@ -433,7 +435,7 @@ NDArray *decompressBlosc(NDArray *input, int numThreads, NDCodecStatus_t *status
         return NULL;
     }
 
-    output->codec = codecName[NDCODEC_NONE];
+    output->codec.clear();
 
     return output;
 }
@@ -489,7 +491,7 @@ NDArray *compressLZ4(NDArray *input, NDCodecStatus_t *status, char *errorMessage
         return NULL;
     }
 
-    output->codec = codecName[NDCODEC_LZ4];
+    output->codec.name = codecName[NDCODEC_LZ4];
     output->compressedSize = compSize;
 
     return output;
@@ -499,9 +501,9 @@ NDArray *compressLZ4(NDArray *input, NDCodecStatus_t *status, char *errorMessage
 NDArray *decompressLZ4(NDArray *input, NDCodecStatus_t *status, char *errorMessage)
 {
     // Sanity check
-    if (input->codec != codecName[NDCODEC_LZ4]) {
+    if (input->codec.name != codecName[NDCODEC_LZ4]) {
         sprintf(errorMessage, "Invalid codec '%s', expected '%s'",
-                input->codec.c_str(), codecName[NDCODEC_LZ4].c_str());
+                input->codec.name.c_str(), codecName[NDCODEC_LZ4].c_str());
         *status = NDCODEC_ERROR;
         return NULL;
     }
@@ -526,7 +528,7 @@ NDArray *decompressLZ4(NDArray *input, NDCodecStatus_t *status, char *errorMessa
         return NULL;
     }
 
-    output->codec = codecName[NDCODEC_NONE];
+    output->codec.clear();
 
     return output;
 }
@@ -563,7 +565,7 @@ NDArray *compressBSLZ4(NDArray *input, NDCodecStatus_t *status, char *errorMessa
         return NULL;
     }
 
-    output->codec = codecName[NDCODEC_BSLZ4];
+    output->codec.name = codecName[NDCODEC_BSLZ4];
     output->compressedSize = compSize;
 
     return output;
@@ -573,9 +575,9 @@ NDArray *compressBSLZ4(NDArray *input, NDCodecStatus_t *status, char *errorMessa
 NDArray *decompressBSLZ4(NDArray *input, NDCodecStatus_t *status, char *errorMessage)
 {
     // Sanity check
-    if (input->codec != codecName[NDCODEC_BSLZ4]) {
+    if (input->codec.name != codecName[NDCODEC_BSLZ4]) {
         sprintf(errorMessage, "Invalid codec '%s', expected '%s'",
-                input->codec.c_str(), codecName[NDCODEC_BSLZ4].c_str());
+                input->codec.name.c_str(), codecName[NDCODEC_BSLZ4].c_str());
         *status = NDCODEC_ERROR;
         return NULL;
     }
@@ -603,7 +605,7 @@ NDArray *decompressBSLZ4(NDArray *input, NDCodecStatus_t *status, char *errorMes
         return NULL;
     }
 
-    output->codec = codecName[NDCODEC_NONE];
+    output->codec.clear();
 
     return output;
 }
@@ -732,12 +734,12 @@ void NDPluginCodec::processCallbacks(NDArray *pArray)
         if (pArray->codec.empty()) {
             result = pArray;
             setIntegerParam(NDCodecCompressor, NDCODEC_NONE);
-        } else if (pArray->codec == codecName[NDCODEC_JPEG]) {
+        } else if (pArray->codec.name == codecName[NDCODEC_JPEG]) {
             unlock();
             result = decompressJPEG(pArray, &codecStatus, errorMessage);
             lock();
             setIntegerParam(NDCodecCompressor, NDCODEC_JPEG);
-        } else if (pArray->codec == codecName[NDCODEC_BLOSC]) {
+        } else if (pArray->codec.name == codecName[NDCODEC_BLOSC]) {
             int numThreads;
             getIntegerParam(NDCodecBloscNumThreads, &numThreads);
 
@@ -745,18 +747,18 @@ void NDPluginCodec::processCallbacks(NDArray *pArray)
             result = decompressBlosc(pArray, numThreads, &codecStatus, errorMessage);
             lock();
             setIntegerParam(NDCodecCompressor, NDCODEC_BLOSC);
-        } else if (pArray->codec == codecName[NDCODEC_LZ4]) {
+        } else if (pArray->codec.name == codecName[NDCODEC_LZ4]) {
             unlock();
             result = decompressLZ4(pArray, &codecStatus, errorMessage);
             lock();
             setIntegerParam(NDCodecCompressor, NDCODEC_LZ4);
-        } else if (pArray->codec == codecName[NDCODEC_BSLZ4]) {
+        } else if (pArray->codec.name == codecName[NDCODEC_BSLZ4]) {
             unlock();
             result = decompressBSLZ4(pArray, &codecStatus, errorMessage);
             lock();
             setIntegerParam(NDCodecCompressor, NDCODEC_BSLZ4);
         } else {
-            sprintf(errorMessage, "Unexpected codec: '%s'", pArray->codec.c_str());
+            sprintf(errorMessage, "Unexpected codec: '%s'", pArray->codec.name.c_str());
             codecStatus = NDCODEC_ERROR;
             result = NULL;
         }
