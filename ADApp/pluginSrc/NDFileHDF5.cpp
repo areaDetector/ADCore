@@ -2979,7 +2979,7 @@ asynStatus NDFileHDF5::configureDims(NDArray *pArray)
 
 /** Configure compression
  */
-asynStatus NDFileHDF5::configureCompression()
+asynStatus NDFileHDF5::configureCompression(NDArray *pArray)
 {
   asynStatus status = asynSuccess;
   int compressionScheme;
@@ -2993,6 +2993,18 @@ asynStatus NDFileHDF5::configureCompression()
   static const char * functionName = "configureCompression";
 
   this->lock();
+  if (!pArray->codec.empty()) {
+    // Override user settings from pre-compressed NDArray
+    asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW,
+              "%s::%s Overriding compression settings from pre-compressed NDArray\n",
+              driverName, functionName);
+    if (pArray->codec.name == codecName[NDCODEC_BLOSC]) {
+      setIntegerParam(NDFileHDF5_compressionType, HDF5CompressBlosc);
+      setIntegerParam(NDFileHDF5_bloscCompressLevel, pArray->codec.level);
+      setIntegerParam(NDFileHDF5_bloscShuffleType, pArray->codec.shuffle);
+      setIntegerParam(NDFileHDF5_bloscCompressor, pArray->codec.compressor);
+    }
+  }
   getIntegerParam(NDFileHDF5_compressionType, &compressionScheme);
   getIntegerParam(NDFileHDF5_nbitsOffset, &nbitOffset);
   getIntegerParam(NDFileHDF5_nbitsPrecision, &nbitPrecision);
@@ -3472,7 +3484,7 @@ asynStatus NDFileHDF5::createFileLayout(NDArray *pArray)
   this->datatype = H5Tcopy(hdfdatatype);
 
   /* configure compression if required */
-  this->configureCompression();
+  this->configureCompression(pArray);
 
   asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW, 
     "%s::%s Setting fillvalue\n", 
