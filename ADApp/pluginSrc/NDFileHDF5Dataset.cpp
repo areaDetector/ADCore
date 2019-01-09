@@ -2,6 +2,8 @@
 #include <iostream>
 #include <stdlib.h>
 
+#include <hdf5_hl.h>
+
 static const char *fileName = "NDFileHDF5Dataset";
 
 /** Constructor.
@@ -254,15 +256,21 @@ asynStatus NDFileHDF5Dataset::writeFile(NDArray *pArray, hid_t datatype, hid_t d
   }
 
   // Write the data to the hyperslab.
-  if (verifyChunking(pArray) == asynSuccess) {
+  if (H5_VERSION_GE(1, 8, 11) && verifyChunking(pArray) == asynSuccess) {
     // The chunking and compression settings match - use direct chunk write
     asynPrint(this->pAsynUser_, ASYN_TRACE_FLOW,
               "%s::%s NDArray correctly chunked. Using direct chunk write\n",
               fileName, functionName);
+    #if H5_VERSION_GE(1, 10, 3)
     hdfstatus = H5Dwrite_chunk(this->dataset_, H5P_DEFAULT, 0x0,
                                this->offset_, pArray->compressedSize, pArray->pData);
+    #else  // Use deprecated method
+    hdfstatus = H5DOwrite_chunk(this->dataset_, H5P_DEFAULT, 0x0,
+                                this->offset_, pArray->compressedSize, pArray->pData);
+    #endif
   } else {
-    // We need to perform compression and/or chunk buffering using the HDF5 pipeline - use standard write
+    // Either direct chunk write is not available, or we need to use the HDF5 pipeline for
+    // compression / chunk buffering - use standard write method
     if (!pArray->codec.empty()) {
       // We can't use the standard write method for pre-compressed data
       asynPrint(this->pAsynUser_, ASYN_TRACE_ERROR,
