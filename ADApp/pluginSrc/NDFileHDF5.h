@@ -17,6 +17,7 @@
 #include "NDFileHDF5LayoutXML.h"
 #include "NDFileHDF5AttributeDataset.h"
 #include "NDFileHDF5VersionCheck.h"
+#include "Codec.h"
 
 #define MAXEXTRADIMS 10
 
@@ -116,6 +117,7 @@ class epicsShareClass NDFileHDF5 : public NDPluginFile
     std::string                                ndDsetName;  // Name of NDAttribute that specifies the destination data set
     std::map<std::string, hdf5::Element *>     onOpenMap;   // Map of handles to elements with onOpen ndattributes, indexed by fullname
     std::map<std::string, hdf5::Element *>     onCloseMap;  // Map of handles to elements with onClose ndattributes, indexed by fullname
+    Codec_t                                    codec;       // Definition of codec used to compress the data.
 
 #ifndef _UNITTEST_HDF5_
   protected:
@@ -181,7 +183,8 @@ class epicsShareClass NDFileHDF5 : public NDPluginFile
     hid_t typeNd2Hdf(NDDataType_t datatype);
     asynStatus configureDatasetDims(NDArray *pArray);
     asynStatus configureDims(NDArray *pArray);
-    asynStatus configureCompression();
+    asynStatus configureDatasetCompression();
+    asynStatus configureCompression(NDArray *pArray);
     char* getDimsReport();
     asynStatus writeStringAttribute(hid_t element, const char* attrName, const char* attrStrValue);
     asynStatus calculateAttributeChunking(int *chunking, int *mdim_chunking);

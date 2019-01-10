@@ -33,14 +33,6 @@ typedef enum {
 }NDCodecMode_t;
 
 typedef enum {
-    NDCODEC_NONE,
-    NDCODEC_JPEG,
-    NDCODEC_BLOSC,
-    NDCODEC_LZ4,
-    NDCODEC_BSLZ4
-}NDCodecCompressor_t;
-
-typedef enum {
     NDCODEC_BLOSC_BLOSCLZ,
     NDCODEC_BLOSC_LZ4,
     NDCODEC_BLOSC_LZ4HC,

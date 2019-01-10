@@ -216,7 +216,7 @@ NDPluginDriver::~NDPluginDriver()
     setIntegerParam(NDDataType, pArray->dataType);
     setIntegerParam(NDColorMode, colorMode);
     setIntegerParam(NDBayerPattern, bayerPattern);
-    setStringParam(NDCodec, pArray->codec);
+    setStringParam(NDCodec, pArray->codec.name);
     setIntegerParam(NDCompressedSize, pArray->compressedSize);
     setIntegerParam(NDUniqueId, pArray->uniqueId);
     setTimeStamp(&pArray->epicsTS);
@@ -389,8 +389,8 @@ void NDPluginDriver::driverCallback(asynUser *pasynUser, void *genericPointer)
     if (!compressionAware_ && !pArray->codec.empty()) {
         getIntegerParam(NDPluginDriverDroppedArrays, &droppedArrays);
         asynPrint(pasynUser, ASYN_TRACE_ERROR,
-                    "%s::%s got compressed array, dropped array uniqueId=%d\n",
-                    driverName, functionName, pArray->uniqueId);
+                  "%s::%s got compressed array and plugin is not compression aware, dropped array uniqueId=%d\n",
+                  driverName, functionName, pArray->uniqueId);
         droppedArrays++;
         setIntegerParam(NDPluginDriverDroppedArrays, droppedArrays);
 
