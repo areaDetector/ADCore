@@ -41,9 +41,11 @@
 #define METADATA_NDIMS 1
 #define MAX_LAYOUT_LEN 1048576
 
-enum HDF5Compression_t {HDF5CompressNone=0, HDF5CompressNumBits, HDF5CompressSZip, HDF5CompressZlib, HDF5CompressBlosc};
+enum HDF5Compression_t {HDF5CompressNone=0, HDF5CompressNumBits, HDF5CompressSZip, HDF5CompressZlib, HDF5CompressBlosc, HDF5CompressBshuf};
 /* Filter ID officially assigned to blosc */
 #define FILTER_BLOSC 32001
+/* Filter ID officially assigned to bitshuffle */
+#define FILTER_BSHUF 32008
 
 #define DIMSREPORTSIZE 512
 #define DIMNAMESIZE 40
@@ -1767,6 +1769,9 @@ asynStatus NDFileHDF5::writeInt32(asynUser *pasynUser, epicsInt32 value)
       case HDF5CompressBlosc:
         filterId = FILTER_BLOSC;
         break;
+      case HDF5CompressBshuf:
+        filterId = FILTER_BSHUF;
+        break;
       default:
         filterId = H5Z_FILTER_NONE;
         status = asynError;
@@ -3072,6 +3077,14 @@ asynStatus NDFileHDF5::configureCompression(NDArray *pArray)
       this->codec.level = bloscLevel;
       this->codec.shuffle = bloscShuffle;
       this->codec.compressor = bloscCompressor;
+      break;
+    case HDF5CompressBshuf:
+      {
+           /* 0 to 3 (inclusive) param slots are reserved. */
+          unsigned int cds[2];
+          cds[1] = 2; /* lz4 compression */
+          H5Pset_filter(this->cparms, FILTER_BSHUF, H5Z_FLAG_OPTIONAL, 2, cds);
+      }
       break;
   }
   return status;
