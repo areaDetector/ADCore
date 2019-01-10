@@ -256,7 +256,7 @@ void NTNDArrayConverter::toValue (NDArray *dest)
     memcpy(dest->pData, srcVec.data(), srcVec.size()*sizeof(arrayValType));
 
     NTNDArrayInfo_t info = getInfo();
-    dest->codec = info.codec;
+    dest->codec.name = info.codec;
     dest->dataType = info.dataType;
 
     if (!info.codec.empty())
@@ -428,7 +428,7 @@ void NTNDArrayConverter::fromValue (NDArray *src)
 
     PVStructurePtr codec(m_array->getCodec());
     codec->getSubField<PVUnion>("parameters")->set(uncompressedType);
-    codec->getSubField<PVString>("name")->put(src->codec);
+    codec->getSubField<PVString>("name")->put(src->codec.name);
 
     size_t count = src->codec.empty() ? arrayInfo.nElements : compressedSize;
 

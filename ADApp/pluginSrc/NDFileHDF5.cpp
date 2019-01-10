@@ -264,6 +264,9 @@ asynStatus NDFileHDF5::openFile(const char *fileName, NDFileOpenMode_t openMode,
     return asynError;
   }
 
+  // Configure compression if required
+  this->configureDatasetCompression();
+
   if (storeAttributes == 1){
     this->createAttributeDataset(pArray);
     this->writeAttributeDataset(hdf5::OnFileOpen, 0, NULL);
@@ -1999,7 +2002,7 @@ NDFileHDF5::NDFileHDF5(const char *portName, int queueSize, int blockingCallback
   : NDPluginFile(portName, queueSize, blockingCallbacks,
                  NDArrayPort, NDArrayAddr, 1,
                  0, 0, asynGenericPointerMask, asynGenericPointerMask, 
-                 ASYN_CANBLOCK, 1, priority, stackSize, 1)
+                 ASYN_CANBLOCK, 1, priority, stackSize, 1, true)
 {
   //static const char *functionName = "NDFileHDF5";
 
@@ -2976,7 +2979,7 @@ asynStatus NDFileHDF5::configureDims(NDArray *pArray)
 
 /** Configure compression
  */
-asynStatus NDFileHDF5::configureCompression()
+asynStatus NDFileHDF5::configureCompression(NDArray *pArray)
 {
   asynStatus status = asynSuccess;
   int compressionScheme;
@@ -2990,6 +2993,18 @@ asynStatus NDFileHDF5::configureCompression()
   static const char * functionName = "configureCompression";
 
   this->lock();
+  if (!pArray->codec.empty()) {
+    // Override user settings from pre-compressed NDArray
+    asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW,
+              "%s::%s Overriding compression settings from pre-compressed NDArray\n",
+              driverName, functionName);
+    if (pArray->codec.name == codecName[NDCODEC_BLOSC]) {
+      setIntegerParam(NDFileHDF5_compressionType, HDF5CompressBlosc);
+      setIntegerParam(NDFileHDF5_bloscCompressLevel, pArray->codec.level);
+      setIntegerParam(NDFileHDF5_bloscShuffleType, pArray->codec.shuffle);
+      setIntegerParam(NDFileHDF5_bloscCompressor, pArray->codec.compressor);
+    }
+  }
   getIntegerParam(NDFileHDF5_compressionType, &compressionScheme);
   getIntegerParam(NDFileHDF5_nbitsOffset, &nbitOffset);
   getIntegerParam(NDFileHDF5_nbitsPrecision, &nbitPrecision);
@@ -2999,6 +3014,9 @@ asynStatus NDFileHDF5::configureCompression()
   getIntegerParam(NDFileHDF5_bloscCompressor, &bloscCompressor);
   getIntegerParam(NDFileHDF5_bloscCompressLevel, &bloscLevel);
   this->unlock();
+
+  // Clear the codec to (possibly) configure a new one
+  this->codec.clear();
   switch (compressionScheme)
   {
     case HDF5CompressNone:
@@ -3012,6 +3030,7 @@ asynStatus NDFileHDF5::configureCompression()
       H5Tset_precision (this->datatype, nbitPrecision);
       H5Tset_offset (this->datatype, nbitOffset);
       H5Pset_nbit (this->cparms);
+      this->codec.name = "nbit";
 
       // Finally read back the parameters we've just sent to HDF5
       nbitOffset = H5Tget_offset(this->datatype);
@@ -3026,25 +3045,54 @@ asynStatus NDFileHDF5::configureCompression()
                 "%s::%s Setting szip compression filter # pixels=%d\n",
                 driverName, functionName, szipNumPixels);
       H5Pset_szip (this->cparms, H5_SZIP_NN_OPTION_MASK, szipNumPixels);
+      this->codec.name = "szip";
       break;
     case HDF5CompressZlib:
       asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW, 
                 "%s::%s Setting zlib compression filter level=%d\n",
                 driverName, functionName, zLevel);
       H5Pset_deflate(this->cparms, zLevel);
+      this->codec.name = "zlib";
       break;
     case HDF5CompressBlosc:
-      {
-           /* 0 to 3 (inclusive) param slots are reserved. */
-          unsigned int cds[7];
-          cds[4] = bloscLevel;
-          cds[5] = bloscShuffle;
-          cds[6] = bloscCompressor;
-          H5Pset_filter(this->cparms, FILTER_BLOSC, H5Z_FLAG_OPTIONAL, 7, cds);
+      asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW,
+                "%s::%s Setting blosc compression filter level=%d, shuffle=%d, compressor=%d\n",
+                driverName, functionName, bloscLevel, bloscShuffle, bloscCompressor);
+       /* 0 to 3 (inclusive) param slots are reserved. */
+      unsigned int cds[7];
+      cds[4] = bloscLevel;
+      cds[5] = bloscShuffle;
+      cds[6] = bloscCompressor;
+      int h5status = H5Pset_filter(this->cparms, FILTER_BLOSC, H5Z_FLAG_MANDATORY, 7, cds);
+      if (h5status) {
+        asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, "Failed to set h5 blosc filter\n");
+        break;
       }
+      this->codec.name = codecName[NDCODEC_BLOSC];
+      this->codec.level = bloscLevel;
+      this->codec.shuffle = bloscShuffle;
+      this->codec.compressor = bloscCompressor;
       break;
   }
   return status;
+}
+
+/** Configure the required compression for a dataset.
+ *
+ *  This method will call the configureCompression method for each detector dataset created.
+ *  To enable compression via the HDF5 pipeline, it is sufficient to call this method
+ *  with just a name. This will cause the chunking verification to fail so that direct chunk write
+ *  is not used. To configure the dataset to direct chunk write pre-compressed data, the full codec
+ *  definition must be provided and match the NDArrays passed in.
+ */
+asynStatus NDFileHDF5::configureDatasetCompression()
+{
+  // Iterate over the stored detector data sets and store the compression settings
+  std::map<std::string, NDFileHDF5Dataset*>::iterator it_dset;
+  for (it_dset = this->detDataMap.begin(); it_dset != this->detDataMap.end(); ++it_dset){
+    it_dset->second->configureCompression(this->codec);
+  }
+  return asynSuccess;
 }
 
 /** Translate the NDArray datatype to HDF5 datatypes 
@@ -3436,7 +3484,7 @@ asynStatus NDFileHDF5::createFileLayout(NDArray *pArray)
   this->datatype = H5Tcopy(hdfdatatype);
 
   /* configure compression if required */
-  this->configureCompression();
+  this->configureCompression(pArray);
 
   asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW, 
     "%s::%s Setting fillvalue\n", 
