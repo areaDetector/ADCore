@@ -3059,27 +3059,27 @@ asynStatus NDFileHDF5::configureCompression(NDArray *pArray)
       H5Pset_deflate(this->cparms, zLevel);
       this->codec.name = "zlib";
       break;
-    case HDF5CompressBlosc:
-      asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW,
-                "%s::%s Setting blosc compression filter level=%d, shuffle=%d, compressor=%d\n",
-                driverName, functionName, bloscLevel, bloscShuffle, bloscCompressor);
-       /* 0 to 3 (inclusive) param slots are reserved. */
-      unsigned int cds[7];
-      cds[4] = bloscLevel;
-      cds[5] = bloscShuffle;
-      cds[6] = bloscCompressor;
-      int h5status = H5Pset_filter(this->cparms, FILTER_BLOSC, H5Z_FLAG_MANDATORY, 7, cds);
-      if (h5status) {
-        asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, "Failed to set h5 blosc filter\n");
-        break;
+    case HDF5CompressBlosc: {
+          asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW,
+                    "%s::%s Setting blosc compression filter level=%d, shuffle=%d, compressor=%d\n",
+                    driverName, functionName, bloscLevel, bloscShuffle, bloscCompressor);
+           /* 0 to 3 (inclusive) param slots are reserved. */
+          unsigned int cds[7];
+          cds[4] = bloscLevel;
+          cds[5] = bloscShuffle;
+          cds[6] = bloscCompressor;
+          int h5status = H5Pset_filter(this->cparms, FILTER_BLOSC, H5Z_FLAG_MANDATORY, 7, cds);
+          if (h5status) {
+            asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, "Failed to set h5 blosc filter\n");
+            break;
+          }
+          this->codec.name = codecName[NDCODEC_BLOSC];
+          this->codec.level = bloscLevel;
+          this->codec.shuffle = bloscShuffle;
+          this->codec.compressor = bloscCompressor;
       }
-      this->codec.name = codecName[NDCODEC_BLOSC];
-      this->codec.level = bloscLevel;
-      this->codec.shuffle = bloscShuffle;
-      this->codec.compressor = bloscCompressor;
       break;
-    case HDF5CompressBshuf:
-      {
+    case HDF5CompressBshuf: {
            /* 0 to 3 (inclusive) param slots are reserved. */
           unsigned int cds[2];
           cds[1] = 2; /* lz4 compression */
