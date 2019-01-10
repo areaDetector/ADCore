@@ -126,12 +126,15 @@ ifeq ($(WITH_HDF5),YES)
   $(DBD_NAME)_DBD += NDFileHDF5.dbd
   ifeq ($(HDF5_EXTERNAL),NO)
     PROD_LIBS += hdf5
+    PROD_LIBS += hdf5_hl
   else
     ifdef HDF5_LIB
       hdf5_DIR     = $(HDF5_LIB)
       PROD_LIBS     += hdf5
+      PROD_LIBS     += hdf5_hl
     else
       PROD_SYS_LIBS += hdf5
+      PROD_SYS_LIBS += hdf5_hl
     endif
   endif
   ifeq ($(HDF5_STATIC_BUILD), NO)
