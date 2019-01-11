@@ -45,16 +45,6 @@ and close.
     :align: center
     :width: 400 px
 
-Installation, configuration, and running
-----------------------------------------
-
-Installation instructions for release R2-0 and later can be found on
-`INSTALL_GUIDE.md <https://github.com/areaDetector/areaDetector/blob/master/INSTALL_GUIDE.md>`__
-on Github.
-
-For releases prior to R2-0 the version of this document contained in the
-source code release contains the installation instructions.
-
 Acknowledgements and licenses
 -----------------------------
 
