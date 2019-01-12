@@ -261,12 +261,18 @@ asynStatus NDFileHDF5Dataset::writeFile(NDArray *pArray, hid_t datatype, hid_t d
     asynPrint(this->pAsynUser_, ASYN_TRACE_FLOW,
               "%s::%s NDArray correctly chunked. Using direct chunk write\n",
               fileName, functionName);
+    size_t size = pArray->compressedSize;
+    if (pArray->codec.empty()) {
+        NDArrayInfo_t info;
+        pArray->getInfo(&info);
+        size = info.totalBytes;
+    }
     #if H5_VERSION_GE(1, 10, 3)
     hdfstatus = H5Dwrite_chunk(this->dataset_, H5P_DEFAULT, 0x0,
-                               this->offset_, pArray->compressedSize, pArray->pData);
+                               this->offset_, size, pArray->pData);
     #else  // Use deprecated method
     hdfstatus = H5DOwrite_chunk(this->dataset_, H5P_DEFAULT, 0x0,
-                                this->offset_, pArray->compressedSize, pArray->pData);
+                                this->offset_, size, pArray->pData);
     #endif
   } else {
     // Either direct chunk write is not available, or we need to use the HDF5 pipeline for
