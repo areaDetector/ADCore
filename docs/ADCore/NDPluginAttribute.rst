@@ -43,6 +43,11 @@ class
 documentation <areaDetectorDoxygenHTML/class_n_d_plugin_attribute.html>`__
 describes this class in detail.
 
+.. note::
+   The plugin only supports epicsFloat64 type NDAttribute data at the
+   moment. Any data of other numeric types will be converted. String
+   attributes are not supported.
+
 NDPluginAttribute defines the following parameters. It also implements
 all of the standard plugin parameters from :doc:`NDPluginDriver`
 
@@ -345,8 +350,4 @@ second shows NDArrayEpicsTSnSec.
 .. image:: NDPluginAttributeTSEpicsTSnSec.png
     :width: 48 %
 
-.. note::
-   The plugin only supports epicsFloat64 type NDAttribute data at the
-   moment. Any data of other numeric types will be converted. String
-   attributes are not supported.
 
