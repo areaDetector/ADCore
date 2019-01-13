@@ -345,10 +345,8 @@ second shows NDArrayEpicsTSnSec.
 .. image:: NDPluginAttributeTSEpicsTSnSec.png
     :width: 48 %
 
-Notes
------
-
--  The plugin only supports epicsFloat64 type NDAttribute data at the
+.. note::
+   The plugin only supports epicsFloat64 type NDAttribute data at the
    moment. Any data of other numeric types will be converted. String
    attributes are not supported.
 
