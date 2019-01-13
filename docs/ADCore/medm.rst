@@ -45,9 +45,3 @@ and close.
     :align: center
     :width: 400 px
 
-Acknowledgements and licenses
------------------------------
-
-"This software is based in part on the work of the Independent JPEG
-Group".
-
