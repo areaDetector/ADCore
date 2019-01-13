@@ -1,8 +1,7 @@
 Overview
 ========
 
-A powerful feature of the `EPICS <http://www.aps.anl.gov/epics/>`__
-`areaDetector <areaDetectorDoc.html>`__ module is the concept of
+A powerful feature of the areaDetector module is the concept of
 plugins. A plugin is code that is called by a driver that passes NDArray
 data in a callback. Plugins can be used to process array data in real
 time. Existing plugins do operations such as compute statistics
