@@ -48,7 +48,7 @@ following are the attribute conventions used in current plugins:
 
 .. raw:: html
 
-  <table border="1" cellpadding="2" cellspacing="2" style="text-align: left">
+  <table class="table table-bordered" border="1" cellpadding="2" cellspacing="2" style="text-align: left">
     <tbody>
       <tr>
         <td align="center" colspan="4">
@@ -320,7 +320,7 @@ loading ADBase.template.
 
 .. raw:: html
 
-  <table border="1" cellpadding="2" cellspacing="2" style="text-align: left">
+  <table class="table table-bordered" border="1" cellpadding="2" cellspacing="2" style="text-align: left">
     <tbody>
       <tr>
         <td align="center" colspan="7">
