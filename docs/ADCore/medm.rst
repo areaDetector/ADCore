@@ -1,5 +1,5 @@
 MEDM screens
-------------
+============
 
 The following is the top-level MEDM screen that provides links to the
 screens for most of the detectors and plugins that areaDetector

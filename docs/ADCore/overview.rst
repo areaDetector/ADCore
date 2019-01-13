@@ -1,5 +1,5 @@
 Overview
---------
+========
 
 The areaDetector module provides a general-purpose interface for area
 (2-D) detectors in `EPICS <http://www.aps.anl.gov/epics/>`__. It is

@@ -1,5 +1,5 @@
 Guidelines and rules for drivers
---------------------------------
+================================
 
 The following are guidelines and rules for writing areaDetector drivers
 

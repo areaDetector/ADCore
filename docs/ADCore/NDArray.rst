@@ -1,8 +1,8 @@
 NDArray
--------
+=======
 
 NDArray
-~~~~~~~
+-------
 
 The NDArray (N-Dimensional array) is the class that is used for passing
 detector data from drivers to plugins. An NDArray is a general purpose
@@ -21,7 +21,7 @@ documentation <areaDetectorDoxygenHTML/class_n_d_array.html>`__\ describes
 this class in detail.
 
 NDArrayPool
-~~~~~~~~~~~
+-----------
 
 The NDArrayPool class manages a free list (pool) of NDArray objects.
 Drivers allocate NDArray objects from the pool, and pass these objects
@@ -34,7 +34,7 @@ documentation <areaDetectorDoxygenHTML/class_n_d_array_pool.html>`__\ describes
 this class in detail.
 
 NDAttribute
-~~~~~~~~~~~
+-----------
 
 The NDAttribute is a class for linking metadata to an NDArray. An
 NDattribute has a name, description, data type, value, source type and
@@ -166,7 +166,7 @@ documentation <areaDetectorDoxygenHTML/class_n_d_attribute.html>`__
 describes this class in detail.
 
 NDAttributeList
-~~~~~~~~~~~~~~~
+---------------
 
 The NDAttributeList implements a linked list of NDAttribute objects.
 NDArray objects contain an NDAttributeList which is how attributes are
@@ -205,7 +205,7 @@ documentation <areaDetectorDoxygenHTML/class_n_d_attribute_list.html>`__
 describes this class in detail.
 
 PVAttribute
-~~~~~~~~~~~
+-----------
 
 The PVAttribute class is derived from NDAttribute. It obtains its value
 by monitor callbacks from an EPICS PV, and is thus used to associate
@@ -215,7 +215,7 @@ documentation <areaDetectorDoxygenHTML/class_p_v_attribute.html>`__
 describes this class in detail.
 
 paramAttribute
-~~~~~~~~~~~~~~
+--------------
 
 The paramAttribute class is derived from NDAttribute. It obtains its
 value from the current value of a driver or plugin parameter. The
@@ -227,7 +227,7 @@ documentation <areaDetectorDoxygenHTML/classparam_attribute.html>`__
 describes this class in detail.
 
 functAttribute
-~~~~~~~~~~~~~~
+--------------
 
 The functAttribute class is derived from NDAttribute. It obtains its
 value from a user-written C++ function. The functAttribute class is thus
@@ -238,7 +238,7 @@ documentation <areaDetectorDoxygenHTML/classfunct_attribute.html>`__
 describes this class in detail.
 
 asynNDArrayDriver
-~~~~~~~~~~~~~~~~~
+-----------------
 
 asynNDArrayDriver inherits from asynPortDriver. It implements the
 asynGenericPointer functions for NDArray objects. This is the class from
