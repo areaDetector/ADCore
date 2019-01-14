@@ -11,4 +11,6 @@ areaDetector Plugins
     plugin_medm
     common_plugins
     plugin_performance
+    NDPluginAttrPlot
     NDPluginAttribute
+    NDPluginCircularBuff
