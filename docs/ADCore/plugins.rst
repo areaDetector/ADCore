@@ -15,3 +15,4 @@ areaDetector Plugins
     NDPluginAttribute
     NDPluginCircularBuff
     NDPluginCodec
+    NDPluginColorConvert
