@@ -33,7 +33,7 @@ also automatically restart if the following condition is true:
 
 ::
 
-        (PresetTriggerCount == 0) || ((PresetTriggerCount > 0) && (ActualTriggerCount < PresetTriggerCount)))
+    (PresetTriggerCount == 0) || ((PresetTriggerCount > 0) && (ActualTriggerCount < PresetTriggerCount)))
        
 
 NDPluginCircularBuff inherits from NDPluginDriver. The
@@ -474,9 +474,8 @@ The following is the MEDM screen that provides access to the parameters
 in NDPluginDriver.h and NDPluginCircularBuff.h through records in
 NDPluginBase.template and NDCircularBuff.template.
 
-.. figure:: NDCircularBuff.png
-   
-    NDCircularBuff.adl
+.. image:: NDCircularBuff.png
+    :align: center 
 
 Configuration
 -------------
