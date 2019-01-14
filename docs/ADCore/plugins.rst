@@ -14,3 +14,4 @@ areaDetector Plugins
     NDPluginAttrPlot
     NDPluginAttribute
     NDPluginCircularBuff
+    NDPluginCodec
