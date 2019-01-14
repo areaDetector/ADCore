@@ -14,7 +14,7 @@ possible.
 
 .. raw:: html
 
-  <table class="table table-bordered" border="1" cellpadding="2" cellspacing="2" style="text-align: left">
+  <table class="table table-bordered">
     <tbody>
       <tr>
         <td align="center" colspan="7">
@@ -49,19 +49,19 @@ possible.
           <b>Information about the detector</b> </td>
       </tr>
       <tr>
-        <td class="style1">
+        <td>
           ADManufacturer </td>
-        <td class="style1">
+        <td>
           asynOctet </td>
-        <td class="style1">
+        <td>
           r/o </td>
-        <td class="style1">
+        <td>
           Detector manufacturer name </td>
-        <td class="style1">
+        <td>
           MANUFACTURER </td>
-        <td class="style1">
+        <td>
           $(P)$(R)Manufacturer_RBV </td>
-        <td class="style1">
+        <td>
           stringin </td>
       </tr>
       <tr>
