@@ -17,3 +17,4 @@ areaDetector Plugins
     NDPluginCodec
     NDPluginColorConvert
     NDPluginFFT
+    NDPluginFile
