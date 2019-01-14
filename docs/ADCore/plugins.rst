@@ -20,3 +20,4 @@ areaDetector Plugins
     NDPluginFile
     NDPluginGather
     NDPluginOverlay
+    NDPluginProcess
