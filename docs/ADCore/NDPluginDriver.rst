@@ -27,7 +27,7 @@ are just a single name, for example ``NDPluginDriverArrayPort``.
 .. raw:: html
 
     
-  <table class="table table-striped" border="1" cellpadding="2" cellspacing="2" style="text-align: left">
+  <table class="table table-bordered">
     <tbody>
       <tr>
         <td align="center" colspan="7,">
