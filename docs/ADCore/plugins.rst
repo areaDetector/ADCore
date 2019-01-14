@@ -21,3 +21,4 @@ areaDetector Plugins
     NDPluginGather
     NDPluginOverlay
     NDPluginProcess
+    NDPluginPva
