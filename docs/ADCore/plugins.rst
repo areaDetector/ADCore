@@ -18,3 +18,4 @@ areaDetector Plugins
     NDPluginColorConvert
     NDPluginFFT
     NDPluginFile
+    NDPluginGather
