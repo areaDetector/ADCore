@@ -302,7 +302,7 @@ at least as large as the array size in bytes.
 Configuration
 -------------
 
-The NDPluginAttribute plugin is created with the NDAttrConfigure
+The NDPluginAttribute plugin is created with the ``NDAttrConfigure``
 command, either from C/C++ or from the EPICS IOC shell.
 
 .. code:: cpp
@@ -317,7 +317,7 @@ maxAttributes defines the maximum number of attributes that this plugin
 will support.
 
 For details on the meaning of the parameters to this function refer to
-the detailed documentation on the NDAttrConfigure function in the
+the detailed documentation on the ``NDAttrConfigure`` function in the
 `NDPluginAttribute.cpp
 documentation <areaDetectorDoxygenHTML/_n_d_plugin_attribute_8cpp.html>`__
 and in the documentation for the constructor for the `NDPluginAttribute
