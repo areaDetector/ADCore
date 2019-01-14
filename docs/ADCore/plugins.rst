@@ -16,3 +16,4 @@ areaDetector Plugins
     NDPluginCircularBuff
     NDPluginCodec
     NDPluginColorConvert
+    NDPluginFFT
