@@ -23,3 +23,4 @@ areaDetector Plugins
     NDPluginProcess
     NDPluginPva
     NDPluginROI
+    NDPluginROIStat
