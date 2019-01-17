@@ -40,7 +40,7 @@ AveragingTime.
 
 NDPluginTimeSeries inherits from NDPluginDriver. The `NDPluginTimeSeries
 class
-documentation <areaDetectorDoxygenHTML/class_n_d_plugin_time_series.html>`__
+documentation <../areaDetectorDoxygenHTML/class_n_d_plugin_time_series.html>`__
 describes this class in detail.
 
 Several database template files are provided:
