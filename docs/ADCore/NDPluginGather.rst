@@ -31,7 +31,7 @@ describes this class in detail.
 
 NDPluginGather.h defines the following parameters. It also implements
 all of the standard plugin parameters from
-:doc: `NDPluginDriver`. It extends the
+:doc:`NDPluginDriver`. It extends the
 standard NDPluginDriverArrayPort and NDPluginDriverArrayAddr parameters
 by supporting more than one asyn address field for each, i.e. there can
 be multiple NDArrayPort and NDArrayAddr records, each specifying a
