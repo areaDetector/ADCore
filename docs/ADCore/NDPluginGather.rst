@@ -26,7 +26,7 @@ NDPluginGather inherits from NDPluginDriver. NDPluginGather does not do
 any modification to the NDArrays that it receives except for possibly
 adding new NDAttributes if an attribute file is specified. The
 `NDPluginGather class
-documentation <areaDetectorDoxygenHTML/class_n_d_plugin_gather.html>`__
+documentation <../areaDetectorDoxygenHTML/class_n_d_plugin_gather.html>`__
 describes this class in detail.
 
 NDPluginGather.h defines the following parameters. It also implements
@@ -133,9 +133,9 @@ either from C/C++ or from the EPICS IOC shell.
 For details on the meaning of the parameters to this function refer to
 the detailed documentation on the NDGatherConfigure function in the
 `NDPluginGather.cpp
-documentation <areaDetectorDoxygenHTML/_n_d_plugin_gather_8cpp.html>`__
+documentation <../areaDetectorDoxygenHTML/_n_d_plugin_gather_8cpp.html>`__
 and in the documentation for the constructor for the `NDPluginGather
-class <areaDetectorDoxygenHTML/class_n_d_plugin_gather.html>`__.
+class <../areaDetectorDoxygenHTML/class_n_d_plugin_gather.html>`__.
 
 Screen shots
 ------------

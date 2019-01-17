@@ -12,7 +12,7 @@ most of the details of processing NDArray callbacks from the driver.
 Plugins derived from this class typically need to implement the
 processCallbacks method, and one or more of the write(Int32, Float64,
 Octet) methods. The `NDPluginDriver class
-documentation <areaDetectorDoxygenHTML/class_n_d_plugin_driver.html>`__ 
+documentation <../areaDetectorDoxygenHTML/class_n_d_plugin_driver.html>`__ 
 describes this class in detail.
 
 NDPluginDriver defines parameters that all plugin drivers should

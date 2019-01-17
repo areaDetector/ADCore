@@ -15,7 +15,7 @@ attributes of the array are preserved.
 
 NDPluginColorConvert inherits from NDPluginDriver. The
 `NDPluginColorConvert class
-documentation <areaDetectorDoxygenHTML/class_n_d_plugin_color_convert.html>`__
+documentation <../areaDetectorDoxygenHTML/class_n_d_plugin_color_convert.html>`__
 describes this class in detail.
 
 NDPluginColorConvert defines the following parameters. It also
@@ -119,10 +119,10 @@ either from C/C++ or from the EPICS IOC shell.
 For details on the meaning of the parameters to this function refer to
 the detailed documentation on the NDColorConvertConfigure function in
 the `NDPluginColorConvert.cpp
-documentation <areaDetectorDoxygenHTML/_n_d_plugin_color_convert_8cpp.html>`__
+documentation <../areaDetectorDoxygenHTML/_n_d_plugin_color_convert_8cpp.html>`__
 and in the documentation for the constructor for the
 `NDPluginColorConvert
-class <areaDetectorDoxygenHTML/class_n_d_plugin_color_convert.html>`__.
+class <../areaDetectorDoxygenHTML/class_n_d_plugin_color_convert.html>`__.
 
 Screen shots
 ------------

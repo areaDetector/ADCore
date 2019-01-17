@@ -40,7 +40,7 @@ started an stopped at the same time.
 
 NDPluginAttribute inherits from NDPluginDriver. The `NDPluginAttribute
 class
-documentation <areaDetectorDoxygenHTML/class_n_d_plugin_attribute.html>`__
+documentation <../areaDetectorDoxygenHTML/class_n_d_plugin_attribute.html>`__
 describes this class in detail.
 
 .. note::
@@ -319,9 +319,9 @@ will support.
 For details on the meaning of the parameters to this function refer to
 the detailed documentation on the ``NDAttrConfigure`` function in the
 `NDPluginAttribute.cpp
-documentation <areaDetectorDoxygenHTML/_n_d_plugin_attribute_8cpp.html>`__
+documentation <../areaDetectorDoxygenHTML/_n_d_plugin_attribute_8cpp.html>`__
 and in the documentation for the constructor for the `NDPluginAttribute
-class <areaDetectorDoxygenHTML/class_n_d_plugin_attribute.html>`__.
+class <../areaDetectorDoxygenHTML/class_n_d_plugin_attribute.html>`__.
 
 Screen shots
 ------------

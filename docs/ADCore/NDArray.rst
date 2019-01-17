@@ -15,9 +15,9 @@ An NDArray can have up to ND_ARRAY_MAX_DIMS dimensions, currently 10. A
 fixed maximum number of dimensions is used to significantly simplify the
 code compared to unlimited number of dimensions. Each dimension of the
 array is described by an `NDDimension
-structure <areaDetectorDoxygenHTML/struct_n_d_dimension.html>`__. The
+structure <../areaDetectorDoxygenHTML/struct_n_d_dimension.html>`__. The
 `NDArray class
-documentation <areaDetectorDoxygenHTML/class_n_d_array.html>`__\ describes
+documentation <../areaDetectorDoxygenHTML/class_n_d_array.html>`__\ describes
 this class in detail.
 
 NDArrayPool
@@ -30,7 +30,7 @@ place the object on their queue, and decrease the reference count when
 they are done processing the array. When the reference count reaches 0
 again the NDArray object is placed back on the free list. This mechanism
 minimizes the copying of array data in plugins. The `NDArrayPool class
-documentation <areaDetectorDoxygenHTML/class_n_d_array_pool.html>`__\ describes
+documentation <../areaDetectorDoxygenHTML/class_n_d_array_pool.html>`__\ describes
 this class in detail.
 
 NDAttribute
@@ -162,7 +162,7 @@ attribute name for ADManufacturer should be "Manufacturer",
 ADNumExposures should be "NumExposures", etc.
 
 The `NDAttribute class
-documentation <areaDetectorDoxygenHTML/class_n_d_attribute.html>`__
+documentation <../areaDetectorDoxygenHTML/class_n_d_attribute.html>`__
 describes this class in detail.
 
 NDAttributeList
@@ -201,7 +201,7 @@ command:
 
 
 The `NDAttributeList class
-documentation <areaDetectorDoxygenHTML/class_n_d_attribute_list.html>`__
+documentation <../areaDetectorDoxygenHTML/class_n_d_attribute_list.html>`__
 describes this class in detail.
 
 PVAttribute
@@ -211,7 +211,7 @@ The PVAttribute class is derived from NDAttribute. It obtains its value
 by monitor callbacks from an EPICS PV, and is thus used to associate
 current the value of any EPICS PV with an NDArray. The `PVAttribute
 class
-documentation <areaDetectorDoxygenHTML/class_p_v_attribute.html>`__
+documentation <../areaDetectorDoxygenHTML/class_p_v_attribute.html>`__
 describes this class in detail.
 
 paramAttribute
@@ -223,7 +223,7 @@ paramAttribute class is typically used when it is important to have the
 current value of the parameter and the value of a corresponding
 PVAttribute might not be current because the EPICS PV has not yet
 updated. The `paramAttribute class
-documentation <areaDetectorDoxygenHTML/classparam_attribute.html>`__
+documentation <../areaDetectorDoxygenHTML/classparam_attribute.html>`__
 describes this class in detail.
 
 functAttribute
@@ -234,7 +234,7 @@ value from a user-written C++ function. The functAttribute class is thus
 very general, and can be used to add almost any information to an
 NDArray. ADCore contains example code, myAttributeFunctions.cpp that
 demonstates how to write such functions. The `functAttribute class
-documentation <areaDetectorDoxygenHTML/classfunct_attribute.html>`__
+documentation <../areaDetectorDoxygenHTML/classfunct_attribute.html>`__
 describes this class in detail.
 
 asynNDArrayDriver
@@ -244,11 +244,11 @@ asynNDArrayDriver inherits from asynPortDriver. It implements the
 asynGenericPointer functions for NDArray objects. This is the class from
 which both plugins and area detector drivers are indirectly derived. The
 `asynNDArrayDriver class
-documentation <areaDetectorDoxygenHTML/classasyn_n_d_array_driver.html>`__\ describes
+documentation <../areaDetectorDoxygenHTML/classasyn_n_d_array_driver.html>`__\ describes
 this class in detail.
 
 The file
-`asynNDArrayDriver.h <areaDetectorDoxygenHTML/asyn_n_d_array_driver_8h.html>`__
+`asynNDArrayDriver.h <../areaDetectorDoxygenHTML/asyn_n_d_array_driver_8h.html>`__
 defines a number of parameters that all NDArray drivers and plugins
 should implement if possible. These parameters are defined by strings
 (drvInfo strings in asyn) with an associated asyn interface, and access
@@ -270,7 +270,7 @@ The columns are defined as follows:
    driver through the drvUser interface. This string is used in the
    EPICS database file for generic asyn device support to associate a
    record with a particular parameter. It is also used to associate a
-   `paramAttribute <areaDetectorDoxygenHTML/classparam_attribute.html>`__
+   `paramAttribute <../areaDetectorDoxygenHTML/classparam_attribute.html>`__
    with a driver parameter in the XML file that is read by
    asynNDArrayDriver::readNDAttributesFile
 -  **EPICS record name:** The name of the record in ADBase.template.
@@ -723,7 +723,7 @@ loading ADBase.template.
         <td>
           The name of an XML file defining the NDAttributes to be added to each NDArray by
           this driver or plugin. The format of the XML file is described in the documentation
-          for <a href="areaDetectorDoxygenHTML/classasyn_n_d_array_driver.html">asynNDArrayDriver::readNDAttributesFile().</a>
+          for <a href="../areaDetectorDoxygenHTML/classasyn_n_d_array_driver.html">asynNDArrayDriver::readNDAttributesFile().</a>
         </td>
         <td>
           ND_ATTRIBUTES_FILE </td>

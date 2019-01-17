@@ -38,7 +38,7 @@ also automatically restart if the following condition is true:
 
 NDPluginCircularBuff inherits from NDPluginDriver. The
 `NDPluginCircularBuff class
-documentation <areaDetectorDoxygenHTML/class_n_d_plugin_circular_buff.html>`__
+documentation <../areaDetectorDoxygenHTML/class_n_d_plugin_circular_buff.html>`__
 describes this class in detail.
 
 NDPluginCircularBuff defines the following parameters. It also
@@ -494,10 +494,10 @@ shell.
 For details on the meaning of the parameters to this function refer to
 the detailed documentation on the NDCircularBuffConfigure function in
 the `NDPluginCircularBuff.cpp
-documentation <areaDetectorDoxygenHTML/_n_d_plugin_circular_buff_cpp.html>`__
+documentation <../areaDetectorDoxygenHTML/_n_d_plugin_circular_buff_cpp.html>`__
 and in the documentation for the constructor for the
 `NDPluginCircularBuff
-class <areaDetectorDoxygenHTML/class_n_d_plugin_circular_buff.html>`__.
+class <../areaDetectorDoxygenHTML/class_n_d_plugin_circular_buff.html>`__.
 
 In particular, note that maxBuffers constrains the size of the ring
 buffer - the plugin will discard any changes to the pre- or post count

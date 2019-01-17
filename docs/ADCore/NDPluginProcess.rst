@@ -37,7 +37,7 @@ NDPluginProcess is fully N-dimensional. It can be used for 2-D images,
 3-D (color) images, or any type of N-dimensional data.
 
 NDPluginProcess inherits from NDPluginDriver. The `NDPluginProcess class
-documentation <areaDetectorDoxygenHTML/class_n_d_plugin_process.html>`__
+documentation <../areaDetectorDoxygenHTML/class_n_d_plugin_process.html>`__
 describes this class in detail.
 
 NDPluginProcess.h defines the following parameters. It also implements
@@ -1385,9 +1385,9 @@ command, either from C/C++ or from the EPICS IOC shell.
 For details on the meaning of the parameters to this function refer to
 the detailed documentation on the NDProcessConfigure function in the
 `NDPluginProcess.cpp
-documentation <areaDetectorDoxygenHTML/_n_d_plugin_process_8cpp.html>`__
+documentation <../areaDetectorDoxygenHTML/_n_d_plugin_process_8cpp.html>`__
 and in the documentation for the constructor for the `NDPluginProcess
-class <areaDetectorDoxygenHTML/class_n_d_plugin_process.html>`__.
+class <../areaDetectorDoxygenHTML/class_n_d_plugin_process.html>`__.
 
 Screen shots
 ------------

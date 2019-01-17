@@ -42,7 +42,7 @@ information normally comes from a database link to a record in the
 detector driver, but it can be manually specified as well.
 
 NDPluginFFT inherits from NDPluginDriver. The `NDPluginFFT class
-documentation <areaDetectorDoxygenHTML/class_n_d_plugin_f_f_t.html>`__
+documentation <../areaDetectorDoxygenHTML/class_n_d_plugin_f_f_t.html>`__
 describes this class in detail.
 
 NDPluginFFT defines the following parameters. It also implements all of

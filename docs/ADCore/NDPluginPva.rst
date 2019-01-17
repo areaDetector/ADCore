@@ -77,9 +77,9 @@ either from C/C++ or from the EPICS IOC shell.
 For details on the meaning of the parameters to this function refer to
 the detailed documentation on the NDPvaConfigure function in the
 `NDPluginPva.cpp
-documentation <areaDetectorDoxygenHTML/_n_d_plugin_pva_8cpp.html>`__ and
+documentation <../areaDetectorDoxygenHTML/_n_d_plugin_pva_8cpp.html>`__ and
 in the documentation for the constructor for the `NDPluginPva
-class <areaDetectorDoxygenHTML/class_n_d_plugin_pva.html>`__.
+class <../areaDetectorDoxygenHTML/class_n_d_plugin_pva.html>`__.
 
 The following MEDM screen for the NDPluginPva. The only item not in the
 base class screen is the readback of the EPICS V4 PV name.

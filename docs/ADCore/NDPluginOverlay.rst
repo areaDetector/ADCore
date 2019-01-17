@@ -38,7 +38,7 @@ NDPluginOverlay can only be used for 2-D arrays or 3-D color arrays, it
 is not fully N-dimensional.
 
 NDPluginOverlay inherits from NDPluginDriver. The `NDPluginOverlay class
-documentation <areaDetectorDoxygenHTML/class_n_d_plugin_overlay.html>`__
+documentation <../areaDetectorDoxygenHTML/class_n_d_plugin_overlay.html>`__
 describes this class in detail.
 
 NDPluginOverlay.h defines the following parameters. It also implements
@@ -643,9 +643,9 @@ command, either from C/C++ or from the EPICS IOC shell.
 For details on the meaning of the parameters to this function refer to
 the detailed documentation on the NDOverlayConfigure function in the
 `NDPluginOverlay.cpp
-documentation <areaDetectorDoxygenHTML/_n_d_plugin_overlay_8cpp.html>`__
+documentation <../areaDetectorDoxygenHTML/_n_d_plugin_overlay_8cpp.html>`__
 and in the documentation for the constructor for the `NDPluginOverlay
-class <areaDetectorDoxygenHTML/class_n_d_plugin_attribute.html>`__.
+class <../areaDetectorDoxygenHTML/class_n_d_plugin_attribute.html>`__.
 
 .. _Screens:
 

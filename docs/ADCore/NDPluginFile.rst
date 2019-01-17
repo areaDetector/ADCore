@@ -13,7 +13,7 @@ and GraphicsMagick. The GraphicsMagick plugin can write a large number
 of formats, including JPEG, TIFF, PNG, PDF and many others.
 
 NDPluginFile inherits from NDPluginDriver. The `NDPluginFile class
-documentation <areaDetectorDoxygenHTML/class_n_d_plugin_file.html>`__
+documentation <../areaDetectorDoxygenHTML/class_n_d_plugin_file.html>`__
 describes this class in detail. This class is designed to simplify the
 task of supporting a new file format. A derived class to support a new
 file format will typically need to implement only the pure virtual
@@ -123,7 +123,7 @@ NDPluginFile base class will deleted the driver file if all the
 conditions outlined above are met.
 
 The `NDFileNull class
-documentation <areaDetectorDoxygenHTML/class_n_d_file_null.html>`__\ describes
+documentation <../areaDetectorDoxygenHTML/class_n_d_file_null.html>`__\ describes
 this class in detail.
 
 The NDFileNull plugin is created with the NDFileNullConfigure command,
