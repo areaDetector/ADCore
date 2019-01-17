@@ -27,3 +27,6 @@ areaDetector Plugins
     NDPluginScatter
     NDPluginStats
     NDPluginTimeSeries
+    NDPluginTransform
+    NDPluginPos
+    ffmpegServer <ffmpegServer>
