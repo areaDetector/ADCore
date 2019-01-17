@@ -26,3 +26,4 @@ areaDetector Plugins
     NDPluginROIStat
     NDPluginScatter
     NDPluginStats
+    NDPluginTimeSeries
