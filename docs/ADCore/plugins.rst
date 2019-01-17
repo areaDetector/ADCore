@@ -1,0 +1,32 @@
+areaDetector Plugins
+=====================
+
+.. toctree:: 
+    :maxdepth: 2
+    :caption: Table of Contents
+
+    plugin_overview
+    NDPluginDriver
+    plugin_guidelines
+    plugin_medm
+    common_plugins
+    plugin_performance
+    NDPluginAttrPlot
+    NDPluginAttribute
+    NDPluginCircularBuff
+    NDPluginCodec
+    NDPluginColorConvert
+    NDPluginFFT
+    NDPluginFile
+    NDPluginGather
+    NDPluginOverlay
+    NDPluginProcess
+    NDPluginPva
+    NDPluginROI
+    NDPluginROIStat
+    NDPluginScatter
+    NDPluginStats
+    NDPluginTimeSeries
+    NDPluginTransform
+    NDPluginPos
+    ffmpegServer <ffmpegServer>

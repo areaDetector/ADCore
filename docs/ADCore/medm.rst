@@ -1,5 +1,5 @@
 MEDM screens
-------------
+============
 
 The following is the top-level MEDM screen that provides links to the
 screens for most of the detectors and plugins that areaDetector
@@ -44,10 +44,4 @@ and close.
 .. image:: ADEpicsShutter.png
     :align: center
     :width: 400 px
-
-Acknowledgements and licenses
------------------------------
-
-"This software is based in part on the work of the Independent JPEG
-Group".
 
