@@ -24,3 +24,4 @@ areaDetector Plugins
     NDPluginPva
     NDPluginROI
     NDPluginROIStat
+    NDPluginScatter
