@@ -4,6 +4,12 @@ NDPluginFile
 
 .. contents:: Contents
 
+.. toctree::
+    :maxdepth: 1
+    :caption: File Plugins
+
+    NDFileHDF5
+
 Overview
 --------
 
