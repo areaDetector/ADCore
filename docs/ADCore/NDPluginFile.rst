@@ -9,8 +9,11 @@ NDPluginFile
     :caption: File Plugins
 
     NDFileJPEG
+    NDFileTIFF
     NDFileHDF5
     NDFileNexus
+    NDFileMagick
+    NDFileNetCDF
 
 Overview
 --------
@@ -25,9 +28,10 @@ documentation <../areaDetectorDoxygenHTML/class_n_d_plugin_file.html>`__
 describes this class in detail. This class is designed to simplify the
 task of supporting a new file format. A derived class to support a new
 file format will typically need to implement only the pure virtual
-functions openFile(), readFile(), writeFile(), and closeFile(). Note
-that none of the current file plugins actually support the readFile()
-function yet, but this is planned for future releases.
+functions ``openFile()``, ``readFile()``, ``writeFile()``, and 
+``closeFile()``. Note that none of the current file plugins actually 
+support the ``readFile()`` function yet, but this is planned for future 
+releases.
 
 The NDArray callback data can be written to disk in 1 of 3 modes:
 
@@ -82,7 +86,10 @@ for that array if the following are all true:
 #. The array contains an attribute called "DriverFileName" that contains
    the full file name of the original file. The driver attributes XML
    file should contain a line like the following:
-   ``<Attribute name="DriverFileName" type="PARAM" source="FULL_FILE_NAME" datatype="string"         description="Driver file name"/>``
+
+   ::
+
+       <Attribute name="DriverFileName" type="PARAM" source="FULL_FILE_NAME" datatype="string" description="Driver file name"/>
 
 The file saving plugins normally determine the name of the file from the
 FileName and FileNumber records. However, it is possible to have these
