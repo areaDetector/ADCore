@@ -1,4 +1,5 @@
 NDPluginROI
+===========
 
 :author: Mark Rivers, University of Chicago
 
@@ -41,17 +42,17 @@ NDPluginROI inherits from NDPluginDriver. The `NDPluginROI class
 documentation <../areaDetectorDoxygenHTML/class_n_d_plugin_r_o_i.html>`__
 describes this class in detail.
 
-NDPluginROI.h defines the following parameters. It also implements all
+``NDPluginROI.h`` defines the following parameters. It also implements all
 of the standard plugin parameters from
-`NDPluginDriver <pluginDoc.html#NDPluginDriver>`__. The EPICS database
-NDROI.template provide access to these parameters, listed in the
+:doc:`NDPluginDriver`. The EPICS database
+``NDROI.template`` provide access to these parameters, listed in the
 following table. Note that to reduce the width of this table the
 parameter index variable names have been split into 2 lines, but these
 are just a single name, for example ``NDPluginROIName``.
 
 .. raw:: html
 
-  <table border="1" cellpadding="2" cellspacing="2" style="text-align: left">
+  <table class="table table-bordered">
     <tbody>
       <tr>
         <td align="center" colspan="7,">
