@@ -8,6 +8,7 @@ NDPluginFile
     :maxdepth: 1
     :caption: File Plugins
 
+    NDFileJPEG
     NDFileHDF5
     NDFileNexus
 
