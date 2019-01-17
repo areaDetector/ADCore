@@ -9,6 +9,7 @@ NDPluginFile
     :caption: File Plugins
 
     NDFileHDF5
+    NDFileNexus
 
 Overview
 --------

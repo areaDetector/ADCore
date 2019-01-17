@@ -6,7 +6,7 @@ NDFileNexus
 .. contents:: Contents
 
 Overview
-========
+--------
 
 A plugin to write `NeXus <http://www.nexusformat.org/Main_Page>`__ files
 was written by John Hammonds from the APS. NeXus is a standard format
@@ -15,8 +15,8 @@ This is a very general file format, capable of storing any type of array
 data and meta-data.
 
 The `NDFileNexus class
-documentation <areaDetectorDoxygenHTML/class_n_d_file_nexus.html>`__\ describes
-this class in detail.
+documentation <../areaDetectorDoxygenHTML/class_n_d_file_nexus.html>`__
+describes this class in detail.
 
 The NDFileNexus plugin is created with the ``NDFileNexusConfigure`` command,
 either from C/C++ or from the EPICS IOC shell.
@@ -31,64 +31,82 @@ either from C/C++ or from the EPICS IOC shell.
 For details on the meaning of the parameters to this function refer to
 the detailed documentation on the NDFileNexusConfigure function in the
 `NDFileNexus.cpp
-documentation <areaDetectorDoxygenHTML/_n_d_file_nexus_8cpp.html>`__ and
+documentation <../areaDetectorDoxygenHTML/_n_d_file_nexus_8cpp.html>`__ and
 in the documentation for the constructor for the `NDFileNexus
-class <areaDetectorDoxygenHTML/class_n_d_file_nexus.html>`__.
+class <../areaDetectorDoxygenHTML/class_n_d_file_nexus.html>`__.
 
 NDFileNeXus uses 2 additional parameters to define the location of an
 XML file that is read to determine the contents of the NeXus files
 written by this plugin. These are described in the following table.
 
-**Parameter Definitions in NDFileNexus.h and EPICS Record Definitions in
-NDFileNexus.template**
+.. raw:: html
 
-Parameter index variable
+  <table class="table table-bordered">
+    <tbody>
+      <tr>
+        <td align="center" colspan="7,">
+          <b>Parameter Definitions in NDFileNexus.h and EPICS Record Definitions in NDFileNexus.template</b>
+        </td>
+      </tr>
+      <tr>
+        <th>
+          Parameter index variable</th>
+        <th>
+          asyn interface</th>
+        <th>
+          Access</th>
+        <th>
+          Description</th>
+        <th>
+          drvInfo string</th>
+        <th>
+          EPICS record name</th>
+        <th>
+          EPICS record type</th>
+      </tr>
+      <tr>
+        <td align="center" colspan="7,">
+          <b>Location of XML file to configure NeXus file contents</b></td>
+      </tr>
+      <tr>
+        <td>
+          NDFileNexusTemplatePath</td>
+        <td>
+          asynOctet</td>
+        <td>
+          r/w</td>
+        <td>
+          Path to XML template file</td>
+        <td>
+          TEMPLATE_FILE_PATH</td>
+        <td>
+          $(P)$(R)TemplateFilePath<br />
+          $(P)$(R)TemplateFilePath_RBV</td>
+        <td>
+          waveform<br />
+          waveform</td>
+      </tr>
+      <tr>
+        <td>
+          NDFileNexusTemplateFile</td>
+        <td>
+          asynOctet</td>
+        <td>
+          r/w</td>
+        <td>
+          Name of XML template file</td>
+        <td>
+          TEMPLATE_FILE_NAME</td>
+        <td>
+          $(P)$(R)TemplateFileName<br />
+          $(P)$(R)TemplateFileName_RBV</td>
+        <td>
+          waveform<br />
+          waveform</td>
+      </tr>
+    </tbody>
+  </table>
 
-asyn interface
-
-Access
-
-Description
-
-drvInfo string
-
-EPICS record name
-
-EPICS record type
-
-**Location of XML file to configure NeXus file contents**
-
-NDFileNexusTemplatePath
-
-asynOctet
-
-r/w
-
-Path to XML template file
-
-TEMPLATE_FILE_PATH
-
-| $(P)$(R)TemplateFilePath
-| $(P)$(R)TemplateFilePath_RBV
-
-| waveform
-| waveform
-
-NDFileNexusTemplateFile
-
-asynOctet
-
-r/w
-
-Name of XML template file
-
-TEMPLATE_FILE_NAME
-
-| $(P)$(R)TemplateFileName
-| $(P)$(R)TemplateFileName_RBV
-
-| waveform
-| waveform
 
 There is currently no documentation on the contents of the XML template
 file. However, there are example XML template files in the
@@ -110,18 +128,9 @@ Since users may want to install areaDetector on older Linux systems
 older version of HDF5. Future releases of areaDetector may use HDF5
 1.8.2 or later, and hence not work with older Linux systems.
 
-.. raw:: html
+Screen Shots
+------------
 
-   <div style="text-align: center">
-
-.. rubric:: NDFileNexus.adl
-   :name: ndfilenexus.adl
-
-|NDFileNexus.png|
-
-.. raw:: html
-
-   </div>
-
-.. |NDFileNexus.png| image:: NDFileNexus.png
+.. figure:: NDFileNexus.png
+    :align: center
 
