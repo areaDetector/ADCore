@@ -25,3 +25,4 @@ areaDetector Plugins
     NDPluginROI
     NDPluginROIStat
     NDPluginScatter
+    NDPluginStats
