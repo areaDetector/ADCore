@@ -442,15 +442,15 @@ NDArray *decompressBlosc(NDArray *input, int numThreads, NDCodecStatus_t *status
 
 #else
 
-NDArray *compressBlosc(NDArray*, int , bool , NDCodecBloscComp_t, 
-                       int, NDCodecStatus_t *status, char *errorMessage)
+NDArray *compressBlosc(NDArray *input, int clevel, int shuffle, NDCodecBloscComp_t compressor, 
+                       int numThreads, NDCodecStatus_t *status, char *errorMessage)
 {
     sprintf(errorMessage, "No Blosc support");
     *status = NDCODEC_ERROR;
     return NULL;
 }
 
-NDArray *decompressBlosc(NDArray*, int, NDCodecStatus_t *status, char *errorMessage)
+NDArray *decompressBlosc(NDArray *input, int numThreads, NDCodecStatus_t *status, char *errorMessage)
 {
     sprintf(errorMessage, "No Blosc support");
     *status = NDCODEC_ERROR;
