@@ -22,6 +22,7 @@ INC += ADCoreVersion.h
 INC += NDAttribute.h
 INC += NDAttributeList.h
 INC += NDArray.h
+INC += Codec.h
 INC += PVAttribute.h
 INC += paramAttribute.h
 INC += functAttribute.h

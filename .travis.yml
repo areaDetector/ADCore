@@ -1,25 +1,16 @@
 sudo: required
 language: cpp
 compiler: gcc
-
 env:
-  - EPICS_HOST_ARCH=linux-x86_64
-  
+- EPICS_HOST_ARCH=linux-x86_64
 before_install:
-   - bash ci/install-packages.sh     # Install all required packages (EPICS base, asyn, ADSupport, Debian packages)
-  
-install: 
-  - make
-
-# Run the tests
+- bash ci/install-packages.sh
+install:
+- make
 script:
-  - ./bin/linux-x86_64/plugin-test --log_level=test_suite
-
-# If all worked then work out the coverage and update coveralls.io
+- "./bin/linux-x86_64/plugin-test --log_level=test_suite"
 after_success:
-  - sh ci/coverage.sh
-  - coveralls-lcov --source-encoding=ISO-8859-1 ci/coverage.info
-
+- sh ci/coverage.sh
+- coveralls-lcov --source-encoding=ISO-8859-1 ci/coverage.info
 notifications:
-  slack: epicsareadetector:iA2hBZvqiHGpBzS7T0IktsmJ
-  
+  slack: epicsareadetector:xf0ac8PfwqcSqi2gE0tUcUkP

@@ -817,6 +817,8 @@ asynNDArrayDriver::asynNDArrayDriver(const char *portName, int maxAddr, int maxB
     createParam(NDEpicsTSSecString,           asynParamInt32,           &NDEpicsTSSec);
     createParam(NDEpicsTSNsecString,          asynParamInt32,           &NDEpicsTSNsec);
     createParam(NDBayerPatternString,         asynParamInt32,           &NDBayerPattern);
+    createParam(NDCodecString,                asynParamOctet,           &NDCodec);
+    createParam(NDCompressedSizeString,       asynParamInt32,           &NDCompressedSize);
     createParam(NDArrayCounterString,         asynParamInt32,           &NDArrayCounter);
     createParam(NDFilePathString,             asynParamOctet,           &NDFilePath);
     createParam(NDFilePathExistsString,       asynParamInt32,           &NDFilePathExists);

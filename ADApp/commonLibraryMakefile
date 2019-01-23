@@ -94,12 +94,16 @@ endif
 ifeq ($(WITH_HDF5),YES)
   ifeq ($(HDF5_EXTERNAL),NO)
     LIB_LIBS += hdf5
+    LIB_LIBS += hdf5_hl
   else
     ifdef HDF5_LIB
       hdf5_DIR     = $(HDF5_LIB)
+      hdf5_hl_DIR  = $(HDF5_LIB)
       LIB_LIBS     += hdf5
+      LIB_LIBS     += hdf5_hl
     else
       LIB_SYS_LIBS += hdf5
+      LIB_SYS_LIBS += hdf5_hl
     endif
   endif
   ifeq ($(HDF5_STATIC_BUILD), NO)
@@ -108,6 +112,19 @@ ifeq ($(WITH_HDF5),YES)
   else
     USR_CXXFLAGS_WIN32    += -DH5_BUILT_AS_STATIC_LIB
     USR_CFLAGS_WIN32      += -DH5_BUILT_AS_STATIC_LIB
+  endif
+endif
+
+ifeq ($(WITH_BITSHUFFLE),YES)
+  ifeq ($(BITSHUFFLE_EXTERNAL),NO)
+    LIB_LIBS += bitshuffle
+  else
+    ifdef BITSHUFFLE_LIB
+      bitshuffle_DIR = $(BITSHUFFLE_LIB)
+      LIB_LIBS     += bitshuffle
+    else
+      LIB_SYS_LIBS += bitshuffle
+    endif
   endif
 endif
 

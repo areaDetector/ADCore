@@ -126,12 +126,15 @@ ifeq ($(WITH_HDF5),YES)
   $(DBD_NAME)_DBD += NDFileHDF5.dbd
   ifeq ($(HDF5_EXTERNAL),NO)
     PROD_LIBS += hdf5
+    PROD_LIBS += hdf5_hl
   else
     ifdef HDF5_LIB
       hdf5_DIR     = $(HDF5_LIB)
       PROD_LIBS     += hdf5
+      PROD_LIBS     += hdf5_hl
     else
       PROD_SYS_LIBS += hdf5
+      PROD_SYS_LIBS += hdf5_hl
     endif
   endif
   ifeq ($(HDF5_STATIC_BUILD), NO)
@@ -140,6 +143,19 @@ ifeq ($(WITH_HDF5),YES)
   else
     USR_CXXFLAGS_WIN32    += -DH5_BUILT_AS_STATIC_LIB
     USR_CFLAGS_WIN32      += -DH5_BUILT_AS_STATIC_LIB
+  endif
+endif
+
+ifeq ($(WITH_BITSHUFFLE),YES)
+  ifeq ($(BITSHUFFLE_EXTERNAL),NO)
+    PROD_LIBS += bitshuffle
+  else
+    ifdef BITSHUFFLE_LIB
+      bitshuffle_DIR = $(BITSHUFFLE_LIB)
+      PROD_LIBS     += bitshuffle
+    else
+      PROD_SYS_LIBS += bitshuffle
+    endif
   endif
 endif
 

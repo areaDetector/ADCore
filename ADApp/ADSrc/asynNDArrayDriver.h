@@ -58,6 +58,8 @@ typedef enum {
 #define NDEpicsTSSecString      "EPICS_TS_SEC"      /**< (asynInt32,    r/o) EPOCS time stamp secPastEpoch of array */
 #define NDEpicsTSNsecString     "EPICS_TS_NSEC"     /**< (asynInt32,    r/o) EPOCS time stamp nsec of array */
 #define NDBayerPatternString    "BAYER_PATTERN"     /**< (asynInt32,    r/o) Bayer pattern of array  (from bayerPattern array attribute if present) */
+#define NDCodecString           "CODEC"             /**< (asynOctet,    r/o) Codec name */
+#define NDCompressedSizeString  "COMPRESSED_SIZE"   /**< (asynInt32,    r/o) Compressed size in bytes */
 
 /* Statistics on number of arrays collected */
 #define NDArrayCounterString    "ARRAY_COUNTER"     /**< (asynInt32,    r/w) Number of arrays since last reset */
@@ -164,6 +166,8 @@ protected:
     int NDEpicsTSSec;
     int NDEpicsTSNsec;
     int NDBayerPattern;
+    int NDCodec;
+    int NDCompressedSize;
     int NDArrayCounter;
     int NDFilePath;
     int NDFilePathExists;

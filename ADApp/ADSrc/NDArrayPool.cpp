@@ -157,8 +157,8 @@ NDArray* NDArrayPool::alloc(int ndims, size_t *dims, NDDataType_t dataType, size
   /* Erase the attributes if that global flag is set */
   if (eraseNDAttributes) pArray->pAttributeList->clear();
   
-  /* Set the codec field to "" */
-  pArray->codec = "";
+  /* Clear codec */
+  pArray->codec.clear();
 
   /* At this point pArray exists, but pArray->pData may be NULL */
   /* If the caller passed a valid buffer use that */
@@ -246,7 +246,7 @@ NDArray* NDArrayPool::copy(NDArray *pIn, NDArray *pOut, bool copyData, bool copy
   if (copyDataType) {
     pOut->dataType = pIn->dataType;
   }
-  pOut->codec = pIn->codec;
+  pOut->codec.name = pIn->codec.name;
   pOut->compressedSize = pIn->compressedSize;
   if (copyData) {
     pIn->getInfo(&arrayInfo);
@@ -558,7 +558,7 @@ int NDArrayPool::convert(NDArray *pIn,
   /* Can't convert compressed data */
   if (!pIn->codec.empty()) {
     fprintf(stderr, "%s:%s: can't convert compressed data [%s]\n",
-            driverName, functionName, pIn->codec.c_str());
+            driverName, functionName, pIn->codec.name.c_str());
     return ND_ERROR;
   }
 
