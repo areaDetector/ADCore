@@ -31,6 +31,7 @@ class NDFileHDF5Dataset
     hid_t       dataset_;      // Dataset handle
     int         nextRecord_; 
     int         arrayDims[ND_ARRAY_MAX_DIMS];
+    bool        multiFrame_;   // Whether this is a multi frame dataset
     int         rank_;         // number of dimensions
     hsize_t     *dims_;        // Array of current dimension sizes. This updates as various dimensions grow.
     hsize_t     *chunkdims_;   // Array of current configured chunk dimension sizes.

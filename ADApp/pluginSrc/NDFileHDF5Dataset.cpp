@@ -59,6 +59,7 @@ asynStatus NDFileHDF5Dataset::configureDims(NDArray *pArray, bool multiframe, in
   }
 
   if (multiframe){
+    this->multiFrame_ = true;
     // Configure the virtual dimensions -i.e. dimensions in addition to the frame format.
     // Normally set to just 1 by default or -1 unlimited (in HDF5 terms)
     for (i=0; i<extradims; i++){
@@ -67,6 +68,8 @@ asynStatus NDFileHDF5Dataset::configureDims(NDArray *pArray, bool multiframe, in
       this->offset_[i]      = 0; // because we increment offset *before* each write we need to start at -1
       this->virtualdims_[i] = extra_dims[i];
     }
+  } else {
+    this->multiFrame_ = false;
   }
 
   this->rank_ = ndims;
@@ -179,16 +182,18 @@ asynStatus NDFileHDF5Dataset::verifyChunking(NDArray *pArray)
               "Data must be 1D or 2D to use direct chunk write\n");
     return asynError;
   }
-  // If chunk spans multiple frames (or multiple rows of a 1D dataset), then we require the HDF5
-  // processing pipeline to stitch together the NDArrays
   bool mismatch = false;
-  if (this->chunkdims_[2] != 1 ||
-      (pArray->ndims == 1 && this->chunkdims_[1] != 1)) {
-    mismatch = true;
-  }
-  if (this->chunkdims_[1] != 1 &&
-      pArray->dims[0].size != this->chunkdims_[0]) {
-    mismatch = true;
+  if (this->multiFrame_) {
+    // If chunk spans multiple frames (or multiple rows of a 1D dataset), then we require the HDF5
+    // processing pipeline to stitch together the NDArrays
+    if (this->chunkdims_[2] != 1 ||
+        (pArray->ndims == 1 && this->chunkdims_[1] != 1)) {
+      mismatch = true;
+    }
+    if (this->chunkdims_[1] != 1 &&
+        pArray->dims[0].size != this->chunkdims_[0]) {
+      mismatch = true;
+    }
   }
   // Remaining dimensions must match chunk definition
   for (int index = 0; index < pArray->ndims; index++) {

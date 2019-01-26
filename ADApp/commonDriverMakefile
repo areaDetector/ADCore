@@ -130,6 +130,7 @@ ifeq ($(WITH_HDF5),YES)
   else
     ifdef HDF5_LIB
       hdf5_DIR     = $(HDF5_LIB)
+      hdf5_hl_DIR  = $(HDF5_LIB)
       PROD_LIBS     += hdf5
       PROD_LIBS     += hdf5_hl
     else
