@@ -199,6 +199,19 @@ ifeq ($(WITH_ZLIB),YES)
   endif
 endif
 
+ifeq ($(WITH_BOOST),YES)
+  ifeq ($(BOOST_EXTERNAL),NO)
+    PROD_SYS_LIBS += boost_system
+  else
+    ifdef BOOST_LIB
+      BOOST_DIR        = $(BOOST_LIB)
+      PROD_LIBS     += boost
+    else
+      PROD_SYS_LIBS += boost_system
+    endif
+  endif
+endif
+
 ifdef FFMPEGSERVER
   $(DBD_NAME)_DBD += ffmpegServer.dbd
   PROD_LIBS       += ffmpegServer
@@ -214,6 +227,28 @@ ifdef ADPLUGINEDGE
   else
     PROD_SYS_LIBS   += opencv_core opencv_imgproc
   endif
+endif
+
+ifdef ADPLUGINBAR
+  $(DBD_NAME)_DBD += NDPluginBar.dbd
+  PROD_LIBS	  += NDPluginBar
+  ifdef OPENCV_LIB
+    opencv_core_DIR +=$(OPENCV_LIB)
+    PROD_LIBS       += opencv_core opencv_imgproc opencv_highgui zbar
+  else
+    PROD_SYS_LIBS   += opencv_core opencv_imgproc opencv_highgui zbar
+  endif
+endif
+
+ifdef ADCOMPVISION
+  $(DBD_NAME)_DBD  += NDPluginCV.dbd
+  PROD_LIBS     += NDPluginCV
+  ifdef OPENCV_LIB
+    opencv_core_DIR += $(OPENCV_LIB)
+    PROD_LIBS       += opencv_core opencv_imgproc opencv_highgui
+  else
+    PROD_SYS_LIBS   += opencv_core opencv_imgproc opencv_highgui
+  endif 
 endif
 
 # Required modules
