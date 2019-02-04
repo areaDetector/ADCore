@@ -54,6 +54,43 @@ void ADDriver::setShutter(int open)
     }
 }
 
+/** Sets the value for an integer in the parameter library.
+  * \param[in] index The parameter number
+  * \param[in] value Value to set. 
+  * This function was added to trap the driver setting ADAcquire to 0 and
+  * asynNDArrayDriver setting NumQueuedArrays.  It implements the logic of
+  * setting ADAcquireBusy to reflect whether acquisition is done.
+  * If WaitForPlugins is true then this includes waiting for NumQueuedArrays to be 0.
+  * When ADAcquire goes to 0 it must use getQueuedArrayCount rather then NumQueuedArrays
+  * from the parameter library, because NumQueuedArrays is updated in a separate thread
+  * and might not have been set yet.  getQueuedArrayCount updates immediately. */
+asynStatus ADDriver::setIntegerParam(int index, int value)
+{
+    int waitForPlugins;
+
+    getIntegerParam(ADWaitForPlugins, &waitForPlugins);
+
+    if (index == ADAcquire) {
+        if (value == 0) {
+            if (waitForPlugins) {
+                int count = getQueuedArrayCount();
+                if (count == 0) {
+                    asynNDArrayDriver::setIntegerParam(ADAcquireBusy, 0);
+                }
+            } else {
+                asynNDArrayDriver::setIntegerParam(ADAcquireBusy, 0);
+            }
+        } else {
+            asynNDArrayDriver::setIntegerParam(ADAcquireBusy, 1);
+        }
+    }
+    else if ((index == NDNumQueuedArrays) && (value == 0)) {
+        asynNDArrayDriver::setIntegerParam(ADAcquireBusy, 0);
+    }
+    return asynNDArrayDriver::setIntegerParam(index, value);
+}
+
+
 /** Sets an int32 parameter.
   * \param[in] pasynUser asynUser structure that contains the function code in pasynUser->reason. 
   * \param[in] value The value for this parameter 
@@ -138,6 +175,8 @@ ADDriver::ADDriver(const char *portName, int maxAddr, int numParams, int maxBuff
     createParam(ADStatusString,              asynParamInt32, &ADStatus);
     createParam(ADTriggerModeString,         asynParamInt32, &ADTriggerMode);
     createParam(ADAcquireString,             asynParamInt32, &ADAcquire);
+    createParam(ADAcquireBusyString,         asynParamInt32, &ADAcquireBusy);
+    createParam(ADWaitForPluginsString,      asynParamInt32, &ADWaitForPlugins);
     createParam(ADShutterControlString,      asynParamInt32, &ADShutterControl);
     createParam(ADShutterControlEPICSString, asynParamInt32, &ADShutterControlEPICS);
     createParam(ADShutterStatusString,       asynParamInt32, &ADShutterStatus);

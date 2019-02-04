@@ -109,6 +109,8 @@ typedef enum
 #define ADAcquirePeriodString       "ACQ_PERIOD"            /**< (asynFloat64,  r/w) Acquisition period between images */
 #define ADStatusString              "STATUS"                /**< (asynInt32,    r/o) Acquisition status (ADStatus_t) */
 #define ADAcquireString             "ACQUIRE"               /**< (asynInt32,    r/w) Start(1) or Stop(0) acquisition */
+#define ADAcquireBusyString         "ACQUIRE_BUSY"          /**< (asynInt32,    r/w) 0 when acquire done including plugins */
+#define ADWaitForPluginsString      "WAIT_FOR_PLUGINS"      /**< (asynInt32,    r/w) Wait for plugins before AcquireBusy goes to 0 */
 
     /* Shutter parameters */
 #define ADShutterControlString      "SHUTTER_CONTROL"       /**< (asynInt32,    r/w) (ADShutterStatus_t) Open (1) or Close(0) shutter */
@@ -145,6 +147,7 @@ public:
 
     /* These are the methods that we override from asynPortDriver */
     virtual asynStatus writeInt32(asynUser *pasynUser, epicsInt32 value);
+    virtual asynStatus setIntegerParam(int index, int value);
 
     /* These are the methods that are new to this class */
     virtual void setShutter(int open);
@@ -179,6 +182,8 @@ protected:
     int ADStatus;
     int ADTriggerMode;
     int ADAcquire;
+    int ADAcquireBusy;
+    int ADWaitForPlugins;
     int ADShutterControl;
     int ADShutterControlEPICS;
     int ADShutterStatus;
