@@ -143,6 +143,7 @@ public:
 
     asynStatus incrementQueuedArrayCount();
     asynStatus decrementQueuedArrayCount();
+    int getQueuedArrayCount();
     void updateQueuedArrayCount();
     
     class NDArrayPool *pNDArrayPool;     /**< An NDArrayPool pointer that is initialized to pNDArrayPoolPvt_ in the constructor.
