@@ -20,8 +20,17 @@ files respectively, in the configure/ directory of the appropriate release of th
 Release Notes
 =============
 
-R3-5 (January XXX, 2018)
+R3-5 (February XXX, 2018)
 ======================
+### Documentation
+  * Converted documentation from raw HTML documentation to .rst files using Sphinx.
+  * Added a new docs/ directory which replaces the old documentation directory.
+  * The old .html files were converted to .rst using [pandoc](https://pandoc.org).
+    Most documentation includes tables that describe the plugin parameters and
+    record names.  These tables do not convert well to .rst so they have been left as native
+    html in the files.
+  * The new documentation is hosted at [areaDetector.github.io](https://areaDetector.github.io).
+  * Many thanks to Stuart Wilkins for this major effort.
 ### NDPluginCodec
 * Added support for the lz4 and bitshuffle/lz4 codecs.  
   These are the compressors that the Eiger uses, so compressed NDArrays from ADEiger can
