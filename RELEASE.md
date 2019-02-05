@@ -31,6 +31,11 @@ R3-5 (February XXX, 2018)
     html in the files.
   * The new documentation is hosted at [areaDetector.github.io](https://areaDetector.github.io).
   * Many thanks to Stuart Wilkins for this major effort.
+### ADDriver, asynNDArrayDriver
+* Fixed a race condition in R3-4 with NumQueuedArrays and AcquireBusy.
+  This caused AcquireBusy to sometimes go to Done before the plugins were done processing.
+  A typical symptom was for successive points in a scan to have the same values from the statistics plugin,
+  because the detector did not wait for the plugin to post a new value before it said it was done. 
 ### NDPluginCodec
 * Added support for the lz4 and bitshuffle/lz4 codecs.  
   These are the compressors that the Eiger uses, so compressed NDArrays from ADEiger can
@@ -48,7 +53,7 @@ R3-5 (February XXX, 2018)
 * Added support for new parameters NDCodec and NDCompressedSize and new records Codec_RBV and CompressedSize_RBV.
   These contain the values of NDArray.codec and NDArray.compressedSize.
 ### NDPluginBase.template
-* Removed DTYP from )MaxArrayRate_RBV calc record which does not support DTYP.
+* Removed DTYP from the MaxArrayRate_RBV calc record which does not support DTYP.
 
 R3-4 (December 3, 2018)
 ======================
