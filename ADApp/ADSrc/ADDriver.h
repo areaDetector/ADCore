@@ -148,6 +148,7 @@ public:
     /* These are the methods that we override from asynPortDriver */
     virtual asynStatus writeInt32(asynUser *pasynUser, epicsInt32 value);
     virtual asynStatus setIntegerParam(int index, int value);
+    virtual asynStatus setIntegerParam(int list, int index, int value);
 
     /* These are the methods that are new to this class */
     virtual void setShutter(int open);
