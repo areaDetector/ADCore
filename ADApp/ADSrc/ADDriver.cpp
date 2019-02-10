@@ -55,6 +55,16 @@ void ADDriver::setShutter(int open)
 }
 
 /** Sets the value for an integer in the parameter library.
+  * Calls setIntegerParam(0, index, value) i.e. for parameter list 0.
+  * \param[in] index The parameter number
+  * \param[in] value Value to set. */
+asynStatus ADDriver::setIntegerParam(int index, int value)
+{
+    return this->setIntegerParam(0, index, value);
+}
+
+/** Sets the value for an integer in the parameter library.
+  * \param[in] list The parameter list number.  Must be < maxAddr passed to asynPortDriver::asynPortDriver.
   * \param[in] index The parameter number
   * \param[in] value Value to set. 
   * This function was added to trap the driver setting ADAcquire to 0 and
@@ -64,30 +74,30 @@ void ADDriver::setShutter(int open)
   * When ADAcquire goes to 0 it must use getQueuedArrayCount rather then NumQueuedArrays
   * from the parameter library, because NumQueuedArrays is updated in a separate thread
   * and might not have been set yet.  getQueuedArrayCount updates immediately. */
-asynStatus ADDriver::setIntegerParam(int index, int value)
+asynStatus ADDriver::setIntegerParam(int list, int index, int value)
 {
     int waitForPlugins;
 
-    getIntegerParam(ADWaitForPlugins, &waitForPlugins);
+    getIntegerParam(list, ADWaitForPlugins, &waitForPlugins);
 
     if (index == ADAcquire) {
         if (value == 0) {
             if (waitForPlugins) {
                 int count = getQueuedArrayCount();
                 if (count == 0) {
-                    asynNDArrayDriver::setIntegerParam(ADAcquireBusy, 0);
+                    asynNDArrayDriver::setIntegerParam(list, ADAcquireBusy, 0);
                 }
             } else {
-                asynNDArrayDriver::setIntegerParam(ADAcquireBusy, 0);
+                asynNDArrayDriver::setIntegerParam(list, ADAcquireBusy, 0);
             }
         } else {
-            asynNDArrayDriver::setIntegerParam(ADAcquireBusy, 1);
+            asynNDArrayDriver::setIntegerParam(list, ADAcquireBusy, 1);
         }
     }
     else if ((index == NDNumQueuedArrays) && (value == 0)) {
-        asynNDArrayDriver::setIntegerParam(ADAcquireBusy, 0);
+        asynNDArrayDriver::setIntegerParam(list, ADAcquireBusy, 0);
     }
-    return asynNDArrayDriver::setIntegerParam(index, value);
+    return asynNDArrayDriver::setIntegerParam(list, index, value);
 }
 
 
