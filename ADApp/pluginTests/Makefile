@@ -21,6 +21,7 @@ ifeq ($(WITH_BOOST),YES)
   # This utility library can be used by external modules that provides unittests.
   LIBRARY_IOC_Linux += ADTestUtility
   LIBRARY_IOC_Darwin += ADTestUtility
+  LIBRARY_IOC_WIN32 += ADTestUtility
   ADTestUtility_SRCS += testingutilities.cpp
   ADTestUtility_SRCS += AsynPortClientContainer.cpp
   ADTestUtility_SRCS += AsynException.cpp
@@ -38,6 +39,7 @@ ifeq ($(WITH_BOOST),YES)
 
   PROD_IOC_Linux += plugin-test
   PROD_IOC_Darwin += plugin-test
+  PROD_IOC_WIN32 += plugin-test
   plugin-test_SRCS += plugin-test.cpp
   plugin-test_SRCS += test_NDPluginCircularBuff.cpp
   ifeq ($(WITH_HDF5),YES)
@@ -82,6 +84,8 @@ ifeq ($(WITH_BOOST),YES)
 	USR_CXXFLAGS_Linux += -DBOOST_USE_STATIC_LINK
 	USR_CFLAGS_Linux += -DBOOST_USE_STATIC_LINK
   endif
+  USR_CXXFLAGS_WIN32 += -DBOOST_USE_STATIC_LINK
+  USR_CFLAGS_WIN32 += -DBOOST_USE_STATIC_LINK
 endif
 
 ## hdf5-1.10.1 seems to have fixed these SWMR problems
