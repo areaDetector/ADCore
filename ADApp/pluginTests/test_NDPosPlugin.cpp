@@ -20,7 +20,7 @@
 #include <stdint.h>
 
 #include <deque>
-#include <tr1/memory>
+#include <memory>
 #include <iostream>
 #include <fstream>
 using namespace std;
@@ -44,9 +44,9 @@ static NDArrayPool *arrayPool;
 
 struct PosPluginTestFixture
 {
-  std::tr1::shared_ptr<asynNDArrayDriver> driver;
-  std::tr1::shared_ptr<PosPluginWrapper> pos;
-  std::tr1::shared_ptr<asynGenericPointerClient> client;
+  std::shared_ptr<asynNDArrayDriver> driver;
+  std::shared_ptr<PosPluginWrapper> pos;
+  std::shared_ptr<asynGenericPointerClient> client;
 
   static int testCase;
 
@@ -61,11 +61,11 @@ struct PosPluginTestFixture
 
     // We need some upstream driver for our test plugin so that calls to connectArrayPort don't fail, but we can then ignore it and send
     // arrays by calling processCallbacks directly.
-    driver = std::tr1::shared_ptr<asynNDArrayDriver>(new asynNDArrayDriver(simport.c_str(), 1, 0, 0, asynGenericPointerMask, asynGenericPointerMask, 0, 0, 0, 0));
+    driver = std::shared_ptr<asynNDArrayDriver>(new asynNDArrayDriver(simport.c_str(), 1, 0, 0, asynGenericPointerMask, asynGenericPointerMask, 0, 0, 0, 0));
     arrayPool = driver->pNDArrayPool;
 
     // This is the plugin under test
-    pos = std::tr1::shared_ptr<PosPluginWrapper>(new PosPluginWrapper(testport.c_str(),
+    pos = std::shared_ptr<PosPluginWrapper>(new PosPluginWrapper(testport.c_str(),
                                                                       50,
                                                                       1,
                                                                       simport.c_str(),
@@ -80,7 +80,7 @@ struct PosPluginTestFixture
     pos->write(NDPluginDriverBlockingCallbacksString, 1);
     pos->write(NDArrayCallbacksString, 1);
 
-    client = std::tr1::shared_ptr<asynGenericPointerClient>(new asynGenericPointerClient(testport.c_str(), 0, NDArrayDataString));
+    client = std::shared_ptr<asynGenericPointerClient>(new asynGenericPointerClient(testport.c_str(), 0, NDArrayDataString));
     client->registerInterruptUser(&callback);
   }
 
@@ -132,12 +132,12 @@ BOOST_AUTO_TEST_CASE(test_LoadingDataPoints)
 
   // Create bad points file
   {
-    std::ofstream out("/tmp/invalid_points.xml");
+    std::ofstream out("invalid_points.xml");
     out << "<pos_layout><bad xml string</position>";
   }
   // Create good points file
   {
-    std::ofstream out("/tmp/valid_points.xml");
+    std::ofstream out("valid_points.xml");
     out << "<pos_layout>\
     <dimensions>\
       <dimension name=\"x\"></dimension>\
@@ -158,28 +158,28 @@ BOOST_AUTO_TEST_CASE(test_LoadingDataPoints)
   }
 
   // Try to set an invalid load filename, verify error
-  BOOST_CHECK_THROW(pos->write(str_NDPos_Filename, "/tmp/incorrect_file.xml"), AsynException);
+  BOOST_CHECK_THROW(pos->write(str_NDPos_Filename, "incorrect_file.xml"), AsynException);
   BOOST_CHECK_EQUAL(pos->readInt(str_NDPos_FileValid), 0);
   // Verify load does not load points, qty is 0
   BOOST_CHECK_EQUAL(pos->readInt(str_NDPos_CurrentQty), 0);
   // Try to set a valid filename but with bad XML, verify error
-  BOOST_CHECK_THROW(pos->write(str_NDPos_Filename, "/tmp/invalid_points.xml"), AsynException);
+  BOOST_CHECK_THROW(pos->write(str_NDPos_Filename, "invalid_points.xml"), AsynException);
   BOOST_CHECK_EQUAL(pos->readInt(str_NDPos_FileValid), 0);
   // Verify load does not load points, qty is 0
   BOOST_CHECK_EQUAL(pos->readInt(str_NDPos_CurrentQty), 0);
 
   // Set a valid load string, verify no error
-  pos->write(str_NDPos_Filename, "/tmp/valid_points.xml");
+  pos->write(str_NDPos_Filename, "valid_points.xml");
   BOOST_CHECK_EQUAL(pos->readInt(str_NDPos_FileValid), 1);
   // Verify points are loaded, qty is 8
   BOOST_CHECK_EQUAL(pos->readInt(str_NDPos_CurrentQty), 8);
 
   // Load the file again, verify qty increases to 16
-  pos->write(str_NDPos_Filename, "/tmp/valid_points.xml");
+  pos->write(str_NDPos_Filename, "valid_points.xml");
   BOOST_CHECK_EQUAL(pos->readInt(str_NDPos_CurrentQty), 16);
 
   // Load the file again, verify qty increases to 24
-  pos->write(str_NDPos_Filename, "/tmp/valid_points.xml");
+  pos->write(str_NDPos_Filename, "valid_points.xml");
   BOOST_CHECK_EQUAL(pos->readInt(str_NDPos_CurrentQty), 24);
 
 

@@ -19,7 +19,7 @@
 #include <stdint.h>
 
 #include <deque>
-#include <tr1/memory>
+#include <memory>
 
 #include "hdf5.h"
 #include "testingutilities.h"
@@ -29,7 +29,7 @@
 BOOST_AUTO_TEST_CASE(test_AttributeOriginalDataset)
 {
   // Open an HDF5 file for testing
-  std::string filename = "/tmp/test_att.h5";
+  std::string filename = "test_att.h5";
   hid_t file = H5Fcreate(filename.c_str(), H5F_ACC_TRUNC, 0, 0);
   BOOST_REQUIRE_GT(file, -1);
 
@@ -38,10 +38,10 @@ BOOST_AUTO_TEST_CASE(test_AttributeOriginalDataset)
   hid_t group = H5Gcreate(file, gname.c_str(), H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
   BOOST_REQUIRE_GT(group, -1);
 
-  std::tr1::shared_ptr<NDFileHDF5AttributeDataset> adPtr;
+  std::shared_ptr<NDFileHDF5AttributeDataset> adPtr;
 
   // Create an attribute dataset of type NDAttrInt8
-  adPtr = std::tr1::shared_ptr<NDFileHDF5AttributeDataset>(new NDFileHDF5AttributeDataset(file, "att1", NDAttrInt8));
+  adPtr = std::shared_ptr<NDFileHDF5AttributeDataset>(new NDFileHDF5AttributeDataset(file, "att1", NDAttrInt8));
   BOOST_CHECK_EQUAL(adPtr->getName(), "att1");
   // Set up the parent group name and the dataset name
   adPtr->setDsetName("dset1");
@@ -59,7 +59,7 @@ BOOST_AUTO_TEST_CASE(test_AttributeOriginalDataset)
   adPtr->closeAttributeDataset();
 
   // Create an attribute dataset of type NDAttrUInt8
-  adPtr = std::tr1::shared_ptr<NDFileHDF5AttributeDataset>(new NDFileHDF5AttributeDataset(file, "att2", NDAttrUInt8));
+  adPtr = std::shared_ptr<NDFileHDF5AttributeDataset>(new NDFileHDF5AttributeDataset(file, "att2", NDAttrUInt8));
   BOOST_CHECK_EQUAL(adPtr->getName(), "att2");
   // Set up the parent group name and the dataset name
   adPtr->setDsetName("dset2");
@@ -77,7 +77,7 @@ BOOST_AUTO_TEST_CASE(test_AttributeOriginalDataset)
   adPtr->closeAttributeDataset();
 
   // Create an attribute dataset of type NDAttrInt16
-  adPtr = std::tr1::shared_ptr<NDFileHDF5AttributeDataset>(new NDFileHDF5AttributeDataset(file, "att3", NDAttrInt16));
+  adPtr = std::shared_ptr<NDFileHDF5AttributeDataset>(new NDFileHDF5AttributeDataset(file, "att3", NDAttrInt16));
   BOOST_CHECK_EQUAL(adPtr->getName(), "att3");
   // Set up the parent group name and the dataset name
   adPtr->setDsetName("dset3");
@@ -95,7 +95,7 @@ BOOST_AUTO_TEST_CASE(test_AttributeOriginalDataset)
   adPtr->closeAttributeDataset();
 
   // Create an attribute dataset of type NDAttrUInt16
-  adPtr = std::tr1::shared_ptr<NDFileHDF5AttributeDataset>(new NDFileHDF5AttributeDataset(file, "att4", NDAttrUInt16));
+  adPtr = std::shared_ptr<NDFileHDF5AttributeDataset>(new NDFileHDF5AttributeDataset(file, "att4", NDAttrUInt16));
   BOOST_CHECK_EQUAL(adPtr->getName(), "att4");
   // Set up the parent group name and the dataset name
   adPtr->setDsetName("dset4");
@@ -113,7 +113,7 @@ BOOST_AUTO_TEST_CASE(test_AttributeOriginalDataset)
   adPtr->closeAttributeDataset();
 
   // Create an attribute dataset of type NDAttrInt32
-  adPtr = std::tr1::shared_ptr<NDFileHDF5AttributeDataset>(new NDFileHDF5AttributeDataset(file, "att5", NDAttrInt32));
+  adPtr = std::shared_ptr<NDFileHDF5AttributeDataset>(new NDFileHDF5AttributeDataset(file, "att5", NDAttrInt32));
   BOOST_CHECK_EQUAL(adPtr->getName(), "att5");
   // Set up the parent group name and the dataset name
   adPtr->setDsetName("dset5");
@@ -131,7 +131,7 @@ BOOST_AUTO_TEST_CASE(test_AttributeOriginalDataset)
   adPtr->closeAttributeDataset();
 
   // Create an attribute dataset of type NDAttrUInt32
-  adPtr = std::tr1::shared_ptr<NDFileHDF5AttributeDataset>(new NDFileHDF5AttributeDataset(file, "att6", NDAttrUInt32));
+  adPtr = std::shared_ptr<NDFileHDF5AttributeDataset>(new NDFileHDF5AttributeDataset(file, "att6", NDAttrUInt32));
   BOOST_CHECK_EQUAL(adPtr->getName(), "att6");
   // Set up the parent group name and the dataset name
   adPtr->setDsetName("dset6");
@@ -149,7 +149,7 @@ BOOST_AUTO_TEST_CASE(test_AttributeOriginalDataset)
   adPtr->closeAttributeDataset();
 
   // Create an attribute dataset of type NDAttrFloat32
-  adPtr = std::tr1::shared_ptr<NDFileHDF5AttributeDataset>(new NDFileHDF5AttributeDataset(file, "att7", NDAttrFloat32));
+  adPtr = std::shared_ptr<NDFileHDF5AttributeDataset>(new NDFileHDF5AttributeDataset(file, "att7", NDAttrFloat32));
   BOOST_CHECK_EQUAL(adPtr->getName(), "att7");
   // Set up the parent group name and the dataset name
   adPtr->setDsetName("dset7");
@@ -167,7 +167,7 @@ BOOST_AUTO_TEST_CASE(test_AttributeOriginalDataset)
   adPtr->closeAttributeDataset();
 
   // Create an attribute dataset of type NDAttrFloat64
-  adPtr = std::tr1::shared_ptr<NDFileHDF5AttributeDataset>(new NDFileHDF5AttributeDataset(file, "att8", NDAttrFloat64));
+  adPtr = std::shared_ptr<NDFileHDF5AttributeDataset>(new NDFileHDF5AttributeDataset(file, "att8", NDAttrFloat64));
   BOOST_CHECK_EQUAL(adPtr->getName(), "att8");
   // Set up the parent group name and the dataset name
   adPtr->setDsetName("dset8");
@@ -185,7 +185,7 @@ BOOST_AUTO_TEST_CASE(test_AttributeOriginalDataset)
   adPtr->closeAttributeDataset();
 
   // Create an attribute dataset of type NDAttrString
-  adPtr = std::tr1::shared_ptr<NDFileHDF5AttributeDataset>(new NDFileHDF5AttributeDataset(file, "att9", NDAttrString));
+  adPtr = std::shared_ptr<NDFileHDF5AttributeDataset>(new NDFileHDF5AttributeDataset(file, "att9", NDAttrString));
   BOOST_CHECK_EQUAL(adPtr->getName(), "att9");
   // Set up the parent group name and the dataset name
   adPtr->setDsetName("dset9");
@@ -205,7 +205,7 @@ BOOST_AUTO_TEST_CASE(test_AttributeOriginalDataset)
   adPtr->closeAttributeDataset();
 
   // Create an attribute, set it for only writing OnOpen, then send it multiple OnFrame values
-  adPtr = std::tr1::shared_ptr<NDFileHDF5AttributeDataset>(new NDFileHDF5AttributeDataset(file, "att10", NDAttrInt8));
+  adPtr = std::shared_ptr<NDFileHDF5AttributeDataset>(new NDFileHDF5AttributeDataset(file, "att10", NDAttrInt8));
   BOOST_CHECK_EQUAL(adPtr->getName(), "att10");
   // Set up the parent group name and the dataset name
   adPtr->setDsetName("dset10");
@@ -234,7 +234,7 @@ BOOST_AUTO_TEST_CASE(test_AttributeOriginalDataset)
   adPtr->closeAttributeDataset();
 
   // Create an attribute, set it for only writing OnClose, then send it multiple OnFrame values
-  adPtr = std::tr1::shared_ptr<NDFileHDF5AttributeDataset>(new NDFileHDF5AttributeDataset(file, "att11", NDAttrInt8));
+  adPtr = std::shared_ptr<NDFileHDF5AttributeDataset>(new NDFileHDF5AttributeDataset(file, "att11", NDAttrInt8));
   BOOST_CHECK_EQUAL(adPtr->getName(), "att11");
   // Set up the parent group name and the dataset name
   adPtr->setDsetName("dset11");
@@ -362,7 +362,7 @@ BOOST_AUTO_TEST_CASE(test_AttributeOriginalDataset)
 BOOST_AUTO_TEST_CASE(test_AttributeDimensionalDataset)
 {
   // Open an HDF5 file for testing
-  std::string filename = "/tmp/test_att.h5";
+  std::string filename = "test_att.h5";
   hid_t file = H5Fcreate(filename.c_str(), H5F_ACC_TRUNC, 0, 0);
   BOOST_REQUIRE_GT(file, -1);
 
@@ -371,13 +371,13 @@ BOOST_AUTO_TEST_CASE(test_AttributeDimensionalDataset)
   hid_t group = H5Gcreate(file, gname.c_str(), H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
   BOOST_REQUIRE_GT(group, -1);
 
-  std::tr1::shared_ptr<NDFileHDF5AttributeDataset> adPtr;
+  std::shared_ptr<NDFileHDF5AttributeDataset> adPtr;
   // Create a 3 dimensional description of a dataset (3x4x5)
   int dimsize[3] = {3, 4, 5};
   int chunking[3] = {1, 1, 1};
 
   // Create an attribute dataset of type NDAttrInt8
-  adPtr = std::tr1::shared_ptr<NDFileHDF5AttributeDataset>(new NDFileHDF5AttributeDataset(file, "att1", NDAttrInt8));
+  adPtr = std::shared_ptr<NDFileHDF5AttributeDataset>(new NDFileHDF5AttributeDataset(file, "att1", NDAttrInt8));
   BOOST_CHECK_EQUAL(adPtr->getName(), "att1");
   // Set up the parent group name and the dataset name
   adPtr->setDsetName("dset1");
@@ -395,7 +395,7 @@ BOOST_AUTO_TEST_CASE(test_AttributeDimensionalDataset)
   adPtr->closeAttributeDataset();
 
   // Create an attribute dataset of type NDAttrUInt8
-  adPtr = std::tr1::shared_ptr<NDFileHDF5AttributeDataset>(new NDFileHDF5AttributeDataset(file, "att2", NDAttrUInt8));
+  adPtr = std::shared_ptr<NDFileHDF5AttributeDataset>(new NDFileHDF5AttributeDataset(file, "att2", NDAttrUInt8));
   BOOST_CHECK_EQUAL(adPtr->getName(), "att2");
   // Set up the parent group name and the dataset name
   adPtr->setDsetName("dset2");
@@ -413,7 +413,7 @@ BOOST_AUTO_TEST_CASE(test_AttributeDimensionalDataset)
   adPtr->closeAttributeDataset();
 
   // Create an attribute dataset of type NDAttrInt16
-  adPtr = std::tr1::shared_ptr<NDFileHDF5AttributeDataset>(new NDFileHDF5AttributeDataset(file, "att3", NDAttrInt16));
+  adPtr = std::shared_ptr<NDFileHDF5AttributeDataset>(new NDFileHDF5AttributeDataset(file, "att3", NDAttrInt16));
   BOOST_CHECK_EQUAL(adPtr->getName(), "att3");
   // Set up the parent group name and the dataset name
   adPtr->setDsetName("dset3");
@@ -431,7 +431,7 @@ BOOST_AUTO_TEST_CASE(test_AttributeDimensionalDataset)
   adPtr->closeAttributeDataset();
 
   // Create an attribute dataset of type NDAttrUInt16
-  adPtr = std::tr1::shared_ptr<NDFileHDF5AttributeDataset>(new NDFileHDF5AttributeDataset(file, "att4", NDAttrUInt16));
+  adPtr = std::shared_ptr<NDFileHDF5AttributeDataset>(new NDFileHDF5AttributeDataset(file, "att4", NDAttrUInt16));
   BOOST_CHECK_EQUAL(adPtr->getName(), "att4");
   // Set up the parent group name and the dataset name
   adPtr->setDsetName("dset4");
@@ -449,7 +449,7 @@ BOOST_AUTO_TEST_CASE(test_AttributeDimensionalDataset)
   adPtr->closeAttributeDataset();
 
   // Create an attribute dataset of type NDAttrInt32
-  adPtr = std::tr1::shared_ptr<NDFileHDF5AttributeDataset>(new NDFileHDF5AttributeDataset(file, "att5", NDAttrInt32));
+  adPtr = std::shared_ptr<NDFileHDF5AttributeDataset>(new NDFileHDF5AttributeDataset(file, "att5", NDAttrInt32));
   BOOST_CHECK_EQUAL(adPtr->getName(), "att5");
   // Set up the parent group name and the dataset name
   adPtr->setDsetName("dset5");
@@ -467,7 +467,7 @@ BOOST_AUTO_TEST_CASE(test_AttributeDimensionalDataset)
   adPtr->closeAttributeDataset();
 
   // Create an attribute dataset of type NDAttrUInt32
-  adPtr = std::tr1::shared_ptr<NDFileHDF5AttributeDataset>(new NDFileHDF5AttributeDataset(file, "att6", NDAttrUInt32));
+  adPtr = std::shared_ptr<NDFileHDF5AttributeDataset>(new NDFileHDF5AttributeDataset(file, "att6", NDAttrUInt32));
   BOOST_CHECK_EQUAL(adPtr->getName(), "att6");
   // Set up the parent group name and the dataset name
   adPtr->setDsetName("dset6");
@@ -485,7 +485,7 @@ BOOST_AUTO_TEST_CASE(test_AttributeDimensionalDataset)
   adPtr->closeAttributeDataset();
 
   // Create an attribute dataset of type NDAttrFloat32
-  adPtr = std::tr1::shared_ptr<NDFileHDF5AttributeDataset>(new NDFileHDF5AttributeDataset(file, "att7", NDAttrFloat32));
+  adPtr = std::shared_ptr<NDFileHDF5AttributeDataset>(new NDFileHDF5AttributeDataset(file, "att7", NDAttrFloat32));
   BOOST_CHECK_EQUAL(adPtr->getName(), "att7");
   // Set up the parent group name and the dataset name
   adPtr->setDsetName("dset7");
@@ -503,7 +503,7 @@ BOOST_AUTO_TEST_CASE(test_AttributeDimensionalDataset)
   adPtr->closeAttributeDataset();
 
   // Create an attribute dataset of type NDAttrFloat64
-  adPtr = std::tr1::shared_ptr<NDFileHDF5AttributeDataset>(new NDFileHDF5AttributeDataset(file, "att8", NDAttrFloat64));
+  adPtr = std::shared_ptr<NDFileHDF5AttributeDataset>(new NDFileHDF5AttributeDataset(file, "att8", NDAttrFloat64));
   BOOST_CHECK_EQUAL(adPtr->getName(), "att8");
   // Set up the parent group name and the dataset name
   adPtr->setDsetName("dset8");
@@ -521,7 +521,7 @@ BOOST_AUTO_TEST_CASE(test_AttributeDimensionalDataset)
   adPtr->closeAttributeDataset();
 
   // Create an attribute dataset of type NDAttrString
-  adPtr = std::tr1::shared_ptr<NDFileHDF5AttributeDataset>(new NDFileHDF5AttributeDataset(file, "att9", NDAttrString));
+  adPtr = std::shared_ptr<NDFileHDF5AttributeDataset>(new NDFileHDF5AttributeDataset(file, "att9", NDAttrString));
   BOOST_CHECK_EQUAL(adPtr->getName(), "att9");
   // Set up the parent group name and the dataset name
   adPtr->setDsetName("dset9");
@@ -541,7 +541,7 @@ BOOST_AUTO_TEST_CASE(test_AttributeDimensionalDataset)
   adPtr->closeAttributeDataset();
 
   // Create an attribute, set it for only writing OnOpen, then send it multiple OnFrame values
-  adPtr = std::tr1::shared_ptr<NDFileHDF5AttributeDataset>(new NDFileHDF5AttributeDataset(file, "att10", NDAttrInt8));
+  adPtr = std::shared_ptr<NDFileHDF5AttributeDataset>(new NDFileHDF5AttributeDataset(file, "att10", NDAttrInt8));
   BOOST_CHECK_EQUAL(adPtr->getName(), "att10");
   // Set up the parent group name and the dataset name
   adPtr->setDsetName("dset10");
@@ -570,7 +570,7 @@ BOOST_AUTO_TEST_CASE(test_AttributeDimensionalDataset)
   adPtr->closeAttributeDataset();
 
   // Create an attribute, set it for only writing OnClose, then send it multiple OnFrame values
-  adPtr = std::tr1::shared_ptr<NDFileHDF5AttributeDataset>(new NDFileHDF5AttributeDataset(file, "att11", NDAttrInt8));
+  adPtr = std::shared_ptr<NDFileHDF5AttributeDataset>(new NDFileHDF5AttributeDataset(file, "att11", NDAttrInt8));
   BOOST_CHECK_EQUAL(adPtr->getName(), "att11");
   // Set up the parent group name and the dataset name
   adPtr->setDsetName("dset11");

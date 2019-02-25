@@ -25,7 +25,7 @@
 #include <stdint.h>
 
 #include <deque>
-#include <tr1/memory>
+#include <memory>
 
 #include "hdf5.h"
 #include "testingutilities.h"
@@ -47,12 +47,12 @@ NDFileHDF5Dataset *createTestDataset(int rank, int *max_dim_size, asynUser *pasy
   hsize_t nbytes = 1024;
   hsize_t nslots = 50001;
   hid_t datatype = H5T_NATIVE_INT8;
-  hsize_t dims[rank];
+  hsize_t *dims = new hsize_t[rank];
   for (int i=0; i < rank-2; i++) dims[i] = 1;
   for (int i=rank-2; i < rank; i++) dims[i] = max_dim_size[i];
-  hsize_t maxdims[rank];
+  hsize_t *maxdims = new hsize_t[rank];
   for (int i=0; i < rank; i++) maxdims[i] = max_dim_size[i];
-  hsize_t chunkdims[rank];
+  hsize_t *chunkdims = new hsize_t[rank];
   for (int i=0; i < rank-2; i++) chunkdims[i] = 1;
   for (int i=rank-2; i < rank; i++) chunkdims[i] = max_dim_size[i];
   //hid_t dataspace = H5Screate_simple(rank, dims, maxdims);
@@ -69,9 +69,9 @@ NDFileHDF5Dataset *createTestDataset(int rank, int *max_dim_size, asynUser *pasy
   // Now create a dataset
   NDFileHDF5Dataset *dataset = new NDFileHDF5Dataset(pasynUser, dsetname, datasetID);
   int extraDims = rank-2;
-  int extra_dims[extraDims];
+  int *extra_dims = new int[extraDims];
   for (int i=0; i < extraDims; i++) extra_dims[i] = max_dim_size[i];
-  int user_chunking[extraDims];
+  int *user_chunking = new int[extraDims];
   for (int i=0; i < extraDims; i++) user_chunking[i] = 1;
 
   // Create a test array
@@ -92,6 +92,12 @@ NDFileHDF5Dataset *createTestDataset(int rank, int *max_dim_size, asynUser *pasy
   parr->uniqueId = 0;
 
   dataset->configureDims(parr, true, extraDims, extra_dims, user_chunking);
+
+  delete dims;
+  delete extra_dims;
+  delete user_chunking;
+  delete maxdims;
+  delete chunkdims;
 
   return dataset;
 }
@@ -241,7 +247,7 @@ BOOST_AUTO_TEST_CASE(test_ExtraDatasetDimensions)
   asynUser *pasynUser = pasynManager->createAsynUser(0, 0);
 
   // Open an HDF5 file for testing
-  std::string filename = "/tmp/test_dim1.h5";
+  std::string filename = "test_dim1.h5";
   hid_t file = H5Fcreate(filename.c_str(), H5F_ACC_TRUNC, 0, 0);
   BOOST_REQUIRE_GT(file, -1);
 
@@ -307,7 +313,7 @@ BOOST_AUTO_TEST_CASE(test_TenExtraDimensions)
   asynUser *pasynUser = pasynManager->createAsynUser(0, 0);
 
   // Open an HDF5 file for testing
-  std::string filename = "/tmp/test_dim2.h5";
+  std::string filename = "test_dim2.h5";
   hid_t file = H5Fcreate(filename.c_str(), H5F_ACC_TRUNC, 0, 0);
   BOOST_REQUIRE_GT(file, -1);
 
@@ -371,8 +377,8 @@ BOOST_AUTO_TEST_CASE(test_TenExtraDimensions)
 
 BOOST_AUTO_TEST_CASE(test_PluginExtraDimensions)
 {
-  std::tr1::shared_ptr<asynNDArrayDriver> driver;
-  std::tr1::shared_ptr<HDF5PluginWrapper> hdf5;
+  std::shared_ptr<asynNDArrayDriver> driver;
+  std::shared_ptr<HDF5PluginWrapper> hdf5;
 
 
   // Asyn manager doesn't like it if we try to reuse the same port name for multiple drivers (even if only one is ever instantiated at once), so
@@ -383,11 +389,11 @@ BOOST_AUTO_TEST_CASE(test_PluginExtraDimensions)
 
   // We need some upstream driver for our test plugin so that calls to connectArrayPort don't fail, but we can then ignore it and send
   // arrays by calling processCallbacks directly.
-  driver = std::tr1::shared_ptr<asynNDArrayDriver>(new asynNDArrayDriver(simport.c_str(), 1, 0, 0, asynGenericPointerMask, asynGenericPointerMask, 0, 0, 0, 0));
+  driver = std::shared_ptr<asynNDArrayDriver>(new asynNDArrayDriver(simport.c_str(), 1, 0, 0, asynGenericPointerMask, asynGenericPointerMask, 0, 0, 0, 0));
   NDArrayPool *arrayPool = driver->pNDArrayPool;
 
   // This is the plugin under test
-  hdf5 = std::tr1::shared_ptr<HDF5PluginWrapper>(new HDF5PluginWrapper(testport.c_str(),
+  hdf5 = std::shared_ptr<HDF5PluginWrapper>(new HDF5PluginWrapper(testport.c_str(),
                                                                        50,
                                                                        1,
                                                                        simport.c_str(),
@@ -602,7 +608,7 @@ BOOST_AUTO_TEST_CASE(test_PluginExtraDimensions)
   // Set the file write mode to stream
   hdf5->write(NDFileWriteModeString, NDFileModeStream);
   // Call the configure dims method
-  hdf5->configureDims(arrays[0]);
+  //hdf5->configureDims((NDArray *)arrays[0]);
   // Verify the dimensions
   BOOST_REQUIRE_EQUAL(hdf5->dims[0], 1);
   BOOST_REQUIRE_EQUAL(hdf5->dims[1], 1);

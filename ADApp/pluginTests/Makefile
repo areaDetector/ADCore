@@ -57,10 +57,16 @@ ifeq ($(WITH_BOOST),YES)
 
   # Add tests for new plugins like this:
   #plugin-test_SRCS += test_<plugin name>.cpp
+
+  USR_LDFLAGS_WIN32 += /SUBSYSTEM:CONSOLE
+  #USR_LDFLAGS_WIN32 += /VERBOSE
   
   ifdef BOOST_LIB
     boost_unit_test_framework_DIR=$(BOOST_LIB)
-    plugin-test_LIBS += boost_unit_test_framework
+    plugin-test_LIBS_Linux += boost_unit_test_framework
+    plugin-test_LIBS_Darwin += boost_unit_test_framework
+	USR_LDFLAGS_WIN32 += /LIBPATH:$(BOOST_LIB)
+    LIB_LIBS_WIN32 += libboost_unit_test_framework-vc141-mt-s-x64-1_69
   else
     plugin-test_SYS_LIBS += boost_unit_test_framework
   endif
@@ -83,9 +89,9 @@ ifeq ($(WITH_BOOST),YES)
   ifeq ($(BOOST_USE_STATIC_LINK),YES)
 	USR_CXXFLAGS_Linux += -DBOOST_USE_STATIC_LINK
 	USR_CFLAGS_Linux += -DBOOST_USE_STATIC_LINK
+	USR_CXXFLAGS_WIN32 += -DBOOST_USE_STATIC_LINK
+	USR_CFLAGS_WIN32 += -DBOOST_USE_STATIC_LINK
   endif
-  USR_CXXFLAGS_WIN32 += -DBOOST_USE_STATIC_LINK
-  USR_CFLAGS_WIN32 += -DBOOST_USE_STATIC_LINK
 endif
 
 ## hdf5-1.10.1 seems to have fixed these SWMR problems
