@@ -19,6 +19,7 @@ ifeq ($(WITH_BOOST),YES)
   # The ADTestUtility library contain a number of helper functions to generate test
   # data, asyn port names, record output NDArrays etc etc.
   # This utility library can be used by external modules that provides unittests.
+  USR_CXXFLAGS_Linux += -std=c++11
   LIBRARY_IOC_Linux += ADTestUtility
   LIBRARY_IOC_Darwin += ADTestUtility
   LIBRARY_IOC_WIN32 += ADTestUtility
