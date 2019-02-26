@@ -34,7 +34,7 @@ HDF5FileReader::HDF5FileReader(const std::string& filename)
 
 void HDF5FileReader::report()
 {
-  std::map<std::string, boost::shared_ptr<HDF5Object> >::iterator iter;
+  std::map<std::string, std::shared_ptr<HDF5Object> >::iterator iter;
   for (iter = objects.begin(); iter != objects.end(); iter++){
     printf("[%s] %s\n", iter->second->getTypeString().c_str(), iter->first.c_str());
   }
@@ -45,7 +45,7 @@ void HDF5FileReader::processGroup(hid_t loc_id, const char *name, H5O_type_t typ
   std::string sname(name);
   std::string oldname = cname;
   cname = cname + "/" + sname;
-  objects[cname] = boost::shared_ptr<HDF5Object>(new HDF5Object(name, type));
+  objects[cname] = std::shared_ptr<HDF5Object>(new HDF5Object(name, type));
   if (type == H5O_TYPE_GROUP){
     hsize_t idx = 0;
     H5Literate_by_name(loc_id, name, H5_INDEX_NAME, H5_ITER_NATIVE, &idx, file_info, this, H5P_DEFAULT);
@@ -98,8 +98,6 @@ std::vector<hsize_t> HDF5FileReader::getDatasetDimensions(const std::string& nam
       hsize_t *dims = new hsize_t[ndims];
       hsize_t *maxdims = new hsize_t[ndims];
       H5Sget_simple_extent_dims(dspace_id, dims, maxdims);
-      delete dims;
-      delete maxdims;
 
       for (int index = 0; index < ndims; index++){
         vdims.push_back(dims[index]);
@@ -107,6 +105,9 @@ std::vector<hsize_t> HDF5FileReader::getDatasetDimensions(const std::string& nam
 
       // Close the dataset
       H5Dclose(dataset_id);
+
+      delete dims;
+      delete maxdims;
     }
   }
   return vdims;

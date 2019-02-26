@@ -9,7 +9,7 @@
 #define PLUGINTESTS_HDF5FileReader_H_
 
 #include <string>
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <map>
 #include <vector>
 #include <hdf5.h>
@@ -82,7 +82,7 @@ private:
   };
 
   std::string cname;
-  std::map<std::string, boost::shared_ptr<HDF5Object> > objects;
+  std::map<std::string, std::shared_ptr<HDF5Object> > objects;
 
 };
 

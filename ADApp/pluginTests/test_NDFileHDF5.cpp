@@ -19,7 +19,7 @@
 #include <stdint.h>
 
 #include <deque>
-#include <boost/shared_ptr.hpp>
+#include <memory>
 using namespace std;
 
 #include "testingutilities.h"
@@ -32,7 +32,7 @@ static  NDArrayPool *arrayPool;
 struct NDFileHDF5TestFixture
 {
   asynNDArrayDriver* dummy_driver;
-  boost::shared_ptr<HDF5PluginWrapper> hdf5;
+  std::shared_ptr<HDF5PluginWrapper> hdf5;
 
   static int testCase;
 
@@ -52,7 +52,7 @@ struct NDFileHDF5TestFixture
     arrayPool = dummy_driver->pNDArrayPool;
 
     // This is the plugin under test
-    hdf5 = boost::shared_ptr<HDF5PluginWrapper>(new HDF5PluginWrapper(testport.c_str(),
+    hdf5 = std::shared_ptr<HDF5PluginWrapper>(new HDF5PluginWrapper(testport.c_str(),
                                                                          50,
                                                                          1,
                                                                          dummy_port.c_str(),

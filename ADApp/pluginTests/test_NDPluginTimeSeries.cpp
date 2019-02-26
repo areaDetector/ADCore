@@ -20,7 +20,7 @@
 #include <stdint.h>
 
 #include <deque>
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <iostream>
 #include <fstream>
 using namespace std;
@@ -42,9 +42,9 @@ void TS_callback(void *userPvt, asynUser *pasynUser, void *pointer)
 struct TimeSeriesPluginTestFixture
 {
   NDArrayPool *arrayPool;
-  boost::shared_ptr<asynNDArrayDriver> driver;
-  boost::shared_ptr<TimeSeriesPluginWrapper> ts;
-  boost::shared_ptr<asynGenericPointerClient> client;
+  std::shared_ptr<asynNDArrayDriver> driver;
+  std::shared_ptr<TimeSeriesPluginWrapper> ts;
+  std::shared_ptr<asynGenericPointerClient> client;
   TestingPlugin* downstream_plugin; // TODO: we don't put this in a shared_ptr and purposefully leak memory because asyn ports cannot be deleted
   std::vector<NDArray*>arrays_1d;
   std::vector<size_t>dims_1d;
@@ -66,7 +66,7 @@ struct TimeSeriesPluginTestFixture
 
     // We need some upstream driver for our test plugin so that calls to connectArrayPort
     // don't fail, but we can then ignore it and send arrays by calling processCallbacks directly.
-    driver = boost::shared_ptr<asynNDArrayDriver>(new asynNDArrayDriver(simport.c_str(),
+    driver = std::shared_ptr<asynNDArrayDriver>(new asynNDArrayDriver(simport.c_str(),
                                                                      1, 0, 0,
                                                                      asynGenericPointerMask,
                                                                      asynGenericPointerMask,
@@ -74,7 +74,7 @@ struct TimeSeriesPluginTestFixture
     arrayPool = driver->pNDArrayPool;
 
     // This is the plugin under test
-    ts = boost::shared_ptr<TimeSeriesPluginWrapper>(new TimeSeriesPluginWrapper(testport.c_str(),
+    ts = std::shared_ptr<TimeSeriesPluginWrapper>(new TimeSeriesPluginWrapper(testport.c_str(),
                                                                       50,
                                                                       1,
                                                                       simport.c_str(),
@@ -91,7 +91,7 @@ struct TimeSeriesPluginTestFixture
     ts->write(NDPluginDriverEnableCallbacksString, 1);
     ts->write(NDPluginDriverBlockingCallbacksString, 1);
 
-    client = boost::shared_ptr<asynGenericPointerClient>(new asynGenericPointerClient(testport.c_str(), 0, NDArrayDataString));
+    client = std::shared_ptr<asynGenericPointerClient>(new asynGenericPointerClient(testport.c_str(), 0, NDArrayDataString));
     client->registerInterruptUser(&TS_callback);
 
     // 1D: 8 channels with a single scalar sample element in each one

@@ -8,7 +8,7 @@
 #ifndef IOCS_SIMDETECTORNOIOC_SIMDETECTORNOIOCAPP_SRC_AsynPortClientContainer_H_
 #define IOCS_SIMDETECTORNOIOC_SIMDETECTORNOIOCAPP_SRC_AsynPortClientContainer_H_
 
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <map>
 #include <vector>
 
@@ -16,9 +16,9 @@
 #include <asynPortClient.h>
 #include "AsynException.h"
 
-typedef std::map<std::string, boost::shared_ptr<asynInt32Client> > int32ClientMap;
-typedef std::map<std::string, boost::shared_ptr<asynFloat64Client> > float64ClientMap;
-typedef std::map<std::string, boost::shared_ptr<asynOctetClient> > octetClientMap;
+typedef std::map<std::string, std::shared_ptr<asynInt32Client> > int32ClientMap;
+typedef std::map<std::string, std::shared_ptr<asynFloat64Client> > float64ClientMap;
+typedef std::map<std::string, std::shared_ptr<asynOctetClient> > octetClientMap;
 
 class AsynPortClientContainer {
 public:
@@ -41,17 +41,17 @@ protected:
     std::string portName;
 
 private:
-    std::vector<boost::shared_ptr<int32ClientMap> > int32Maps;
-    std::vector<boost::shared_ptr<float64ClientMap> > float64Maps;
-    std::vector<boost::shared_ptr<octetClientMap> > octetMaps;
+    std::vector<std::shared_ptr<int32ClientMap> > int32Maps;
+    std::vector<std::shared_ptr<float64ClientMap> > float64Maps;
+    std::vector<std::shared_ptr<octetClientMap> > octetMaps;
 
-    boost::shared_ptr<int32ClientMap> getInt32Map(int address);
-    boost::shared_ptr<float64ClientMap> getFloat64Map(int address);
-    boost::shared_ptr<octetClientMap> getOctetMap(int address);
+    std::shared_ptr<int32ClientMap> getInt32Map(int address);
+    std::shared_ptr<float64ClientMap> getFloat64Map(int address);
+    std::shared_ptr<octetClientMap> getOctetMap(int address);
 
-    template<class T> boost::shared_ptr<T> processMap(std::vector<boost::shared_ptr<T> >& Maps, int address)
+    template<class T> std::shared_ptr<T> processMap(std::vector<std::shared_ptr<T> >& Maps, int address)
     {
-        boost::shared_ptr<T> mapPtr;
+        std::shared_ptr<T> mapPtr;
         // Check vector entry
         if ((int)Maps.size() <= address) {
             // Extend vector
@@ -59,7 +59,7 @@ private:
         }
         if (Maps[address].get() == NULL){
             // Add map to vector
-            mapPtr = boost::shared_ptr<T>(new T());
+            mapPtr = std::shared_ptr<T>(new T());
             Maps[address] = mapPtr;
         } else {
             // Get existing map

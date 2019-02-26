@@ -608,7 +608,7 @@ BOOST_AUTO_TEST_CASE(test_PluginExtraDimensions)
   // Set the file write mode to stream
   hdf5->write(NDFileWriteModeString, NDFileModeStream);
   // Call the configure dims method
-  //hdf5->configureDims((NDArray *)arrays[0]);
+  hdf5->configureDims(arrays[0]);
   // Verify the dimensions
   BOOST_REQUIRE_EQUAL(hdf5->dims[0], 1);
   BOOST_REQUIRE_EQUAL(hdf5->dims[1], 1);

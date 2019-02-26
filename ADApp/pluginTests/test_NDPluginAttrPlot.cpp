@@ -24,7 +24,7 @@
 
 #include <algorithm>
 #include <deque>
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <iostream>
 #include <fstream>
 #include <stdexcept>
