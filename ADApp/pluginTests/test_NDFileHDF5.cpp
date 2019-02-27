@@ -1,9 +1,4 @@
 /* Nothing here yet*/ 
-// This must be defined first to hack the relevant classes, turning all private variables and
-// methods into public for unit testing.  It's not pretty, but necessary until the classes are
-// all re-written to be more OO.
-#define _UNITTEST_HDF5_
-
 #include <stdio.h>
 
 

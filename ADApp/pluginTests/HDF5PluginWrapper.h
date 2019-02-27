@@ -22,6 +22,10 @@ public:
                     int address,
                     int priority,
                     int stackSize);
+  asynStatus testConfigureDims(NDArray *pArray);
+  void testCalcNumFrames();
+  void testSetMultiFrameFile(bool multi);
+
   virtual ~HDF5PluginWrapper();
 
 };
