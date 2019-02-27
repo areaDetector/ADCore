@@ -21,10 +21,12 @@ class NDFileHDF5Dataset
     asynStatus writeFile(NDArray *pArray, hid_t datatype, hid_t dataspace, hsize_t *framesize);
     hid_t getHandle();
     asynStatus flushDataset();
+    hsize_t getDim(int index);
+    hsize_t getMaxDim(int index);
+    hsize_t getOffset(int index);
+    hsize_t getVirtualDim(int index);
 
-#ifndef _UNITTEST_HDF5_
   private:
-#endif
 
     asynUser    *pAsynUser_;   // Pointer to the asynUser structure
     std::string name_;         // Name of this dataset
@@ -33,6 +35,7 @@ class NDFileHDF5Dataset
     int         arrayDims[ND_ARRAY_MAX_DIMS];
     bool        multiFrame_;   // Whether this is a multi frame dataset
     int         rank_;         // number of dimensions
+    int         extra_rank_;   // number of extra dimensions
     hsize_t     *dims_;        // Array of current dimension sizes. This updates as various dimensions grow.
     hsize_t     *chunkdims_;   // Array of current configured chunk dimension sizes.
     hsize_t     *maxdims_;     // Array of maximum dimension sizes. The value -1 is HDF5 term for infinite.

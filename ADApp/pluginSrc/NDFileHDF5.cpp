@@ -1993,6 +1993,79 @@ int NDFileHDF5::verifyLayoutXMLFile()
   return status;
 }
 
+/** Return the requested dimension size.
+  * \param[in] index of dimension
+  * \param[out] size of the dimension
+  */
+hsize_t NDFileHDF5::getDim(int index)
+{
+  hsize_t value = -1;
+  if (index >= 0 && index < this->rank){
+    value = this->dims[index];
+  }
+  return value;
+}
+
+/** Return the requested max dimension size.
+  * \param[in] index of dimension
+  * \param[out] size of the dimension
+  */
+hsize_t NDFileHDF5::getMaxDim(int index)
+{
+  hsize_t value = -1;
+  if (index >= 0 && index < this->rank){
+    value = this->maxdims[index];
+  }
+  return value;
+}
+
+/** Return the requested chunk dimension size.
+  * \param[in] index of dimension
+  * \param[out] size of the dimension
+  */
+hsize_t NDFileHDF5::getChunkDim(int index)
+{
+  hsize_t value = -1;
+  if (index >= 0 && index < this->rank){
+    value = this->chunkdims[index];
+  }
+  return value;
+}
+
+/** Return the requested offset size.
+  * \param[in] index of offset
+  * \param[out] size of the offset
+  */
+hsize_t NDFileHDF5::getOffset(int index)
+{
+  hsize_t value = -1;
+  if (index >= 0 && index < this->rank){
+    value = this->offset[index];
+  }
+  return value;
+}
+
+/** Return the requested virtual dimension size.
+  * \param[in] index of dimension
+  * \param[out] size of the dimension
+  */
+hsize_t NDFileHDF5::getVirtualDim(int index)
+{
+  hsize_t value = -1;
+  if (index >= 0 && index < this->nvirtual){
+    value = this->virtualdims[index];
+  }
+  return value;
+}
+
+/** Set the multi frame parameter.
+  * \param[in] boolean to set the writer frame mode
+  */
+void NDFileHDF5::setMultiFrameFile(bool multi)
+{
+  this->multiFrameFile = multi;
+}
+
 /** Constructor for NDFileHDF5; parameters are identical to those for NDPluginFile::NDPluginFile,
     and are passed directly to that base class constructor.
   * After calling the base class constructor this method sets NDPluginFile::supportsMultipleArrays=1.
@@ -2834,9 +2907,9 @@ asynStatus NDFileHDF5::configureDims(NDArray *pArray)
     this->framesize     = (hsize_t*)calloc(ndims,     sizeof(hsize_t));
     this->dims          = (hsize_t*)calloc(ndims,     sizeof(hsize_t));
     this->offset        = (hsize_t*)calloc(ndims,     sizeof(hsize_t));
-    int nvirtual = extradims;
-    if (nvirtual <= 0) nvirtual = 1;
-    this->virtualdims   = (hsize_t*)calloc(nvirtual, sizeof(hsize_t));
+    this->nvirtual = extradims;
+    if (this->nvirtual <= 0) this->nvirtual = 1;
+    this->virtualdims   = (hsize_t*)calloc(this->nvirtual, sizeof(hsize_t));
   }
 
   if (this->multiFrameFile)

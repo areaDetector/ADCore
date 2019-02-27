@@ -4,13 +4,6 @@
  *  Created on: 10 Nov 2015
  *      Author: gnx91527
  */
-
-// This must be defined first to hack the relevant classes, turning all private variables and
-// methods into public for unit testing.  It's not pretty, but necessary until the classes are
-// all re-written to be more OO.
-#define _UNITTEST_HDF5_
-
-
 #include <stdio.h>
 
 
@@ -110,13 +103,13 @@ void testDimensions(NDFileHDF5Dataset *dataset, int ndims, int extradims, int *v
   // Test the maximum dimensions of the dataset
   for (int i=0; i < extradims; i++){
     //BOOST_TEST_MESSAGE("Verify maxdim[" << i << "] == " << values[counter]);
-    val = dataset->maxdims_[i];
+    val = dataset->getMaxDim(i);
     BOOST_REQUIRE_EQUAL(val, values[counter]);
     counter++;
   }
   for (int i=extradims; i < extradims+ndims; i++){
     //BOOST_TEST_MESSAGE("Verify maxdim[" << i << "] == " << values[counter]);
-    val = dataset->maxdims_[i];
+    val = dataset->getMaxDim(i);
     BOOST_REQUIRE_EQUAL(val, values[counter]);
     counter++;
   }
@@ -124,13 +117,13 @@ void testDimensions(NDFileHDF5Dataset *dataset, int ndims, int extradims, int *v
   // Test the current dimension sizes of the dataset
   for (int i=0; i < extradims; i++){
     //BOOST_TEST_MESSAGE("Verify current dim[" << i << "] == " << values[counter]);
-    val = dataset->dims_[i];
+    val = dataset->getDim(i);
     BOOST_REQUIRE_EQUAL(val, values[counter]);
     counter++;
   }
   for (int i=extradims; i < extradims+ndims; i++){
     //BOOST_TEST_MESSAGE("Verify current dim[" << i << "] == " << values[counter]);
-    val = dataset->dims_[i];
+    val = dataset->getDim(i);
     BOOST_REQUIRE_EQUAL(val, values[counter]);
     counter++;
   }
@@ -138,7 +131,7 @@ void testDimensions(NDFileHDF5Dataset *dataset, int ndims, int extradims, int *v
   // Test the offsets of the dataset
   for (int i=0; i < extradims+ndims; i++){
     //BOOST_TEST_MESSAGE("Verify offset[" << i << "] == " << values[counter]);
-    val = dataset->offset_[i];
+    val = dataset->getOffset(i);
     BOOST_REQUIRE_EQUAL(val, values[counter]);
     counter++;
   }
@@ -146,7 +139,7 @@ void testDimensions(NDFileHDF5Dataset *dataset, int ndims, int extradims, int *v
   // Test the virtual dimension sizes of the dataset
   for (int i=0; i < extradims; i++){
     //BOOST_TEST_MESSAGE("Verify current virtualdim[" << i << "] == " << values[counter]);
-    val = dataset->virtualdims_[i];
+    val = dataset->getVirtualDim(i);
     BOOST_REQUIRE_EQUAL(val, values[counter]);
     counter++;
   }
@@ -159,7 +152,7 @@ void testOffsets(NDFileHDF5Dataset *dataset, int ndims, int extradims, int *valu
   // Test the offsets of the dataset
   for (int i=0; i < extradims+ndims; i++){
     //BOOST_TEST_MESSAGE("Verify offset[" << i << "] == " << values[i]);
-    val = dataset->offset_[i];
+    val = dataset->getOffset(i);
     BOOST_REQUIRE_EQUAL(val, values[i]);
   }
 }
@@ -172,13 +165,13 @@ void testDims(NDFileHDF5Dataset *dataset, int ndims, int extradims, int *values)
   // Test the current dimension sizes of the dataset
   for (int i=0; i < extradims; i++){
     //BOOST_TEST_MESSAGE("Verify current dim[" << i << "] == " << values[counter]);
-    val = dataset->dims_[i];
+    val = dataset->getDim(i);
     BOOST_REQUIRE_EQUAL(val, values[counter]);
     counter++;
   }
   for (int i=extradims; i < extradims+ndims; i++){
     //BOOST_TEST_MESSAGE("Verify current dim[" << i << "] == " << values[counter]);
-    val = dataset->dims_[i];
+    val = dataset->getDim(i);
     BOOST_REQUIRE_EQUAL(val, values[counter]);
     counter++;
   }
@@ -192,13 +185,13 @@ void testMaxDims(NDFileHDF5Dataset *dataset, int ndims, int extradims, int *valu
   // Test the maximum dimensions of the dataset
   for (int i=0; i < extradims; i++){
     //BOOST_TEST_MESSAGE("Verify maxdim[" << i << "] == " << values[counter]);
-    val = dataset->maxdims_[i];
+    val = dataset->getMaxDim(i);
     BOOST_REQUIRE_EQUAL(val, values[counter]);
     counter++;
   }
   for (int i=extradims; i < extradims+ndims; i++){
     //BOOST_TEST_MESSAGE("Verify maxdim[" << i << "] == " << values[counter]);
-    val = dataset->maxdims_[i];
+    val = dataset->getMaxDim(i);
     BOOST_REQUIRE_EQUAL(val, values[counter]);
     counter++;
   }
@@ -211,7 +204,7 @@ void testVirtualDims(NDFileHDF5Dataset *dataset, int ndims, int extradims, int *
   // Test the virtual dimension sizes of the dataset
   for (int i=0; i < extradims; i++){
     //BOOST_TEST_MESSAGE("Verify current virtualdim[" << i << "] == " << values[i]);
-    val = dataset->virtualdims_[i];
+    val = dataset->getVirtualDim(i);
     BOOST_REQUIRE_EQUAL(val, values[i]);
   }
 }
@@ -422,7 +415,7 @@ BOOST_AUTO_TEST_CASE(test_PluginExtraDimensions)
   hdf5->write(str_NDFileHDF5_nExtraDims, 1);
   hdf5->write(NDFileHDF5::str_NDFileHDF5_extraDimSize[0], 4);
   hdf5->write(NDFileHDF5::str_NDFileHDF5_extraDimSize[1], 6);
-  hdf5->calcNumFrames();
+  hdf5->testCalcNumFrames();
   numCapture = hdf5->readInt(NDFileNumCaptureString);
   BOOST_REQUIRE_EQUAL(numCapture, 24);
 
@@ -432,7 +425,7 @@ BOOST_AUTO_TEST_CASE(test_PluginExtraDimensions)
   hdf5->write(NDFileHDF5::str_NDFileHDF5_extraDimSize[0], 5);
   hdf5->write(NDFileHDF5::str_NDFileHDF5_extraDimSize[1], 7);
   hdf5->write(NDFileHDF5::str_NDFileHDF5_extraDimSize[2], 9);
-  hdf5->calcNumFrames();
+  hdf5->testCalcNumFrames();
   numCapture = hdf5->readInt(NDFileNumCaptureString);
   BOOST_REQUIRE_EQUAL(numCapture, 315);
 
@@ -443,7 +436,7 @@ BOOST_AUTO_TEST_CASE(test_PluginExtraDimensions)
   hdf5->write(NDFileHDF5::str_NDFileHDF5_extraDimSize[1], 3);
   hdf5->write(NDFileHDF5::str_NDFileHDF5_extraDimSize[2], 4);
   hdf5->write(NDFileHDF5::str_NDFileHDF5_extraDimSize[3], 5);
-  hdf5->calcNumFrames();
+  hdf5->testCalcNumFrames();
   numCapture = hdf5->readInt(NDFileNumCaptureString);
   BOOST_REQUIRE_EQUAL(numCapture, 120);
 
@@ -455,7 +448,7 @@ BOOST_AUTO_TEST_CASE(test_PluginExtraDimensions)
   hdf5->write(NDFileHDF5::str_NDFileHDF5_extraDimSize[2], 6);
   hdf5->write(NDFileHDF5::str_NDFileHDF5_extraDimSize[3], 8);
   hdf5->write(NDFileHDF5::str_NDFileHDF5_extraDimSize[4], 10);
-  hdf5->calcNumFrames();
+  hdf5->testCalcNumFrames();
   numCapture = hdf5->readInt(NDFileNumCaptureString);
   BOOST_REQUIRE_EQUAL(numCapture, 3840);
 
@@ -468,7 +461,7 @@ BOOST_AUTO_TEST_CASE(test_PluginExtraDimensions)
   hdf5->write(NDFileHDF5::str_NDFileHDF5_extraDimSize[3], 5);
   hdf5->write(NDFileHDF5::str_NDFileHDF5_extraDimSize[4], 6);
   hdf5->write(NDFileHDF5::str_NDFileHDF5_extraDimSize[5], 7);
-  hdf5->calcNumFrames();
+  hdf5->testCalcNumFrames();
   numCapture = hdf5->readInt(NDFileNumCaptureString);
   BOOST_REQUIRE_EQUAL(numCapture, 5040);
 
@@ -482,7 +475,7 @@ BOOST_AUTO_TEST_CASE(test_PluginExtraDimensions)
   hdf5->write(NDFileHDF5::str_NDFileHDF5_extraDimSize[4], 6);
   hdf5->write(NDFileHDF5::str_NDFileHDF5_extraDimSize[5], 7);
   hdf5->write(NDFileHDF5::str_NDFileHDF5_extraDimSize[6], 8);
-  hdf5->calcNumFrames();
+  hdf5->testCalcNumFrames();
   numCapture = hdf5->readInt(NDFileNumCaptureString);
   BOOST_REQUIRE_EQUAL(numCapture, 40320);
 
@@ -497,7 +490,7 @@ BOOST_AUTO_TEST_CASE(test_PluginExtraDimensions)
   hdf5->write(NDFileHDF5::str_NDFileHDF5_extraDimSize[5], 7);
   hdf5->write(NDFileHDF5::str_NDFileHDF5_extraDimSize[6], 8);
   hdf5->write(NDFileHDF5::str_NDFileHDF5_extraDimSize[7], 9);
-  hdf5->calcNumFrames();
+  hdf5->testCalcNumFrames();
   numCapture = hdf5->readInt(NDFileNumCaptureString);
   BOOST_REQUIRE_EQUAL(numCapture, 362880);
 
@@ -513,7 +506,7 @@ BOOST_AUTO_TEST_CASE(test_PluginExtraDimensions)
   hdf5->write(NDFileHDF5::str_NDFileHDF5_extraDimSize[6], 8);
   hdf5->write(NDFileHDF5::str_NDFileHDF5_extraDimSize[7], 9);
   hdf5->write(NDFileHDF5::str_NDFileHDF5_extraDimSize[8], 10);
-  hdf5->calcNumFrames();
+  hdf5->testCalcNumFrames();
   numCapture = hdf5->readInt(NDFileNumCaptureString);
   BOOST_REQUIRE_EQUAL(numCapture, 3628800);
 
@@ -530,7 +523,7 @@ BOOST_AUTO_TEST_CASE(test_PluginExtraDimensions)
   hdf5->write(NDFileHDF5::str_NDFileHDF5_extraDimSize[7], 9);
   hdf5->write(NDFileHDF5::str_NDFileHDF5_extraDimSize[8], 10);
   hdf5->write(NDFileHDF5::str_NDFileHDF5_extraDimSize[9], 11);
-  hdf5->calcNumFrames();
+  hdf5->testCalcNumFrames();
   numCapture = hdf5->readInt(NDFileNumCaptureString);
   BOOST_REQUIRE_EQUAL(numCapture, 39916800);
 
@@ -539,7 +532,7 @@ BOOST_AUTO_TEST_CASE(test_PluginExtraDimensions)
   // Set 2 extra dims
   hdf5->write(str_NDFileHDF5_nExtraDims, 2);
   // Set multiframe true
-  hdf5->multiFrameFile = true;
+  hdf5->testSetMultiFrameFile(true);
   // Set extra dim sizes n=2 x=3 y=4
   hdf5->write(NDFileHDF5::str_NDFileHDF5_extraDimSize[0], 2);
   hdf5->write(NDFileHDF5::str_NDFileHDF5_extraDimSize[1], 3);
@@ -553,41 +546,41 @@ BOOST_AUTO_TEST_CASE(test_PluginExtraDimensions)
   // Set the file write mode to stream
   hdf5->write(NDFileWriteModeString, NDFileModeStream);
   // Call the configure dims method
-  hdf5->configureDims(arrays[0]);
+  hdf5->testConfigureDims(arrays[0]);
   // Verify the dimensions
-  BOOST_REQUIRE_EQUAL(hdf5->dims[0], 1);
-  BOOST_REQUIRE_EQUAL(hdf5->dims[1], 1);
-  BOOST_REQUIRE_EQUAL(hdf5->dims[2], 1);
-  BOOST_REQUIRE_EQUAL(hdf5->dims[3], 512);
-  BOOST_REQUIRE_EQUAL(hdf5->dims[4], 1024);
+  BOOST_REQUIRE_EQUAL(hdf5->getDim(0), 1);
+  BOOST_REQUIRE_EQUAL(hdf5->getDim(1), 1);
+  BOOST_REQUIRE_EQUAL(hdf5->getDim(2), 1);
+  BOOST_REQUIRE_EQUAL(hdf5->getDim(3), 512);
+  BOOST_REQUIRE_EQUAL(hdf5->getDim(4), 1024);
   // Verify the maximum dimensions
-  BOOST_REQUIRE_EQUAL(hdf5->maxdims[0], 4);
-  BOOST_REQUIRE_EQUAL(hdf5->maxdims[1], 3);
-  BOOST_REQUIRE_EQUAL(hdf5->maxdims[2], 2);
-  BOOST_REQUIRE_EQUAL(hdf5->maxdims[3], 512);
-  BOOST_REQUIRE_EQUAL(hdf5->maxdims[4], 1024);
+  BOOST_REQUIRE_EQUAL(hdf5->getMaxDim(0), 4);
+  BOOST_REQUIRE_EQUAL(hdf5->getMaxDim(1), 3);
+  BOOST_REQUIRE_EQUAL(hdf5->getMaxDim(2), 2);
+  BOOST_REQUIRE_EQUAL(hdf5->getMaxDim(3), 512);
+  BOOST_REQUIRE_EQUAL(hdf5->getMaxDim(4), 1024);
   // Verify the chunk dimensions
-  BOOST_REQUIRE_EQUAL(hdf5->chunkdims[0], 1);
-  BOOST_REQUIRE_EQUAL(hdf5->chunkdims[1], 1);
-  BOOST_REQUIRE_EQUAL(hdf5->chunkdims[2], 1);
-  BOOST_REQUIRE_EQUAL(hdf5->chunkdims[3], 512);
-  BOOST_REQUIRE_EQUAL(hdf5->chunkdims[4], 1024);
+  BOOST_REQUIRE_EQUAL(hdf5->getChunkDim(0), 1);
+  BOOST_REQUIRE_EQUAL(hdf5->getChunkDim(1), 1);
+  BOOST_REQUIRE_EQUAL(hdf5->getChunkDim(2), 1);
+  BOOST_REQUIRE_EQUAL(hdf5->getChunkDim(3), 512);
+  BOOST_REQUIRE_EQUAL(hdf5->getChunkDim(4), 1024);
   // Verify the offsets
-  BOOST_REQUIRE_EQUAL(hdf5->offset[0], 0);
-  BOOST_REQUIRE_EQUAL(hdf5->offset[1], 0);
-  BOOST_REQUIRE_EQUAL(hdf5->offset[2], 0);
-  BOOST_REQUIRE_EQUAL(hdf5->offset[3], 0);
-  BOOST_REQUIRE_EQUAL(hdf5->offset[4], 0);
+  BOOST_REQUIRE_EQUAL(hdf5->getOffset(0), 0);
+  BOOST_REQUIRE_EQUAL(hdf5->getOffset(1), 0);
+  BOOST_REQUIRE_EQUAL(hdf5->getOffset(2), 0);
+  BOOST_REQUIRE_EQUAL(hdf5->getOffset(3), 0);
+  BOOST_REQUIRE_EQUAL(hdf5->getOffset(4), 0);
   // Verify the virtual dims
-  BOOST_REQUIRE_EQUAL(hdf5->virtualdims[0], 4);
-  BOOST_REQUIRE_EQUAL(hdf5->virtualdims[1], 3);
-  BOOST_REQUIRE_EQUAL(hdf5->virtualdims[2], 2);
+  BOOST_REQUIRE_EQUAL(hdf5->getVirtualDim(0), 4);
+  BOOST_REQUIRE_EQUAL(hdf5->getVirtualDim(1), 3);
+  BOOST_REQUIRE_EQUAL(hdf5->getVirtualDim(2), 2);
 
 
   // Set 9 extra dims
   hdf5->write(str_NDFileHDF5_nExtraDims, 9);
   // Set multiframe true
-  hdf5->multiFrameFile = true;
+  hdf5->testSetMultiFrameFile(true);
   // Set extra dim sizes 1st=2 2nd=3 3rd=4 4th=5 5th=6 6th=7 7th=8 8th=9 9th=10 10th=11
   hdf5->write(NDFileHDF5::str_NDFileHDF5_extraDimSize[0], 2);
   hdf5->write(NDFileHDF5::str_NDFileHDF5_extraDimSize[1], 3);
@@ -608,70 +601,70 @@ BOOST_AUTO_TEST_CASE(test_PluginExtraDimensions)
   // Set the file write mode to stream
   hdf5->write(NDFileWriteModeString, NDFileModeStream);
   // Call the configure dims method
-  hdf5->configureDims(arrays[0]);
+  hdf5->testConfigureDims(arrays[0]);
   // Verify the dimensions
-  BOOST_REQUIRE_EQUAL(hdf5->dims[0], 1);
-  BOOST_REQUIRE_EQUAL(hdf5->dims[1], 1);
-  BOOST_REQUIRE_EQUAL(hdf5->dims[2], 1);
-  BOOST_REQUIRE_EQUAL(hdf5->dims[3], 1);
-  BOOST_REQUIRE_EQUAL(hdf5->dims[4], 1);
-  BOOST_REQUIRE_EQUAL(hdf5->dims[5], 1);
-  BOOST_REQUIRE_EQUAL(hdf5->dims[6], 1);
-  BOOST_REQUIRE_EQUAL(hdf5->dims[7], 1);
-  BOOST_REQUIRE_EQUAL(hdf5->dims[8], 1);
-  BOOST_REQUIRE_EQUAL(hdf5->dims[9], 1);
-  BOOST_REQUIRE_EQUAL(hdf5->dims[10], 512);
-  BOOST_REQUIRE_EQUAL(hdf5->dims[11], 1024);
+  BOOST_REQUIRE_EQUAL(hdf5->getDim(0), 1);
+  BOOST_REQUIRE_EQUAL(hdf5->getDim(1), 1);
+  BOOST_REQUIRE_EQUAL(hdf5->getDim(2), 1);
+  BOOST_REQUIRE_EQUAL(hdf5->getDim(3), 1);
+  BOOST_REQUIRE_EQUAL(hdf5->getDim(4), 1);
+  BOOST_REQUIRE_EQUAL(hdf5->getDim(5), 1);
+  BOOST_REQUIRE_EQUAL(hdf5->getDim(6), 1);
+  BOOST_REQUIRE_EQUAL(hdf5->getDim(7), 1);
+  BOOST_REQUIRE_EQUAL(hdf5->getDim(8), 1);
+  BOOST_REQUIRE_EQUAL(hdf5->getDim(9), 1);
+  BOOST_REQUIRE_EQUAL(hdf5->getDim(10), 512);
+  BOOST_REQUIRE_EQUAL(hdf5->getDim(11), 1024);
   // Verify the maximum dimensions
-  BOOST_REQUIRE_EQUAL(hdf5->maxdims[0],  11);
-  BOOST_REQUIRE_EQUAL(hdf5->maxdims[1],  10);
-  BOOST_REQUIRE_EQUAL(hdf5->maxdims[2],  9);
-  BOOST_REQUIRE_EQUAL(hdf5->maxdims[3],  8);
-  BOOST_REQUIRE_EQUAL(hdf5->maxdims[4],  7);
-  BOOST_REQUIRE_EQUAL(hdf5->maxdims[5],  6);
-  BOOST_REQUIRE_EQUAL(hdf5->maxdims[6],  5);
-  BOOST_REQUIRE_EQUAL(hdf5->maxdims[7],  4);
-  BOOST_REQUIRE_EQUAL(hdf5->maxdims[8],  3);
-  BOOST_REQUIRE_EQUAL(hdf5->maxdims[9],  2);
-  BOOST_REQUIRE_EQUAL(hdf5->maxdims[10], 512);
-  BOOST_REQUIRE_EQUAL(hdf5->maxdims[11], 1024);
+  BOOST_REQUIRE_EQUAL(hdf5->getMaxDim(0),  11);
+  BOOST_REQUIRE_EQUAL(hdf5->getMaxDim(1),  10);
+  BOOST_REQUIRE_EQUAL(hdf5->getMaxDim(2),  9);
+  BOOST_REQUIRE_EQUAL(hdf5->getMaxDim(3),  8);
+  BOOST_REQUIRE_EQUAL(hdf5->getMaxDim(4),  7);
+  BOOST_REQUIRE_EQUAL(hdf5->getMaxDim(5),  6);
+  BOOST_REQUIRE_EQUAL(hdf5->getMaxDim(6),  5);
+  BOOST_REQUIRE_EQUAL(hdf5->getMaxDim(7),  4);
+  BOOST_REQUIRE_EQUAL(hdf5->getMaxDim(8),  3);
+  BOOST_REQUIRE_EQUAL(hdf5->getMaxDim(9),  2);
+  BOOST_REQUIRE_EQUAL(hdf5->getMaxDim(10), 512);
+  BOOST_REQUIRE_EQUAL(hdf5->getMaxDim(11), 1024);
   // Verify the chunk dimensions
-  BOOST_REQUIRE_EQUAL(hdf5->chunkdims[0], 1);
-  BOOST_REQUIRE_EQUAL(hdf5->chunkdims[1], 1);
-  BOOST_REQUIRE_EQUAL(hdf5->chunkdims[2], 1);
-  BOOST_REQUIRE_EQUAL(hdf5->chunkdims[3], 1);
-  BOOST_REQUIRE_EQUAL(hdf5->chunkdims[4], 1);
-  BOOST_REQUIRE_EQUAL(hdf5->chunkdims[5], 1);
-  BOOST_REQUIRE_EQUAL(hdf5->chunkdims[6], 1);
-  BOOST_REQUIRE_EQUAL(hdf5->chunkdims[7], 1);
-  BOOST_REQUIRE_EQUAL(hdf5->chunkdims[8], 1);
-  BOOST_REQUIRE_EQUAL(hdf5->chunkdims[9], 1);
-  BOOST_REQUIRE_EQUAL(hdf5->chunkdims[10], 512);
-  BOOST_REQUIRE_EQUAL(hdf5->chunkdims[11], 1024);
+  BOOST_REQUIRE_EQUAL(hdf5->getChunkDim(0), 1);
+  BOOST_REQUIRE_EQUAL(hdf5->getChunkDim(1), 1);
+  BOOST_REQUIRE_EQUAL(hdf5->getChunkDim(2), 1);
+  BOOST_REQUIRE_EQUAL(hdf5->getChunkDim(3), 1);
+  BOOST_REQUIRE_EQUAL(hdf5->getChunkDim(4), 1);
+  BOOST_REQUIRE_EQUAL(hdf5->getChunkDim(5), 1);
+  BOOST_REQUIRE_EQUAL(hdf5->getChunkDim(6), 1);
+  BOOST_REQUIRE_EQUAL(hdf5->getChunkDim(7), 1);
+  BOOST_REQUIRE_EQUAL(hdf5->getChunkDim(8), 1);
+  BOOST_REQUIRE_EQUAL(hdf5->getChunkDim(9), 1);
+  BOOST_REQUIRE_EQUAL(hdf5->getChunkDim(10), 512);
+  BOOST_REQUIRE_EQUAL(hdf5->getChunkDim(11), 1024);
   // Verify the offsets
-  BOOST_REQUIRE_EQUAL(hdf5->offset[0], 0);
-  BOOST_REQUIRE_EQUAL(hdf5->offset[1], 0);
-  BOOST_REQUIRE_EQUAL(hdf5->offset[2], 0);
-  BOOST_REQUIRE_EQUAL(hdf5->offset[3], 0);
-  BOOST_REQUIRE_EQUAL(hdf5->offset[4], 0);
-  BOOST_REQUIRE_EQUAL(hdf5->offset[5], 0);
-  BOOST_REQUIRE_EQUAL(hdf5->offset[6], 0);
-  BOOST_REQUIRE_EQUAL(hdf5->offset[7], 0);
-  BOOST_REQUIRE_EQUAL(hdf5->offset[8], 0);
-  BOOST_REQUIRE_EQUAL(hdf5->offset[9], 0);
-  BOOST_REQUIRE_EQUAL(hdf5->offset[10], 0);
-  BOOST_REQUIRE_EQUAL(hdf5->offset[11], 0);
+  BOOST_REQUIRE_EQUAL(hdf5->getOffset(0), 0);
+  BOOST_REQUIRE_EQUAL(hdf5->getOffset(1), 0);
+  BOOST_REQUIRE_EQUAL(hdf5->getOffset(2), 0);
+  BOOST_REQUIRE_EQUAL(hdf5->getOffset(3), 0);
+  BOOST_REQUIRE_EQUAL(hdf5->getOffset(4), 0);
+  BOOST_REQUIRE_EQUAL(hdf5->getOffset(5), 0);
+  BOOST_REQUIRE_EQUAL(hdf5->getOffset(6), 0);
+  BOOST_REQUIRE_EQUAL(hdf5->getOffset(7), 0);
+  BOOST_REQUIRE_EQUAL(hdf5->getOffset(8), 0);
+  BOOST_REQUIRE_EQUAL(hdf5->getOffset(9), 0);
+  BOOST_REQUIRE_EQUAL(hdf5->getOffset(10), 0);
+  BOOST_REQUIRE_EQUAL(hdf5->getOffset(11), 0);
   // Verify the virtual dims
-  BOOST_REQUIRE_EQUAL(hdf5->virtualdims[0], 11);
-  BOOST_REQUIRE_EQUAL(hdf5->virtualdims[1], 10);
-  BOOST_REQUIRE_EQUAL(hdf5->virtualdims[2], 9);
-  BOOST_REQUIRE_EQUAL(hdf5->virtualdims[3], 8);
-  BOOST_REQUIRE_EQUAL(hdf5->virtualdims[4], 7);
-  BOOST_REQUIRE_EQUAL(hdf5->virtualdims[5], 6);
-  BOOST_REQUIRE_EQUAL(hdf5->virtualdims[6], 5);
-  BOOST_REQUIRE_EQUAL(hdf5->virtualdims[7], 4);
-  BOOST_REQUIRE_EQUAL(hdf5->virtualdims[8], 3);
-  BOOST_REQUIRE_EQUAL(hdf5->virtualdims[9], 2);
+  BOOST_REQUIRE_EQUAL(hdf5->getVirtualDim(0), 11);
+  BOOST_REQUIRE_EQUAL(hdf5->getVirtualDim(1), 10);
+  BOOST_REQUIRE_EQUAL(hdf5->getVirtualDim(2), 9);
+  BOOST_REQUIRE_EQUAL(hdf5->getVirtualDim(3), 8);
+  BOOST_REQUIRE_EQUAL(hdf5->getVirtualDim(4), 7);
+  BOOST_REQUIRE_EQUAL(hdf5->getVirtualDim(5), 6);
+  BOOST_REQUIRE_EQUAL(hdf5->getVirtualDim(6), 5);
+  BOOST_REQUIRE_EQUAL(hdf5->getVirtualDim(7), 4);
+  BOOST_REQUIRE_EQUAL(hdf5->getVirtualDim(8), 3);
+  BOOST_REQUIRE_EQUAL(hdf5->getVirtualDim(9), 2);
 
 }
 
