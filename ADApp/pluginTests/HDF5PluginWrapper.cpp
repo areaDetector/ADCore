@@ -25,6 +25,21 @@ HDF5PluginWrapper::HDF5PluginWrapper(const std::string& port,
 {
 }
 
+asynStatus HDF5PluginWrapper::testConfigureDims(NDArray *pArray)
+{
+  return this->configureDims(pArray);
+}
+
+void HDF5PluginWrapper::testCalcNumFrames()
+{
+  this->calcNumFrames();
+}
+
+void HDF5PluginWrapper::testSetMultiFrameFile(bool multi)
+{
+  this->setMultiFrameFile(multi);
+}
+
 HDF5PluginWrapper::~HDF5PluginWrapper()
 {
   cleanup();

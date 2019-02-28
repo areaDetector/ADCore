@@ -73,6 +73,7 @@ asynStatus NDFileHDF5Dataset::configureDims(NDArray *pArray, bool multiframe, in
   }
 
   this->rank_ = ndims;
+  this->extra_rank_ = extradims;
 
   for (j=pArray->ndims-1,i=extradims; i<this->rank_; i++,j--){
     this->maxdims_[i]    = pArray->dims[j].size;
@@ -350,4 +351,57 @@ asynStatus NDFileHDF5Dataset::flushDataset()
 
   return asynSuccess;  
 }
+
+/** Return the requested dimension size.
+  * \param[in] index of dimension
+  * \param[out] size of the dimension
+  */
+hsize_t NDFileHDF5Dataset::getDim(int index)
+{
+  hsize_t value = -1;
+  if (index >= 0 && index < this->rank_){
+    value = this->dims_[index];
+  }
+  return value;
+}
+
+/** Return the requested max dimension size.
+  * \param[in] index of dimension
+  * \param[out] size of the dimension
+  */
+hsize_t NDFileHDF5Dataset::getMaxDim(int index)
+{
+  hsize_t value = -1;
+  if (index >= 0 && index < this->rank_){
+    value = this->maxdims_[index];
+  }
+  return value;
+}
+
+/** Return the requested offset size.
+  * \param[in] index of offset
+  * \param[out] size of the offset
+  */
+hsize_t NDFileHDF5Dataset::getOffset(int index)
+{
+  hsize_t value = -1;
+  if (index >= 0 && index < this->rank_){
+    value = this->offset_[index];
+  }
+  return value;
+}
+
+/** Return the requested virtual dimension size.
+  * \param[in] index of dimension
+  * \param[out] size of the dimension
+  */
+hsize_t NDFileHDF5Dataset::getVirtualDim(int index)
+{
+  hsize_t value = -1;
+  if (index >= 0 && index < this->extra_rank_){
+    value = this->virtualdims_[index];
+  }
+  return value;
+}
+
 
