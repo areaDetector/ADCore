@@ -135,6 +135,9 @@ const char *NDFileHDF5::str_NDFileHDF5_posIndex[MAXEXTRADIMS] = {
     "HDF5_posIndexDim9"
 };
 
+/** The task to run the thread for flush commands
+ * \param[in] drvPvt Pointer to the NDFileHDF5 object
+ */
 static void flushTaskC(void *drvPvt)
 {
     NDFileHDF5 *pPlugin = (NDFileHDF5 *)drvPvt;
@@ -318,53 +321,57 @@ asynStatus NDFileHDF5::openFile(const char *fileName, NDFileOpenMode_t openMode,
   return asynSuccess;
 }
 
+/** Thread function for flush now command
+ * Waits for flush events, and upon receiving one, flushes all datasets and attributes, ensuring
+ * that the unique ID attribute is the last attribute flushed
+ */
 void NDFileHDF5::flushTask()
 {
-	const char* functionName = "flushTask";
+    const char* functionName = "flushTask";
     NDAttribute *ndAttr = NULL;
     NDFileHDF5AttributeDataset *uniqueIDNode = NULL;
     asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW, "%s::%s Started flushTask thread\n", driverName, functionName);
-	while (1){
-		// Wait for a flush event
+    while (1){
+        // Wait for a flush event
         epicsEventWait(this->flushEventId);
         asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW, "%s::%s Received flush event\n", driverName, functionName);
         // Now lock the flushLock
         flushLock.lock();
         // Perform the flush
         if (checkForSWMRMode()){
-        	// We are in SWMR mode so flush all datasets
-        	std::map<std::string, NDFileHDF5Dataset *>::iterator iter;
-        	for (iter = this->detDataMap.begin(); iter != this->detDataMap.end(); ++iter){
-        		iter->second->flushDataset();
-        	}
-        	// Now flush all attribute datasets
-        	for (std::list<NDFileHDF5AttributeDataset*>::iterator it_node = attrList.begin(); it_node != attrList.end(); ++it_node){
-        		NDFileHDF5AttributeDataset *hdfAttrNode = *it_node;
-        	    // find the named attribute in the NDAttributeList
-        	    // We do not want to flush the unique ID attribute at this stage
-        	    if (strcmp(uniqueIDName, hdfAttrNode->getName().c_str())){
-        	    	ndAttr = this->pFileAttributes->find(hdfAttrNode->getName().c_str());
-        	    	if (ndAttr == NULL){
-        	    		asynPrint(this->pasynUserSelf, ASYN_TRACE_WARNING,
-        	    				"%s::%s WARNING: NDAttribute named \'%s\' not found\n",
-								driverName, functionName, hdfAttrNode->getName().c_str());
-        	    		continue;
-        	    	}
-        	    	hdfAttrNode->flushDataset();
-        	    } else {
-        	    	// Keep the unique ID node ready to flush it as the last attribute
-        	    	uniqueIDNode = *it_node;
-        	    }
-        	}
-        	// Now locate and flush the unique ID attribute ensuring it is the last attribute flushed
-        	ndAttr = this->pFileAttributes->find(uniqueIDName);
-        	if (ndAttr == NULL || uniqueIDNode == NULL){
-        		asynPrint(this->pasynUserSelf, ASYN_TRACE_WARNING,
-        	      "%s::%s WARNING: NDAttribute named \'NDArrayUniqueId\' not found\n",
-        	      driverName, functionName);
-        	} else {
-        		uniqueIDNode->flushDataset();
-        	}
+            // We are in SWMR mode so flush all datasets
+            std::map<std::string, NDFileHDF5Dataset *>::iterator iter;
+            for (iter = this->detDataMap.begin(); iter != this->detDataMap.end(); ++iter){
+                iter->second->flushDataset();
+            }
+            // Now flush all attribute datasets
+            for (std::list<NDFileHDF5AttributeDataset*>::iterator it_node = attrList.begin(); it_node != attrList.end(); ++it_node){
+                NDFileHDF5AttributeDataset *hdfAttrNode = *it_node;
+                // find the named attribute in the NDAttributeList
+                // We do not want to flush the unique ID attribute at this stage
+                if (strcmp(uniqueIDName, hdfAttrNode->getName().c_str())){
+                    ndAttr = this->pFileAttributes->find(hdfAttrNode->getName().c_str());
+                    if (ndAttr == NULL){
+                        asynPrint(this->pasynUserSelf, ASYN_TRACE_WARNING,
+                                "%s::%s WARNING: NDAttribute named \'%s\' not found\n",
+                                driverName, functionName, hdfAttrNode->getName().c_str());
+                        continue;
+                    }
+                    hdfAttrNode->flushDataset();
+                } else {
+                    // Keep the unique ID node ready to flush it as the last attribute
+                    uniqueIDNode = *it_node;
+                }
+            }
+            // Now locate and flush the unique ID attribute ensuring it is the last attribute flushed
+            ndAttr = this->pFileAttributes->find(uniqueIDName);
+            if (ndAttr == NULL || uniqueIDNode == NULL){
+                asynPrint(this->pasynUserSelf, ASYN_TRACE_WARNING,
+                  "%s::%s WARNING: NDAttribute named \'NDArrayUniqueId\' not found\n",
+                  driverName, functionName);
+            } else {
+                uniqueIDNode->flushDataset();
+            }
         }
 
         // Unlock the flushLock
@@ -376,7 +383,7 @@ void NDFileHDF5::flushTask()
         callParamCallbacks();
         // Unlock the standard lock
         this->unlock();
-	}
+    }
 }
 
 asynStatus NDFileHDF5::startSWMR()
