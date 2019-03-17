@@ -13,6 +13,15 @@
 include "NDFile.template"
 include "NDPluginBase.template"
 
+# Flush data to file
+record(busy, "$(P)$(R)FlushNow")
+{
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))HDF5_SWMRFlushNow")
+    field(ZNAM, "Done")
+    field(ONAM, "Flush")
+}
+
 # We replace some fields in records defined in NDFile.template
 # File data format 
 record(mbbo, "$(P)$(R)FileFormat")

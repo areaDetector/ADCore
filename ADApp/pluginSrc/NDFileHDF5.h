@@ -55,6 +55,7 @@
 #define str_NDFileHDF5_posIndexDimX      "HDF5_posIndexDimX"
 #define str_NDFileHDF5_posIndexDimY      "HDF5_posIndexDimY"
 #define str_NDFileHDF5_fillValue         "HDF5_fillValue"
+#define str_NDFileHDF5_SWMRFlushNow      "HDF5_SWMRFlushNow"
 #define str_NDFileHDF5_SWMRCbCounter     "HDF5_SWMRCbCounter"
 #define str_NDFileHDF5_SWMRSupported     "HDF5_SWMRSupported"
 #define str_NDFileHDF5_SWMRMode          "HDF5_SWMRMode"
@@ -84,6 +85,7 @@ class epicsShareClass NDFileHDF5 : public NDPluginFile
     virtual asynStatus writeInt32(asynUser *pasynUser, epicsInt32 value);
     virtual asynStatus writeOctet(asynUser *pasynUser, const char *value, size_t nChars, size_t *nActual);
 
+    void flushTask();
     asynStatus startSWMR();
     asynStatus flushCallback();
     asynStatus createXMLFileLayout();
@@ -161,6 +163,7 @@ class epicsShareClass NDFileHDF5 : public NDPluginFile
     int NDFileHDF5_posName[MAXEXTRADIMS];
     int NDFileHDF5_posIndex[MAXEXTRADIMS];
     int NDFileHDF5_fillValue;
+    int NDFileHDF5_SWMRFlushNow;
     int NDFileHDF5_SWMRCbCounter;
     int NDFileHDF5_SWMRSupported;
     int NDFileHDF5_SWMRMode;
@@ -238,6 +241,9 @@ class epicsShareClass NDFileHDF5 : public NDPluginFile
     double frameSize;  /** < frame size in megabits. For performance measurement. */
     int bytesPerElement;
     char *hostname;
+
+    epicsEventId flushEventId;
+    epicsMutex flushLock;
 
     std::list<NDFileHDF5AttributeDataset*> attrList;
 

@@ -3,10 +3,10 @@ beginScreenProperties
 major 4
 minor 0
 release 1
-x 1112
-y 175
+x 550
+y 171
 w 417
-h 526
+h 581
 font "arial-bold-r-12.0"
 ctlFont "arial-bold-r-12.0"
 btnFont "arial-bold-r-12.0"
@@ -53,7 +53,7 @@ major 4
 minor 1
 release 0
 x 325
-y 490
+y 550
 w 85
 h 25
 fgColor index 46
@@ -163,7 +163,7 @@ major 4
 minor 0
 release 0
 x 5
-y 245
+y 305
 w 405
 h 100
 lineColor index 14
@@ -178,7 +178,7 @@ major 10
 minor 0
 release 0
 x 325
-y 255
+y 315
 w 75
 h 20
 controlPv "$(P)$(R)SWMRMode_RBV"
@@ -197,7 +197,7 @@ major 4
 minor 0
 release 0
 x 245
-y 255
+y 315
 w 75
 h 20
 fgColor index 25
@@ -217,7 +217,7 @@ major 4
 minor 1
 release 1
 x 20
-y 255
+y 315
 w 220
 h 20
 font "arial-bold-r-12.0"
@@ -236,7 +236,7 @@ major 4
 minor 1
 release 1
 x 5
-y 235
+y 295
 w 87
 h 13
 font "arial-medium-r-12.0"
@@ -256,7 +256,7 @@ major 4
 minor 0
 release 0
 x 325
-y 280
+y 340
 w 18
 h 18
 controlPv "$(P)$(R)SWMRActive_RBV"
@@ -274,7 +274,7 @@ major 4
 minor 1
 release 1
 x 20
-y 280
+y 340
 w 220
 h 20
 font "arial-bold-r-12.0"
@@ -457,7 +457,7 @@ major 4
 minor 1
 release 1
 x 20
-y 305
+y 365
 w 220
 h 20
 font "arial-bold-r-12.0"
@@ -476,7 +476,7 @@ major 10
 minor 0
 release 0
 x 325
-y 305
+y 365
 w 75
 h 20
 controlPv "$(P)$(R)SWMRCbCounter_RBV"
@@ -495,7 +495,7 @@ major 4
 minor 0
 release 0
 x 5
-y 365
+y 425
 w 405
 h 115
 lineColor index 14
@@ -510,7 +510,7 @@ major 10
 minor 0
 release 0
 x 325
-y 375
+y 435
 w 75
 h 20
 controlPv "$(P)$(R)PositionMode_RBV"
@@ -529,7 +529,7 @@ major 4
 minor 0
 release 0
 x 245
-y 375
+y 435
 w 75
 h 20
 fgColor index 25
@@ -549,7 +549,7 @@ major 4
 minor 1
 release 1
 x 20
-y 375
+y 435
 w 220
 h 20
 font "arial-bold-r-12.0"
@@ -568,7 +568,7 @@ major 4
 minor 1
 release 1
 x 5
-y 355
+y 415
 w 129
 h 13
 font "arial-medium-r-12.0"
@@ -588,7 +588,7 @@ major 4
 minor 0
 release 0
 x 20
-y 400
+y 460
 w 380
 h 20
 
@@ -601,7 +601,7 @@ major 4
 minor 1
 release 1
 x 20
-y 400
+y 460
 w 140
 h 20
 font "arial-bold-r-12.0"
@@ -620,7 +620,7 @@ major 10
 minor 0
 release 0
 x 285
-y 400
+y 460
 w 115
 h 20
 controlPv "$(P)$(R)PosNameDimN_RBV"
@@ -639,7 +639,7 @@ major 10
 minor 0
 release 0
 x 165
-y 400
+y 460
 w 115
 h 20
 controlPv "$(P)$(R)PosNameDimN"
@@ -664,7 +664,7 @@ major 4
 minor 0
 release 0
 x 20
-y 425
+y 485
 w 380
 h 20
 
@@ -677,7 +677,7 @@ major 4
 minor 1
 release 1
 x 20
-y 425
+y 485
 w 140
 h 20
 font "arial-bold-r-12.0"
@@ -696,7 +696,7 @@ major 10
 minor 0
 release 0
 x 285
-y 425
+y 485
 w 115
 h 20
 controlPv "$(P)$(R)PosNameDimX_RBV"
@@ -715,7 +715,7 @@ major 10
 minor 0
 release 0
 x 165
-y 425
+y 485
 w 115
 h 20
 controlPv "$(P)$(R)PosNameDimX"
@@ -740,7 +740,7 @@ major 4
 minor 0
 release 0
 x 20
-y 450
+y 510
 w 380
 h 20
 
@@ -753,7 +753,7 @@ major 4
 minor 1
 release 1
 x 20
-y 450
+y 510
 w 140
 h 20
 font "arial-bold-r-12.0"
@@ -772,7 +772,7 @@ major 10
 minor 0
 release 0
 x 285
-y 450
+y 510
 w 115
 h 20
 controlPv "$(P)$(R)PosNameDimY_RBV"
@@ -791,7 +791,7 @@ major 10
 minor 0
 release 0
 x 165
-y 450
+y 510
 w 115
 h 20
 controlPv "$(P)$(R)PosNameDimY"
@@ -807,5 +807,83 @@ endGroup
 visPv "$(P)$(R)NumExtraDims_RBV"
 visMin "2"
 visMax "3"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 5
+y 245
+w 405
+h 40
+lineColor index 14
+fill
+fillColor index 3
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 5
+y 235
+w 88
+h 13
+font "arial-medium-r-12.0"
+fgColor index 14
+bgColor index 5
+value {
+  "  Manual Flush  "
+}
+autoSize
+border
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 15
+y 255
+w 165
+h 20
+font "arial-bold-r-12.0"
+fgColor index 14
+bgColor index 3
+useDisplayBg
+value {
+  "Flush All Now:"
+}
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 300
+y 250
+w 100
+h 30
+fgColor index 25
+onColor index 4
+offColor index 3
+topShadowColor index 1
+botShadowColor index 11
+controlPv "$(P)$(R)FlushNow"
+pressValue "1"
+onLabel "Flush Now"
+offLabel "Flush Now"
+3d
+useEnumNumeric
+font "arial-bold-r-12.0"
 endObjectProperties
 
