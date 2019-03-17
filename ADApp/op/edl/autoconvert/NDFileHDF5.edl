@@ -6,7 +6,7 @@ release 1
 x 85
 y 65
 w 1070
-h 790
+h 800
 font "helvetica-medium-r-18.0"
 ctlFont "helvetica-bold-r-10.0"
 btnFont "helvetica-medium-r-18.0"
@@ -103,30 +103,6 @@ visMin "A"
 visMax "1"
 endObjectProperties
 
-# (Text Monitor)
-object activeXTextDspClass:noedit
-beginObjectProperties
-major 4
-minor 7
-release 0
-x 400
-y 714
-w 500
-h 18
-controlPv "$(P)$(R)XMLErrorMsg_RBV"
-format "string"
-font "helvetica-medium-r-14.0"
-fontAlign "left"
-fgColor rgb 2560 0 47104
-bgColor rgb 47872 47872 47872
-limitsFromDb
-nullColor rgb 60928 46592 11008
-smartRefresh
-fastUpdate
-newPos
-objType "controls"
-endObjectProperties
-
 # (Rectangle)
 object activeRectangleClass
 beginObjectProperties
@@ -136,124 +112,10 @@ release 0
 x 390
 y 450
 w 675
-h 335
+h 345
 lineColor rgb 0 0 0
 fillColor rgb 0 0 0
 lineWidth 0
-endObjectProperties
-
-# (Text Monitor)
-object activeXTextDspClass:noedit
-beginObjectProperties
-major 4
-minor 7
-release 0
-x 1001
-y 714
-w 40
-h 20
-controlPv "$(P)$(R)XMLValid_RBV"
-format "decimal"
-font "helvetica-medium-r-14.0"
-fontAlign "left"
-fgColor rgb 0 65535 0
-fgAlarm
-bgColor rgb 55808 55808 55808
-limitsFromDb
-nullColor rgb 60928 46592 11008
-smartRefresh
-fastUpdate
-newPos
-objType "controls"
-endObjectProperties
-
-# (Static Text)
-object activeXTextClass
-beginObjectProperties
-major 4
-minor 1
-release 1
-x 926
-y 714
-w 70
-h 20
-font "helvetica-medium-r-14.0"
-fgColor rgb 0 0 0
-bgColor index 3
-useDisplayBg
-value {
-  "Exists:"
-}
-endObjectProperties
-
-# (Text Monitor)
-object activeXTextDspClass:noedit
-beginObjectProperties
-major 4
-minor 7
-release 0
-x 535
-y 739
-w 500
-h 18
-controlPv "$(P)$(R)XMLFileName_RBV"
-format "string"
-font "helvetica-medium-r-14.0"
-fontAlign "left"
-fgColor rgb 2560 0 47104
-bgColor rgb 47872 47872 47872
-limitsFromDb
-nullColor rgb 60928 46592 11008
-smartRefresh
-fastUpdate
-newPos
-objType "controls"
-endObjectProperties
-
-# (Static Text)
-object activeXTextClass
-beginObjectProperties
-major 4
-minor 1
-release 1
-x 400
-y 762
-w 130
-h 20
-font "helvetica-medium-r-14.0"
-fontAlign "right"
-fgColor rgb 0 0 0
-bgColor index 3
-useDisplayBg
-value {
-  "XML File name"
-}
-endObjectProperties
-
-# (Text Control)
-object activeXTextDspClass
-beginObjectProperties
-major 4
-minor 7
-release 0
-x 535
-y 762
-w 500
-h 20
-controlPv "$(P)$(R)XMLFileName"
-format "string"
-font "helvetica-medium-r-12.0"
-fontAlign "left"
-fgColor rgb 0 0 0
-bgColor rgb 29440 57088 65280
-editable
-motifWidget
-limitsFromDb
-nullColor rgb 60928 46592 11008
-smartRefresh
-fastUpdate
-newPos
-objType "controls"
 endObjectProperties
 
 # (Group)
@@ -1506,7 +1368,211 @@ major 4
 minor 0
 release 0
 x 740
-y 590
+y 455
+w 320
+h 155
+lineColor rgb 0 0 0
+fillColor rgb 0 0 0
+lineWidth 0
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 488
+y 684
+w 48
+h 20
+font "helvetica-medium-r-14.0"
+fontAlign "right"
+fgColor rgb 0 0 0
+bgColor index 3
+useDisplayBg
+value {
+  "More"
+}
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 400
+y 720
+w 641
+h 68
+
+beginGroup
+
+# (Text Monitor)
+object activeXTextDspClass:noedit
+beginObjectProperties
+major 4
+minor 7
+release 0
+x 400
+y 720
+w 500
+h 18
+controlPv "$(P)$(R)XMLErrorMsg_RBV"
+format "string"
+font "helvetica-medium-r-14.0"
+fontAlign "left"
+fgColor rgb 2560 0 47104
+bgColor rgb 47872 47872 47872
+limitsFromDb
+nullColor rgb 60928 46592 11008
+smartRefresh
+fastUpdate
+newPos
+objType "controls"
+endObjectProperties
+
+# (Text Monitor)
+object activeXTextDspClass:noedit
+beginObjectProperties
+major 4
+minor 7
+release 0
+x 1001
+y 720
+w 40
+h 20
+controlPv "$(P)$(R)XMLValid_RBV"
+format "decimal"
+font "helvetica-medium-r-14.0"
+fontAlign "left"
+fgColor rgb 0 65535 0
+fgAlarm
+bgColor rgb 55808 55808 55808
+limitsFromDb
+nullColor rgb 60928 46592 11008
+smartRefresh
+fastUpdate
+newPos
+objType "controls"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 926
+y 720
+w 70
+h 20
+font "helvetica-medium-r-14.0"
+fgColor rgb 0 0 0
+bgColor index 3
+useDisplayBg
+value {
+  "Exists:"
+}
+endObjectProperties
+
+# (Text Monitor)
+object activeXTextDspClass:noedit
+beginObjectProperties
+major 4
+minor 7
+release 0
+x 535
+y 745
+w 500
+h 18
+controlPv "$(P)$(R)XMLFileName_RBV"
+format "string"
+font "helvetica-medium-r-14.0"
+fontAlign "left"
+fgColor rgb 2560 0 47104
+bgColor rgb 47872 47872 47872
+limitsFromDb
+nullColor rgb 60928 46592 11008
+smartRefresh
+fastUpdate
+newPos
+objType "controls"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 400
+y 768
+w 130
+h 20
+font "helvetica-medium-r-14.0"
+fontAlign "right"
+fgColor rgb 0 0 0
+bgColor index 3
+useDisplayBg
+value {
+  "XML File name"
+}
+endObjectProperties
+
+# (Text Control)
+object activeXTextDspClass
+beginObjectProperties
+major 4
+minor 7
+release 0
+x 535
+y 768
+w 500
+h 20
+controlPv "$(P)$(R)XMLFileName"
+format "string"
+font "helvetica-medium-r-12.0"
+fontAlign "left"
+fgColor rgb 0 0 0
+bgColor rgb 29440 57088 65280
+editable
+motifWidget
+limitsFromDb
+nullColor rgb 60928 46592 11008
+smartRefresh
+fastUpdate
+newPos
+objType "controls"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 740
+y 615
+w 320
+h 100
+
+beginGroup
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 740
+y 615
 w 320
 h 100
 lineColor rgb 0 0 0
@@ -1521,7 +1587,7 @@ major 4
 minor 1
 release 1
 x 807
-y 667
+y 692
 w 50
 h 20
 font "helvetica-medium-r-14.0"
@@ -1541,7 +1607,7 @@ major 4
 minor 1
 release 1
 x 757
-y 645
+y 670
 w 100
 h 20
 font "helvetica-medium-r-14.0"
@@ -1561,7 +1627,7 @@ major 4
 minor 1
 release 1
 x 787
-y 623
+y 648
 w 70
 h 20
 font "helvetica-medium-r-14.0"
@@ -1581,7 +1647,7 @@ major 4
 minor 7
 release 0
 x 862
-y 667
+y 692
 w 95
 h 20
 controlPv "$(P)$(R)BloscLevel"
@@ -1607,7 +1673,7 @@ major 4
 minor 7
 release 0
 x 965
-y 623
+y 648
 w 90
 h 18
 controlPv "$(P)$(R)BloscShuffle_RBV"
@@ -1631,7 +1697,7 @@ major 4
 minor 7
 release 0
 x 965
-y 645
+y 670
 w 90
 h 18
 controlPv "$(P)$(R)BloscCompressor_RBV"
@@ -1655,7 +1721,7 @@ major 4
 minor 7
 release 0
 x 965
-y 667
+y 692
 w 90
 h 18
 controlPv "$(P)$(R)BloscLevel_RBV"
@@ -1679,7 +1745,7 @@ major 4
 minor 1
 release 1
 x 875
-y 594
+y 619
 w 50
 h 20
 font "helvetica-medium-r-14.0"
@@ -1691,20 +1757,10 @@ value {
 }
 endObjectProperties
 
-# (Rectangle)
-object activeRectangleClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 740
-y 455
-w 320
-h 130
-lineColor rgb 0 0 0
-fillColor rgb 0 0 0
-lineWidth 0
+endGroup
+
 endObjectProperties
+
 
 # (Static Text)
 object activeXTextClass
@@ -1712,9 +1768,9 @@ beginObjectProperties
 major 4
 minor 1
 release 1
-x 488
-y 684
-w 48
+x 775
+y 584
+w 130
 h 20
 font "helvetica-medium-r-14.0"
 fontAlign "right"
@@ -1722,7 +1778,7 @@ fgColor rgb 0 0 0
 bgColor index 3
 useDisplayBg
 value {
-  "More"
+  "Flush to disk"
 }
 endObjectProperties
 
@@ -1806,46 +1862,6 @@ indicatorPv "$(P)$(R)SWMRMode"
 font "helvetica-medium-r-12.0"
 endObjectProperties
 
-# (Menu Button)
-object activeMenuButtonClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 862
-y 645
-w 95
-h 20
-fgColor rgb 0 0 0
-bgColor rgb 29440 57088 65280
-inconsistentColor rgb 17920 17920 17920
-topShadowColor rgb 55808 55808 55808
-botShadowColor rgb 17920 17920 17920
-controlPv "$(P)$(R)BloscCompressor"
-indicatorPv "$(P)$(R)BloscCompressor"
-font "helvetica-medium-r-12.0"
-endObjectProperties
-
-# (Menu Button)
-object activeMenuButtonClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 862
-y 623
-w 95
-h 20
-fgColor rgb 0 0 0
-bgColor rgb 29440 57088 65280
-inconsistentColor rgb 17920 17920 17920
-topShadowColor rgb 55808 55808 55808
-botShadowColor rgb 17920 17920 17920
-controlPv "$(P)$(R)BloscShuffle"
-indicatorPv "$(P)$(R)BloscShuffle"
-font "helvetica-medium-r-12.0"
-endObjectProperties
-
 # (Related Display)
 object relatedDisplayClass
 beginObjectProperties
@@ -1880,5 +1896,104 @@ replaceSymbols {
   0 1
   1 1
 }
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 400
+y 720
+w 641
+h 68
+
+beginGroup
+
+endGroup
+
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 740
+y 615
+w 320
+h 100
+
+beginGroup
+
+# (Menu Button)
+object activeMenuButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 862
+y 670
+w 95
+h 20
+fgColor rgb 0 0 0
+bgColor rgb 29440 57088 65280
+inconsistentColor rgb 17920 17920 17920
+topShadowColor rgb 55808 55808 55808
+botShadowColor rgb 17920 17920 17920
+controlPv "$(P)$(R)BloscCompressor"
+indicatorPv "$(P)$(R)BloscCompressor"
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Menu Button)
+object activeMenuButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 862
+y 648
+w 95
+h 20
+fgColor rgb 0 0 0
+bgColor rgb 29440 57088 65280
+inconsistentColor rgb 17920 17920 17920
+topShadowColor rgb 55808 55808 55808
+botShadowColor rgb 17920 17920 17920
+controlPv "$(P)$(R)BloscShuffle"
+indicatorPv "$(P)$(R)BloscShuffle"
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 910
+y 585
+w 80
+h 20
+fgColor rgb 2560 0 47104
+onColor rgb 29440 57088 65280
+offColor rgb 29440 57088 65280
+topShadowColor rgb 65280 65280 65280
+botShadowColor rgb 0 0 0
+controlPv "$(P)$(R)FlushNow"
+pressValue "1"
+releaseValue 
+onLabel "Flush now"
+offLabel "Flush now"
+3d
+useEnumNumeric
+font "helvetica-medium-r-12.0"
 endObjectProperties
 

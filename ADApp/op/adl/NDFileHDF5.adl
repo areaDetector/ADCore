@@ -8,7 +8,7 @@ display {
 		x=85
 		y=65
 		width=1070
-		height=790
+		height=800
 	}
 	clr=14
 	bclr=4
@@ -121,105 +121,16 @@ composite {
 	"composite name"=""
 	"composite file"="NDPluginBase.adl"
 }
-"text update" {
-	object {
-		x=400
-		y=714
-		width=500
-		height=18
-	}
-	monitor {
-		chan="$(P)$(R)XMLErrorMsg_RBV"
-		clr=54
-		bclr=4
-	}
-	format="string"
-	limits {
-	}
-}
 rectangle {
 	object {
 		x=390
 		y=450
 		width=675
-		height=335
+		height=345
 	}
 	"basic attribute" {
 		clr=14
 		fill="outline"
-	}
-}
-"text update" {
-	object {
-		x=1001
-		y=714
-		width=40
-		height=20
-	}
-	monitor {
-		chan="$(P)$(R)XMLValid_RBV"
-		clr=14
-		bclr=2
-	}
-	clrmod="alarm"
-	limits {
-	}
-}
-text {
-	object {
-		x=926
-		y=714
-		width=70
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Exists:"
-}
-"text update" {
-	object {
-		x=535
-		y=739
-		width=500
-		height=18
-	}
-	monitor {
-		chan="$(P)$(R)XMLFileName_RBV"
-		clr=54
-		bclr=4
-	}
-	format="string"
-	limits {
-	}
-}
-text {
-	object {
-		x=400
-		y=762
-		width=130
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="XML File name"
-	align="horiz. right"
-}
-"text entry" {
-	object {
-		x=535
-		y=762
-		width=500
-		height=20
-	}
-	control {
-		chan="$(P)$(R)XMLFileName"
-		clr=14
-		bclr=51
-	}
-	format="string"
-	limits {
 	}
 }
 composite {
@@ -1043,160 +954,9 @@ text {
 rectangle {
 	object {
 		x=740
-		y=590
-		width=320
-		height=100
-	}
-	"basic attribute" {
-		clr=14
-		fill="outline"
-	}
-}
-text {
-	object {
-		x=807
-		y=667
-		width=50
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Level"
-	align="horiz. right"
-}
-text {
-	object {
-		x=757
-		y=645
-		width=100
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Compressor"
-	align="horiz. right"
-}
-text {
-	object {
-		x=787
-		y=623
-		width=70
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Shuffle"
-	align="horiz. right"
-}
-menu {
-	object {
-		x=862
-		y=645
-		width=95
-		height=20
-	}
-	control {
-		chan="$(P)$(R)BloscCompressor"
-		clr=14
-		bclr=51
-	}
-}
-"text entry" {
-	object {
-		x=862
-		y=667
-		width=95
-		height=20
-	}
-	control {
-		chan="$(P)$(R)BloscLevel"
-		clr=14
-		bclr=51
-	}
-	limits {
-	}
-}
-menu {
-	object {
-		x=862
-		y=623
-		width=95
-		height=20
-	}
-	control {
-		chan="$(P)$(R)BloscShuffle"
-		clr=14
-		bclr=51
-	}
-}
-"text update" {
-	object {
-		x=965
-		y=623
-		width=90
-		height=18
-	}
-	monitor {
-		chan="$(P)$(R)BloscShuffle_RBV"
-		clr=54
-		bclr=4
-	}
-	format="string"
-	limits {
-	}
-}
-"text update" {
-	object {
-		x=965
-		y=645
-		width=90
-		height=18
-	}
-	monitor {
-		chan="$(P)$(R)BloscCompressor_RBV"
-		clr=54
-		bclr=4
-	}
-	format="string"
-	limits {
-	}
-}
-"text update" {
-	object {
-		x=965
-		y=667
-		width=90
-		height=18
-	}
-	monitor {
-		chan="$(P)$(R)BloscLevel_RBV"
-		clr=54
-		bclr=4
-	}
-	limits {
-	}
-}
-text {
-	object {
-		x=875
-		y=594
-		width=50
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Blosc"
-}
-rectangle {
-	object {
-		x=740
 		y=455
 		width=320
-		height=130
+		height=155
 	}
 	"basic attribute" {
 		clr=14
@@ -1235,4 +995,294 @@ text {
 	}
 	clr=14
 	bclr=51
+}
+composite {
+	object {
+		x=400
+		y=720
+		width=641
+		height=68
+	}
+	"composite name"=""
+	children {
+		"text update" {
+			object {
+				x=400
+				y=720
+				width=500
+				height=18
+			}
+			monitor {
+				chan="$(P)$(R)XMLErrorMsg_RBV"
+				clr=54
+				bclr=4
+			}
+			format="string"
+			limits {
+			}
+		}
+		"text update" {
+			object {
+				x=1001
+				y=720
+				width=40
+				height=20
+			}
+			monitor {
+				chan="$(P)$(R)XMLValid_RBV"
+				clr=14
+				bclr=2
+			}
+			clrmod="alarm"
+			limits {
+			}
+		}
+		text {
+			object {
+				x=926
+				y=720
+				width=70
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Exists:"
+		}
+		"text update" {
+			object {
+				x=535
+				y=745
+				width=500
+				height=18
+			}
+			monitor {
+				chan="$(P)$(R)XMLFileName_RBV"
+				clr=54
+				bclr=4
+			}
+			format="string"
+			limits {
+			}
+		}
+		text {
+			object {
+				x=400
+				y=768
+				width=130
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="XML File name"
+			align="horiz. right"
+		}
+		"text entry" {
+			object {
+				x=535
+				y=768
+				width=500
+				height=20
+			}
+			control {
+				chan="$(P)$(R)XMLFileName"
+				clr=14
+				bclr=51
+			}
+			format="string"
+			limits {
+			}
+		}
+	}
+}
+composite {
+	object {
+		x=740
+		y=615
+		width=320
+		height=100
+	}
+	"composite name"=""
+	children {
+		rectangle {
+			object {
+				x=740
+				y=615
+				width=320
+				height=100
+			}
+			"basic attribute" {
+				clr=14
+				fill="outline"
+			}
+		}
+		text {
+			object {
+				x=807
+				y=692
+				width=50
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Level"
+			align="horiz. right"
+		}
+		text {
+			object {
+				x=757
+				y=670
+				width=100
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Compressor"
+			align="horiz. right"
+		}
+		text {
+			object {
+				x=787
+				y=648
+				width=70
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Shuffle"
+			align="horiz. right"
+		}
+		menu {
+			object {
+				x=862
+				y=670
+				width=95
+				height=20
+			}
+			control {
+				chan="$(P)$(R)BloscCompressor"
+				clr=14
+				bclr=51
+			}
+		}
+		"text entry" {
+			object {
+				x=862
+				y=692
+				width=95
+				height=20
+			}
+			control {
+				chan="$(P)$(R)BloscLevel"
+				clr=14
+				bclr=51
+			}
+			limits {
+			}
+		}
+		menu {
+			object {
+				x=862
+				y=648
+				width=95
+				height=20
+			}
+			control {
+				chan="$(P)$(R)BloscShuffle"
+				clr=14
+				bclr=51
+			}
+		}
+		"text update" {
+			object {
+				x=965
+				y=648
+				width=90
+				height=18
+			}
+			monitor {
+				chan="$(P)$(R)BloscShuffle_RBV"
+				clr=54
+				bclr=4
+			}
+			format="string"
+			limits {
+			}
+		}
+		"text update" {
+			object {
+				x=965
+				y=670
+				width=90
+				height=18
+			}
+			monitor {
+				chan="$(P)$(R)BloscCompressor_RBV"
+				clr=54
+				bclr=4
+			}
+			format="string"
+			limits {
+			}
+		}
+		"text update" {
+			object {
+				x=965
+				y=692
+				width=90
+				height=18
+			}
+			monitor {
+				chan="$(P)$(R)BloscLevel_RBV"
+				clr=54
+				bclr=4
+			}
+			limits {
+			}
+		}
+		text {
+			object {
+				x=875
+				y=619
+				width=50
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Blosc"
+		}
+	}
+}
+text {
+	object {
+		x=775
+		y=584
+		width=130
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Flush to disk"
+	align="horiz. right"
+}
+"message button" {
+	object {
+		x=910
+		y=585
+		width=80
+		height=20
+	}
+	control {
+		chan="$(P)$(R)FlushNow"
+		clr=54
+		bclr=51
+	}
+	label="Flush now"
+	press_msg="1"
 }
