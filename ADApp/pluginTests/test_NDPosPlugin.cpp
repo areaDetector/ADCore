@@ -20,7 +20,7 @@
 #include <stdint.h>
 
 #include <deque>
-#include <memory>
+#include <boost/shared_ptr.hpp>
 #include <iostream>
 #include <fstream>
 using namespace std;
@@ -44,9 +44,9 @@ static NDArrayPool *arrayPool;
 
 struct PosPluginTestFixture
 {
-  std::shared_ptr<asynNDArrayDriver> driver;
-  std::shared_ptr<PosPluginWrapper> pos;
-  std::shared_ptr<asynGenericPointerClient> client;
+  boost::shared_ptr<asynNDArrayDriver> driver;
+  boost::shared_ptr<PosPluginWrapper> pos;
+  boost::shared_ptr<asynGenericPointerClient> client;
 
   static int testCase;
 
@@ -61,11 +61,11 @@ struct PosPluginTestFixture
 
     // We need some upstream driver for our test plugin so that calls to connectArrayPort don't fail, but we can then ignore it and send
     // arrays by calling processCallbacks directly.
-    driver = std::shared_ptr<asynNDArrayDriver>(new asynNDArrayDriver(simport.c_str(), 1, 0, 0, asynGenericPointerMask, asynGenericPointerMask, 0, 0, 0, 0));
+    driver = boost::shared_ptr<asynNDArrayDriver>(new asynNDArrayDriver(simport.c_str(), 1, 0, 0, asynGenericPointerMask, asynGenericPointerMask, 0, 0, 0, 0));
     arrayPool = driver->pNDArrayPool;
 
     // This is the plugin under test
-    pos = std::shared_ptr<PosPluginWrapper>(new PosPluginWrapper(testport.c_str(),
+    pos = boost::shared_ptr<PosPluginWrapper>(new PosPluginWrapper(testport.c_str(),
                                                                       50,
                                                                       1,
                                                                       simport.c_str(),
@@ -80,7 +80,7 @@ struct PosPluginTestFixture
     pos->write(NDPluginDriverBlockingCallbacksString, 1);
     pos->write(NDArrayCallbacksString, 1);
 
-    client = std::shared_ptr<asynGenericPointerClient>(new asynGenericPointerClient(testport.c_str(), 0, NDArrayDataString));
+    client = boost::shared_ptr<asynGenericPointerClient>(new asynGenericPointerClient(testport.c_str(), 0, NDArrayDataString));
     client->registerInterruptUser(&callback);
   }
 

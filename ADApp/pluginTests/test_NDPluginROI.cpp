@@ -20,7 +20,7 @@
 #include <stdint.h>
 
 #include <deque>
-#include <memory>
+#include <boost/shared_ptr.hpp>
 #include <iostream>
 #include <fstream>
 using namespace std;
@@ -88,9 +88,9 @@ static void appendTestCase(std::vector<ROITestCaseStr> *pOut, ROITempCaseStr *pI
 
 struct ROIPluginTestFixture
 {
-  std::shared_ptr<asynNDArrayDriver> driver;
-  std::shared_ptr<ROIPluginWrapper> roi;
-  std::shared_ptr<asynGenericPointerClient> client;
+  boost::shared_ptr<asynNDArrayDriver> driver;
+  boost::shared_ptr<ROIPluginWrapper> roi;
+  boost::shared_ptr<asynGenericPointerClient> client;
   TestingPlugin* downstream_plugin; // TODO: we don't put this in a shared_ptr and purposefully leak memory because asyn ports cannot be deleted
   std::vector<ROITestCaseStr> ROITestCaseStrs;
   int expectedArrayCounter;
@@ -110,7 +110,7 @@ struct ROIPluginTestFixture
 
     // We need some upstream driver for our test plugin so that calls to connectArrayPort
     // don't fail, but we can then ignore it and send arrays by calling processCallbacks directly.
-    driver = std::shared_ptr<asynNDArrayDriver>(new asynNDArrayDriver(simport.c_str(),
+    driver = boost::shared_ptr<asynNDArrayDriver>(new asynNDArrayDriver(simport.c_str(),
                                                                      1, 0, 0,
                                                                      asynGenericPointerMask,
                                                                      asynGenericPointerMask,
@@ -118,7 +118,7 @@ struct ROIPluginTestFixture
     arrayPool = driver->pNDArrayPool;
 
     // This is the plugin under test
-    roi = std::shared_ptr<ROIPluginWrapper>(new ROIPluginWrapper(testport.c_str(),
+    roi = boost::shared_ptr<ROIPluginWrapper>(new ROIPluginWrapper(testport.c_str(),
                                                                       50,
                                                                       1,
                                                                       simport.c_str(),
@@ -135,7 +135,7 @@ struct ROIPluginTestFixture
     roi->write(NDPluginDriverEnableCallbacksString, 1);
     roi->write(NDPluginDriverBlockingCallbacksString, 1);
 
-    client = std::shared_ptr<asynGenericPointerClient>(new asynGenericPointerClient(testport.c_str(), 0, NDArrayDataString));
+    client = boost::shared_ptr<asynGenericPointerClient>(new asynGenericPointerClient(testport.c_str(), 0, NDArrayDataString));
     client->registerInterruptUser(&ROI_callback);
 
     ROITempCaseStr test1 = {2, {10,10},    {0,0},   {1, 10},   2, {1, 10},   1, {10}};

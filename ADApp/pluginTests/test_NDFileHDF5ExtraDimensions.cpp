@@ -18,7 +18,7 @@
 #include <stdint.h>
 
 #include <deque>
-#include <memory>
+#include <boost/shared_ptr.hpp>
 
 #include "hdf5.h"
 #include "testingutilities.h"
@@ -370,8 +370,8 @@ BOOST_AUTO_TEST_CASE(test_TenExtraDimensions)
 
 BOOST_AUTO_TEST_CASE(test_PluginExtraDimensions)
 {
-  std::shared_ptr<asynNDArrayDriver> driver;
-  std::shared_ptr<HDF5PluginWrapper> hdf5;
+  boost::shared_ptr<asynNDArrayDriver> driver;
+  boost::shared_ptr<HDF5PluginWrapper> hdf5;
 
 
   // Asyn manager doesn't like it if we try to reuse the same port name for multiple drivers (even if only one is ever instantiated at once), so
@@ -382,11 +382,11 @@ BOOST_AUTO_TEST_CASE(test_PluginExtraDimensions)
 
   // We need some upstream driver for our test plugin so that calls to connectArrayPort don't fail, but we can then ignore it and send
   // arrays by calling processCallbacks directly.
-  driver = std::shared_ptr<asynNDArrayDriver>(new asynNDArrayDriver(simport.c_str(), 1, 0, 0, asynGenericPointerMask, asynGenericPointerMask, 0, 0, 0, 0));
+  driver = boost::shared_ptr<asynNDArrayDriver>(new asynNDArrayDriver(simport.c_str(), 1, 0, 0, asynGenericPointerMask, asynGenericPointerMask, 0, 0, 0, 0));
   NDArrayPool *arrayPool = driver->pNDArrayPool;
 
   // This is the plugin under test
-  hdf5 = std::shared_ptr<HDF5PluginWrapper>(new HDF5PluginWrapper(testport.c_str(),
+  hdf5 = boost::shared_ptr<HDF5PluginWrapper>(new HDF5PluginWrapper(testport.c_str(),
                                                                        50,
                                                                        1,
                                                                        simport.c_str(),

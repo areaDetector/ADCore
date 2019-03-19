@@ -20,7 +20,7 @@
 #include <stdint.h>
 
 #include <deque>
-#include <memory>
+#include <boost/shared_ptr.hpp>
 #include <iostream>
 #include <fstream>
 using namespace std;
@@ -42,9 +42,9 @@ void FFT_callback(void *userPvt, asynUser *pasynUser, void *pointer)
 struct FFTPluginTestFixture
 {
   NDArrayPool *arrayPool;
-  std::shared_ptr<asynNDArrayDriver> driver;
-  std::shared_ptr<FFTPluginWrapper> fft;
-  std::shared_ptr<asynGenericPointerClient> client;
+  boost::shared_ptr<asynNDArrayDriver> driver;
+  boost::shared_ptr<FFTPluginWrapper> fft;
+  boost::shared_ptr<asynGenericPointerClient> client;
   TestingPlugin* downstream_plugin; // TODO: we don't put this in a shared_ptr and purposefully leak memory because asyn ports cannot be deleted
   std::vector<NDArray*>arrays_1d;
   std::vector<size_t>dims_1d;
@@ -66,7 +66,7 @@ struct FFTPluginTestFixture
 
     // We need some upstream driver for our test plugin so that calls to connectArrayPort
     // don't fail, but we can then ignore it and send arrays by calling processCallbacks directly.
-    driver = std::shared_ptr<asynNDArrayDriver>(new asynNDArrayDriver(simport.c_str(),
+    driver = boost::shared_ptr<asynNDArrayDriver>(new asynNDArrayDriver(simport.c_str(),
                                                                      1, 0, 0,
                                                                      asynGenericPointerMask,
                                                                      asynGenericPointerMask,
@@ -74,7 +74,7 @@ struct FFTPluginTestFixture
     arrayPool = driver->pNDArrayPool;
 
     // This is the plugin under test
-    fft = std::shared_ptr<FFTPluginWrapper>(new FFTPluginWrapper(testport.c_str(),
+    fft = boost::shared_ptr<FFTPluginWrapper>(new FFTPluginWrapper(testport.c_str(),
                                                                       50,
                                                                       1,
                                                                       simport.c_str(),
@@ -91,7 +91,7 @@ struct FFTPluginTestFixture
     fft->write(NDPluginDriverEnableCallbacksString, 1);
     fft->write(NDPluginDriverBlockingCallbacksString, 1);
 
-    client = std::shared_ptr<asynGenericPointerClient>(new asynGenericPointerClient(testport.c_str(), 0, NDArrayDataString));
+    client = boost::shared_ptr<asynGenericPointerClient>(new asynGenericPointerClient(testport.c_str(), 0, NDArrayDataString));
     client->registerInterruptUser(&FFT_callback);
 
     // 1D: 20 scalar samples

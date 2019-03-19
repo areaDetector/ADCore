@@ -20,7 +20,7 @@
 #include <stdint.h>
 
 #include <deque>
-#include <memory>
+#include <boost/shared_ptr.hpp>
 #include <iostream>
 #include <fstream>
 using namespace std;
@@ -111,9 +111,9 @@ static void appendTestCase(std::vector<overlayTestCaseStr> *pOut, overlayTempCas
 
 struct OverlayPluginTestFixture
 {
-  std::shared_ptr<asynNDArrayDriver> driver;
-  std::shared_ptr<OverlayPluginWrapper> Overlay;
-  std::shared_ptr<asynGenericPointerClient> client;
+  boost::shared_ptr<asynNDArrayDriver> driver;
+  boost::shared_ptr<OverlayPluginWrapper> Overlay;
+  boost::shared_ptr<asynGenericPointerClient> client;
   TestingPlugin* downstream_plugin; // TODO: we don't put this in a shared_ptr and purposefully leak memory because asyn ports cannot be deleted
   std::vector<overlayTestCaseStr> overlayTestCaseStrs;
   int expectedArrayCounter;
@@ -133,7 +133,7 @@ struct OverlayPluginTestFixture
 
     // We need some upstream driver for our test plugin so that calls to connectArrayPort
     // don't fail, but we can then ignore it and send arrays by calling processCallbacks directly.
-    driver = std::shared_ptr<asynNDArrayDriver>(new asynNDArrayDriver(simport.c_str(),
+    driver = boost::shared_ptr<asynNDArrayDriver>(new asynNDArrayDriver(simport.c_str(),
                                                                      1, 0, 0,
                                                                      asynGenericPointerMask,
                                                                      asynGenericPointerMask,
@@ -141,7 +141,7 @@ struct OverlayPluginTestFixture
     arrayPool = driver->pNDArrayPool;
 
     // This is the plugin under test
-    Overlay = std::shared_ptr<OverlayPluginWrapper>(new OverlayPluginWrapper(testport.c_str(),
+    Overlay = boost::shared_ptr<OverlayPluginWrapper>(new OverlayPluginWrapper(testport.c_str(),
                                                                       50,
                                                                       1,
                                                                       simport.c_str(),
@@ -159,7 +159,7 @@ struct OverlayPluginTestFixture
     Overlay->write(NDPluginDriverEnableCallbacksString, 1);
     Overlay->write(NDPluginDriverBlockingCallbacksString, 1);
 
-    client = std::shared_ptr<asynGenericPointerClient>(new asynGenericPointerClient(testport.c_str(), 0, NDArrayDataString));
+    client = boost::shared_ptr<asynGenericPointerClient>(new asynGenericPointerClient(testport.c_str(), 0, NDArrayDataString));
     client->registerInterruptUser(&Overlay_callback);
 
     // Test a "normal" case
