@@ -39,7 +39,7 @@ NDFileHDF5AttributeDataset::NDFileHDF5AttributeDataset(hid_t file, const std::st
 {
   //printf("Constructor called for %s\n", name.c_str());
   // Allocate enough memory for the fill value to accept any data type
-  ptrFillValue_ = (void*)calloc(8, sizeof(char));
+  ptrFillValue_ = (void*)calloc(MAX_ATTRIBUTE_STRING_SIZE, sizeof(char));
 }
 
 NDFileHDF5AttributeDataset::~NDFileHDF5AttributeDataset()
