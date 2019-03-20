@@ -12,6 +12,7 @@ class NDFileHDF5Dataset
 {
   public:
     NDFileHDF5Dataset(asynUser *pAsynUser, const std::string& name, hid_t dataset);
+    virtual ~NDFileHDF5Dataset();
 
     asynStatus configureDims(NDArray *pArray, bool multiframe, int extradimensions, int *extra_dims, int *user_chunking);
     asynStatus extendDataSet(int extradims);

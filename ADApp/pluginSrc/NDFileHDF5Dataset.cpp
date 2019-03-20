@@ -20,7 +20,16 @@ NDFileHDF5Dataset::NDFileHDF5Dataset(asynUser *pAsynUser, const std::string& nam
   this->offset_      = NULL;
   this->virtualdims_ = NULL;
 }
- 
+
+NDFileHDF5Dataset::~NDFileHDF5Dataset()
+{
+  if (this->chunkdims_   != NULL) free(this->chunkdims_);
+  if (this->maxdims_     != NULL) free(this->maxdims_);
+  if (this->dims_        != NULL) free(this->dims_);
+  if (this->offset_      != NULL) free(this->offset_);
+  if (this->virtualdims_ != NULL) free(this->virtualdims_);
+} 
+
 /** configureDims.
  * Setup any extra dimensions required for this dataset
  * \param[in] pArray - A pointer to an NDArray which contains dimension information.

@@ -1670,6 +1670,9 @@ asynStatus NDFileHDF5::closeFile()
   this->layout.unload_xml();
 
   // Reset the default data set and clear out the maps of handles to stale datasets
+  for (it_dset = this->detDataMap.begin(); it_dset != this->detDataMap.end(); ++it_dset){
+    delete it_dset->second;
+  }
   detDataMap.clear();
   attDataMap.clear();
   defDsetName = "";
@@ -2718,7 +2721,7 @@ asynStatus NDFileHDF5::createAttributeDataset(NDArray *pArray)
 
     } else {
       if(groupDefault > -1) {
-        std::string atName = std::string(epicsStrDup(ndAttr->getName()));
+        std::string atName = std::string(ndAttr->getName());
         NDFileHDF5AttributeDataset *attDset = new NDFileHDF5AttributeDataset(this->file, atName, ndAttr->getDataType());
         if(def_group != NULL) {
           attDset->setParentGroupName(def_group->get_full_name().c_str());

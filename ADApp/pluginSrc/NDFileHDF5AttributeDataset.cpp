@@ -47,6 +47,11 @@ NDFileHDF5AttributeDataset::~NDFileHDF5AttributeDataset()
   //printf("Destructor called for %s\n", name_.c_str());
   // Free the memory that was allocated for the fill value
   free(ptrFillValue_);
+  if (this->maxdims_     != NULL) free(this->maxdims_);
+  if (this->chunk_       != NULL) free(this->chunk_);
+  if (this->dims_        != NULL) free(this->dims_);
+  if (this->offset_      != NULL) free(this->offset_);
+  if (this->elementSize_ != NULL) free(this->elementSize_);
 }
 
 void NDFileHDF5AttributeDataset::setDsetName(const std::string& dsetName)
