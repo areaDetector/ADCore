@@ -718,6 +718,7 @@ asynStatus NDFileHDF5::createHardLinks(hdf5::Group* root)
         asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, "%s::%s error creating hard link from: %s to %s\n",
                   driverName, functionName, targetName.c_str(), linkName.c_str());
       }
+      delete it_hardlinks->second;
     }
 
     hdf5::Group::MapGroups_t::const_iterator it_group;
