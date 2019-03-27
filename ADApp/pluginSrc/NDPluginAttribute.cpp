@@ -102,20 +102,18 @@ void NDPluginAttribute::doTimeSeriesCallbacks(NDArray *pArray)
   int i;
   double attrValue;
 
+  size_t dims=maxAttributes_;
+  NDArray *pTimeSeriesArray = this->pNDArrayPool->alloc(1, &dims, NDFloat64, 0, NULL);
   for (i=0; i<maxAttributes_; i++) {
-    size_t dims=1;
-    NDArray *pTimeSeriesArray = this->pNDArrayPool->alloc(1, &dims, NDFloat64, 0, NULL);
     epicsFloat64 *timeSeries = (epicsFloat64 *)pTimeSeriesArray->pData;
     pTimeSeriesArray->uniqueId  = pArray->uniqueId;
     pTimeSeriesArray->timeStamp = pArray->timeStamp;
     pTimeSeriesArray->epicsTS   = pArray->epicsTS;
-
     getDoubleParam(i, NDPluginAttributeVal, &attrValue);
-
-    timeSeries[0] = attrValue;
-    doCallbacksGenericPointer(pTimeSeriesArray, NDArrayData, i);
-    pTimeSeriesArray->release();
+    timeSeries[i] = attrValue;
   }
+  doCallbacksGenericPointer(pTimeSeriesArray, NDArrayData, 1);
+  pTimeSeriesArray->release();
 }
 
 
