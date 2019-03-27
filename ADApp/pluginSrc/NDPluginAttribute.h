@@ -11,11 +11,6 @@
 #define NDPluginAttributeResetString          "ATTR_RESET"            /* (asynInt32,        r/w) Clear the sum data */
 #define NDPluginAttributeValString            "ATTR_VAL"              /* (asynFloat64,      r/o) Value of Attribute */
 #define NDPluginAttributeValSumString         "ATTR_VAL_SUM"          /* (asynFloat64,      r/o) Integrated Value of Attribute */
-#define NDPluginAttributeTSControlString      "ATTR_TS_CONTROL"       /* (asynInt32,        r/w) Erase/start, stop, start */
-#define NDPluginAttributeTSNumPointsString    "ATTR_TS_NUM_POINTS"    /* (asynInt32,        r/w) Number of time series points to use */
-#define NDPluginAttributeTSCurrentPointString "ATTR_TS_CURRENT_POINT" /* (asynInt32,        r/o) Current point in time series */
-#define NDPluginAttributeTSAcquiringString    "ATTR_TS_ACQUIRING"     /* (asynInt32,        r/o) Acquiring time series */
-#define NDPluginAttributeTSArrayValueString   "ATTR_TS_ARRAY_VALUE"   /* (asynFloat64Array, r/o) Series of minimum counts */
 
 /** Extract an Attribute from an NDArray and publish the value (and array of values) over channel access.  */
 class epicsShareClass NDPluginAttribute : public NDPluginDriver {
@@ -34,15 +29,10 @@ protected:
     int NDPluginAttributeReset;
     int NDPluginAttributeVal;
     int NDPluginAttributeValSum;
-    int NDPluginAttributeTSControl;
-    int NDPluginAttributeTSNumPoints;
-    int NDPluginAttributeTSCurrentPoint;
-    int NDPluginAttributeTSAcquiring;
-    int NDPluginAttributeTSArrayValue;
                                 
 private:
 
-    void doTimeSeriesCallbacks();
+    void doTimeSeriesCallbacks(NDArray *pArray);
     static const epicsInt32 MAX_ATTR_NAME_;
     static const char*      UNIQUE_ID_NAME_;
     static const char*      TIMESTAMP_NAME_;
@@ -50,8 +40,7 @@ private:
     static const char*      EPICS_TS_NSEC_NAME_;
 
     int maxAttributes_;
-    epicsFloat64 **pTSArray_;
 
 };
-    
+
 #endif
