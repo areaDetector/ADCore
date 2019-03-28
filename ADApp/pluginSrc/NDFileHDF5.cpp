@@ -1658,10 +1658,20 @@ asynStatus NDFileHDF5::closeFile()
               "%s::%s Closing file not totally clean.  Attributes remaining=%d\n",
               driverName, functionName, obj_count);
   }
+  obj_count = (int)H5Fget_obj_count(this->file, H5F_OBJ_ALL);
+  if (obj_count > 1){
+    asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
+              "%s::%s Closing file not totally clean.  Other remaining=%d\n",
+              driverName, functionName, obj_count);
+  }
 
   // Close the HDF file
   H5Fclose(this->file);
   this->file = 0;
+  // Flush all data to disk, close all open HDF5 objects,
+  // and clean up all memory used by the HDF5 library
+  // to avoid memory leaks
+  H5close();
 
   // At this point we can clear the SWMR active flag, whether we were running
   // in SWMR mode or not
@@ -2689,7 +2699,7 @@ asynStatus NDFileHDF5::createAttributeDataset(NDArray *pArray)
       // In here we need to open the dataset for writing
 
       hdf5::DataSource dsource = dset->data_source();
-      std::string atName = std::string(epicsStrDup(ndAttr->getName()));
+      std::string atName = std::string(ndAttr->getName());
       NDFileHDF5AttributeDataset *attDset = new NDFileHDF5AttributeDataset(this->file, atName, ndAttr->getDataType());
       attDset->setDsetName(dset->get_name());
       attDset->setWhenToSave(dsource.get_when_to_save());
@@ -2754,6 +2764,9 @@ asynStatus NDFileHDF5::createAttributeDataset(NDArray *pArray)
   }
   if(def_group != NULL){
     H5Gclose(groupDefault);
+  }
+  if (numCapture) {
+    free(numCapture);
   }
 
   return asynSuccess;
