@@ -2765,6 +2765,9 @@ asynStatus NDFileHDF5::createAttributeDataset(NDArray *pArray)
   if(def_group != NULL){
     H5Gclose(groupDefault);
   }
+  if (numCapture) {
+    free(numCapture);
+  }
 
   return asynSuccess;
 }
