@@ -2699,7 +2699,7 @@ asynStatus NDFileHDF5::createAttributeDataset(NDArray *pArray)
       // In here we need to open the dataset for writing
 
       hdf5::DataSource dsource = dset->data_source();
-      std::string atName = std::string(epicsStrDup(ndAttr->getName()));
+      std::string atName = std::string(ndAttr->getName());
       NDFileHDF5AttributeDataset *attDset = new NDFileHDF5AttributeDataset(this->file, atName, ndAttr->getDataType());
       attDset->setDsetName(dset->get_name());
       attDset->setWhenToSave(dsource.get_when_to_save());
