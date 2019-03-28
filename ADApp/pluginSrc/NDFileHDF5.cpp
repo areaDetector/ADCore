@@ -1659,9 +1659,9 @@ asynStatus NDFileHDF5::closeFile()
               driverName, functionName, obj_count);
   }
   obj_count = (int)H5Fget_obj_count(this->file, H5F_OBJ_ALL);
-  if (obj_count > 0){
+  if (obj_count > 1){
     asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
-              "%s::%s Closing file not totally clean.  All remaining=%d\n",
+              "%s::%s Closing file not totally clean.  Other remaining=%d\n",
               driverName, functionName, obj_count);
   }
 
