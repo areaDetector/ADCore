@@ -1658,10 +1658,20 @@ asynStatus NDFileHDF5::closeFile()
               "%s::%s Closing file not totally clean.  Attributes remaining=%d\n",
               driverName, functionName, obj_count);
   }
+  obj_count = (int)H5Fget_obj_count(this->file, H5F_OBJ_ALL);
+  if (obj_count > 0){
+    asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
+              "%s::%s Closing file not totally clean.  All remaining=%d\n",
+              driverName, functionName, obj_count);
+  }
 
   // Close the HDF file
   H5Fclose(this->file);
   this->file = 0;
+  // Flush all data to disk, close all open HDF5 objects,
+  // and clean up all memory used by the HDF5 library
+  // to avoid memory leaks
+  H5close();
 
   // At this point we can clear the SWMR active flag, whether we were running
   // in SWMR mode or not
