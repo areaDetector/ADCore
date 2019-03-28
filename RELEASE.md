@@ -20,7 +20,7 @@ files respectively, in the configure/ directory of the appropriate release of th
 Release Notes
 =============
 
-R3-5 (February XXX, 2018)
+R3-5 (March XXX, 2018)
 ======================
 ### Documentation
   * Converted documentation from raw HTML documentation to .rst files using Sphinx.
@@ -42,9 +42,23 @@ R3-5 (February XXX, 2018)
   now be decompressed by NDPluginCodec.
   The ImageJ pvAccess plugin in ADViewers now also supports decompressing lz4 and bitshuffle/lz4.
   These codecs are independent of Blosc, which also supports lz4 and bitshuffle but with some differences.
+### NDPluginAttribute
+* Changed the time series support to use NDPluginTimeSeries.  This is very similar to the change that
+  was made in R3-3 for NDPluginStats.  
+  This significantly reduced the code size, while adding the capability of running in Circular Buffer mode, 
+  not just a fixed number of time points.
+  Thanks to Hinko Kocevar for this.
+* EXAMPLE_commonPlugins.cmd has changed to load an NDPluginTimeSeries plugin and database for the NDPluginAttribute plugin,
+  so the local commonPlugins.cmd file must be updated.
 ### commonDriverMakefile
 * Added support for bitshuffle.  This was added in ADSupport R1-7.
   To use it set WITH_BITSHUFFLE=YES in areaDetector/configure/CONFIG_SITE.local.
+### NDFileHDF5
+* Added FlushNow record to force flushing the datasets to disk in SWMR mode.
+* Fixed some memory leaks.  
+  KNOWN PROBLEM: There is still a significant memory leak.  
+  The size of the leak seems to scale with the number of NDAttributes being saved.
+  It is about 100 kB per saved file when using the example simDetectorAttributes.xml file. 
 ### NDFileHDF5.template
 * Previously the size of the XMLFileName waveform record was set to 1048576.  
   This only needs to be large if using it to transmit the actual XML content, which is not typical.
