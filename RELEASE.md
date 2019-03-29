@@ -42,7 +42,10 @@ R3-5 (March XXX, 2018)
   now be decompressed by NDPluginCodec.
   The ImageJ pvAccess plugin in ADViewers now also supports decompressing lz4 and bitshuffle/lz4.
   These codecs are independent of Blosc, which also supports lz4 and bitshuffle but with some differences.
-### NDPluginAttribute
+* Fixed a problem with NDPluginCodec.template for the Blosc codec.  
+  The Bit and Byte shuffle values in the BloscShuffle records were swapped so when Bit shuffle was selected
+  it was actually doing Byte shuffer and vice versa.  
+  ### NDPluginAttribute
 * Changed the time series support to use NDPluginTimeSeries.  This is very similar to the change that
   was made in R3-3 for NDPluginStats.  
   This significantly reduced the code size, while adding the capability of running in Circular Buffer mode, 
@@ -54,11 +57,16 @@ R3-5 (March XXX, 2018)
 * Added support for bitshuffle.  This was added in ADSupport R1-7.
   To use it set WITH_BITSHUFFLE=YES in areaDetector/configure/CONFIG_SITE.local.
 ### NDFileHDF5
+* Added support for Direct Chunk Write.  This allows the plugin to directly write compressed NDArrays from
+  NDPluginCodec or from the detector driver (e.g. ADEiger).
+  This can significantly improve performance by bypassing much if the code in the HDF5 library.
 * Added FlushNow record to force flushing the datasets to disk in SWMR mode.
-* Fixed some memory leaks.  
-  KNOWN PROBLEM: There is still a significant memory leak.  
-  The size of the leak seems to scale with the number of NDAttributes being saved.
-  It is about 100 kB per saved file when using the example simDetectorAttributes.xml file. 
+* Fixed some memory leaks uncovered with valgrind. 
+  There was still a significant memory leak whose size seemed to scale with the number of NDAttributes being saved.  
+  It was about 100 kB per saved file when using the example simDetectorAttributes.xml file. 
+  This leak was fixed by calling H5close() to completely close the HDF5 library after closing the file.  
+  It is not clear if this leak is internal to the HDF5 library or is caused by the plugin failing to
+  close some object in the HDF5 library correctly.
 ### NDFileHDF5.template
 * Previously the size of the XMLFileName waveform record was set to 1048576.  
   This only needs to be large if using it to transmit the actual XML content, which is not typical.
