@@ -291,7 +291,7 @@ asynStatus NDFileHDF5AttributeDataset::configureDimsFromDataset(bool multiframe,
     // Normally set to just 1 by default or -1 unlimited (in HDF5 terms)
     for (i=0; i<extradims; i++){
       this->elementSize_[i] = 1;
-      this->chunk_[i]       = user_chunking[i];
+      this->chunk_[i]       = user_chunking[(extradims-1)-i];
       this->maxdims_[i]     = H5S_UNLIMITED;
       this->dims_[i]        = 1;
       this->offset_[i]      = 0; // because we increment offset *before* each write we need to start at -1
