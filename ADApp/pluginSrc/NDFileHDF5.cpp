@@ -3217,6 +3217,8 @@ asynStatus NDFileHDF5::configureCompression(NDArray *pArray)
       setIntegerParam(NDFileHDF5_bloscCompressLevel, pArray->codec.level);
       setIntegerParam(NDFileHDF5_bloscShuffleType, pArray->codec.shuffle);
       setIntegerParam(NDFileHDF5_bloscCompressor, pArray->codec.compressor);
+    } else if (pArray->codec.name == codecName[NDCODEC_BSLZ4]) {
+      setIntegerParam(NDFileHDF5_compressionType, HDF5CompressBshuf);
     }
   }
   getIntegerParam(NDFileHDF5_compressionType, &compressionScheme);
@@ -3289,10 +3291,15 @@ asynStatus NDFileHDF5::configureCompression(NDArray *pArray)
       }
       break;
     case HDF5CompressBshuf: {
-           /* 0 to 3 (inclusive) param slots are reserved. */
           unsigned int cds[2];
+          cds[0] = 0; /* bitshuffle selects the block size automatically */
           cds[1] = 2; /* lz4 compression */
-          H5Pset_filter(this->cparms, FILTER_BSHUF, H5Z_FLAG_OPTIONAL, 2, cds);
+          int h5status = H5Pset_filter(this->cparms, FILTER_BSHUF, H5Z_FLAG_OPTIONAL, 2, cds);
+          if (h5status) {
+            asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, "Failed to set h5 bitshuffle filter\n");
+            break;
+          }
+          this->codec.name = codecName[NDCODEC_BSLZ4];
       }
       break;
   }
