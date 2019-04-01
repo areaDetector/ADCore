@@ -25,9 +25,6 @@
 #include <epicsExport.h>
 #include "NDPluginDriver.h"
 #include "colorMaps.h"
-#ifdef HAVE_PVAPI
-  #include "PvApi.h"
-#endif
 #include "NDPluginColorConvert.h"
 
 static const char *driverName="NDPluginColorConvert";
@@ -47,10 +44,6 @@ void NDPluginColorConvert::convertColor(NDArray *pArray)
     size_t imageSize, rowSize, numRows;
     size_t dims[3];
     NDDimension_t tmpDim;
-    #ifdef HAVE_PVAPI
-    tPvFrame PvFrame, *pFrame=&PvFrame;
-    int ndims;
-    #endif
     double value;
     int colorMode=NDColorModeMono, bayerPattern=NDBayerRGGB;
     int falseColor=0;
@@ -204,88 +197,6 @@ void NDPluginColorConvert::convertColor(NDArray *pArray)
                     break;
             }
             break;
-        #ifdef HAVE_PVAPI
-        case NDColorModeBayer:
-            if (pArray->ndims != 2) break;
-            switch (colorModeOut) {
-                case NDColorModeRGB1:
-                case NDColorModeRGB2:
-                case NDColorModeRGB3:
-                    rowSize   = pArray->dims[0].size;
-                    numRows   = pArray->dims[1].size;
-                    imageSize = rowSize * numRows;
-                    ndims = 3;
-                    dims[0] = 3;
-                    dims[1] = rowSize;
-                    dims[2] = numRows;
-                    /* There is a problem: the uniqueId and timeStamp are not preserved! */
-                    pArrayOut = this->pNDArrayPool->alloc(ndims, dims, pArray->dataType, 0, NULL);
-                    pArrayOut->uniqueId = pArray->uniqueId;
-                    pArrayOut->epicsTS = pArray->epicsTS;
-                    pArrayOut->timeStamp = pArray->timeStamp;
-                    pDataOut = (epicsType *)pArrayOut->pData;
-                    /* For now we use the Prosilica library functions to convert Bayer to RGB */
-                    /* This requires creating their tPvFrame data structure */
-                    memset(pFrame, 0, sizeof(tPvFrame));
-                    pFrame->Width = (unsigned long)pArray->dims[0].size;
-                    pFrame->Height = (unsigned long)pArray->dims[1].size;
-                    pFrame->RegionX = (unsigned long)pArray->dims[0].offset;
-                    pFrame->RegionY = (unsigned long)pArray->dims[1].offset;
-                    pFrame->ImageBuffer = pArray->pData;
-                    pFrame->ImageBufferSize = (unsigned long)pArray->dataSize;
-                    pFrame->ImageSize = pFrame->ImageBufferSize;
-                    pFrame->BayerPattern = (tPvBayerPattern)bayerPattern;
-                    switch(pArray->dataType) {
-                        case NDInt8:
-                        case NDUInt8:
-                            pFrame->Format = ePvFmtBayer8;
-                            pFrame->BitDepth = 8;
-                            break;
-                        case NDInt16:
-                        case NDUInt16:
-                            pFrame->Format = ePvFmtBayer16;
-                            pFrame->BitDepth = 16;
-                            break;
-                        default:
-                            asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
-                                "%s:%s: error unsupported data type=%d\n",
-                                driverName, functionName, pArray->dataType);
-                            break;
-                    }
-                    break;
-                default: 
-                    break;
-            }
-            switch (colorModeOut) {
-                case NDColorModeRGB1:
-                    PvUtilityColorInterpolate(pFrame, pDataOut, pDataOut+1, pDataOut+2, 2, 0);
-                    pArrayOut->dims[0].size = 3;
-                    memcpy(&pArrayOut->dims[1], &pArray->dims[0], sizeof(NDDimension_t));
-                    memcpy(&pArrayOut->dims[2], &pArray->dims[1], sizeof(NDDimension_t));
-                    changedColorMode = 1;
-                    break;
-                
-                case NDColorModeRGB2:
-                    PvUtilityColorInterpolate(pFrame, pDataOut,  pDataOut+rowSize, pDataOut+2*rowSize, 
-                                              0, (unsigned long)(2*rowSize));
-                    memcpy(&pArrayOut->dims[0], &pArray->dims[0], sizeof(NDDimension_t));
-                    pArrayOut->dims[1].size = 3;
-                    memcpy(&pArrayOut->dims[2], &pArray->dims[1], sizeof(NDDimension_t));
-                    changedColorMode = 1;
-                    break;
-
-                case NDColorModeRGB3:
-                    PvUtilityColorInterpolate(pFrame, pDataOut,  pDataOut+imageSize, pDataOut+2*imageSize, 0, 0);
-                    memcpy(&pArrayOut->dims[0], &pArray->dims[0], sizeof(NDDimension_t));
-                    memcpy(&pArrayOut->dims[1], &pArray->dims[1], sizeof(NDDimension_t));
-                    pArrayOut->dims[2].size = 3;
-                    changedColorMode = 1;
-                    break;
-                default:
-                    break;
-            }
-            break;
-        #endif
         case NDColorModeRGB1:
             if (pArray->ndims != 3) break;
             rowSize   = pArray->dims[1].size;
