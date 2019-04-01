@@ -71,7 +71,7 @@ struct NDFileHDF5TestFixture
   void setup_hdf_stream()
   {
     hdf5->write(NDFileWriteModeString, NDFileModeStream);
-    hdf5->write(NDFilePathString, "/tmp");
+    hdf5->write(NDFilePathString, "");
     hdf5->write(NDFileNameString, "testing");
     hdf5->write(NDFileTemplateString, "%s%s_%d.5");
   }
@@ -86,7 +86,7 @@ struct NDFileHDF5TestFixture
     NDAttribute *pA2 = new NDAttribute("temperature_EGU", "detector temperature units", NDAttrSourceEPICSPV, "13SIM1:cam1:Temperature.EGU", NDAttrString, val2);
     pAttributeList->add(pA2);
     char val3[MAX_STRING_SIZE];
-    strcpy(val3, "/tmp/test1_001.h5");
+    strcpy(val3, "test1_001.h5");
     NDAttribute *pA3 = new NDAttribute("HDF5_filename", "name of this file as written", NDAttrSourceEPICSPV, "13SIM1:HDF1:FullFileName_RBV", NDAttrString, val3);
     pAttributeList->add(pA3);
     epicsInt32 val4 = 0;
@@ -140,7 +140,7 @@ BOOST_AUTO_TEST_CASE(test_createDatasetType)
   hdf5->unlock();
 
   // File has been written, open for reading
-  HDF5FileReader fr("/tmp/testing_0.5");
+  HDF5FileReader fr("testing_0.5");
   // Verify there are attributes attached to the dataset
   BOOST_CHECK_GT(fr.getDatasetAttributeCount("/entry/data/data"), 0);
 }
@@ -238,7 +238,7 @@ BOOST_AUTO_TEST_CASE(test_DatasetLayout1)
   </group>\
 </hdf5_layout>");
 
-  hdf5->write(NDFilePathString, "/tmp");
+  hdf5->write(NDFilePathString, "");
   hdf5->write(NDFileNameString, "test1");
   hdf5->write(NDFileTemplateString, "%s%s_%3.3d.h5");
   // Initialise the HDF5 plugin with a dummy frame
@@ -265,7 +265,7 @@ BOOST_AUTO_TEST_CASE(test_DatasetLayout1)
   // Once the frames have been captured check the output file to verify it is as expected
   std::vector<hsize_t> odims;
   // Use the file reader utility to open the file
-  HDF5FileReader fr("/tmp/test1_001.h5");
+  HDF5FileReader fr("test1_001.h5");
   // Verify the main dataset exists
   BOOST_CHECK_EQUAL(fr.checkDatasetExists("/example/detector/data"), true);
   // Verify the main dataset has the dimensions of 10x10x10
