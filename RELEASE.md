@@ -6,7 +6,7 @@ https://github.com/areaDetector/ADCore.
 
 Tagged source code and pre-built binary releases prior to R2-0 are included
 in the areaDetector releases available via links at
-http://cars.uchicago.edu/software/epics/areaDetector.html.
+https://cars.uchicago.edu/software/epics/areaDetector.html.
 
 Tagged source code releases from R2-0 onward can be obtained at 
 https://github.com/areaDetector/ADCore/releases.
@@ -44,7 +44,7 @@ R3-5 (March XXX, 2018)
   These codecs are independent of Blosc, which also supports lz4 and bitshuffle but with some differences.
 * Fixed a problem with NDPluginCodec.template for the Blosc codec.  
   The Bit and Byte shuffle values in the BloscShuffle records were swapped so when Bit shuffle was selected
-  it was actually doing Byte shuffer and vice versa.  
+  it was actually doing Byte shuffle and vice versa.  
   ### NDPluginAttribute
 * Changed the time series support to use NDPluginTimeSeries.  This is very similar to the change that
   was made in R3-3 for NDPluginStats.  
@@ -1189,7 +1189,7 @@ R2-1 (October 17, 2014)
 
 ### Miscellaneous
 * Added a new table to the 
-  [top-level documentation] (http://cars.uchicago.edu/software/epics/areaDetector.html).
+  [top-level documentation] (https://cars.uchicago.edu/software/epics/areaDetector.html).
   This contains for each module, links to:
   - Github repository
   - Documentation
@@ -1230,7 +1230,7 @@ epicsTimeStamp epicsTS;  /**< The epicsTimeStamp; this is set with
     - $(P)$(R)EpicsTSNsec_RBV contains the current NDArray.epicsTS.nsec
 
 * The changes in R2-0 for enhanced timestamp support are described in 
-[areaDetectorTimeStampSupport](http://cars.uchicago.edu/software/epics/areaDetectorTimeStampSupport.html).
+[areaDetectorTimeStampSupport](https://cars.uchicago.edu/software/epics/areaDetectorTimeStampSupport.html).
 
 ### NDAttribute
 * Added new attribute type, NDAttrSourceFunct. 
@@ -1309,4 +1309,4 @@ epicsTimeStamp epicsTS;  /**< The epicsTimeStamp; this is set with
 R1-9-1 and earlier
 ==================
 Release notes are part of the
-[areaDetector Release Notes](http://cars.uchicago.edu/software/epics/areaDetectorReleaseNotes.html).
+[areaDetector Release Notes](https://cars.uchicago.edu/software/epics/areaDetectorReleaseNotes.html).
