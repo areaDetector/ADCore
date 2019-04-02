@@ -60,7 +60,6 @@ namespace hdf5
       <group name=\"detector\"> \
         <attribute name=\"NX_class\" source=\"constant\" value=\"NXdetector\" type=\"string\"></attribute> \
         <dataset name=\"data\" source=\"detector\" det_default=\"true\"> \
-          <attribute name=\"NX_class\" source=\"constant\" value=\"SDS\" type=\"string\"></attribute> \
           <attribute name=\"signal\" source=\"constant\" value=\"1\" type=\"int\"></attribute> \
         </dataset> \
         <group name=\"NDAttributes\"> \
