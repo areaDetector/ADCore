@@ -69,19 +69,18 @@ asynStatus ADDriver::setIntegerParam(int index, int value)
   * \param[in] value Value to set. 
   * This function was added to trap the driver setting ADAcquire to 0 and
   * asynNDArrayDriver setting NumQueuedArrays.  It implements the logic of
-  * setting ADAcquireBusy to reflect whether acquisition is done.
+   * setting ADAcquireBusy to reflect whether acquisition is done.
   * If WaitForPlugins is true then this includes waiting for NumQueuedArrays to be 0.
   * When ADAcquire goes to 0 it must use getQueuedArrayCount rather then NumQueuedArrays
   * from the parameter library, because NumQueuedArrays is updated in a separate thread
   * and might not have been set yet.  getQueuedArrayCount updates immediately. */
 asynStatus ADDriver::setIntegerParam(int list, int index, int value)
 {
-    int waitForPlugins;
-
-    getIntegerParam(list, ADWaitForPlugins, &waitForPlugins);
 
     if (index == ADAcquire) {
         if (value == 0) {
+            int waitForPlugins;
+            getIntegerParam(list, ADWaitForPlugins, &waitForPlugins);
             if (waitForPlugins) {
                 int count = getQueuedArrayCount();
                 if (count == 0) {
@@ -95,7 +94,11 @@ asynStatus ADDriver::setIntegerParam(int list, int index, int value)
         }
     }
     else if ((index == NDNumQueuedArrays) && (value == 0)) {
-        asynNDArrayDriver::setIntegerParam(list, ADAcquireBusy, 0);
+        int acquire;
+        getIntegerParam(list, ADAcquire, &acquire);
+        if (acquire == 0) {
+            asynNDArrayDriver::setIntegerParam(list, ADAcquireBusy, 0);
+        }
     }
     return asynNDArrayDriver::setIntegerParam(list, index, value);
 }
