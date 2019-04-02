@@ -20,7 +20,7 @@ files respectively, in the configure/ directory of the appropriate release of th
 Release Notes
 =============
 
-R3-5 (March XXX, 2018)
+R3-5 (April XXX, 2018)
 ======================
 ### Documentation
   * Converted documentation from raw HTML documentation to .rst files using Sphinx.
@@ -60,6 +60,8 @@ R3-5 (March XXX, 2018)
 * Added support for Direct Chunk Write.  This allows the plugin to directly write compressed NDArrays from
   NDPluginCodec or from the detector driver (e.g. ADEiger).
   This can significantly improve performance by bypassing much if the code in the HDF5 library.
+* Added support for bitshuffle/lz4 compression, which is independent of Blosc.
+* Added support for lz4 compression, which is independent of bitshuffle and Blosc. 
 * Added FlushNow record to force flushing the datasets to disk in SWMR mode.
 * Fixed some memory leaks uncovered with valgrind. 
   There was still a significant memory leak whose size seemed to scale with the number of NDAttributes being saved.  
