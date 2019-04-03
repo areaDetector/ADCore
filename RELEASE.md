@@ -35,7 +35,11 @@ R3-5 (March XXX, 2018)
 * Fixed a race condition in R3-4 with NumQueuedArrays and AcquireBusy.
   This caused AcquireBusy to sometimes go to Done before the plugins were done processing.
   A typical symptom was for successive points in a scan to have the same values from the statistics plugin,
-  because the detector did not wait for the plugin to post a new value before it said it was done. 
+  because the detector did not wait for the plugin to post a new value before it said it was done.
+  The logic for this was moved from the database (ADBase.template) to the driver (ADDriver.cpp).
+### NDArray
+* Changed the codec member from a std::string to a structure that contains not just the name of the codec
+  but also the compression level, shuffle parameter, etc.
 ### NDPluginCodec
 * Added support for the lz4 and bitshuffle/lz4 codecs.  
   These are the compressors that the Eiger uses, so compressed NDArrays from ADEiger can
@@ -45,7 +49,7 @@ R3-5 (March XXX, 2018)
 * Fixed a problem with NDPluginCodec.template for the Blosc codec.  
   The Bit and Byte shuffle values in the BloscShuffle records were swapped so when Bit shuffle was selected
   it was actually doing Byte shuffle and vice versa.  
-  ### NDPluginAttribute
+### NDPluginAttribute
 * Changed the time series support to use NDPluginTimeSeries.  This is very similar to the change that
   was made in R3-3 for NDPluginStats.  
   This significantly reduced the code size, while adding the capability of running in Circular Buffer mode, 
