@@ -11,6 +11,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <math.h>
+#include <algorithm>
 
 #include <epicsTypes.h>
 #include <epicsMessageQueue.h>
@@ -179,7 +180,7 @@ NDPluginAttribute::NDPluginAttribute(const char *portName, int queueSize, int bl
                                      int priority, int stackSize)
     /* Invoke the base class constructor */
     : NDPluginDriver(portName, queueSize, blockingCallbacks,
-                   NDArrayPort, NDArrayAddr, maxAttributes, maxBuffers, maxMemory,
+                   NDArrayPort, NDArrayAddr, std::max<int>(maxAttributes,2), maxBuffers, maxMemory,
                    asynInt32ArrayMask | asynFloat64Mask | asynFloat64ArrayMask | asynGenericPointerMask,
                    asynInt32ArrayMask | asynFloat64Mask | asynFloat64ArrayMask | asynGenericPointerMask,
                    ASYN_MULTIDEVICE, 1, priority, stackSize, 1)
