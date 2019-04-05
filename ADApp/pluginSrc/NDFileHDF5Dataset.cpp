@@ -287,6 +287,23 @@ asynStatus NDFileHDF5Dataset::writeFile(NDArray *pArray, hid_t datatype, hid_t d
     if (pArray->codec.empty()) {
         size = info.totalBytes;
     }
+    else if (pArray->codec.name == codecName[NDCODEC_LZ4]) {
+        // We need to add a 16-byte header to the lz4 compressed data
+        temp = (char *)malloc(16 + size);
+        // First 8 bytes is the uncompressed array size
+        epicsUInt64 ui64 = htonll(info.totalBytes);
+        memcpy(temp, &ui64, 8);
+        // Next 4 bytes is the block size = compressed size as long as < 1GB which we assume here
+        epicsUInt32 ui32 = htonl((int)size);
+        memcpy(temp+8, &ui32, 4);
+        // Next 4 bytes is the compressed size
+        epicsUInt32 ui32 = htonl((int)size);
+        memcpy(temp+12, &ui32, 4);
+        // Now copy the data
+        memcpy(temp+16, pArray->pData, size);
+        pData = temp;
+        size += 16;
+    }
     else if (pArray->codec.name == codecName[NDCODEC_BSLZ4]) {
         // We need to add a 12-byte header to the bs/lz4 compressed data
         temp = (char *)malloc(12 + size);
