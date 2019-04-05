@@ -293,11 +293,11 @@ asynStatus NDFileHDF5Dataset::writeFile(NDArray *pArray, hid_t datatype, hid_t d
         // First 8 bytes is the uncompressed array size
         epicsUInt64 ui64 = htonll(info.totalBytes);
         memcpy(temp, &ui64, 8);
-        // Next 4 bytes is the block size = compressed size as long as < 1GB which we assume here
-        epicsUInt32 ui32 = htonl((int)size);
+        // Next 4 bytes is the block size = uncompressed size as long as < 1GB which we assume here
+        epicsUInt32 ui32 = htonl((int)info.totalBytes);
         memcpy(temp+8, &ui32, 4);
         // Next 4 bytes is the compressed size
-        epicsUInt32 ui32 = htonl((int)size);
+        ui32 = htonl((int)size);
         memcpy(temp+12, &ui32, 4);
         // Now copy the data
         memcpy(temp+16, pArray->pData, size);
