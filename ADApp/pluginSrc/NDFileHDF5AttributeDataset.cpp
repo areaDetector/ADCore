@@ -219,6 +219,11 @@ asynStatus NDFileHDF5AttributeDataset::closeAttributeDataset()
   H5Sclose(memspace_);
   H5Sclose(dataspace_);
   H5Pclose(cparm_);
+  // HK test
+  if (type_ == NDAttrString) {
+    H5Tclose(datatype_);
+  }
+  // HK test
   return asynSuccess;
 }
 

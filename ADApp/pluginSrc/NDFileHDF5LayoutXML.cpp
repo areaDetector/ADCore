@@ -408,7 +408,9 @@ namespace hdf5
       attr_val = xmlTextReaderGetAttribute(this->xmlreader, (const xmlChar*)LayoutXML::ATTR_SRC_CONST_VALUE.c_str());
       if (attr_val != NULL) {
         str_attr_val = (char*)attr_val;
-        free(attr_val);
+        // HK test
+        xmlFree(attr_val);
+        // HK test
       }
       out.source = DataSource( constant, str_attr_val );
       attr_type = xmlTextReaderGetAttribute(this->xmlreader, (const xmlChar*)LayoutXML::ATTR_SRC_CONST_TYPE.c_str());

@@ -311,6 +311,9 @@ namespace hdf5
   {
     for_each(this->datasets.begin(), this->datasets.end(), _delete_obj<Dataset>);
     for_each(this->groups.begin(), this->groups.end(), _delete_obj<Group>);
+    // HK verify should this be done? Causes segfault..
+    // for_each(this->hardlinks.begin(), this->hardlinks.end(), _delete_obj<HardLink>);
+    // HK verify should this be done?
   }
 
   Group& Group::operator=(const Group& src)
@@ -372,7 +375,12 @@ namespace hdf5
     std::pair<std::map<std::string, Group*>::iterator,bool> ret;
     ret = this->groups.insert(std::pair<std::string, Group*>(name, grp));
     // Check for successful insertion.
-    if (ret.second == false) return NULL;
+    if (ret.second == false) {
+      // HK test
+      delete grp;
+      // HK test
+      return NULL;
+    }
     return grp;
   }
 
@@ -402,7 +410,12 @@ namespace hdf5
     std::pair<std::map<std::string, HardLink*>::iterator,bool> ret;
     ret = this->hardlinks.insert(std::pair<std::string, HardLink*>(name, hardlink));
     // Check for successful insertion.
-    if (ret.second == false) return NULL;
+    if (ret.second == false) {
+      // HK test
+      delete hardlink;
+      // HK test
+      return NULL;
+    }
     return hardlink;
   }
 
