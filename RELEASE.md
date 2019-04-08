@@ -67,12 +67,8 @@ R3-5 (April XXX, 2018)
 * Added support for bitshuffle/lz4 compression, which is independent of Blosc.
 * Added support for lz4 compression, which is independent of bitshuffle and Blosc. 
 * Added FlushNow record to force flushing the datasets to disk in SWMR mode.
-* Fixed some memory leaks uncovered with valgrind. 
-  There was still a significant memory leak whose size seemed to scale with the number of NDAttributes being saved.  
-  It was about 100 kB per saved file when using the example simDetectorAttributes.xml file. 
-  This leak was fixed by calling H5close() to completely close the HDF5 library after closing the file.  
-  It is not clear if this leak is internal to the HDF5 library or is caused by the plugin failing to
-  close some object in the HDF5 library correctly.
+* Fixed many memory leaks.  The most serious ones were causing ~100kB leak per HDF5 file, which was significant when
+  saving many small files.
 ### NDFileHDF5.template
 * Previously the size of the XMLFileName waveform record was set to 1048576.  
   This only needs to be large if using it to transmit the actual XML content, which is not typical.
