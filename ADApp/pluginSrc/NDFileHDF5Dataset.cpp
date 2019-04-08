@@ -1,8 +1,11 @@
 #include "NDFileHDF5Dataset.h"
 #include <iostream>
 #include <stdlib.h>
+#include <osiSock.h>
 
 #include <hdf5_hl.h>
+
+#define htonll(x) ( ( (uint64_t)(htonl( (uint32_t)((x << 32) >> 32)))<< 32) | htonl( ((uint32_t)(x >> 32)) ))
 
 static const char *fileName = "NDFileHDF5Dataset";
 
@@ -280,18 +283,54 @@ asynStatus NDFileHDF5Dataset::writeFile(NDArray *pArray, hid_t datatype, hid_t d
               "%s::%s NDArray correctly chunked. Using direct chunk write\n",
               fileName, functionName);
     size_t size = pArray->compressedSize;
+    void *pData = pArray->pData;
+    char *temp=0;
+    NDArrayInfo_t info;
+    pArray->getInfo(&info);
     if (pArray->codec.empty()) {
-        NDArrayInfo_t info;
-        pArray->getInfo(&info);
         size = info.totalBytes;
+    }
+    else if (pArray->codec.name == codecName[NDCODEC_LZ4]) {
+        // We need to add a 16-byte header to the lz4 compressed data
+        temp = (char *)malloc(16 + size);
+        // First 8 bytes is the uncompressed array size
+        epicsUInt64 ui64 = htonll(info.totalBytes);
+        memcpy(temp, &ui64, 8);
+        // Next 4 bytes is the block size = uncompressed size as long as < 1GB which we assume here
+        epicsUInt32 ui32 = htonl((int)info.totalBytes);
+        memcpy(temp+8, &ui32, 4);
+        // Next 4 bytes is the compressed size
+        ui32 = htonl((int)size);
+        memcpy(temp+12, &ui32, 4);
+        // Now copy the data
+        memcpy(temp+16, pArray->pData, size);
+        pData = temp;
+        size += 16;
+    }
+    else if (pArray->codec.name == codecName[NDCODEC_BSLZ4]) {
+        // We need to add a 12-byte header to the bs/lz4 compressed data
+        temp = (char *)malloc(12 + size);
+        // First 8 bytes is the uncompressed array size
+        epicsUInt64 ui64 = htonll(info.totalBytes);
+        memcpy(temp, &ui64, 8);
+        // Next 4 bytes is the block size * elem_size;  8192 is the default in bitshuffle
+        epicsUInt32 ui32 = htonl(8192);
+        memcpy(temp+8, &ui32, 4);
+        // Now copy the data
+        memcpy(temp+12, pArray->pData, size);
+        pData = temp;
+        size += 12;
     }
     #if H5_VERSION_GE(1, 10, 3)
     hdfstatus = H5Dwrite_chunk(this->dataset_, H5P_DEFAULT, 0x0,
-                               this->offset_, size, pArray->pData);
+                               this->offset_, size, pData);
     #else  // Use deprecated method
     hdfstatus = H5DOwrite_chunk(this->dataset_, H5P_DEFAULT, 0x0,
-                                this->offset_, size, pArray->pData);
+                                this->offset_, size, pData);
     #endif
+    if (temp) {
+        free(temp);
+    }
   } else {
     // Either direct chunk write is not available, or we need to use the HDF5 pipeline for
     // compression / chunk buffering - use standard write method
