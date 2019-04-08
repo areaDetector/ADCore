@@ -586,9 +586,7 @@ asynStatus NDFileHDF5::storeOnOpenCloseAttribute(hdf5::Element *element, bool op
                   asynPrint(this->pasynUserSelf, ASYN_TRACE_WARNING, "%s::%s unable to create attribute: %s\n",
                             driverName, functionName, attr.get_name().c_str());
                   H5Sclose(hdfattrdataspace);
-                  // HK test
                   H5Tclose(hdfdatatype);
-                  // HK test
                 } else {
                   herr_t hdfstatus = H5Awrite(hdfattr, hdfdatatype, datavalue);
                   if (hdfstatus < 0) {
@@ -597,9 +595,7 @@ asynStatus NDFileHDF5::storeOnOpenCloseAttribute(hdf5::Element *element, bool op
                   }
                   H5Aclose(hdfattr);
                   H5Sclose(hdfattrdataspace);
-                  // HK test
                   H5Tclose(hdfdatatype);
-                  // HK test
                 }
               } else if(dataType == NDAttrString){
                 // This is a string attribute
@@ -663,7 +659,6 @@ asynStatus NDFileHDF5::createTree(hdf5::Group* root, hid_t h5handle)
       hid_t new_dset = this->createDataset(new_group, it_dsets->second);
       if (new_dset <= 0) {
         hdf5::Dataset *dset = it_dsets->second;
-        // HK I can see messages: Failed to create dataset: timestamp. Continuing to next.
         asynPrint(this->pasynUserSelf, ASYN_TRACE_WARNING,
                   "%s::%s Failed to create dataset: %s. Continuing to next.\n",
                   driverName, functionName, dset->get_name().c_str());
@@ -887,9 +882,7 @@ hid_t NDFileHDF5::writeH5dsetInt32(hid_t element, const std::string &name, const
       asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, "%s::%s unable to create dataset: %s\n",
                 driverName, functionName, name.c_str());
       H5Sclose(hdfdataspace);
-      // HK test
       H5Tclose(hdfdatatype);
-      // HK test
       return -1;
     }
     epicsInt32 ival;
@@ -900,9 +893,7 @@ hid_t NDFileHDF5::writeH5dsetInt32(hid_t element, const std::string &name, const
                 driverName, functionName, name.c_str());
       H5Dclose(hdfdset);
       H5Sclose(hdfdataspace);
-      // HK test
       H5Tclose(hdfdatatype);
-      // HK test
       return -1;
     }
   } else {
@@ -916,9 +907,7 @@ hid_t NDFileHDF5::writeH5dsetInt32(hid_t element, const std::string &name, const
     for (int index = 0; index < (int)vect.size(); index++){
       ivalues[index] = vect[index];
     }
-    // HK test
     H5Sclose(hdfdataspace);
-    // HK test
     hdfdataspace = H5Screate(H5S_SIMPLE);
     H5Sset_extent_simple(hdfdataspace, 1, dims, NULL);
     hdfdset = H5Dcreate2(element, name.c_str(), hdfdatatype, hdfdataspace, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
@@ -927,9 +916,7 @@ hid_t NDFileHDF5::writeH5dsetInt32(hid_t element, const std::string &name, const
       asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, "%s::%s unable to create dataset: %s\n",
                 driverName, functionName, name.c_str());
       H5Sclose(hdfdataspace);
-      // HK test
       H5Tclose(hdfdatatype);
-      // HK test
       return -1;
     }
     hdfstatus = H5Dwrite(hdfdset, hdfdatatype, H5S_ALL, H5S_ALL, H5P_DEFAULT, ivalues);
@@ -939,17 +926,13 @@ hid_t NDFileHDF5::writeH5dsetInt32(hid_t element, const std::string &name, const
                 driverName, functionName, name.c_str());
       H5Dclose (hdfdset);
       H5Sclose(hdfdataspace);
-      // HK test
       H5Tclose(hdfdatatype);
-      // HK test
       return -1;
     }
   }
   //H5Dclose (hdfdset);
   H5Sclose(hdfdataspace);
-  // HK test
   H5Tclose(hdfdatatype);
-  // HK test
   return hdfdset;
 
 }
@@ -986,9 +969,7 @@ hid_t NDFileHDF5::writeH5dsetFloat64(hid_t element, const std::string &name, con
       asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, "%s::%s unable to create dataset: %s\n",
                 driverName, functionName, name.c_str());
       H5Sclose(hdfdataspace);
-      // HK test
       H5Tclose(hdfdatatype);
-      // HK test
       return -1;
     }
     double fval;
@@ -999,9 +980,7 @@ hid_t NDFileHDF5::writeH5dsetFloat64(hid_t element, const std::string &name, con
                 driverName, functionName, name.c_str());
       H5Dclose (hdfdset);
       H5Sclose(hdfdataspace);
-      // HK test
       H5Tclose(hdfdatatype);
-      // HK test
       return -1;
     }
   } else {
@@ -1015,9 +994,7 @@ hid_t NDFileHDF5::writeH5dsetFloat64(hid_t element, const std::string &name, con
     for (int index = 0; index < (int)vect.size(); index++){
       fvalues[index] = vect[index];
     }
-    // HK test
     H5Sclose(hdfdataspace);
-    // HK test
     hdfdataspace = H5Screate(H5S_SIMPLE);
     H5Sset_extent_simple(hdfdataspace, 1, dims, NULL);
     hdfdset = H5Dcreate2(element, name.c_str(), hdfdatatype, hdfdataspace, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
@@ -1026,9 +1003,7 @@ hid_t NDFileHDF5::writeH5dsetFloat64(hid_t element, const std::string &name, con
       asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, "%s::%s unable to create dataset: %s\n",
                 driverName, functionName, name.c_str());
       H5Sclose(hdfdataspace);
-      // HK test
       H5Tclose(hdfdatatype);
-      // HK test
       return -1;
     }
     hdfstatus = H5Dwrite(hdfdset, hdfdatatype, H5S_ALL, H5S_ALL, H5P_DEFAULT, fvalues);
@@ -1038,17 +1013,13 @@ hid_t NDFileHDF5::writeH5dsetFloat64(hid_t element, const std::string &name, con
                 driverName, functionName, name.c_str());
       H5Dclose(hdfdset);
       H5Sclose(hdfdataspace);
-      // HK test
       H5Tclose(hdfdatatype);
-      // HK test
       return -1;
     }
   }
   //H5Dclose (hdfdset);
   H5Sclose(hdfdataspace);
-  // HK test
   H5Tclose(hdfdatatype);
-  // HK test
   return hdfdset;
 
 }
@@ -1101,9 +1072,7 @@ void NDFileHDF5::writeH5attrStr(hid_t element, const std::string &attr_name, con
     asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, "%s::%s unable to create attribute: %s\n",
               driverName, functionName, attr_name.c_str());
     H5Sclose(hdfattrdataspace);
-    // HK OK
     H5Tclose(hdfdatatype);
-    // HK OK
     return;
   }
 
@@ -1113,16 +1082,12 @@ void NDFileHDF5::writeH5attrStr(hid_t element, const std::string &attr_name, con
               driverName, functionName, attr_name.c_str());
     H5Aclose (hdfattr);
     H5Sclose(hdfattrdataspace);
-    // HK OK
     H5Tclose(hdfdatatype);
-    // HK OK
     return;
   }
   H5Aclose (hdfattr);
   H5Sclose(hdfattrdataspace);
-  // HK OK
   H5Tclose(hdfdatatype);
-  // HK OK
   return;
 }
 
@@ -1184,9 +1149,7 @@ void NDFileHDF5::writeH5attrInt32(hid_t element, const std::string &attr_name, c
     for (int index = 0; index < (int)vect.size(); index++){
       ivalues[index] = vect[index];
     }
-    // HK OK
     H5Sclose(hdfattrdataspace);
-    // HK OK
     hdfattrdataspace = H5Screate(H5S_SIMPLE);
     H5Sset_extent_simple(hdfattrdataspace, 1, dims, NULL);
     hdfattr = H5Acreate2(element, attr_name.c_str(), hdfdatatype, hdfattrdataspace, H5P_DEFAULT, H5P_DEFAULT);
@@ -1209,9 +1172,7 @@ void NDFileHDF5::writeH5attrInt32(hid_t element, const std::string &attr_name, c
   }
   H5Aclose (hdfattr);
   H5Sclose(hdfattrdataspace);
-  // HK OK
   H5Tclose(hdfdatatype);
-  // HK OK
   return;
 }
 
@@ -1273,9 +1234,7 @@ void NDFileHDF5::writeH5attrFloat64(hid_t element, const std::string &attr_name,
     for (int index = 0; index < (int)vect.size(); index++){
       fvalues[index] = vect[index];
     }
-    // HK OK
     H5Sclose(hdfattrdataspace);
-    // HK OK
     hdfattrdataspace = H5Screate(H5S_SIMPLE);
     H5Sset_extent_simple(hdfattrdataspace, 1, dims, NULL);
     hdfattr = H5Acreate2(element, attr_name.c_str(), hdfdatatype, hdfattrdataspace, H5P_DEFAULT, H5P_DEFAULT);
@@ -1298,9 +1257,7 @@ void NDFileHDF5::writeH5attrFloat64(hid_t element, const std::string &attr_name,
   }
   H5Aclose (hdfattr);
   H5Sclose(hdfattrdataspace);
-  // HK OK
   H5Tclose(hdfdatatype);
-  // HK OK
   return;
 }
 
@@ -1368,9 +1325,7 @@ hid_t NDFileHDF5::createDatasetDetector(hid_t group, hdf5::Dataset *dset)
   dataset = H5Dcreate2(group, dsetname, this->datatype, this->dataspace,
                        H5P_DEFAULT, this->cparms, dset_access_plist);
   
-  // HK OK
   H5Pclose(dset_access_plist);
-  // HK OK
 
   // Store the dataset into the detector dataset map
   this->detDataMap[dset->get_full_name()] = new NDFileHDF5Dataset(this->pasynUserSelf, dset->get_name(), dataset);
@@ -1702,13 +1657,11 @@ asynStatus NDFileHDF5::closeFile()
             "%s::%s closing HDF dataspace %ld\n", 
             driverName, functionName, (long int)this->datatype);
 
-  //HK OK
   H5Sclose(this->dataspace);
 
   asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW, 
             "%s::%s closing groups\n", 
             driverName, functionName);
-  //HK OK
 
   // Iterate over the stored detector data sets and close them
   std::map<std::string, NDFileHDF5Dataset *>::iterator it_dset;
@@ -2642,18 +2595,14 @@ asynStatus NDFileHDF5::createPerformanceDataset()
     if (!H5Iis_valid(this->perf_dataset_id)) {
         asynPrint(this->pasynUserSelf, ASYN_TRACE_WARNING, "NDFileHDF5::writePerformanceDataset: unable to create \'timestamp\' dataset.");
         H5Sclose(dataspace_id);
-        // HK OK
         H5Pclose(hdfcparm);
-        // HK OK
         if(perf_group != NULL){
           H5Gclose(group_performance);
         }
         return asynError;
     }
     H5Sclose(dataspace_id);
-    // HK OK
     H5Pclose(hdfcparm);
-    // HK OK
     if(perf_group != NULL){
       H5Gclose(group_performance);
     }
@@ -3027,9 +2976,7 @@ asynStatus NDFileHDF5::writeStringAttribute(hid_t element, const char * attrName
     H5Awrite(hdfattr, hdfdatatype, attrStrValue);
     H5Aclose(hdfattr);
     H5Sclose(hdfattrdataspace);
-    // HK OK
     H5Tclose(hdfdatatype);
-    // HK OK
   }
   return status;
 }
@@ -3783,16 +3730,12 @@ asynStatus NDFileHDF5::createNewFile(const char *fileName)
               "%s::%s Unable to create HDF5 file: %s\n", 
               driverName, functionName, fileName);
     this->file = 0;
-    //HK OK
     H5Pclose(create_plist);
     H5Pclose(access_plist);
-    //HK OK
     return asynError;
   }
-  //HK OK
   H5Pclose(create_plist);
   H5Pclose(access_plist);
-  //HK OK
   return asynSuccess;
 }
 

@@ -270,9 +270,7 @@ asynStatus NDFileHDF5Dataset::writeFile(NDArray *pArray, hid_t datatype, hid_t d
     asynPrint(this->pAsynUser_, ASYN_TRACE_ERROR, 
               "%s::%s ERROR Unable to select hyperslab\n", 
               fileName, functionName);
-    // HK test
     H5Sclose(fspace);
-    // HK test
     return asynError;
   }
 
@@ -339,9 +337,7 @@ asynStatus NDFileHDF5Dataset::writeFile(NDArray *pArray, hid_t datatype, hid_t d
       asynPrint(this->pAsynUser_, ASYN_TRACE_ERROR,
                 "%s::%s ERROR Unable to write pre-compressed data - mismatched chunk definition\n",
                 fileName, functionName);
-      // HK test
       H5Sclose(fspace);
-      // HK test
       return asynError;
     }
     asynPrint(this->pAsynUser_, ASYN_TRACE_FLOW,
@@ -354,9 +350,7 @@ asynStatus NDFileHDF5Dataset::writeFile(NDArray *pArray, hid_t datatype, hid_t d
     asynPrint(this->pAsynUser_, ASYN_TRACE_ERROR, 
               "%s::%s ERROR Unable to write data to hyperslab\n", 
               fileName, functionName);
-    // HK test
     H5Sclose(fspace);
-    // HK test
     return asynError;
   }
 

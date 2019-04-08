@@ -376,9 +376,7 @@ namespace hdf5
     ret = this->groups.insert(std::pair<std::string, Group*>(name, grp));
     // Check for successful insertion.
     if (ret.second == false) {
-      // HK test
       delete grp;
-      // HK test
       return NULL;
     }
     return grp;
@@ -411,9 +409,7 @@ namespace hdf5
     ret = this->hardlinks.insert(std::pair<std::string, HardLink*>(name, hardlink));
     // Check for successful insertion.
     if (ret.second == false) {
-      // HK test
       delete hardlink;
-      // HK test
       return NULL;
     }
     return hardlink;
