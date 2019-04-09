@@ -575,6 +575,8 @@ NDAttributes are flushed and the current SWMR status and number of
 flushes that have taken place are reported for an acquisition. The SWMR
 active status parameter can be used to signify that it is safe for
 readers to open the file (the file has been placed into SWMR mode).
+Data can be flushed to disk on demand using the FlushNow command.
+
 
 Storing Attributes with Dataset Dimensions
 ------------------------------------------
@@ -1019,6 +1021,22 @@ Parameters and Records
           $(P)$(R)SWMRCbCounter_RBV</td>
         <td>
           longin</td>
+      </tr>
+      <tr>
+        <td>
+          SWMRFlushNow</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Forces an immediate HDF5 flush.</td>
+        <td>
+          HDF5_SWMRFlushNow</td>
+        <td>
+          $(P)$(R)FlushNow</td>
+        <td>
+          busy</td>
       </tr>
       <tr>
         <td align="center" colspan="7,">
