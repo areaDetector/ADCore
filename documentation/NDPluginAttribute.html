@@ -136,7 +136,7 @@
       <tr>
         <td colspan="7,">
           The time series is implemented by loading an instance of the <a href="NDPluginTimeSeries.html">
-            NDPluginTimeSeries</a> for each NDPluginStats plugin, and the time series control
+          NDPluginTimeSeries</a> for each NDPluginStats plugin, and the time series control
           uses records in NDTimeSeries.template. That documentation should be consulted for
           an explanation of these records. The prefix and record name macro for the time-series
           plugin records from NDTimeSeries.template is $(P)$(R)TS:.<br />
@@ -148,7 +148,7 @@
           <br />
           The time-series waveform records for each statistic are defined in NDAttributeN.template.
         </td>
-      </tr>
+     </tr>
       <tr>
         <td>
           NDPluginTimeSeries<br />
@@ -173,6 +173,78 @@
         <td>
           waveform
         </td>
+      </tr>
+      <tr>
+        <td align="center" colspan="7,">
+          <b>Parameter Definitions in NDPluginAttribute.h and EPICS Record Definitions in NDAttributeN.template.
+            There is one of these records for each attribute in the plugin.</b> </td>
+      </tr>
+      <tr>
+        <th>
+          Parameter index variable</th>
+        <th>
+          asyn interface</th>
+        <th>
+          Access</th>
+        <th>
+          Description</th>
+        <th>
+          drvInfo string</th>
+        <th>
+          EPICS record name</th>
+        <th>
+          EPICS record type</th>
+      </tr>
+      <tr>
+        <td>
+          NDPluginAttributeAttrName</td>
+        <td>
+          asynOctet</td>
+        <td>
+          r/w</td>
+        <td>
+          The name of the NDAttribute parameter that we want to publish. This can be modified
+          at runtime.</td>
+        <td>
+          ATTR_ATTRNAME</td>
+        <td>
+          $(P)$(R)AttrName
+          <br />
+          $(P)$(R)AttrName_RBV</td>
+        <td>
+          waveform</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginAttributeVal</td>
+        <td>
+          asynFloat64</td>
+        <td>
+          r/o</td>
+        <td>
+          Attribute value</td>
+        <td>
+          ATTR_VAL</td>
+        <td>
+          $(P)$(R)Value_RBV</td>
+        <td>
+          ai</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginAttributeValSum</td>
+        <td>
+          asynFloat64</td>
+        <td>
+          r/o</td>
+        <td>
+          Sum of the attribute value, since the last reset.</td>
+        <td>
+          ATTR_VAL_SUM</td>
+        <td>
+          $(P)$(R)ValueSum_RBV</td>
+        <td>
+          ai</td>
       </tr>
     </tbody>
   </table>
