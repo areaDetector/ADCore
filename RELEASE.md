@@ -67,8 +67,11 @@ R3-5 (April XXX, 2018)
 * Added support for bitshuffle/lz4 compression, which is independent of Blosc.
 * Added support for lz4 compression, which is independent of bitshuffle and Blosc. 
 * Added FlushNow record to force flushing the datasets to disk in SWMR mode.
+* Changed the enum strings for compression (Blosc, LZ4, BSLZ4) to be compatible with NDPluginCodec.  
+  This may break backwards compatibilty with clients that were settings these using the enum string.
 * Fixed many memory leaks.  The most serious ones were causing ~100kB leak per HDF5 file, which was significant when
   saving many small files.
+* Changes to allow it to run correctly with the unit tests on Windows and Linux.
 ### NDFileHDF5.template
 * Previously the size of the XMLFileName waveform record was set to 1048576.  
   This only needs to be large if using it to transmit the actual XML content, which is not typical.
@@ -78,6 +81,8 @@ R3-5 (April XXX, 2018)
   These contain the values of NDArray.codec and NDArray.compressedSize.
 ### NDPluginBase.template
 * Removed DTYP from the MaxArrayRate_RBV calc record which does not support DTYP.
+### pluginTests
+* Changes to allow unit tests to run on Windows if boost is available.
 
 R3-4 (December 3, 2018)
 ======================
