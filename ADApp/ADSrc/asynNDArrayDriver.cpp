@@ -755,7 +755,7 @@ asynStatus asynNDArrayDriver::decrementQueuedArrayCount()
     return asynSuccess;
 }
 
-
+
 /** This is the constructor for the asynNDArrayDriver class.
   * portName, maxAddr, interfaceMask, interruptMask, asynFlags, autoConnect, priority and stackSize
   * are simply passed to asynPortDriver::asynPortDriver. 

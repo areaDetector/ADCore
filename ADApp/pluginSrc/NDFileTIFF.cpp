@@ -579,7 +579,7 @@ asynStatus NDFileTIFF::closeFile()
     return asynSuccess;
 }
 
-
+
 /** Constructor for NDFileTIFF; all parameters are simply passed to NDPluginFile::NDPluginFile.
   * \param[in] portName The name of the asyn port driver to be created.
   * \param[in] queueSize The number of NDArrays that the input queue for this plugin can hold when 

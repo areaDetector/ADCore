@@ -491,7 +491,7 @@ asynStatus NDFileNetCDF::closeFile()
     return asynSuccess;
 }
 
-
+
 /** Constructor for NDFileNetCDF; parameters are identical to those for NDPluginFile::NDPluginFile,
     and are passed directly to that base class constructor.
   * After calling the base class constructor this method sets NDPluginFile::supportsMultipleArrays=1.
