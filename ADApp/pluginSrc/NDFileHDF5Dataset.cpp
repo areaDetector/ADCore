@@ -405,7 +405,7 @@ asynStatus NDFileHDF5Dataset::flushDataset()
 
 /** Return the requested dimension size.
   * \param[in] index of dimension
-  * \param[out] size of the dimension
+  * \return size of the dimension
   */
 hsize_t NDFileHDF5Dataset::getDim(int index)
 {
@@ -418,7 +418,7 @@ hsize_t NDFileHDF5Dataset::getDim(int index)
 
 /** Return the requested max dimension size.
   * \param[in] index of dimension
-  * \param[out] size of the dimension
+  * \return size of the dimension
   */
 hsize_t NDFileHDF5Dataset::getMaxDim(int index)
 {
@@ -431,7 +431,7 @@ hsize_t NDFileHDF5Dataset::getMaxDim(int index)
 
 /** Return the requested offset size.
   * \param[in] index of offset
-  * \param[out] size of the offset
+  * \return size of the offset
   */
 hsize_t NDFileHDF5Dataset::getOffset(int index)
 {
@@ -444,7 +444,7 @@ hsize_t NDFileHDF5Dataset::getOffset(int index)
 
 /** Return the requested virtual dimension size.
   * \param[in] index of dimension
-  * \param[out] size of the dimension
+  * \return size of the dimension
   */
 hsize_t NDFileHDF5Dataset::getVirtualDim(int index)
 {

@@ -918,6 +918,7 @@ asynStatus NDPluginFile::writeNDArray(asynUser *pasynUser, void *genericPointer)
   * \param[in] priority The thread priority for the asyn port driver thread if ASYN_CANBLOCK is set in asynFlags.
   * \param[in] stackSize The stack size for the asyn port driver thread if ASYN_CANBLOCK is set in asynFlags.
   * \param[in] maxThreads The maximum number of threads this driver is allowed to use. If 0 then 1 will be used.
+  * \param[in] compressionAware true if this file plugin can handle compressed NDArrays.
   */
 NDPluginFile::NDPluginFile(const char *portName, int queueSize, int blockingCallbacks, 
                            const char *NDArrayPort, int NDArrayAddr, int maxAddr,

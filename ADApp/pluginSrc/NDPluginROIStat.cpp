@@ -36,8 +36,8 @@
 
 /**
  * Templated function to calculate statistics on different NDArray data types.
- * \param[in] NDArray The pointer to the NDArray object
- * \param[in] NDROI The pointer to the NDROI object
+ * \param[in] pArray The pointer to the NDArray object
+ * \param[in] pROI The pointer to the NDROI object
  * \return asynStatus
  */
 template <typename epicsType>
@@ -152,11 +152,11 @@ asynStatus NDPluginROIStat::doComputeStatisticsT(NDArray *pArray, NDROI *pROI)
      
 /**
  * Call the templated doComputeStatistics so we can cast correctly. 
- * \param[in] NDArray The pointer to the NDArray object
- * \param[in] NDROI The pointer to the NDROI object
+ * \param[in] pArray The pointer to the NDArray object
+ * \param[in] pROI The pointer to the NDROI object
  * \return asynStatus
  */
-asynStatus NDPluginROIStat::doComputeStatistics(NDArray *pArray, NDROI *pROI)
+asynStatus NDPluginROIStat::doComputeStatistics(NDArray *pArray, NDROI_t *pROI)
 {
   asynStatus status = asynSuccess;
   

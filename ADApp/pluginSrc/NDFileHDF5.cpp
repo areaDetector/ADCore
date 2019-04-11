@@ -2142,7 +2142,7 @@ int NDFileHDF5::verifyLayoutXMLFile()
 
 /** Return the requested dimension size.
   * \param[in] index of dimension
-  * \param[out] size of the dimension
+  * \return size of the dimension
   */
 hsize_t NDFileHDF5::getDim(int index)
 {
@@ -2155,7 +2155,7 @@ hsize_t NDFileHDF5::getDim(int index)
 
 /** Return the requested max dimension size.
   * \param[in] index of dimension
-  * \param[out] size of the dimension
+  * \return size of the dimension
   */
 hsize_t NDFileHDF5::getMaxDim(int index)
 {
@@ -2168,7 +2168,7 @@ hsize_t NDFileHDF5::getMaxDim(int index)
 
 /** Return the requested chunk dimension size.
   * \param[in] index of dimension
-  * \param[out] size of the dimension
+  * \return size of the dimension
   */
 hsize_t NDFileHDF5::getChunkDim(int index)
 {
@@ -2181,7 +2181,7 @@ hsize_t NDFileHDF5::getChunkDim(int index)
 
 /** Return the requested offset size.
   * \param[in] index of offset
-  * \param[out] size of the offset
+  * \return size of the offset
   */
 hsize_t NDFileHDF5::getOffset(int index)
 {
@@ -2194,7 +2194,7 @@ hsize_t NDFileHDF5::getOffset(int index)
 
 /** Return the requested virtual dimension size.
   * \param[in] index of dimension
-  * \param[out] size of the dimension
+  * \return size of the dimension
   */
 hsize_t NDFileHDF5::getVirtualDim(int index)
 {
@@ -2206,7 +2206,7 @@ hsize_t NDFileHDF5::getVirtualDim(int index)
 }
 
 /** Set the multi frame parameter.
-  * \param[in] boolean to set the writer frame mode
+  * \param[in] multi boolean to set the writer frame mode
   */
 void NDFileHDF5::setMultiFrameFile(bool multi)
 {

@@ -181,7 +181,7 @@ private:
 
     /**
      * \brief Sets data from the attribute list to the cache.
-     *
+     * \param uid UniqueId of this NDArray
      * \param attr_list Attribute list containing the data.
      */
     asynStatus push_data(epicsInt32 uid, NDAttributeList& attr_list);
