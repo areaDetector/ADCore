@@ -102,7 +102,7 @@ public:
     int          release();
     int          getReferenceCount() const {return referenceCount;}
     int          report(FILE *fp, int details);
-    friend class NDArrayPool;
+    //friend class NDArrayPool;
     
 private:
     ELLNODE      node;              /**< This must come first because ELLNODE must have the same address as NDArray object */
