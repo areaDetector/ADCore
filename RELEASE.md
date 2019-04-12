@@ -20,7 +20,7 @@ files respectively, in the configure/ directory of the appropriate release of th
 Release Notes
 =============
 
-R3-5 (April XXX, 2018)
+R3-5 (April 12, 2018)
 ======================
 ### Documentation
   * Converted documentation from raw HTML documentation to .rst files using Sphinx.
