@@ -95,7 +95,7 @@ files respectively, in the configure/ directory of the appropriate release of th
 * Changes to allow unit tests to run on Windows if boost is available.
 
 
-## R3-4 (December 3, 2018)
+## __R3-4 (December 3, 2018)__
 
 ### ADSrc/asynNDArrayDriver.h, asynNDArrayDriver.cpp
 * Fixed a serious problem caused by failure to lock the correct mutex when plugins called 
@@ -169,7 +169,7 @@ files respectively, in the configure/ directory of the appropriate release of th
 * Added optional lines for ffmpegServer (commented out).  
   
 
-## R3-3-2 (July 9, 2018)
+## __R3-3-2 (July 9, 2018)__
 
 ### ADApp/commonDriverMakefile
 * Changed so that qsrv dbd and lib files are only included if WITH_QSRV=YES.
@@ -178,7 +178,7 @@ files respectively, in the configure/ directory of the appropriate release of th
   as long as WITH_QSRV=NO.
 
 
-## R3-3-1 (July 1, 2018)
+## __R3-3-1 (July 1, 2018)__
 
 ### ADApp/commonDriverMakefile
 * Added qsrv dbd and lib files so that areaDetector IOCs can serve normal EPICS PVs using pvAccess.
@@ -206,7 +206,7 @@ files respectively, in the configure/ directory of the appropriate release of th
   (or prior releases) of ADCore or other repositories.
 
 
-## R3-3 (June 27, 2018)
+## __R3-3 (June 27, 2018)__
 
 ### NDArrayPool design changes
 * Previously each plugin used its own NDArrayPool. This design had the problem that it was not really possible 
@@ -341,7 +341,7 @@ files respectively, in the configure/ directory of the appropriate release of th
   creating an NDArrayPool.
 
 
-## R3-2 (January 28, 2018)
+## __R3-2 (January 28, 2018)__
 
 ### NDPluginStats
 * Previously the X axis for the histogram plot was just the histogram bin number.
@@ -452,7 +452,7 @@ files respectively, in the configure/ directory of the appropriate release of th
   release, where the V4 name is no longer used.
 
 
-## R3-1 (July 3, 2017)
+## __R3-1 (July 3, 2017)__
 
 ### GraphicsMagick
 * Changes to commonDriverMakefile and commonLibraryMakefile so they work GraphicsMagick both from
@@ -482,7 +482,7 @@ files respectively, in the configure/ directory of the appropriate release of th
 * Include ADCoreVersion.h from this file so drivers don't need to explicitly include it.
 
 
-## R3-0 (May 5, 2017)
+## __R3-0 (May 5, 2017)__
 
 ### Requirements
 * This release requires EPICS base 3.14.12.4 or higher because it uses the CFG rules which were fixed
@@ -649,7 +649,7 @@ files respectively, in the configure/ directory of the appropriate release of th
   ArrayCounter rather than UniqueId.
   
 
-## R2-6 (February 19, 2017)
+## __R2-6 (February 19, 2017)__
 
 ### NDPluginDriver, NDPluginBase.template, NDPluginBase.adl
 * If blockCallbacks is non-zero in constructor then it no longer creates a processing thread.
@@ -811,7 +811,7 @@ files respectively, in the configure/ directory of the appropriate release of th
 * This release requires asyn R4-31 or later because it uses new features in asynPortDriver.
 
 
-## R2-5 (October 28, 2016)
+## __R2-5 (October 28, 2016)__
 
 ### ADSupport
 * Added a new repository ADSupport to areaDetector.  This module contains the source code for all 3rd party
@@ -992,7 +992,7 @@ files respectively, in the configure/ directory of the appropriate release of th
   is a useful enhancement because the ImageJ Dynamic Profiler can then be used to plot the 1-D array.
 
 
-## R2-4 (September 21, 2015)
+## __R2-4 (September 21, 2015)__
 
 ### Removed simDetector and iocs directory. 
 Previously the simDetector was part of ADCore, and there was an iocs directory that built the simDetector 
@@ -1041,7 +1041,7 @@ but before ADExample.
   without some conflicts that could previously occur.
 
 
-## R2-3 (July 23, 2015)
+## __R2-3 (July 23, 2015)__
 
 ### devIocStats and alive modules
 * The example iocs in ADCore and other drivers can now optionally be built with the 
@@ -1081,7 +1081,7 @@ but before ADExample.
 * Optionally include DEVIOCSTATS and ALIVE libraries and dbd files if these are defined.
 
 
-## R2-2 (March 23, 2015)
+## __R2-2 (March 23, 2015)__
 
 ### Compatibility
 * This release requires at least R4-26 of asyn because it uses the info(asyn:READOUT,"1") tag
@@ -1222,7 +1222,7 @@ but before ADExample.
   on libCom and asyn.
     
     
-## R2-1 (October 17, 2014)
+## __R2-1 (October 17, 2014)__
 
 ### NDPluginFile
 * Added new optional feature "LazyOpen" which, when enabled and in "Stream" mode, will defer 
@@ -1261,7 +1261,7 @@ but before ADExample.
 * Added support for cygwin32 architecture.  This did not work in R2-0.
 
 
-## R2-0 (April 4, 2014)
+## __R2-0 (April 4, 2014)__
 
 ### General
 * Moved the repository to [Github](https://github.com/areaDetector/ADCore).
@@ -1370,6 +1370,6 @@ epicsTimeStamp epicsTS;  /**> The epicsTimeStamp; this is set with
 * New plugin that allows trending and publishing an NDArray attribute over channel access.
 
 
-## R1-9-1 and earlier
+## __R1-9-1 and earlier__
 Release notes are part of the
 [areaDetector Release Notes](https://cars.uchicago.edu/software/epics/areaDetectorReleaseNotes.html).
