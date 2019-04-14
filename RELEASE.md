@@ -1,6 +1,9 @@
 ADCore Releases
 ===============
 
+Introduction
+------------
+
 The latest untagged master branch can be obtained at
 https://github.com/areaDetector/ADCore.
 
@@ -17,11 +20,10 @@ files respectively, in the configure/ directory of the appropriate release of th
 [top-level areaDetector](https://github.com/areaDetector/areaDetector) repository.
 
 
-Release Notes
-=============
+Versions
+--------
 
-R3-5 (April 12, 2018)
-======================
+## R3-5 (April 12, 2018)
 ### Documentation
   * Converted documentation from raw HTML documentation to .rst files using Sphinx.
   * Added a new docs/ directory which replaces the old documentation directory.
@@ -84,8 +86,7 @@ R3-5 (April 12, 2018)
 ### pluginTests
 * Changes to allow unit tests to run on Windows if boost is available.
 
-R3-4 (December 3, 2018)
-======================
+## R3-4 (December 3, 2018)
 ### ADSrc/asynNDArrayDriver.h, asynNDArrayDriver.cpp
 * Fixed a serious problem caused by failure to lock the correct mutex when plugins called 
   incrementQueuedArrayCount() and decrementQueuedArrayCount().
@@ -150,16 +151,14 @@ R3-4 (December 3, 2018)
 ### EXAMPLE_commonPlugins.cmd
 * Added optional lines for ffmpegServer (commented out).  
   
-R3-3-2 (July 9, 2018)
-======================
+## R3-3-2 (July 9, 2018)
 ### ADApp/commonDriverMakefile
 * Changed so that qsrv dbd and lib files are only included if WITH_QSRV=YES.
   Previously they were included if WITH_PVA=YES.  However base 3.14.12 supports
   WITH_PVA but does not support qsrv.  This allows WITH_PVA=YES to be used on 3.14.12
   as long as WITH_QSRV=NO.
 
-R3-3-1 (July 1, 2018)
-======================
+## R3-3-1 (July 1, 2018)
 ### ADApp/commonDriverMakefile
 * Added qsrv dbd and lib files so that areaDetector IOCs can serve normal EPICS PVs using pvAccess.
   Thanks to Pete Jemian for this.
@@ -169,13 +168,13 @@ R3-3-1 (July 1, 2018)
 ### ADApp/ADSrc/Makefile, ADApp/pluginSrc/Makefile, ADApp/pluginTests/Makefile
 * Changed USR_INCLUDES definitions for all user-defined include directories,
   (for example XML_INCLUDE) from this:
-  ```
+  <pre>
   USR_INCLUDES += -I$(XML2_INCLUDE)
-  ```
+  </pre>
   to this:
-  ```
+  <pre>
   USR_INCLUDES += $(addprefix -I, $(XML2_INCLUDE))
-  ```
+  </pre>
   This allows XML2_INCLUDE to contain multiple directory paths. 
   
   Note that these user-defined include directories must __not__ contain the -I in their definitions.  
@@ -183,8 +182,7 @@ R3-3-1 (July 1, 2018)
   the -I flags in them, and these would not work correctly with the Makefiles in this release 
   (or prior releases) of ADCore or other repositories.
 
-R3-3 (June 27, 2018)
-======================
+## R3-3 (June 27, 2018)
 ### NDArrayPool design changes
 * Previously each plugin used its own NDArrayPool. This design had the problem that it was not really possible 
   to enforce the maxMemory limits for the driver and plugin chain.  It is the sum of the memory use by the driver 
@@ -305,8 +303,7 @@ R3-3 (June 27, 2018)
 * All unit tests were changed to create an asynNDArrayDriver and use the NDArrayPool from that, rather than directly
   creating an NDArrayPool.
 
-R3-2 (January 28, 2018)
-======================
+## R3-2 (January 28, 2018)
 ### NDPluginStats
 * Previously the X axis for the histogram plot was just the histogram bin number.
   Added code to compute an array of intensity values and a new HistHistogramX_RBV waveform record which
@@ -368,9 +365,9 @@ R3-2 (January 28, 2018)
   - ADL2EDL is the path to adl2edl for edm
   - ADL2UI is the path to adl2ui for caQtDM
   - CSS is the path to css.  It must be a recent version that supports the command 
-```
+<pre>
    css -nosplash -application org.csstudio.opibuilder.adl2boy.application
-```
+</pre>
 * The edl/autoconvert, ui/autoconvert, and opi/autoconvert directories contain new conversions of all of the medm files.
 * The edl, ui, and opi directories are intended to contain manually tweaked versions of the files.  Many of the
   files in these directories have been removed, either because they were actually old autoconverted files, or because
@@ -400,8 +397,7 @@ R3-2 (January 28, 2018)
 * Changed the Makefile variable from WITH_EPICS_V4 to WITH_PVA.  This is more consistent with the EPICS 7
   release, where the V4 name is no longer used.
 
-R3-1 (July 3, 2017)
-======================
+## R3-1 (July 3, 2017)
 ### GraphicsMagick
 * Changes to commonDriverMakefile and commonLibraryMakefile so they work GraphicsMagick both from
   its recent addition to ADSupport R1-3 (GRAPHICSMAGICK_EXTERNAL=NO) and as a
@@ -425,8 +421,7 @@ R3-1 (July 3, 2017)
 * Include ADCoreVersion.h from this file so drivers don't need to explicitly include it.
 
 
-R3-0 (May 5, 2017)
-======================
+## R3-0 (May 5, 2017)
 ### Requirements
 * This release requires EPICS base 3.14.12.4 or higher because it uses the CFG rules which were fixed
   in that release.
@@ -591,9 +586,7 @@ R3-0 (May 5, 2017)
   
 
 
-R2-6 (February 19, 2017)
-========================
-
+## R2-6 (February 19, 2017)
 ### NDPluginDriver, NDPluginBase.template, NDPluginBase.adl
 * If blockCallbacks is non-zero in constructor then it no longer creates a processing thread.
   This saves resources if the plugin will only be used in blocking mode.  If the plugin is changed
@@ -686,11 +679,11 @@ R2-6 (February 19, 2017)
   Some drivers and plugins may need to limit the size, but they should do this with local definitions.
   The following files were changed to use local definitions, with these symbolic names and values:
 
-  | File                           | Symbolic name             | Value |
-  | ------------------------------ | ------------------------- | ----- |
-  | NDFileHDF5AttributeDataset.cpp | MAX_ATTRIBUTE_STRING_SIZE | 256   |
-  | NDFileNetCDF.cpp               | MAX_ATTRIBUTE_STRING_SIZE | 256   |
-  | NDFileTIFF.cpp                 | STRING_BUFFER_SIZE        | 2048  |
+| File                           | Symbolic name             | Value |
+| ------------------------------ | ------------------------- | ----- |
+| NDFileHDF5AttributeDataset.cpp | MAX_ATTRIBUTE_STRING_SIZE | 256   |
+| NDFileNetCDF.cpp               | MAX_ATTRIBUTE_STRING_SIZE | 256   |
+| NDFileTIFF.cpp                 | STRING_BUFFER_SIZE        | 2048  |
 
 ### paramAttribute
 * Changed to read string parameters using the asynPortDriver::getStringParam(int index, std::string&amp;) 
@@ -754,8 +747,7 @@ R2-6 (February 19, 2017)
 * This release requires asyn R4-31 or later because it uses new features in asynPortDriver.
 
 
-R2-5 (October 28, 2016)
-========================
+## R2-5 (October 28, 2016)
 ### ADSupport
 * Added a new repository ADSupport to areaDetector.  This module contains the source code for all 3rd party
   libraries used by ADCore.  The libraries that were previously built in ADCore have been moved
@@ -936,8 +928,7 @@ R2-5 (October 28, 2016)
   is a useful enhancement because the ImageJ Dynamic Profiler can then be used to plot the 1-D array.
 
 
-R2-4 (September 21, 2015)
-========================
+## R2-4 (September 21, 2015)
 ### Removed simDetector and iocs directory. 
 Previously the simDetector was part of ADCore, and there was an iocs directory that built the simDetector 
 application both as part of an IOC and independent of an IOC. This had 2 disadvantages:
@@ -985,8 +976,7 @@ but before ADExample.
   without some conflicts that could previously occur.
 
 
-R2-3 (July 23, 2015)
-========================
+## R2-3 (July 23, 2015)
 ### devIocStats and alive modules
 * The example iocs in ADCore and other drivers can now optionally be built with the 
   devIocStats module, which provides very useful resource utilization information for the IOC.
@@ -1025,8 +1015,7 @@ R2-3 (July 23, 2015)
 * Optionally include DEVIOCSTATS and ALIVE libraries and dbd files if these are defined.
 
 
-R2-2 (March 23, 2015)
-========================
+## R2-2 (March 23, 2015)
 ### Compatibility
 * This release requires at least R4-26 of asyn because it uses the info(asyn:READOUT,"1") tag
   in databases to have output records update on driver callbacks.
@@ -1040,12 +1029,12 @@ R2-2 (March 23, 2015)
   - When loading NDStdArrays.template NDARRAY_PORT must be specified.  NDPluginBase should no longer be loaded, 
     this is now done automatically via an include in NDStdArrays.template.
   - Example lines:
-  ```
-   epicsEnvSet("CBUFFS", "500")
-   epicsEnvSet("EPICS_DB_INCLUDE_PATH", "$(ADCORE)/db")
-   dbLoadRecords("NDStdArrays.template", "P=$(PREFIX),R=image1:,PORT=Image1,ADDR=0,
+<pre>
+    epicsEnvSet("CBUFFS", "500")
+    epicsEnvSet("EPICS_DB_INCLUDE_PATH", "$(ADCORE)/db")
+    dbLoadRecords("NDStdArrays.template", "P=$(PREFIX),R=image1:,PORT=Image1,ADDR=0,
                  TIMEOUT=1,NDARRAY_PORT=$(PORT),TYPE=Int8,FTVL=UCHAR,NELEMENTS=3145728")
-  ```
+</pre>
   
 ### NDPluginROIStat
 * New plugin that supports multiple regions-of-interest with simple statistics on each.
@@ -1133,7 +1122,7 @@ R2-2 (March 23, 2015)
   asynNDArrayDriver parameters except those in NDFile.template.  Moved records from ADBase.template
   and NDPluginBase.template into this new file.  Made all template files "include" the files from the
   parent class, rather than calling dbLoadRecords for each template file.  This simplifies commonPlugins.cmd.
-  A similar include mechanism was applied to the *_settings.req files, which simplifies commonPlugin_settings.req.
+  A similar include mechanism was applied to the `*_settings.req` files, which simplifies commonPlugin_settings.req.
 * Added a new record, $(P)$(R)ADCoreVersion_RBV, that is loaded for all drivers and plugins. 
   This record contains the ADCore version number. This can be used by Channel Access clients to alter their
   behavior depending on the version of ADCore that was used to build this driver or plugin.
@@ -1166,8 +1155,7 @@ R2-2 (March 23, 2015)
   on libCom and asyn.
     
     
-R2-1 (October 17, 2014)
-=======================
+## R2-1 (October 17, 2014)
 ### NDPluginFile
 * Added new optional feature "LazyOpen" which, when enabled and in "Stream" mode, will defer 
   file creation until the first frame arrives in the plugin. This removes the need to initialise
@@ -1205,8 +1193,7 @@ R2-1 (October 17, 2014)
 * Added support for cygwin32 architecture.  This did not work in R2-0.
 
 
-R2-0 (April 4, 2014)
-====================
+## R2-0 (April 4, 2014)
 * Moved the repository to [Github](https://github.com/areaDetector/ADCore).
 * Re-organized the directory structure to separate the driver library from the example 
   simDetector IOC application.
@@ -1218,16 +1205,16 @@ R2-0 (April 4, 2014)
 ### NDArray and asynNDArrayDriver
 * Split NDArray.h and NDArray.cpp into separate files for each class: 
   NDArray, NDAttribute, NDAttributeList, and NDArrayPool.
-* Changed all report() methods to have a FILE *fp argument so output can go to a file. 
+* Changed all report() methods to have a `FILE *fp` argument so output can go to a file. 
 * Added a new field, epicsTS, to the NDArray class. The existing timeStamp field is a double,
   which is convenient because it can be easily displayed and interpreted.  However, it cannot
   preserve all of the information in an epicsTimeStamp, which this new field does.
   This is the definition of the new epicsTS field.
-```
-epicsTimeStamp epicsTS;  /**< The epicsTimeStamp; this is set with
-                           * pasynManager->updateTimeStamp(), 
-                           * and can come from a user-defined timestamp source. */
-```
+<pre>
+epicsTimeStamp epicsTS;  /**> The epicsTimeStamp; this is set with
+                          * pasynManager->updateTimeStamp(), 
+                          * and can come from a user-defined timestamp source. */
+</pre>
 * Added 2 new asynInt32 parameters to the asynNDArrayDriver class.
     - NDEpicsTSSec contains NDArray.epicsTS.secPastEpoch
     - NDEpicsTSNsec contains NDArray.epicsTS.nsec
@@ -1299,7 +1286,7 @@ epicsTimeStamp epicsTS;  /**< The epicsTimeStamp; this is set with
   format does not support 64-bit integers.
 
 ### NDFileTIFF. 
-* Added 3 new TIFF tags to each TIFF file:</p>
+* Added 3 new TIFF tags to each TIFF file:
   - Tag=65001, field name=NDUniqueId, field_type=TIFF_LONG, value=NDArray.uniqueId.
   - Tag=65002, field name=EPICSTSSec, field_type=TIFF_LONG, value=NDArray.epicsTS.secPastEpoch.
   - Tag=65003, field name=EPICSTSNsec, field_type=TIFF_LONG, value=NDArray.epicsTS.nsec.
@@ -1313,7 +1300,6 @@ epicsTimeStamp epicsTS;  /**< The epicsTimeStamp; this is set with
 * New plugin that allows trending and publishing an NDArray attribute over channel access.
 
 
-R1-9-1 and earlier
-==================
+## R1-9-1 and earlier
 Release notes are part of the
 [areaDetector Release Notes](https://cars.uchicago.edu/software/epics/areaDetectorReleaseNotes.html).
