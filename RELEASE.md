@@ -24,6 +24,7 @@ Versions
 --------
 
 ## R3-5 (April 12, 2018)
+
 ### Documentation
   * Converted documentation from raw HTML documentation to .rst files using Sphinx.
   * Added a new docs/ directory which replaces the old documentation directory.
@@ -33,15 +34,18 @@ Versions
     html in the files.
   * The new documentation is hosted at [areaDetector.github.io](https://areaDetector.github.io).
   * Many thanks to Stuart Wilkins for this major effort.
+
 ### ADDriver, asynNDArrayDriver
 * Fixed a race condition in R3-4 with NumQueuedArrays and AcquireBusy.
   This caused AcquireBusy to sometimes go to Done before the plugins were done processing.
   A typical symptom was for successive points in a scan to have the same values from the statistics plugin,
   because the detector did not wait for the plugin to post a new value before it said it was done.
   The logic for this was moved from the database (ADBase.template) to the driver (ADDriver.cpp).
+
 ### NDArray
 * Changed the codec member from a std::string to a structure that contains not just the name of the codec
   but also the compression level, shuffle parameter, etc.
+
 ### NDPluginCodec
 * Added support for the lz4 and bitshuffle/lz4 codecs.  
   These are the compressors that the Eiger uses, so compressed NDArrays from ADEiger can
@@ -51,6 +55,7 @@ Versions
 * Fixed a problem with NDPluginCodec.template for the Blosc codec.  
   The Bit and Byte shuffle values in the BloscShuffle records were swapped so when Bit shuffle was selected
   it was actually doing Byte shuffle and vice versa.  
+
 ### NDPluginAttribute
 * Changed the time series support to use NDPluginTimeSeries.  This is very similar to the change that
   was made in R3-3 for NDPluginStats.  
@@ -59,9 +64,11 @@ Versions
   Thanks to Hinko Kocevar for this.
 * EXAMPLE_commonPlugins.cmd has changed to load an NDPluginTimeSeries plugin and database for the NDPluginAttribute plugin,
   so the local commonPlugins.cmd file must be updated.
+
 ### commonDriverMakefile
 * Added support for bitshuffle.  This was added in ADSupport R1-7.
   To use it set WITH_BITSHUFFLE=YES in areaDetector/configure/CONFIG_SITE.local.
+
 ### NDFileHDF5
 * Added support for Direct Chunk Write.  This allows the plugin to directly write compressed NDArrays from
   NDPluginCodec or from the detector driver (e.g. ADEiger).
@@ -74,19 +81,25 @@ Versions
 * Fixed many memory leaks.  The most serious ones were causing ~100kB leak per HDF5 file, which was significant when
   saving many small files.
 * Changes to allow it to run correctly with the unit tests on Windows and Linux.
+
 ### NDFileHDF5.template
 * Previously the size of the XMLFileName waveform record was set to 1048576.  
   This only needs to be large if using it to transmit the actual XML content, which is not typical.
   Changed the size to be controlled by the macro XMLSIZE with a default of 2048.
+
 ### asynNDArrayDriver, NDPluginDriver, NDArrayBase.template, NDPluginBaseFull.adl
 * Added support for new parameters NDCodec and NDCompressedSize and new records Codec_RBV and CompressedSize_RBV.
   These contain the values of NDArray.codec and NDArray.compressedSize.
+
 ### NDPluginBase.template
 * Removed DTYP from the MaxArrayRate_RBV calc record which does not support DTYP.
+
 ### pluginTests
 * Changes to allow unit tests to run on Windows if boost is available.
 
+
 ## R3-4 (December 3, 2018)
+
 ### ADSrc/asynNDArrayDriver.h, asynNDArrayDriver.cpp
 * Fixed a serious problem caused by failure to lock the correct mutex when plugins called 
   incrementQueuedArrayCount() and decrementQueuedArrayCount().
@@ -95,6 +108,7 @@ Versions
   This problem was introduced in R3-3.
 * Fixed a race condition in the asynNDArrayDriver destructor.
   This was causing occasional failures in the Travis unit tests.
+
 ### NDPluginCodec
 * New plugin written by Bruno Martins to support compressing and decompressing NDArrays.
 * Compressors currently supported are JPEG (lossy) and Blosc (lossless).
@@ -108,6 +122,7 @@ Versions
   This can greatly reduce network bandwidth usage when the IOC and viewer are on different machines.  
 * We also plan to enhance the HDF5 file plugin to support writing NDArrays that are already compressed, 
   using the Direct Chunk Write feature. This should should improve performance.
+
 ### NDPluginDriver, NDPluginPva, NDPluginStdArrays
 * Added new base class parameter and record MaxByteRate.
   This allows control of the maximum data output rate in bytes/s. 
@@ -134,13 +149,17 @@ Versions
   It caused ImageJ update rates to be slow, because the PVA output then comes in bursts,
   and some arrays are dropped either in the pvAccess server or client (not sure which).
   Now if the array is in the correct order it is output immediately.
+
 ### NDPluginCircularBuff
 * Added new FlushOnSoftTrg record that controls whether the pre-buffer is flushed OnNewArray (previous behavior, default),
   or Immediately when a software trigger is received.  Thanks to Slava Isaev for this.
+
 ### NDFileTIFF
 * Allow saving NDArrays with a single dimension.
+
 ### NDPluginStats
 * Set NDArray uniqueId, timeStamp, and epicsTS fields for output time series NDArrays.
+
 ### OPI files
 * ADTop.adl
   * Added ADVimba and GenICam
@@ -148,23 +167,30 @@ Versions
   * Changed X axis from point number to time.
 * NDPluginBase.adl
   * Fixed text widget type to string
+
 ### EXAMPLE_commonPlugins.cmd
 * Added optional lines for ffmpegServer (commented out).  
   
+
 ## R3-3-2 (July 9, 2018)
+
 ### ADApp/commonDriverMakefile
 * Changed so that qsrv dbd and lib files are only included if WITH_QSRV=YES.
   Previously they were included if WITH_PVA=YES.  However base 3.14.12 supports
   WITH_PVA but does not support qsrv.  This allows WITH_PVA=YES to be used on 3.14.12
   as long as WITH_QSRV=NO.
 
+
 ## R3-3-1 (July 1, 2018)
+
 ### ADApp/commonDriverMakefile
 * Added qsrv dbd and lib files so that areaDetector IOCs can serve normal EPICS PVs using pvAccess.
   Thanks to Pete Jemian for this.
+
 ### ADApp/ADSrc
 * Changes in include statements in several files to eliminate warning when building dynamically with
   Visual Studio.
+
 ### ADApp/ADSrc/Makefile, ADApp/pluginSrc/Makefile, ADApp/pluginTests/Makefile
 * Changed USR_INCLUDES definitions for all user-defined include directories,
   (for example XML_INCLUDE) from this:
@@ -182,7 +208,9 @@ Versions
   the -I flags in them, and these would not work correctly with the Makefiles in this release 
   (or prior releases) of ADCore or other repositories.
 
+
 ## R3-3 (June 27, 2018)
+
 ### NDArrayPool design changes
 * Previously each plugin used its own NDArrayPool. This design had the problem that it was not really possible 
   to enforce the maxMemory limits for the driver and plugin chain.  It is the sum of the memory use by the driver 
@@ -219,6 +247,7 @@ Versions
   implementation of this.
 * These changes are generally backwards compatible. However, startup scripts that set a non-zero value for 
   maxMemory in the driver may need to increase this value because all NDArrays are now allocated from this NDArrayPool.
+
 ### Queued array counting and waiting for plugins to complete
 * Previously if one wanted to wait for plugins to complete before the driver indicated that acquisition was complete
   then one needed to set CallbacksBlock=Yes for each plugin in the chain.
@@ -243,22 +272,27 @@ Versions
 * Driver screens typically do not use the ADCollect sub-screen, so they need to be individually edited to contain these PVs.  
   They are not yet all complete.
 * With this new design it should rarely be necessary to change plugins to use CallbacksBlock=Yes.
+
 ### NDArray, NDArrayPool
 * Changes to allow the NDArray class to be inherited by derived classes.  Thanks to Sinisa Veseli for this. 
 * Added the epicsTS (EPICS time stamp) field to the report() output. 
   Previously the timeStamp field was in the report, but not the epicsTS field was not.
 * NDArrayPool::report() now prints a summary of the freeList entries if details>5 and shows the details
   of each array in the freeList if details>10.  This information can be printed with "asynReport 6 driverName" for example.
+
 ### NDPluginPva
 * Added call to NDPluginDriver::endProcessCallbacks at the end of processCallbacks().
   This will do NDArray callbacks if enabled and will copy the last NDArray to pArrays[0] for asynReport.
+
 ### ntndArrayConverter.cpp
 * Added conversion of the NDArray.timeStamp and NDArray.epicsTS fields from EPICS epoch (Jan. 1 1990) to
   Posix epoch (Jan. 1, 1970). Needed because NDArrays use EPICS epoch but pvAccess uses Posix epoch and the
   timestamps shown by pvGet were incorrect for the NTNDArrays.
+
 ### NDPluginFile
 * Fixes to readFileBase() so that the ReadFile PV actually works.  This has now been implemented for NDFileTIFF.
 * Return an error if Capture mode is enabled in NDFileModeSingle.
+
 ### NDFileTIFF
 * Added support for readFile() so it is now possible to read a TIFF file into an NDArray using this plugin and 
   do callbacks to downstream plugins.  
@@ -270,6 +304,7 @@ Versions
     rather than the numeric data types the attributes may have originally used.
   - One motivation for adding this capability is for the NDPluginProcess plugin to be able to read TIFF files
     for the background and flat field images, rather than needing to collect them each time it is used.
+
 ### NDPluginProcess
 * Load a dedicated TIFF plugin for the NDPluginProcess plugin in commonPlugins.cmd.  This TIFF plugin is used for reading
   background or flatfield TIFF files.
@@ -282,6 +317,7 @@ Versions
   6. Restores the previous NDArrayPort from the temporary location.
 * Add an sseq record to load the flatfile from a TIFF file.  This executes the same steps as for the background
   above, except that in step 5 it loads the NDArray into the flatfile image.
+
 ### NDPluginStats
 * Changed the time series to use NDPluginTimeSeries, rather than having the time series logic in NDPluginStats.
   This reduced the code by 240 lines, while adding the capability of running in Circular Buffer mode, 
@@ -291,24 +327,31 @@ Versions
   require changes to clients that were controlling time series acquisitions.
 * EXAMPLE_commonPlugins.cmd has changed to load an NDPluginTimeSeries plugin and database for each NDPluginStats plugin,
   so the local commonPlugins.cmd file must be updated.
+
 ### ADApp/Db/
 * Added default ADDR=0 and TIMEOUT=1 to many template files.  This means these values do not need to be specified
   when loading these databases if these defaults are acceptable, which is often the case.
+
 ### ADApp/op/adl
 * Fixes to a number of .adl files to set text widget size and alignment, etc. to improve conversion to .opi and .ui files.
+
 ### ADApp/op/edl/autoconvert
 * Major improvement in quality of edm screens (colors, fonts, etc.) thanks to Bruce Hill.
+
 ### ADApp/pluginTests
 * Added a new unit test, test_NDArrayPool to test NDArrayPool::alloc().
 * All unit tests were changed to create an asynNDArrayDriver and use the NDArrayPool from that, rather than directly
   creating an NDArrayPool.
 
+
 ## R3-2 (January 28, 2018)
+
 ### NDPluginStats
 * Previously the X axis for the histogram plot was just the histogram bin number.
   Added code to compute an array of intensity values and a new HistHistogramX_RBV waveform record which
   contains the intensity values for the X axis of the histogram plot.
   This uses a new NDPlotXY.adl medm screen which accepts both X and Y waveform records to plot.
+
 ### NDPluginFile
 * Changed the way that capture mode is implemented.
   Previously it created NumCapture NDArrays using the "new" operator.
@@ -326,6 +369,7 @@ Versions
   The new scheme is much cleaner.  It will require setting the memory and array limits
   for the NDArrayPool to be large enough to buffer NumCapture frames, whereas previously
   this would not have been required.  It may thus require some changes to startup scripts.
+
 ### NDFileHDF5
 * Added support for blosc compression library.  The compressors include blosclz, lz4, lz4hc, snappy, zlib, and zstd.
   There is also support for ByteSuffle and BitShuffle.
@@ -333,6 +377,7 @@ Versions
   The build flags WITH_BLOSC, BLOSC_EXTERNAL, and BLOSC_LIB have been added, similar to other optional libraries.
   Thanks to Xiaoqiang Wang for this addition.
 * Changed all output records in NDFileHDF.template to have PINI=YES.  This is how other plugins all work.
+
 ### NDPluginOverlay
 * Improved the behavior when changing the size of an overlay. Previously the Position was always preserved when 
   the Size was changed. This was not the desired behavior when the user had set the Center rather than Position.
@@ -346,10 +391,12 @@ Versions
   This was causing the location to change when setting the same center or position.
 * Changed the cross overlay so that it is drawn symmetrically with the same number of pixels on each side of the center.
   This means the actual size is 2*Size/2 + 1, which will be Size+1 if Size is even.
+
 ### asynNDArrayDriver
 * Added a second checkPath() method which takes an std::string argument for the path to check.
   It adds the  appropriate terminator if not present, but does not set the NDFilePath parameter.
   This new method is now used by the existing checkPath() method, but can also be used by other code.
+
 ### Operator displays (medm, edm, caQtDM, CSS-BOY)
 * Fixed medm files in several ways:
   - Text graphics widget sizes are set to the actual size of the text.  medm will display text outside the widget if it
@@ -372,59 +419,78 @@ Versions
 * The edl, ui, and opi directories are intended to contain manually tweaked versions of the files.  Many of the
   files in these directories have been removed, either because they were actually old autoconverted files, or because
   they are obsolete and the new autoconverted files are better.
+
 ### commonDriverMakefile
 * The variable PROD_NAME has been replaced with DBD_NAME.  This makes it clear that this variable is used to
   specify the name of the application DBD file.  It allows different architectures to use different DBD file 
   names.  For backwards compatibility if PROD_NAME is specified and DBD_NAME is not then DBD_NAME will be
   set to PROD_NAME.
+
 ### NDFileTIFF
 * Improved asynTrace debugging.
+
 ### NDPluginAttrPlot
 * Bug fix, start the plugin in the constructor.
+
 ### NDPluginROIStat
 * Fixed array delete at end of processCallbacks().
+
 ### ntndArrayConvert.cpp
 * Minor fix to work with EPICS 7.
+
 ### NDPluginDriver
 * Force queueSize to be >=1 when creating queues in createCallbackThreads.  Was crashing when autosave value was 0.
+
 ### NDScatter.template
 * Removed SCAN=I/O Intr for an output record which was a mistake and could cause crashes.
+
 ### pluginTests/Makefile
 * Fixed errors with extra parentheses that were preventing include USR_INCLUDES directories from being added.
+
 ### XML_schema/NDAttributes.xsd
 * Removed the "when" attribute, this is not supported in NDAttributes XML files, only in NDFileHDF5 layout XML files.
+
 ### EPICS V4 (pvAccess)
 * Changed the Makefile variable from WITH_EPICS_V4 to WITH_PVA.  This is more consistent with the EPICS 7
   release, where the V4 name is no longer used.
 
+
 ## R3-1 (July 3, 2017)
+
 ### GraphicsMagick
 * Changes to commonDriverMakefile and commonLibraryMakefile so they work GraphicsMagick both from
   its recent addition to ADSupport R1-3 (GRAPHICSMAGICK_EXTERNAL=NO) and as a
   system library (GRAPHICSMAGIC_EXTERNAL=YES).
 * Added support for 32-bit images in NDFileMagick.
 * Improved the documentation for NDFileMagick.
+
 ### pluginSrc/Makefile, pluginTests/Makefile
 * Fixed some problems with XXX_INCLUDE definitions (XXX=HDF5, XML2, SZIP, GRAPHICSMAGICK, BOOST).
+
 ### NDPluginDriver
 * Fixed limitation where the ArrayPort string was limited to 20 characters.  There is now no limit.
 * Fixed problem with the value of the QueueFree record at startup and when the queue size was changed.
   The queue size logic was OK but the displayed value of QueueFree was wrong.
+
 ### ADTop.adl
 * Add PhotonII detector.
+
 ### NDPluginAttrPlot
 * Added documentation.
+
 ### NDPluginPva
 * Added performance measurements to documentation.
-### 
+
 ### asynNDArrayDriver.h
 * Include ADCoreVersion.h from this file so drivers don't need to explicitly include it.
 
 
 ## R3-0 (May 5, 2017)
+
 ### Requirements
 * This release requires EPICS base 3.14.12.4 or higher because it uses the CFG rules which were fixed
   in that release.
+
 ### Incompatible changes
 * This release is R3-0 rather than R2-7 because a few changes break backwards compatibility.
   * The constructors for asynNDArray driver and NDPluginDriver no longer take a numParams argument.
@@ -440,6 +506,7 @@ Versions
   * The constructors and iocsh configuration commands for NDPluginStdArrays and NDPluginPva have been changed 
     to add the standard maxBuffers argument.  EXAMPLE_commonPlugins.cmd has had these changes made.
     Local startup scripts may need modifications.
+
 ### Multiple threads in single plugins (NDPluginDriver, NDPluginBase.template, NDPluginBase.adl, many plugins)
 * Added support for multiple threads running the processCallbacks() function in a single plugin.  This can improve
   the performance of the plugin by a large factor.  Linear scaling with up to 5 threads (the largest
@@ -585,8 +652,8 @@ Versions
   ArrayCounter rather than UniqueId.
   
 
-
 ## R2-6 (February 19, 2017)
+
 ### NDPluginDriver, NDPluginBase.template, NDPluginBase.adl
 * If blockCallbacks is non-zero in constructor then it no longer creates a processing thread.
   This saves resources if the plugin will only be used in blocking mode.  If the plugin is changed
@@ -748,6 +815,7 @@ Versions
 
 
 ## R2-5 (October 28, 2016)
+
 ### ADSupport
 * Added a new repository ADSupport to areaDetector.  This module contains the source code for all 3rd party
   libraries used by ADCore.  The libraries that were previously built in ADCore have been moved
@@ -780,7 +848,6 @@ Versions
   commonDriverSupport.dbd included "calcSupport.dbd", "sscanSupport.dbd", etc.
   These dbd and libraries are now only included if they are defined in a RELEASE
   file.
-
 
 ### NDPluginPva
 * New plugin for exporting NDArrays as EPICS V4 NTNDArrays.  It has an embedded EPICSv4 server to serve the NTNDArrays
@@ -929,6 +996,7 @@ Versions
 
 
 ## R2-4 (September 21, 2015)
+
 ### Removed simDetector and iocs directory. 
 Previously the simDetector was part of ADCore, and there was an iocs directory that built the simDetector 
 application both as part of an IOC and independent of an IOC. This had 2 disadvantages:
@@ -977,6 +1045,7 @@ but before ADExample.
 
 
 ## R2-3 (July 23, 2015)
+
 ### devIocStats and alive modules
 * The example iocs in ADCore and other drivers can now optionally be built with the 
   devIocStats module, which provides very useful resource utilization information for the IOC.
@@ -1016,6 +1085,7 @@ but before ADExample.
 
 
 ## R2-2 (March 23, 2015)
+
 ### Compatibility
 * This release requires at least R4-26 of asyn because it uses the info(asyn:READOUT,"1") tag
   in databases to have output records update on driver callbacks.
@@ -1156,6 +1226,7 @@ but before ADExample.
     
     
 ## R2-1 (October 17, 2014)
+
 ### NDPluginFile
 * Added new optional feature "LazyOpen" which, when enabled and in "Stream" mode, will defer 
   file creation until the first frame arrives in the plugin. This removes the need to initialise
@@ -1194,6 +1265,8 @@ but before ADExample.
 
 
 ## R2-0 (April 4, 2014)
+
+### General
 * Moved the repository to [Github](https://github.com/areaDetector/ADCore).
 * Re-organized the directory structure to separate the driver library from the example 
   simDetector IOC application.
