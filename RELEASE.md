@@ -20,7 +20,7 @@ files respectively, in the configure/ directory of the appropriate release of th
 [top-level areaDetector](https://github.com/areaDetector/areaDetector) repository.
 
 
-## __R3-5 (April 12, 2018)__
+## __R3-5 (April 12, 2019)__
 
 ### Documentation
   * Converted documentation from raw HTML documentation to .rst files using Sphinx.
