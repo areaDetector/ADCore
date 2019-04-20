@@ -41,13 +41,22 @@
 #define METADATA_NDIMS 1
 #define MAX_LAYOUT_LEN 1048576
 
-enum HDF5Compression_t {HDF5CompressNone=0, HDF5CompressNumBits, HDF5CompressSZip, HDF5CompressZlib, HDF5CompressBlosc, HDF5CompressBshuf, HDF5CompressLZ4};
+enum HDF5Compression_t {HDF5CompressNone=0, 
+                        HDF5CompressNumBits, 
+                        HDF5CompressSZip, 
+                        HDF5CompressZlib, 
+                        HDF5CompressBlosc, 
+                        HDF5CompressBshuf, 
+                        HDF5CompressLZ4,
+                        HDF5CompressJPEG};
 /* Filter ID officially assigned to blosc */
 #define FILTER_BLOSC 32001
 /* Filter ID officially assigned to bitshuffle */
 #define FILTER_BSHUF 32008
 /* Filter ID officially assigned to lz4 */
 #define FILTER_LZ4 32004
+/* Filter ID officially assigned to jpeg */
+#define FILTER_JPEG 32019
 
 #define DIMSREPORTSIZE 512
 #define DIMNAMESIZE 40
@@ -1907,6 +1916,9 @@ asynStatus NDFileHDF5::writeInt32(asynUser *pasynUser, epicsInt32 value)
       case HDF5CompressLZ4:
         filterId = FILTER_LZ4;
         break;
+      case HDF5CompressJPEG:
+        filterId = FILTER_JPEG;
+        break;
       default:
         filterId = H5Z_FILTER_NONE;
         status = asynError;
@@ -3258,6 +3270,8 @@ asynStatus NDFileHDF5::configureCompression(NDArray *pArray)
       setIntegerParam(NDFileHDF5_compressionType, HDF5CompressBshuf);
     } else if (pArray->codec.name == codecName[NDCODEC_LZ4]) {
       setIntegerParam(NDFileHDF5_compressionType, HDF5CompressLZ4);
+    } else if (pArray->codec.name == codecName[NDCODEC_JPEG]) {
+      setIntegerParam(NDFileHDF5_compressionType, HDF5CompressJPEG);
     }
   }
   getIntegerParam(NDFileHDF5_compressionType, &compressionScheme);
@@ -3310,47 +3324,76 @@ asynStatus NDFileHDF5::configureCompression(NDArray *pArray)
       this->codec.name = "zlib";
       break;
     case HDF5CompressBlosc: {
-          asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW,
-                    "%s::%s Setting blosc compression filter level=%d, shuffle=%d, compressor=%d\n",
-                    driverName, functionName, bloscLevel, bloscShuffle, bloscCompressor);
-           /* 0 to 3 (inclusive) param slots are reserved. */
-          unsigned int cds[7];
-          cds[4] = bloscLevel;
-          cds[5] = bloscShuffle;
-          cds[6] = bloscCompressor;
-          int h5status = H5Pset_filter(this->cparms, FILTER_BLOSC, H5Z_FLAG_MANDATORY, 7, cds);
-          if (h5status) {
-            asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, "Failed to set h5 blosc filter\n");
-            break;
-          }
-          this->codec.name = codecName[NDCODEC_BLOSC];
-          this->codec.level = bloscLevel;
-          this->codec.shuffle = bloscShuffle;
-          this->codec.compressor = bloscCompressor;
+        asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW,
+                  "%s::%s Setting blosc compression filter level=%d, shuffle=%d, compressor=%d\n",
+                  driverName, functionName, bloscLevel, bloscShuffle, bloscCompressor);
+         /* 0 to 3 (inclusive) param slots are reserved. */
+        unsigned int cds[7];
+        cds[4] = bloscLevel;
+        cds[5] = bloscShuffle;
+        cds[6] = bloscCompressor;
+        int h5status = H5Pset_filter(this->cparms, FILTER_BLOSC, H5Z_FLAG_MANDATORY, 7, cds);
+        if (h5status) {
+          asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, "Failed to set h5 blosc filter\n");
+          break;
+        }
+        this->codec.name = codecName[NDCODEC_BLOSC];
+        this->codec.level = bloscLevel;
+        this->codec.shuffle = bloscShuffle;
+        this->codec.compressor = bloscCompressor;
       }
       break;
     case HDF5CompressBshuf: {
-          unsigned int cds[2];
-          cds[0] = 0; /* bitshuffle selects the block size automatically */
-          cds[1] = 2; /* lz4 compression */
-          int h5status = H5Pset_filter(this->cparms, FILTER_BSHUF, H5Z_FLAG_OPTIONAL, 2, cds);
-          if (h5status) {
-            asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, "Failed to set h5 bitshuffle filter\n");
-            break;
-          }
-          this->codec.name = codecName[NDCODEC_BSLZ4];
+        unsigned int cds[2];
+        cds[0] = 0; /* bitshuffle selects the block size automatically */
+        cds[1] = 2; /* lz4 compression */
+        int h5status = H5Pset_filter(this->cparms, FILTER_BSHUF, H5Z_FLAG_OPTIONAL, 2, cds);
+        if (h5status) {
+          asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, "Failed to set h5 bitshuffle filter\n");
+          break;
+        }
+        this->codec.name = codecName[NDCODEC_BSLZ4];
       }
       break;
     case HDF5CompressLZ4: {
-          unsigned int cds[2];
-          cds[0] = 0; /* lz4 selects the block size automatically */
-          cds[1] = 0; /* Number of threads (not implemented) */
-          int h5status = H5Pset_filter(this->cparms, FILTER_LZ4, H5Z_FLAG_OPTIONAL, 2, cds);
-          if (h5status) {
-            asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, "Failed to set h5 lz4 filter\n");
-            break;
-          }
-          this->codec.name = codecName[NDCODEC_LZ4];
+        unsigned int cds[2];
+        cds[0] = 0; /* lz4 selects the block size automatically */
+        cds[1] = 0; /* Number of threads (not implemented) */
+        int h5status = H5Pset_filter(this->cparms, FILTER_LZ4, H5Z_FLAG_OPTIONAL, 2, cds);
+        if (h5status) {
+          asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, "Failed to set h5 lz4 filter\n");
+          break;
+        }
+        this->codec.name = codecName[NDCODEC_LZ4];
+      }
+      break;
+    case HDF5CompressJPEG: {
+        unsigned int cds[4];
+        int colorMode = NDColorModeMono;
+        NDAttribute *pAttribute = pArray->pAttributeList->find("ColorMode");
+        if (pAttribute)
+            pAttribute->getValue(NDAttrInt32, &colorMode);
+        cds[0] = 95; /* JPEG quality */
+        if ((pArray->ndims == 2) && (colorMode == NDColorModeMono)) {
+          cds[1] = pArray->dims[0].size;
+          cds[2] = pArray->dims[1].size; 
+          cds[3] = 0;
+        } else if ((pArray->ndims == 3) && (colorMode == NDColorModeRGB1)) {
+          cds[1] = pArray->dims[1].size;
+          cds[2] = pArray->dims[2].size; 
+          cds[3] = 1;
+        } else {
+printf("ndims=%d, colorMode=%d\n", pArray->ndims, colorMode);
+          asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, "JPEG compression only supports 2-D mono and 3-D RGB1 modes\n");
+          break;
+        }
+        
+        int h5status = H5Pset_filter(this->cparms, FILTER_JPEG, H5Z_FLAG_OPTIONAL, 4, cds);
+        if (h5status) {
+          asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, "Failed to set h5 jpeg filter\n");
+          break;
+        }
+        this->codec.name = codecName[NDCODEC_JPEG];
       }
       break;
   }
