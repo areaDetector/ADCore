@@ -2271,6 +2271,7 @@ NDFileHDF5::NDFileHDF5(const char *portName, int queueSize, int blockingCallback
   this->createParam(str_NDFileHDF5_bloscShuffleType,   asynParamInt32,   &NDFileHDF5_bloscShuffleType);
   this->createParam(str_NDFileHDF5_bloscCompressor,    asynParamInt32,   &NDFileHDF5_bloscCompressor);
   this->createParam(str_NDFileHDF5_bloscCompressLevel, asynParamInt32,   &NDFileHDF5_bloscCompressLevel);
+  this->createParam(str_NDFileHDF5_jpegQuality,     asynParamInt32,   &NDFileHDF5_jpegQuality);
   this->createParam(str_NDFileHDF5_dimAttDatasets,  asynParamInt32,   &NDFileHDF5_dimAttDatasets);
   this->createParam(str_NDFileHDF5_layoutErrorMsg,  asynParamOctet,   &NDFileHDF5_layoutErrorMsg);
   this->createParam(str_NDFileHDF5_layoutValid,     asynParamInt32,   &NDFileHDF5_layoutValid);
@@ -2314,6 +2315,7 @@ NDFileHDF5::NDFileHDF5(const char *portName, int queueSize, int blockingCallback
   setIntegerParam(NDFileHDF5_bloscCompressor, 0);
   setIntegerParam(NDFileHDF5_bloscCompressLevel, 5);
   setIntegerParam(NDFileHDF5_dimAttDatasets,  0);
+  setIntegerParam(NDFileHDF5_jpegQuality,     90);
   setStringParam (NDFileHDF5_layoutErrorMsg,  "");
   setIntegerParam(NDFileHDF5_layoutValid,     1);
   setStringParam (NDFileHDF5_layoutFilename,  "");
@@ -3253,6 +3255,7 @@ asynStatus NDFileHDF5::configureCompression(NDArray *pArray)
   int bloscShuffle = 0;
   int bloscCompressor = 0;
   int bloscLevel = 0;
+  int jpegQuality = 0;
   static const char * functionName = "configureCompression";
 
   this->lock();
@@ -3282,6 +3285,7 @@ asynStatus NDFileHDF5::configureCompression(NDArray *pArray)
   getIntegerParam(NDFileHDF5_bloscShuffleType, &bloscShuffle);
   getIntegerParam(NDFileHDF5_bloscCompressor, &bloscCompressor);
   getIntegerParam(NDFileHDF5_bloscCompressLevel, &bloscLevel);
+  getIntegerParam(NDFileHDF5_jpegQuality, &jpegQuality);
   this->unlock();
 
   // Clear the codec to (possibly) configure a new one
@@ -3373,7 +3377,7 @@ asynStatus NDFileHDF5::configureCompression(NDArray *pArray)
         NDAttribute *pAttribute = pArray->pAttributeList->find("ColorMode");
         if (pAttribute)
             pAttribute->getValue(NDAttrInt32, &colorMode);
-        cds[0] = 95; /* JPEG quality */
+        cds[0] = jpegQuality;
         if ((pArray->ndims == 2) && (colorMode == NDColorModeMono)) {
           cds[1] = pArray->dims[0].size;
           cds[2] = pArray->dims[1].size; 
@@ -3383,7 +3387,6 @@ asynStatus NDFileHDF5::configureCompression(NDArray *pArray)
           cds[2] = pArray->dims[2].size; 
           cds[3] = 1;
         } else {
-printf("ndims=%d, colorMode=%d\n", pArray->ndims, colorMode);
           asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, "JPEG compression only supports 2-D mono and 3-D RGB1 modes\n");
           break;
         }
