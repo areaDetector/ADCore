@@ -1,6 +1,6 @@
 
 file {
-	name="/home/epics/devel/areaDetector/ADCore/ADApp/op/adl/NDFileHDF5.adl"
+	name="/home/epics/devel/areaDetector-3-5/ADCore/ADApp/op/adl/NDFileHDF5.adl"
 	version=030109
 }
 display {
@@ -8,7 +8,7 @@ display {
 		x=85
 		y=65
 		width=1070
-		height=800
+		height=815
 	}
 	clr=14
 	bclr=4
@@ -126,7 +126,7 @@ rectangle {
 		x=390
 		y=450
 		width=675
-		height=345
+		height=360
 	}
 	"basic attribute" {
 		clr=14
@@ -229,133 +229,6 @@ text {
 	limits {
 	}
 }
-text {
-	object {
-		x=465
-		y=559
-		width=100
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Zlib level"
-	align="horiz. right"
-}
-"text entry" {
-	object {
-		x=570
-		y=559
-		width=60
-		height=20
-	}
-	control {
-		chan="$(P)$(R)ZLevel"
-		clr=14
-		bclr=51
-	}
-	limits {
-	}
-}
-"text update" {
-	object {
-		x=635
-		y=560
-		width=80
-		height=18
-	}
-	monitor {
-		chan="$(P)$(R)ZLevel_RBV"
-		clr=54
-		bclr=4
-	}
-	limits {
-	}
-}
-text {
-	object {
-		x=395
-		y=584
-		width=170
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Store performance"
-	align="horiz. right"
-}
-menu {
-	object {
-		x=570
-		y=584
-		width=60
-		height=20
-	}
-	control {
-		chan="$(P)$(R)StorePerform"
-		clr=14
-		bclr=51
-	}
-}
-"text update" {
-	object {
-		x=635
-		y=585
-		width=80
-		height=18
-	}
-	monitor {
-		chan="$(P)$(R)StorePerform_RBV"
-		clr=54
-		bclr=4
-	}
-	format="string"
-	limits {
-	}
-}
-text {
-	object {
-		x=405
-		y=609
-		width=160
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Store attributes"
-	align="horiz. right"
-}
-menu {
-	object {
-		x=570
-		y=609
-		width=60
-		height=20
-	}
-	control {
-		chan="$(P)$(R)StoreAttr"
-		clr=14
-		bclr=51
-	}
-}
-"text update" {
-	object {
-		x=635
-		y=610
-		width=80
-		height=18
-	}
-	monitor {
-		chan="$(P)$(R)StoreAttr_RBV"
-		clr=54
-		bclr=4
-	}
-	format="string"
-	limits {
-	}
-}
 "text update" {
 	object {
 		x=635
@@ -396,62 +269,6 @@ menu {
 		chan="$(P)$(R)Compression"
 		clr=14
 		bclr=51
-	}
-}
-"text update" {
-	object {
-		x=570
-		y=635
-		width=80
-		height=18
-	}
-	monitor {
-		chan="$(P)$(R)RunTime"
-		clr=54
-		bclr=4
-	}
-	limits {
-	}
-}
-text {
-	object {
-		x=485
-		y=634
-		width=80
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Run time"
-	align="horiz. right"
-}
-text {
-	object {
-		x=475
-		y=659
-		width=90
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="I/O speed"
-	align="horiz. right"
-}
-"text update" {
-	object {
-		x=570
-		y=660
-		width=80
-		height=18
-	}
-	monitor {
-		chan="$(P)$(R)IOSpeed"
-		clr=54
-		bclr=4
-	}
-	limits {
 	}
 }
 text {
@@ -963,139 +780,6 @@ rectangle {
 		fill="outline"
 	}
 }
-text {
-	object {
-		x=496
-		y=684
-		width=40
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="More"
-	align="horiz. right"
-}
-"related display" {
-	object {
-		x=541
-		y=684
-		width=110
-		height=20
-	}
-	display[0] {
-		label="Extra dimensions"
-		name="NDFileHDF5_ExtraDims.adl"
-		args="P=$(P),R=$(R)"
-	}
-	display[1] {
-		label="Positions"
-		name="NDFileHDF5_Positions.adl"
-		args="P=$(P),R=$(R)"
-	}
-	clr=14
-	bclr=51
-}
-composite {
-	object {
-		x=400
-		y=720
-		width=641
-		height=68
-	}
-	"composite name"=""
-	children {
-		"text update" {
-			object {
-				x=400
-				y=720
-				width=500
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)XMLErrorMsg_RBV"
-				clr=54
-				bclr=4
-			}
-			format="string"
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=1001
-				y=720
-				width=40
-				height=20
-			}
-			monitor {
-				chan="$(P)$(R)XMLValid_RBV"
-				clr=14
-				bclr=2
-			}
-			clrmod="alarm"
-			limits {
-			}
-		}
-		text {
-			object {
-				x=926
-				y=720
-				width=70
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Exists:"
-		}
-		"text update" {
-			object {
-				x=535
-				y=745
-				width=500
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)XMLFileName_RBV"
-				clr=54
-				bclr=4
-			}
-			format="string"
-			limits {
-			}
-		}
-		text {
-			object {
-				x=400
-				y=768
-				width=130
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="XML File name"
-			align="horiz. right"
-		}
-		"text entry" {
-			object {
-				x=535
-				y=768
-				width=500
-				height=20
-			}
-			control {
-				chan="$(P)$(R)XMLFileName"
-				clr=14
-				bclr=51
-			}
-			format="string"
-			limits {
-			}
-		}
-	}
-}
 composite {
 	object {
 		x=740
@@ -1285,4 +969,374 @@ text {
 	}
 	label="Flush now"
 	press_msg="1"
+}
+text {
+	object {
+		x=395
+		y=609
+		width=170
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Store performance"
+	align="horiz. right"
+}
+menu {
+	object {
+		x=570
+		y=609
+		width=60
+		height=20
+	}
+	control {
+		chan="$(P)$(R)StorePerform"
+		clr=14
+		bclr=51
+	}
+}
+"text update" {
+	object {
+		x=635
+		y=610
+		width=80
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)StorePerform_RBV"
+		clr=54
+		bclr=4
+	}
+	format="string"
+	limits {
+	}
+}
+text {
+	object {
+		x=405
+		y=634
+		width=160
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Store attributes"
+	align="horiz. right"
+}
+menu {
+	object {
+		x=570
+		y=634
+		width=60
+		height=20
+	}
+	control {
+		chan="$(P)$(R)StoreAttr"
+		clr=14
+		bclr=51
+	}
+}
+"text update" {
+	object {
+		x=635
+		y=635
+		width=80
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)StoreAttr_RBV"
+		clr=54
+		bclr=4
+	}
+	format="string"
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=570
+		y=660
+		width=80
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)RunTime"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+text {
+	object {
+		x=485
+		y=659
+		width=80
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Run time"
+	align="horiz. right"
+}
+text {
+	object {
+		x=475
+		y=684
+		width=90
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="I/O speed"
+	align="horiz. right"
+}
+"text update" {
+	object {
+		x=570
+		y=685
+		width=80
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)IOSpeed"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+text {
+	object {
+		x=496
+		y=709
+		width=40
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="More"
+	align="horiz. right"
+}
+"related display" {
+	object {
+		x=541
+		y=709
+		width=110
+		height=20
+	}
+	display[0] {
+		label="Extra dimensions"
+		name="NDFileHDF5_ExtraDims.adl"
+		args="P=$(P),R=$(R)"
+	}
+	display[1] {
+		label="Positions"
+		name="NDFileHDF5_Positions.adl"
+		args="P=$(P),R=$(R)"
+	}
+	clr=14
+	bclr=51
+}
+text {
+	object {
+		x=465
+		y=559
+		width=100
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Zlib level"
+	align="horiz. right"
+}
+"text entry" {
+	object {
+		x=570
+		y=559
+		width=60
+		height=20
+	}
+	control {
+		chan="$(P)$(R)ZLevel"
+		clr=14
+		bclr=51
+	}
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=635
+		y=560
+		width=80
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)ZLevel_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+text {
+	object {
+		x=445
+		y=584
+		width=120
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="JPEG quality"
+	align="horiz. right"
+}
+"text entry" {
+	object {
+		x=570
+		y=584
+		width=60
+		height=20
+	}
+	control {
+		chan="$(P)$(R)JPEGQuality"
+		clr=14
+		bclr=51
+	}
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=635
+		y=585
+		width=80
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)JPEGQuality_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+composite {
+	object {
+		x=400
+		y=734
+		width=641
+		height=68
+	}
+	"composite name"=""
+	children {
+		composite {
+			object {
+				x=400
+				y=734
+				width=641
+				height=68
+			}
+			"composite name"=""
+			children {
+				"text update" {
+					object {
+						x=400
+						y=734
+						width=500
+						height=18
+					}
+					monitor {
+						chan="$(P)$(R)XMLErrorMsg_RBV"
+						clr=54
+						bclr=4
+					}
+					format="string"
+					limits {
+					}
+				}
+				"text update" {
+					object {
+						x=1001
+						y=734
+						width=40
+						height=20
+					}
+					monitor {
+						chan="$(P)$(R)XMLValid_RBV"
+						clr=14
+						bclr=2
+					}
+					clrmod="alarm"
+					limits {
+					}
+				}
+				text {
+					object {
+						x=926
+						y=734
+						width=70
+						height=20
+					}
+					"basic attribute" {
+						clr=14
+					}
+					textix="Exists:"
+				}
+				"text update" {
+					object {
+						x=535
+						y=759
+						width=500
+						height=18
+					}
+					monitor {
+						chan="$(P)$(R)XMLFileName_RBV"
+						clr=54
+						bclr=4
+					}
+					format="string"
+					limits {
+					}
+				}
+				text {
+					object {
+						x=400
+						y=782
+						width=130
+						height=20
+					}
+					"basic attribute" {
+						clr=14
+					}
+					textix="XML File name"
+					align="horiz. right"
+				}
+				"text entry" {
+					object {
+						x=535
+						y=782
+						width=500
+						height=20
+					}
+					control {
+						chan="$(P)$(R)XMLFileName"
+						clr=14
+						bclr=51
+					}
+					format="string"
+					limits {
+					}
+				}
+			}
+		}
+	}
 }
