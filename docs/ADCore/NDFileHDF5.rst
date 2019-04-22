@@ -531,10 +531,16 @@ Compression
 -----------
 
 The HDF5 library supports a number of compression algorithms. When using
-HDF5 libraries to write and read files the compression is seemless: it
-only need to be switched on when writing and HDF5 enabled applications
-can read the files without any additional configuration. Only one
-compression filter can be applied at the time.
+HDF5 libraries to write and read files the with standard HDF5 compressions
+(N-bit, szip, and libz) it only need to be switched on when writing and HDF5 enabled applications
+can read the files without any additional configuration. When using Blosc, LZ4, BSLZ4 and JPEG no
+additional configuration is required for NDFileHDF5 to write the files, because it registers
+these compression filters.  However, when reading files written with Blosc, LZ4, BSLZ4, or JPEG
+the environment variable HDF5_PLUGIN_PATH must point to a directory containing the shareable libraries
+for the decompression filter plugins.  This allows any application built with HDF5 1.8.11 or later to
+read files written with these compression filters. The areaDetector/ADSupport modules builds these shareable 
+libraries for Linux, Windows, and Mac.
+Only one compression filter can be applied at the time.
 
 The following compression filters are supported in the NDFileHDF5
 plugin:
@@ -558,12 +564,17 @@ plugin:
 -  `N-bit <http://www.hdfgroup.org/HDF5/doc/RM/RM_H5P.html#Property-SetNbit>`__
    compression is a bit-packing scheme to be used when a detector
    provide fewer databits than standard 8,16,32 bit words. Data width
-   and offset in the word is user configurable
+   and offset in the word is user configurable.
+-  `Blosc <http://blosc.org/>`__ compression. Blosc is lossless and contains several compressors,
+    including LZ4 with Bitshuffle.
+-  `LZ4 <https://lz4.github.io/lz4/>`__ compression. LZ4 is lossless.
+-  `Bitshuffle/LZ4 <https://github.com/kiyo-masui/bitshuffle>`__ compression. BSLZ4 is lossless.
+-  `JPEG <https://jpeg.org/>`__ compression. JPEG is lossy, with a user-defined quality factor.
 
 Single Writer Multiple Reader (SWMR)
 ------------------------------------
 
-From version 1-10 of the HDF5 library, reader applications shall be able
+From version 1-10 of the HDF5 library, reader applications shall be ableFrom version 1-10 of the HDF5 library, reader applications shall be able
 to access the file whilst it is being written. The plugin has been
 updated to support the additional SWMR feature when writing a file. The
 plugin will know if SWMR mode is supported depending on the version of
@@ -1673,7 +1684,18 @@ Parameters and Records
         <td>
           r/w</td>
         <td>
-          Select or switch off compression filter</td>
+          Select or switch off compression filter. <br />
+          <ul>
+            <li>None</li>
+            <li>N-bit</li>
+            <li>szip</li>
+            <li>zlib</li>
+            <li>Blosc</li>
+            <li>BSLZ4</li>
+            <li>LZ4</li>
+            <li>JPEG</li>
+          </ul>
+          </td>
         <td>
           HDF5_compressionType</td>
         <td>
@@ -1751,6 +1773,93 @@ Parameters and Records
         <td>
           $(P)$(R)ZLevel<br />
           $(P)$(R)ZLevel_RBV</td>
+        <td>
+          longout<br />
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          bloscCompressor</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Blosc compressor. <br />
+          <ul>
+            <li>BloscLZ</li>
+            <li>LZ4</li>
+            <li>LZ4HC</li>
+            <li>SNAPPY</li>
+            <li>ZLIB</li>
+            <li>ZSTD</li>
+          </ul>
+          </td>
+        <td>
+          HDF5_bloscCompressor</td>
+        <td>
+          $(P)$(R)BloscCompressor<br />
+          $(P)$(R)BloscCompressor_RBV</td>
+        <td>
+          mbbo<br />
+          mbbi</td>
+      </tr>
+      <tr>
+        <td>
+          bloscShuffle</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Blosc shuffle.<br />
+          <ul>
+            <li>None</li>
+            <li>Byte</li>
+            <li>Bit</li>
+          </ul>
+          </td>
+        <td>
+          HDF5_bloscShuffle</td>
+        <td>
+          $(P)$(R)BloscShuffle<br />
+          $(P)$(R)BloscShuffle_RBV</td>
+        <td>
+          mbbo<br />
+          mbbi</td>
+      </tr>
+      <tr>
+        <td>
+          BloscLevel</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Blosc compression filter: compression level [0..9]</td>
+        <td>
+          HDF5_bloscCompressLevel</td>
+        <td>
+          $(P)$(R)BloscLevel<br />
+          $(P)$(R)BloscLevel_RBV</td>
+        <td>
+          longout<br />
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          JPEGQuality</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          JPEG quality level [1..100]</td>
+        <td>
+          HDF5_jpegQuality</td>
+        <td>
+          $(P)$(R)JPEGQuality<br />
+          $(P)$(R)JPEGQuality_RBV</td>
         <td>
           longout<br />
           longin</td>
