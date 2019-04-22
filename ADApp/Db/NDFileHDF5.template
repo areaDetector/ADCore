@@ -636,6 +636,24 @@ record(longin, "$(P)$(R)BloscLevel_RBV")
     field(SCAN, "I/O Intr")
 }
 
+record(longout, "$(P)$(R)JPEGQuality")
+{
+    field(DTYP, "asynInt32")
+    field(OUT, "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))HDF5_jpegQuality")
+    field(VAL, "90")
+    field(DRVL, "1")
+    field(DRVH, "100")
+    field(PINI, "YES")
+    info(autosaveFields, "VAL")
+}
+
+record(longin, "$(P)$(R)JPEGQuality_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP, "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))HDF5_jpegQuality")
+    field(SCAN, "I/O Intr")
+}
+
 record(bo, "$(P)$(R)DimAttDatasets")
 {
     field(DTYP, "asynInt32")
