@@ -20,9 +20,9 @@
 #include "Codec.h"
 
 #define MAXEXTRADIMS 10
+#define MAX_CHUNK_DIMS ND_ARRAY_MAX_DIMS
 
-#define str_NDFileHDF5_nRowChunks        "HDF5_nRowChunks"
-#define str_NDFileHDF5_nColChunks        "HDF5_nColChunks"
+#define str_NDFileHDF5_chunkSizeAuto     "HDF5_chunkSizeAuto"
 #define str_NDFileHDF5_nFramesChunks     "HDF5_nFramesChunks"
 #define str_NDFileHDF5_chunkBoundaryAlign "HDF5_chunkBoundaryAlign"
 #define str_NDFileHDF5_chunkBoundaryThreshold "HDF5_chunkBoundaryThreshold"
@@ -67,6 +67,7 @@
 class epicsShareClass NDFileHDF5 : public NDPluginFile
 {
   public:
+    static const char *str_NDFileHDF5_chunkSize[MAX_CHUNK_DIMS];
     static const char *str_NDFileHDF5_extraDimSize[MAXEXTRADIMS];
     static const char *str_NDFileHDF5_extraDimName[MAXEXTRADIMS];
     static const char *str_NDFileHDF5_extraDimChunk[MAXEXTRADIMS];
@@ -130,10 +131,10 @@ class epicsShareClass NDFileHDF5 : public NDPluginFile
 
   protected:
     /* plugin parameters */
-    int NDFileHDF5_nRowChunks;
-    #define FIRST_NDFILE_HDF5_PARAM NDFileHDF5_nRowChunks
-    int NDFileHDF5_nColChunks;
+    int NDFileHDF5_chunkSizeAuto;
+    #define FIRST_NDFILE_HDF5_PARAM NDFileHDF5_chunkSizeAuto
     int NDFileHDF5_nFramesChunks;
+    int NDFileHDF5_chunkSize[MAX_CHUNK_DIMS];
     int NDFileHDF5_chunkBoundaryAlign;
     int NDFileHDF5_chunkBoundaryThreshold;
     int NDFileHDF5_NDAttributeChunk;
