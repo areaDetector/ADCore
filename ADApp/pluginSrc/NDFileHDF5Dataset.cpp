@@ -19,7 +19,7 @@ NDFileHDF5Dataset::NDFileHDF5Dataset(asynUser *pAsynUser, const std::string& nam
 {
   this->maxdims_     = NULL;
   this->dims_        = NULL;
-  this->chunkdims_   = (hsize_t*) calloc(3, sizeof(hsize_t));
+  this->chunkdims_   = (hsize_t*) calloc(ND_ARRAY_MAX_DIMS, sizeof(hsize_t));
   this->offset_      = NULL;
   this->virtualdims_ = NULL;
 }
@@ -51,9 +51,9 @@ asynStatus NDFileHDF5Dataset::configureDims(NDArray *pArray, bool multiframe, in
   ndims = pArray->ndims + extradims;
 
   // Store chunk dimensions
-  this->chunkdims_[0] = user_chunking[0];
-  this->chunkdims_[1] = user_chunking[1];
-  this->chunkdims_[2] = user_chunking[2];
+  for (i=0; i<=pArray->ndims; i++) {
+    this->chunkdims_[i] = user_chunking[i];
+  }
 
   // first check whether the dimension arrays have been allocated
   // or the number of dimensions have changed.
@@ -189,22 +189,11 @@ asynStatus NDFileHDF5Dataset::verifyChunking(NDArray *pArray)
       return asynError;
     }
   }
-  // Check dimensions of data
-  if (pArray->ndims > 2) {
-    asynPrint(this->pAsynUser_, ASYN_TRACE_FLOW,
-              "Data must be 1D or 2D to use direct chunk write\n");
-    return asynError;
-  }
   bool mismatch = false;
   if (this->multiFrame_) {
     // If chunk spans multiple frames (or multiple rows of a 1D dataset), then we require the HDF5
     // processing pipeline to stitch together the NDArrays
-    if (this->chunkdims_[2] != 1 ||
-        (pArray->ndims == 1 && this->chunkdims_[1] != 1)) {
-      mismatch = true;
-    }
-    if (this->chunkdims_[1] != 1 &&
-        pArray->dims[0].size != this->chunkdims_[0]) {
+    if (this->chunkdims_[pArray->ndims] != 1) {
       mismatch = true;
     }
   }
