@@ -540,9 +540,9 @@ BOOST_AUTO_TEST_CASE(test_PluginExtraDimensions)
   // Set nFrameChunks = 1
   hdf5->write(str_NDFileHDF5_nFramesChunks, 1);
   // Set nRowChunks = 512
-  hdf5->write(str_NDFileHDF5_nRowChunks, 512);
+  hdf5->write(NDFileHDF5::str_NDFileHDF5_chunkSize[1], 512);
   // Set nColChunks = 1024
-  hdf5->write(str_NDFileHDF5_nColChunks, 1024);
+  hdf5->write(NDFileHDF5::str_NDFileHDF5_chunkSize[0], 1024);
   // Set the file write mode to stream
   hdf5->write(NDFileWriteModeString, NDFileModeStream);
   // Call the configure dims method
@@ -595,9 +595,9 @@ BOOST_AUTO_TEST_CASE(test_PluginExtraDimensions)
   // Set nFrameChunks = 1
   hdf5->write(str_NDFileHDF5_nFramesChunks, 1);
   // Set nRowChunks = 512
-  hdf5->write(str_NDFileHDF5_nRowChunks, 512);
+  hdf5->write(NDFileHDF5::str_NDFileHDF5_chunkSize[1], 512);
   // Set nColChunks = 1024
-  hdf5->write(str_NDFileHDF5_nColChunks, 1024);
+  hdf5->write(NDFileHDF5::str_NDFileHDF5_chunkSize[0], 1024);
   // Set the file write mode to stream
   hdf5->write(NDFileWriteModeString, NDFileModeStream);
   // Call the configure dims method
