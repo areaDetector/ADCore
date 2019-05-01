@@ -2438,6 +2438,11 @@ void NDFileHDF5::calcNumFrames()
 
   getIntegerParam(NDFileHDF5_nExtraDims,    &numExtraDims);
 
+  // The logic below will see NDFileNumCapture to 1 if numExtraDims is 0, which is not correct,
+  // so return immediately in this case
+
+  if (numExtraDims == 0) return;
+  
   // work out how many frames to capture in total
   maxFramesInDims = 1;
   int extraDimIndex = 0;
