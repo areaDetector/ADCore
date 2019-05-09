@@ -47,9 +47,9 @@ static const int TIFFTAG_UNIQUEID        = 65001;
 static const int TIFFTAG_EPICSTSSEC      = 65002;
 static const int TIFFTAG_EPICSTSNSEC     = 65003;
 static const int TIFFTAG_FIRST_ATTRIBUTE = 65010;
-static const int TIFFTAG_LAST_ATTRIBUTE  = 65500;
+static const int TIFFTAG_LAST_ATTRIBUTE  = 65535;
 
-#define NUM_CUSTOM_TIFF_TAGS (4 + TIFFTAG_LAST_ATTRIBUTE - TIFFTAG_FIRST_ATTRIBUTE - 1)
+#define NUM_CUSTOM_TIFF_TAGS (4 + TIFFTAG_LAST_ATTRIBUTE - TIFFTAG_FIRST_ATTRIBUTE + 1)
 
 static TIFFFieldInfo tiffFieldInfo[NUM_CUSTOM_TIFF_TAGS] = {
     {TIFFTAG_NDTIMESTAMP, 1, 1, TIFF_DOUBLE,FIELD_CUSTOM, 1, 0, (char *)"NDTimeStamp"},
@@ -93,7 +93,7 @@ asynStatus NDFileTIFF::openFile(const char *fileName, NDFileOpenMode_t openMode,
     int i;
     TIFFFieldInfo fieldInfo = {0, 1, 1, TIFF_ASCII, FIELD_CUSTOM, 1, 0, tagName};
 
-    for (i=TIFFTAG_FIRST_ATTRIBUTE; i<TIFFTAG_LAST_ATTRIBUTE; i++) {
+    for (i=TIFFTAG_FIRST_ATTRIBUTE; i<=TIFFTAG_LAST_ATTRIBUTE; i++) {
         sprintf(tagName, "Attribute_%d", i-TIFFTAG_FIRST_ATTRIBUTE+1);
         fieldInfo.field_tag = i;
         tiffFieldInfo[4+i-TIFFTAG_FIRST_ATTRIBUTE] = fieldInfo;
@@ -337,7 +337,7 @@ asynStatus NDFileTIFF::openFile(const char *fileName, NDFileOpenMode_t openMode,
             TIFFSetField(this->tiff, tagId, tagString);
             ++count;
             ++tagId;
-            if ((tagId == TIFFTAG_LAST_ATTRIBUTE) || (count > numAttributes_)) {
+            if ((tagId > TIFFTAG_LAST_ATTRIBUTE) || (count > numAttributes_)) {
                 asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
                     "%s:%s error, Too many tags/attributes for file. tagId: %d, count: %d\n",
                     driverName, functionName, tagId, count);
@@ -543,7 +543,7 @@ asynStatus NDFileTIFF::readFile(NDArray **pArray)
     fieldStat = TIFFGetField(this->tiff, TIFFTAG_EPICSTSNSEC, &tempLong);
     if (fieldStat == 1) pImage->epicsTS.nsec = tempLong;
     
-    for (int i=TIFFTAG_FIRST_ATTRIBUTE; i<TIFFTAG_LAST_ATTRIBUTE; i++) {
+    for (int i=TIFFTAG_FIRST_ATTRIBUTE; i<=TIFFTAG_LAST_ATTRIBUTE; i++) {
         fieldStat = TIFFGetField(this->tiff, i, &tempString);
         if (fieldStat == 1) {
             std::string ts = tempString;
