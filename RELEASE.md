@@ -20,6 +20,14 @@ files respectively, in the configure/ directory of the appropriate release of th
 [top-level areaDetector](https://github.com/areaDetector/areaDetector) repository.
 
 
+## __R3-6 (May XXX, 2019)__
+
+### NDFileTIFF
+  * Increased the last used defined tag (TIFFTAG_LAST_ATTRIBUTE) from 65500 to 65535,
+    which is the maximum allowed by TIFF specification.
+  * The last usable tag is now TIFFTAG_LAST_ATTRIBUTE, while previously it was TIFFTAG_LAST_ATTRIBUTE-1. 
+  * Fixed bug in memory allocation for user-defined tags that could lead to access violation.
+
 ## __R3-5 (April 12, 2019)__
 
 ### Documentation
