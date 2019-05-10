@@ -3039,33 +3039,38 @@ asynStatus NDFileHDF5::configureDatasetDims(NDArray *pArray)
   int i = 0;
   int extradims = 0;
   int *numCapture=NULL;
+  int *extraChunks = NULL;
   asynStatus status = asynSuccess;
 
   this->lock();
   if (this->multiFrameFile){
     struct extradimdefs_t {
       int sizeParamId;
+      int chunkParamId;
       char* dimName;
     } extradimdefs[MAXEXTRADIMS] = {
-        {NDFileHDF5_extraDimSize[9], this->extraDimName[9]},
-        {NDFileHDF5_extraDimSize[8], this->extraDimName[8]},
-        {NDFileHDF5_extraDimSize[7], this->extraDimName[7]},
-        {NDFileHDF5_extraDimSize[6], this->extraDimName[6]},
-        {NDFileHDF5_extraDimSize[5], this->extraDimName[5]},
-        {NDFileHDF5_extraDimSize[4], this->extraDimName[4]},
-        {NDFileHDF5_extraDimSize[3], this->extraDimName[3]},
-        {NDFileHDF5_extraDimSize[2], this->extraDimName[2]},
-        {NDFileHDF5_extraDimSize[1], this->extraDimName[1]},
-        {NDFileHDF5_extraDimSize[0], this->extraDimName[0]},
+        {NDFileHDF5_extraDimSize[9], NDFileHDF5_extraDimChunk[9], this->extraDimName[9]},
+        {NDFileHDF5_extraDimSize[8], NDFileHDF5_extraDimChunk[8], this->extraDimName[8]},
+        {NDFileHDF5_extraDimSize[7], NDFileHDF5_extraDimChunk[7], this->extraDimName[7]},
+        {NDFileHDF5_extraDimSize[6], NDFileHDF5_extraDimChunk[6], this->extraDimName[6]},
+        {NDFileHDF5_extraDimSize[5], NDFileHDF5_extraDimChunk[5], this->extraDimName[5]},
+        {NDFileHDF5_extraDimSize[4], NDFileHDF5_extraDimChunk[4], this->extraDimName[4]},
+        {NDFileHDF5_extraDimSize[3], NDFileHDF5_extraDimChunk[3], this->extraDimName[3]},
+        {NDFileHDF5_extraDimSize[2], NDFileHDF5_extraDimChunk[2], this->extraDimName[2]},
+        {NDFileHDF5_extraDimSize[1], NDFileHDF5_extraDimChunk[1], this->extraDimName[1]},
+        {NDFileHDF5_extraDimSize[0], NDFileHDF5_extraDimChunk[0], this->extraDimName[0]},
     };
     getIntegerParam(NDFileHDF5_nExtraDims, &extradims);
     extradims += 1;
     numCapture = (int *)calloc(extradims, sizeof(int));
+    extraChunks = (int *)calloc(extradims, sizeof(int));
     for (i=0; i<extradims; i++){
       getIntegerParam(extradimdefs[MAXEXTRADIMS - extradims + i].sizeParamId, &numCapture[i]);
+      getIntegerParam(extradimdefs[MAXEXTRADIMS - extradims + i].chunkParamId, &extraChunks[i]);
     }
   } else {
     numCapture = (int *)calloc(1, sizeof(int));
+    extraChunks = (int *)calloc(1, sizeof(int));
   }
   int user_chunking[MAX_CHUNK_DIMS+1];
   for (int chunkIndex=0; chunkIndex<pArray->ndims; chunkIndex++) {
@@ -3077,7 +3082,7 @@ asynStatus NDFileHDF5::configureDatasetDims(NDArray *pArray)
   // Iterate over the stored detector data sets and configure the dimensions
   std::map<std::string, NDFileHDF5Dataset *>::iterator it_dset;
   for (it_dset = this->detDataMap.begin(); it_dset != this->detDataMap.end(); ++it_dset){
-    it_dset->second->configureDims(pArray, this->multiFrameFile, extradims, numCapture, user_chunking);
+    it_dset->second->configureDims(pArray, this->multiFrameFile, extradims, numCapture, extraChunks, user_chunking);
   }
   
   if (numCapture != NULL) free( numCapture );

@@ -14,7 +14,7 @@ class NDFileHDF5Dataset
     NDFileHDF5Dataset(asynUser *pAsynUser, const std::string& name, hid_t dataset);
     virtual ~NDFileHDF5Dataset();
 
-    asynStatus configureDims(NDArray *pArray, bool multiframe, int extradimensions, int *extra_dims, int *user_chunking);
+    asynStatus configureDims(NDArray *pArray, bool multiframe, int extradimensions, int *extra_dims, int *extra_dim_chunking, int *user_chunking);
     asynStatus extendDataSet(int extradims);
     asynStatus extendDataSet(int extradims, hsize_t *offsets);
     asynStatus verifyChunking(NDArray *pArray);
@@ -43,6 +43,7 @@ class NDFileHDF5Dataset
     hsize_t     *offset_;      // Array of current offset in each dimension. The frame dimensions always have
                                // 0 offset but additional dimensions may grow as new frames are added.
     hsize_t     *virtualdims_; // The desired sizes of the extra (virtual) dimensions: {Y, X, n}
+    hsize_t     *virtualchunkdims_;   // The chunk sizes of the extra (virtual) dimensions: {Y, X, n}
     Codec_t codec;             // Definition of codec used to compress the data.
     char        *ptrDimensionNames[ND_ARRAY_MAX_DIMS]; // Array of strings with human readable names for each dimension
     char        *dimsreport_;  // A string which contain a verbose report of all dimension sizes. The method getDimsReport fill in this

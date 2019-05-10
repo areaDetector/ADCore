@@ -22,6 +22,7 @@ NDFileHDF5Dataset::NDFileHDF5Dataset(asynUser *pAsynUser, const std::string& nam
   this->chunkdims_   = (hsize_t*) calloc(ND_ARRAY_MAX_DIMS, sizeof(hsize_t));
   this->offset_      = NULL;
   this->virtualdims_ = NULL;
+  this->virtualchunkdims_ = NULL;
 }
 
 NDFileHDF5Dataset::~NDFileHDF5Dataset()
@@ -31,6 +32,7 @@ NDFileHDF5Dataset::~NDFileHDF5Dataset()
   if (this->dims_        != NULL) free(this->dims_);
   if (this->offset_      != NULL) free(this->offset_);
   if (this->virtualdims_ != NULL) free(this->virtualdims_);
+  if (this->virtualchunkdims_ != NULL) free(this->virtualchunkdims_);
 } 
 
 /** configureDims.
@@ -41,7 +43,7 @@ NDFileHDF5Dataset::~NDFileHDF5Dataset()
  * \param[in] extra_dims - The size of extra dimensions.
  * \param[in] user_chunking - Array of user defined chunking dimensions.
  */
-asynStatus NDFileHDF5Dataset::configureDims(NDArray *pArray, bool multiframe, int extradimensions, int *extra_dims, int *user_chunking)
+asynStatus NDFileHDF5Dataset::configureDims(NDArray *pArray, bool multiframe, int extradimensions, int *extra_dims, int *extra_dim_chunking, int *user_chunking)
 {
   int i=0,j=0, extradims = 0, ndims=0;
   asynStatus status = asynSuccess;
@@ -59,15 +61,17 @@ asynStatus NDFileHDF5Dataset::configureDims(NDArray *pArray, bool multiframe, in
   // or the number of dimensions have changed.
   // If necessary free and reallocate new memory.
   if (this->maxdims_ == NULL || this->rank_ != ndims){
-    if (this->maxdims_     != NULL) free(this->maxdims_);
-    if (this->dims_        != NULL) free(this->dims_);
-    if (this->offset_      != NULL) free(this->offset_);
-    if (this->virtualdims_ != NULL) free(this->virtualdims_);
+    if (this->maxdims_          != NULL) free(this->maxdims_);
+    if (this->dims_             != NULL) free(this->dims_);
+    if (this->offset_           != NULL) free(this->offset_);
+    if (this->virtualdims_      != NULL) free(this->virtualdims_);
+    if (this->virtualchunkdims_ != NULL) free(this->virtualchunkdims_);
 
-    this->maxdims_       = (hsize_t*)calloc(ndims,     sizeof(hsize_t));
-    this->dims_          = (hsize_t*)calloc(ndims,     sizeof(hsize_t));
-    this->offset_        = (hsize_t*)calloc(ndims,     sizeof(hsize_t));
-    this->virtualdims_   = (hsize_t*)calloc(extradims, sizeof(hsize_t));
+    this->maxdims_          = (hsize_t*)calloc(ndims,     sizeof(hsize_t));
+    this->dims_             = (hsize_t*)calloc(ndims,     sizeof(hsize_t));
+    this->offset_           = (hsize_t*)calloc(ndims,     sizeof(hsize_t));
+    this->virtualdims_      = (hsize_t*)calloc(extradims, sizeof(hsize_t));
+    this->virtualchunkdims_ = (hsize_t*)calloc(extradims, sizeof(hsize_t));
   }
 
   if (multiframe){
@@ -79,6 +83,7 @@ asynStatus NDFileHDF5Dataset::configureDims(NDArray *pArray, bool multiframe, in
       this->dims_[i]        = 1;
       this->offset_[i]      = 0; // because we increment offset *before* each write we need to start at -1
       this->virtualdims_[i] = extra_dims[i];
+      this->virtualchunkdims_[i] = extra_dim_chunking[i];
     }
   } else {
     this->multiFrame_ = false;
@@ -209,6 +214,14 @@ asynStatus NDFileHDF5Dataset::verifyChunking(NDArray *pArray)
               (int)this->chunkdims_[0], (int)this->chunkdims_[1], (int)this->chunkdims_[2],
               (int)pArray->dims[0].size, (int)pArray->dims[1].size);
       return asynError;
+  }
+  // Final check to make sure all extra dimension chunk sizes are set to 1 (or 0 which would default to 1)
+  // All extra dimension chunk sizes must be set to 0 or 1 if we are going to use the direct chunk write.
+  for (int index = 0; index < this->extra_rank_; index++) {
+    if (this->virtualchunkdims_[index] > 1) {
+      // Chunk size is not set to 1 so we cannot use direct chunk write
+      return asynError;      
+    }
   }
   return asynSuccess;
 }
