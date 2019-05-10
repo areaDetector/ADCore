@@ -40,6 +40,26 @@ record(mbbi, "$(P)$(R)FileFormat_RBV")
     field(ONVL, "1")
 }
 
+record(bo, "$(P)$(R)ChunkSizeAuto")
+{
+    field(DTYP, "asynInt32")
+    field(OUT, "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))HDF5_chunkSizeAuto")
+    field(PINI, "YES")
+    field(ZNAM, "No")
+    field(ONAM, "Yes")
+    field(VAL,  "1")
+    info(autosaveFields, "VAL")
+}
+
+record(bi, "$(P)$(R)ChunkSizeAuto_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP, "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))HDF5_chunkSizeAuto")
+    field(SCAN, "I/O Intr")
+    field(ZNAM, "No")
+    field(ONAM, "Yes")
+}
+
 record(longout, "$(P)$(R)NumRowChunks")
 {
     field(DTYP, "asynInt32")
@@ -67,6 +87,126 @@ record(longin, "$(P)$(R)NumColChunks_RBV")
 {
     field(DTYP, "asynInt32")
     field(INP, "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))HDF5_nColChunks")
+    field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)ChunkSize2")
+{
+    field(DTYP, "asynInt32")
+    field(OUT, "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))HDF5_chunkSize2")
+    field(PINI, "YES")
+    info(autosaveFields, "VAL")
+}
+
+record(longin, "$(P)$(R)ChunkSize2_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP, "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))HDF5_chunkSize2")
+    field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)ChunkSize3")
+{
+    field(DTYP, "asynInt32")
+    field(OUT, "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))HDF5_chunkSize3")
+    field(PINI, "YES")
+    info(autosaveFields, "VAL")
+}
+
+record(longin, "$(P)$(R)ChunkSize3_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP, "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))HDF5_chunkSize3")
+    field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)ChunkSize4")
+{
+    field(DTYP, "asynInt32")
+    field(OUT, "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))HDF5_chunkSize4")
+    field(PINI, "YES")
+    info(autosaveFields, "VAL")
+}
+
+record(longin, "$(P)$(R)ChunkSize4_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP, "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))HDF5_chunkSize4")
+    field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)ChunkSize5")
+{
+    field(DTYP, "asynInt32")
+    field(OUT, "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))HDF5_chunkSize5")
+    field(PINI, "YES")
+    info(autosaveFields, "VAL")
+}
+
+record(longin, "$(P)$(R)ChunkSize5_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP, "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))HDF5_chunkSize5")
+    field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)ChunkSize6")
+{
+    field(DTYP, "asynInt32")
+    field(OUT, "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))HDF5_chunkSize6")
+    field(PINI, "YES")
+    info(autosaveFields, "VAL")
+}
+
+record(longin, "$(P)$(R)ChunkSize6_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP, "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))HDF5_chunkSize6")
+    field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)ChunkSize7")
+{
+    field(DTYP, "asynInt32")
+    field(OUT, "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))HDF5_chunkSize7")
+    field(PINI, "YES")
+    info(autosaveFields, "VAL")
+}
+
+record(longin, "$(P)$(R)ChunkSize7_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP, "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))HDF5_chunkSize7")
+    field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)ChunkSize8")
+{
+    field(DTYP, "asynInt32")
+    field(OUT, "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))HDF5_chunkSize8")
+    field(PINI, "YES")
+    info(autosaveFields, "VAL")
+}
+
+record(longin, "$(P)$(R)ChunkSize8_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP, "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))HDF5_chunkSize8")
+    field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)ChunkSize9")
+{
+    field(DTYP, "asynInt32")
+    field(OUT, "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))HDF5_chunkSize9")
+    field(PINI, "YES")
+    info(autosaveFields, "VAL")
+}
+
+record(longin, "$(P)$(R)ChunkSize9_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP, "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))HDF5_chunkSize9")
     field(SCAN, "I/O Intr")
 }
 

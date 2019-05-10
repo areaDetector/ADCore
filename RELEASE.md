@@ -19,6 +19,30 @@ the EXAMPLE_RELEASE_PATHS.local, EXAMPLE_RELEASE_LIBS.local, and EXAMPLE_RELEASE
 files respectively, in the configure/ directory of the appropriate release of the 
 [top-level areaDetector](https://github.com/areaDetector/areaDetector) repository.
 
+## __R3-6 (May XXX, 2019)__
+
+### NDFileHDF5
+  * Fixed issues with chunking. 
+    * User-defined chunking only supported 2-D arrays, plus the dimension for multiple arrays. 
+      This is insufficient, we need to be able to support N-dimensional arrays in a general manner.
+    * Direct chunk write only worked with 1-D or 2-D arrays. This prevented it from working with RGB images, for example.
+    * New records have been added for NDArray dimensions 2-9 (ChunkSize2, ChunkSize3, ... ChunkSize9).
+    * The labels on the OPI screen for NumColsChunks and NumRowsChunks changes "Dim0 chunk size" and "Dim1 chunk size",
+      added "Dim2 chunk size" to this screen as well. 
+    * Added a new NDFileHDF5_ChunkingFull screen that shows all 12 chunking related records (10 dimensions, NumFramesChunks, ChunkSizeAuto).
+    * Previously the documentation said that if nColChunks and nRowChunks were configured by the user to the special value 0,
+      they will default to the dimensions of the incoming frames. However, this was not really true, setting to 0 only worked once. 
+      If they were set to 0 and a 512x512 array was saved then the chunking was set to 512x512. 
+      If the user then disabled binning and saved a 1024x1024 array the chunking remained at 512x512, which was not desirable.
+    * Added new ChunkSizeAuto bo record to allow always setting the chunking to automatic or manual. 
+      If ChunkSizeAuto=Yes then the chunking in each dimension is automatically set to that dimension of the NDArray, so
+      the chunking is one complete NDArray. The automatic control does not affect NumFramesChunks.
+    * Fixed a problem in NDFiileHDF5::calcNumFrames(), it was setting NumCapture to 1 if numExtraDims=0, which is incorrect. 
+      This caused the autosaved value to be replaced by 1 each time the IOC restarted.
+  * Added support for JPEG compression.  There is a new JPEGQuality record (1-100) to control the compression quality.
+    This requires ADSupport R1-8 which adds HDF5 JPEG codec filter and plugin.
+    JPEG compression can be done in the NDFileHDF5 plugin itself, or in NDPluginCodec writing pre-compressed NDArrays with
+    HDF5 direct chunk write.
 
 ## __R3-6 (May XXX, 2019)__
 

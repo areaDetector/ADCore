@@ -63,7 +63,11 @@ NDFileHDF5Dataset *createTestDataset(int rank, int *max_dim_size, asynUser *pasy
   NDFileHDF5Dataset *dataset = new NDFileHDF5Dataset(pasynUser, dsetname, datasetID);
   int extraDims = rank-2;
   int *extra_dims = new int[extraDims];
-  for (int i=0; i < extraDims; i++) extra_dims[i] = max_dim_size[i];
+  int *chunk_extra_dims = new int[extraDims];
+  for (int i=0; i < extraDims; i++){
+    extra_dims[i] = max_dim_size[i];
+    chunk_extra_dims[i] = 1;
+  }
   int *user_chunking = new int[extraDims];
   for (int i=0; i < extraDims; i++) user_chunking[i] = 1;
 
@@ -84,7 +88,7 @@ NDFileHDF5Dataset *createTestDataset(int rank, int *max_dim_size, asynUser *pasy
   memset(parr->pData, 0, parr->dataSize);
   parr->uniqueId = 0;
 
-  dataset->configureDims(parr, true, extraDims, extra_dims, user_chunking);
+  dataset->configureDims(parr, true, extraDims, extra_dims, chunk_extra_dims, user_chunking);
 
   delete dims;
   delete extra_dims;
@@ -540,9 +544,9 @@ BOOST_AUTO_TEST_CASE(test_PluginExtraDimensions)
   // Set nFrameChunks = 1
   hdf5->write(str_NDFileHDF5_nFramesChunks, 1);
   // Set nRowChunks = 512
-  hdf5->write(str_NDFileHDF5_nRowChunks, 512);
+  hdf5->write(NDFileHDF5::str_NDFileHDF5_chunkSize[1], 512);
   // Set nColChunks = 1024
-  hdf5->write(str_NDFileHDF5_nColChunks, 1024);
+  hdf5->write(NDFileHDF5::str_NDFileHDF5_chunkSize[0], 1024);
   // Set the file write mode to stream
   hdf5->write(NDFileWriteModeString, NDFileModeStream);
   // Call the configure dims method
@@ -595,9 +599,9 @@ BOOST_AUTO_TEST_CASE(test_PluginExtraDimensions)
   // Set nFrameChunks = 1
   hdf5->write(str_NDFileHDF5_nFramesChunks, 1);
   // Set nRowChunks = 512
-  hdf5->write(str_NDFileHDF5_nRowChunks, 512);
+  hdf5->write(NDFileHDF5::str_NDFileHDF5_chunkSize[1], 512);
   // Set nColChunks = 1024
-  hdf5->write(str_NDFileHDF5_nColChunks, 1024);
+  hdf5->write(NDFileHDF5::str_NDFileHDF5_chunkSize[0], 1024);
   // Set the file write mode to stream
   hdf5->write(NDFileWriteModeString, NDFileModeStream);
   // Call the configure dims method
