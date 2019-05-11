@@ -87,7 +87,7 @@ sudo apt-get update -qq
 # The following are only installed if WITH_XXX=YES and XXX_EXTERNAL=YES
 if [[ $WITH_BOOST == "YES" && $BOOST_EXTERNAL == "YES" ]]; then
   sudo apt-get install libboost-test-dev
-  sudo apt-get install libboost-dev
+  sudo apt-get install libboost-system-dev
 fi
 
 if [[ $WITH_HDF5 == "YES" && $HDF5_EXTERNAL == "YES" ]]; then
