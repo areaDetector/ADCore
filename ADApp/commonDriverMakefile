@@ -196,7 +196,7 @@ ifeq ($(WITH_BOOST),YES)
       PROD_SYS_LIBS += boost_system
     endif
   endif
-endof
+endif
 
 ifeq ($(WITH_JPEG),YES)
   $(DBD_NAME)_DBD += NDFileJPEG.dbd
