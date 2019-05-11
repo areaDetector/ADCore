@@ -37,10 +37,10 @@ void NDPluginColorConvert::convertColor(NDArray *pArray)
     static const char* functionName = "convertColor";
     size_t i, j;
     epicsType *pIn, *pRedIn, *pGreenIn, *pBlueIn;
-    epicsType *pOut, *pRedOut, *pGreenOut, *pBlueOut;
+    epicsType *pOut, *pRedOut=NULL, *pGreenOut=NULL, *pBlueOut=NULL;
     epicsType *p1, *p2, *p3, *p4, *p6, *p7, *p8, *p9; // pointers used for bayer interpolation
     epicsType *pDataIn  = (epicsType *)pArray->pData;
-    epicsType *pDataOut;
+    epicsType *pDataOut=NULL;
     NDArray *pArrayOut=NULL;
     size_t imageSize, rowSize, numRows;
     size_t dims[3];
