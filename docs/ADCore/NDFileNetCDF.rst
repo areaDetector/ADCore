@@ -177,10 +177,10 @@ this output:
    type.
 
 There is an IDL function,
-`read_nd_netcdf <http://cars.uchicago.edu/software/idl/detector_routines.html#read_nd_netcdf>`__
+`read_nd_netcdf <https://cars.uchicago.edu/software/idl/detector_routines.html#read_nd_netcdf>`__
 that can be used to read the netCDF files created by this plugin. This
 routine is contained in the `CARS IDL detector
-package <http://cars.uchicago.edu/software/idl/detectors.html#read_nd_netcdf>`__.
+package <https://cars.uchicago.edu/software/idl/detectors.html#read_nd_netcdf>`__.
 This function is also contained in the areaDetector distribution in the
 Viewers/IDL directory.
 

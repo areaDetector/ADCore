@@ -459,17 +459,27 @@ record(busy, "$(P)$(R)AcquireBusy") {
    field(VAL,  "0")
 }
 
-record(calcout, "$(P)$(R)ClearAcquireBusy")
-{
-    field(INPA, "$(P)$(R)WaitForPlugins CP")
-    field(INPB, "$(P)$(R)Acquire_RBV CP")
-    field(INPC, "$(P)$(R)NumQueuedArrays CP")
-    field(CALC, "A ? B || (C > 0) : B")
+record(bi, "$(P)$(R)AcquireBusyCB") {
+   field(DTYP, "asynInt32")
+   field(INP, "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))ACQUIRE_BUSY")
+   field(ZNAM, "Done")
+   field(ZSV,  "NO_ALARM")
+   field(ONAM, "Acquiring")
+   field(OSV,  "MINOR")
+   field(SCAN, "I/O Intr")
+}
+
+record(calcout, "$(P)$(R)ClearAcquireBusy") {
+    field(INPA, "$(P)$(R)AcquireBusyCB CP")
+    field(CALC, "A")
     field(OOPT, "Transition To Zero")
     field(OUT,  "$(P)$(R)AcquireBusy PP")
 }
 
 record(bo, "$(P)$(R)WaitForPlugins") {
+   field(PINI, "YES")
+   field(DTYP, "asynInt32")
+   field(OUT, "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))WAIT_FOR_PLUGINS")
    field(ZNAM, "No")
    field(ONAM, "Yes")
    field(VAL,  "0")

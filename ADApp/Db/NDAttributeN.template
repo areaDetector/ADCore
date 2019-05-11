@@ -49,10 +49,8 @@ record(waveform, "$(P)$(R)AttrName_RBV")
 record(waveform, "$(P)$(R)TSArrayValue")
 {
    field(DTYP, "asynFloat64ArrayIn")
-   field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))ATTR_TS_ARRAY_VALUE")
+   field(INP,  "@asyn($(TS_PORT=$(PORT)_TS),$(ADDR=0),$(TIMEOUT=1))TS_TIME_SERIES")
    field(NELM, "$(NCHANS)")
    field(FTVL, "DOUBLE")
    field(SCAN, "I/O Intr")
 }
-
-

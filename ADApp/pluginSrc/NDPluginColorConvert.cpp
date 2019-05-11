@@ -25,9 +25,6 @@
 #include <epicsExport.h>
 #include "NDPluginDriver.h"
 #include "colorMaps.h"
-#ifdef HAVE_PVAPI
-  #include "PvApi.h"
-#endif
 #include "NDPluginColorConvert.h"
 
 static const char *driverName="NDPluginColorConvert";
@@ -40,17 +37,15 @@ void NDPluginColorConvert::convertColor(NDArray *pArray)
     static const char* functionName = "convertColor";
     size_t i, j;
     epicsType *pIn, *pRedIn, *pGreenIn, *pBlueIn;
-    epicsType *pOut, *pRedOut, *pGreenOut, *pBlueOut;
+    epicsType *pOut, *pRedOut=NULL, *pGreenOut=NULL, *pBlueOut=NULL;
+    epicsType *p1, *p2, *p3, *p4, *p6, *p7, *p8, *p9; // pointers used for bayer interpolation
     epicsType *pDataIn  = (epicsType *)pArray->pData;
-    epicsType *pDataOut;
+    epicsType *pDataOut=NULL;
     NDArray *pArrayOut=NULL;
     size_t imageSize, rowSize, numRows;
     size_t dims[3];
     NDDimension_t tmpDim;
-    #ifdef HAVE_PVAPI
-    tPvFrame PvFrame, *pFrame=&PvFrame;
-    int ndims;
-    #endif
+    enum Colour {red, green, blue};
     double value;
     int colorMode=NDColorModeMono, bayerPattern=NDBayerRGGB;
     int falseColor=0;
@@ -204,88 +199,182 @@ void NDPluginColorConvert::convertColor(NDArray *pArray)
                     break;
             }
             break;
-        #ifdef HAVE_PVAPI
+
         case NDColorModeBayer:
             if (pArray->ndims != 2) break;
+            rowSize   = pArray->dims[0].size; // x pixels
+            numRows   = pArray->dims[1].size; // y pixels
+            imageSize = rowSize * numRows;    // total pixels
+
+            // configure output array depending on output mode
             switch (colorModeOut) {
+                case NDColorModeMono:
+                    dims[0] = rowSize;
+                    dims[1] = numRows;
+                    pArrayOut = this->pNDArrayPool->copy(pArray, NULL, 0);
+                    pDataOut = (epicsType *)pArrayOut->pData;
+                    break;
+
                 case NDColorModeRGB1:
-                case NDColorModeRGB2:
-                case NDColorModeRGB3:
-                    rowSize   = pArray->dims[0].size;
-                    numRows   = pArray->dims[1].size;
-                    imageSize = rowSize * numRows;
-                    ndims = 3;
                     dims[0] = 3;
                     dims[1] = rowSize;
                     dims[2] = numRows;
-                    /* There is a problem: the uniqueId and timeStamp are not preserved! */
-                    pArrayOut = this->pNDArrayPool->alloc(ndims, dims, pArray->dataType, 0, NULL);
+                    // There is a problem: the uniqueId and timeStamp are not preserved! 
+                    pArrayOut = this->pNDArrayPool->alloc(3, dims, pArray->dataType, 0, NULL);
+                    tmpDim = pArrayOut->dims[0];
+                    this->pNDArrayPool->copy(pArray, pArrayOut, 0);
                     pArrayOut->uniqueId = pArray->uniqueId;
                     pArrayOut->epicsTS = pArray->epicsTS;
                     pArrayOut->timeStamp = pArray->timeStamp;
-                    pDataOut = (epicsType *)pArrayOut->pData;
-                    /* For now we use the Prosilica library functions to convert Bayer to RGB */
-                    /* This requires creating their tPvFrame data structure */
-                    memset(pFrame, 0, sizeof(tPvFrame));
-                    pFrame->Width = (unsigned long)pArray->dims[0].size;
-                    pFrame->Height = (unsigned long)pArray->dims[1].size;
-                    pFrame->RegionX = (unsigned long)pArray->dims[0].offset;
-                    pFrame->RegionY = (unsigned long)pArray->dims[1].offset;
-                    pFrame->ImageBuffer = pArray->pData;
-                    pFrame->ImageBufferSize = (unsigned long)pArray->dataSize;
-                    pFrame->ImageSize = pFrame->ImageBufferSize;
-                    pFrame->BayerPattern = (tPvBayerPattern)bayerPattern;
-                    switch(pArray->dataType) {
-                        case NDInt8:
-                        case NDUInt8:
-                            pFrame->Format = ePvFmtBayer8;
-                            pFrame->BitDepth = 8;
-                            break;
-                        case NDInt16:
-                        case NDUInt16:
-                            pFrame->Format = ePvFmtBayer16;
-                            pFrame->BitDepth = 16;
-                            break;
-                        default:
-                            asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
-                                "%s:%s: error unsupported data type=%d\n",
-                                driverName, functionName, pArray->dataType);
-                            break;
-                    }
-                    break;
-                default: 
-                    break;
-            }
-            switch (colorModeOut) {
-                case NDColorModeRGB1:
-                    PvUtilityColorInterpolate(pFrame, pDataOut, pDataOut+1, pDataOut+2, 2, 0);
+                    pArrayOut->ndims = 3;
+                    pArrayOut->dims[2] = pArrayOut->dims[1];
+                    pArrayOut->dims[1] = pArrayOut->dims[0];
+                    pArrayOut->dims[0] = tmpDim;
                     pArrayOut->dims[0].size = 3;
-                    memcpy(&pArrayOut->dims[1], &pArray->dims[0], sizeof(NDDimension_t));
-                    memcpy(&pArrayOut->dims[2], &pArray->dims[1], sizeof(NDDimension_t));
-                    changedColorMode = 1;
+                    pDataOut = (epicsType *)pArrayOut->pData;
                     break;
-                
+
                 case NDColorModeRGB2:
-                    PvUtilityColorInterpolate(pFrame, pDataOut,  pDataOut+rowSize, pDataOut+2*rowSize, 
-                                              0, (unsigned long)(2*rowSize));
-                    memcpy(&pArrayOut->dims[0], &pArray->dims[0], sizeof(NDDimension_t));
+                    dims[0] = rowSize;
+                    dims[1] = 3;
+                    dims[2] = numRows;
+                    pArrayOut = this->pNDArrayPool->alloc(3, dims, pArray->dataType, 0, NULL);
+                    tmpDim = pArrayOut->dims[1];
+                    this->pNDArrayPool->copy(pArray, pArrayOut, 0);
+                    pArrayOut->uniqueId = pArray->uniqueId;
+                    pArrayOut->epicsTS = pArray->epicsTS;
+                    pArrayOut->timeStamp = pArray->timeStamp;
+                    pArrayOut->ndims = 3;
+                    pArrayOut->dims[2] = pArrayOut->dims[1];
+                    pArrayOut->dims[1] = tmpDim;
                     pArrayOut->dims[1].size = 3;
-                    memcpy(&pArrayOut->dims[2], &pArray->dims[1], sizeof(NDDimension_t));
-                    changedColorMode = 1;
+                    pDataOut = (epicsType *)pArrayOut->pData;
                     break;
 
                 case NDColorModeRGB3:
-                    PvUtilityColorInterpolate(pFrame, pDataOut,  pDataOut+imageSize, pDataOut+2*imageSize, 0, 0);
-                    memcpy(&pArrayOut->dims[0], &pArray->dims[0], sizeof(NDDimension_t));
-                    memcpy(&pArrayOut->dims[1], &pArray->dims[1], sizeof(NDDimension_t));
+                    dims[0] = rowSize;
+                    dims[1] = numRows;
+                    dims[2] = 3;
+                    pArrayOut = this->pNDArrayPool->alloc(3, dims, pArray->dataType, 0, NULL);
+                    tmpDim = pArrayOut->dims[2];
+                    this->pNDArrayPool->copy(pArray, pArrayOut, 0);
+                    pArrayOut->uniqueId = pArray->uniqueId;
+                    pArrayOut->epicsTS = pArray->epicsTS;
+                    pArrayOut->timeStamp = pArray->timeStamp;
+                    pArrayOut->ndims = 3;
+                    pArrayOut->dims[2] = tmpDim;
                     pArrayOut->dims[2].size = 3;
-                    changedColorMode = 1;
+                    pDataOut = (epicsType *)pArrayOut->pData;
+                    pRedOut   = pDataOut;
+                    pGreenOut = pDataOut + imageSize;
+                    pBlueOut  = pDataOut + 2*imageSize;
                     break;
+
                 default:
                     break;
             }
+
+            pIn = pDataIn; // will be used to iterate over input pixel array
+            pOut = pDataOut; // for writing to output pixel array
+
+            // loop over each pixel
+            for(unsigned int ipixel=0; ipixel<imageSize; ipixel++) {
+                unsigned int x = ipixel % rowSize;
+                unsigned int y = ipixel / rowSize;
+                // x and y value used for determining pixel colour w.r.t. bayer pattern & offsets
+                unsigned int bx = x + pArray->dims[0].offset; // original x before offset
+                unsigned int by = y + pArray->dims[1].offset; // original y before offset
+                // account for bayer pattern in x and y
+                // bayerPattern = {0:RGGB, 1:GBRG. 2:GRBG, 3:BGGR}
+                bx += int(bayerPattern>>1)&1; // first bit of bayer pattern enum
+                by += int(bayerPattern)&1; // second bit of bayer pattern enum
+                unsigned int rvalue = 0;
+                unsigned int gvalue = 0;
+                unsigned int bvalue = 0;
+                unsigned int whatcolour = red;
+
+                p1 = pIn-rowSize-1; // above left of pixel
+                p2 = pIn-rowSize;   // above pixel
+                p3 = pIn-rowSize+1; // above right of pixel
+                p4 = pIn-1;         // left  of pixel
+                p6 = pIn+1;         // right of pixel
+                p7 = pIn+rowSize-1; // below left of pixel
+                p8 = pIn+rowSize;   // below pixel
+                p9 = pIn+rowSize+1; // below right of pixel
+
+                // coordinates from original image to get colour type
+                if (bx%2==0 && by%2==0) { rvalue = *pIn; whatcolour = red; }
+                else if (bx%2==1 && by%2==1) { bvalue = *pIn; whatcolour = blue; }
+                else if (bx%2 != by%2) { gvalue = *pIn; whatcolour = green; }
+
+                // only interpolate pixels not touching a border
+                if (x>0 && x<rowSize-1 && y>0 && y<numRows-1) {
+                    if (whatcolour == red) {
+                        // if pixel is red
+                        bvalue = (*p1 + *p3 + *p7 + *p9) / 4;
+                        gvalue = (*p2 + *p4 + *p6 + *p8) / 4;
+                    }
+                    if (whatcolour == blue) {
+                        // if pixel is blue
+                        rvalue = (*p1 + *p3 + *p7 + *p9) / 4;
+                        gvalue = (*p2 + *p4 + *p6 + *p8) / 4;
+                    }
+                    if (whatcolour == green && bx%2 == 1) {
+                        // if pixel is green (next to red)
+                        rvalue = (*p4 + *p6) / 2;
+                        bvalue = (*p2 + *p8) / 2;
+                    }
+                    if (whatcolour == green && bx%2 == 0) {
+                        // if pixel is green (next to blue)
+                        bvalue = (*p4 + *p6) / 2;
+                        rvalue = (*p2 + *p8) / 2;
+                    }
+                }
+
+                // write values out depending on output mode
+                switch (colorModeOut) {
+                    case NDColorModeMono:
+                        *pOut++ = epicsType((rvalue + gvalue + bvalue) / 3);
+                        pIn++; // increment input data pointer
+                        changedColorMode = 1;
+                        break;
+
+                    case NDColorModeRGB1:
+                        *pOut++ = (epicsType)rvalue; // red
+                        *pOut++ = (epicsType)gvalue; // green
+                        *pOut++ = (epicsType)bvalue; // blue
+                        pIn++; // increment input data pointer
+                        changedColorMode = 1;
+                        break;
+
+                    case NDColorModeRGB2:
+                        // at start of input data row, jump output pointers by 3 rows
+                        if(x==0) {
+                            pRedOut   = pDataOut + 3*y*rowSize;
+                            pGreenOut = pRedOut  + rowSize;
+                            pBlueOut  = pRedOut  + 2*rowSize;
+                        }
+                        *pRedOut++   = (epicsType)rvalue;
+                        *pGreenOut++ = (epicsType)gvalue;
+                        *pBlueOut++  = (epicsType)bvalue;
+                        pIn++; // increment input data pointer
+                        changedColorMode = 1;
+                        break;
+
+                    case NDColorModeRGB3:
+                        *pRedOut++   = (epicsType)rvalue;
+                        *pGreenOut++ = (epicsType)gvalue;
+                        *pBlueOut++  = (epicsType)bvalue;
+                        pIn++; // increment input data pointer
+                        changedColorMode = 1;
+                        break;
+
+                    default:
+                        break;
+                }
+            }
             break;
-        #endif
+
         case NDColorModeRGB1:
             if (pArray->ndims != 3) break;
             rowSize   = pArray->dims[1].size;

@@ -129,110 +129,50 @@
           bo</td>
       </tr>
       <tr>
-        <td>
-          NDPluginAttribute<br />
-          TSControl</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          Controls time-series data collection. The enum choices are:
-          <ul>
-            <li>Erase/Start: Clears all time-series arrays, sets TSCurrentPoint=0, and starts
-              time-series data collection.</li>
-            <li>Start: Starts time-series data collection without clearing arrays or modifying
-              TSCurrentPoint. Used to restart collection after a Stop operation.</li>
-            <li>Stop: Stops times-series data collection. Performs callbacks on all time-series
-              waveform records.</li>
-            <li>Read: Performs callbacks on all time-series waveform records, updating the values.</li>
-          </ul>
+        <td align="center" colspan="7,">
+          <b>Time-Series data</b><br />
         </td>
-        <td>
-          ATTR_TS_CONTROL</td>
-        <td>
-          $(P)$(R)TSControl</td>
-        <td>
-          mbbo</td>
       </tr>
       <tr>
-        <td>
-          N.A.</td>
-        <td>
-          N.A.</td>
-        <td>
-          r/w</td>
-        <td>
-          Sends the "Read" command to the TSControl record above. This record can be periodically
-          processed to update the time-series waveform records. It is scan disabled if TSAcquiring=Done,
-          so that updates are only performed when time-series acquisition is in progress.
+        <td colspan="7,">
+          The time series is implemented by loading an instance of the <a href="NDPluginTimeSeries.html">
+          NDPluginTimeSeries</a> for each NDPluginStats plugin, and the time series control
+          uses records in NDTimeSeries.template. That documentation should be consulted for
+          an explanation of these records. The prefix and record name macro for the time-series
+          plugin records from NDTimeSeries.template is $(P)$(R)TS:.<br />
+          <b>NOTE:</b> The time-series plugin is often used with drivers which sample at a
+          fixed well-defined time interval. This cannot be guaranteed with the statistics
+          plugin, so the averaging time records and time axis waveform record from NDPluginTimeSeries
+          are typically not used, and the statistics data are plotted against time point #,
+          rather than actual time.
+          <br />
+          The time-series waveform records for each statistic are defined in NDAttributeN.template.
         </td>
-        <td>
-          N.A.</td>
-        <td>
-          $(P)$(R)TSRead</td>
-        <td>
-          longout</td>
-      </tr>
+     </tr>
       <tr>
         <td>
-          NDPluginAttribute<br />
-          TSNumPoints</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          Controls the number of time-series points to collect. There is no maximum value,
-          the time-series arrays in the plugin are freed and reallocated each time this value
-          is changed. However, the size of the waveform records is fixed when the IOC is started,
-          so NELM in those records must be large enough for the largest time-series needed.
+          NDPluginTimeSeries<br />
+          TSTimeSeries
         </td>
         <td>
-          ATTR_TS_NUM_POINTS</td>
-        <td>
-          $(P)$(R)TSNumPoints</td>
-        <td>
-          longout</td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginAttribute<br />
-          TSCurrentPoint</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/o</td>
-        <td>
-          The current time-series point. If TSCurrentPoint reaches TSNumPoints then time-series
-          acquisition is automatically stopped, and callbacks are done on all time-series
-          waveform records, updating the values. This means that even if TSRead has SCAN=Passive
-          that the waveform records will update when time-series acquisition is complete.
+          asynFloat64Array
         </td>
         <td>
-          ATTR_TS_CURRENT_POINT</td>
-        <td>
-          $(P)$(R)TSCurrentPoint</td>
-        <td>
-          longin</td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginAttribute<br />
-          TSAcquiring</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/o</td>
-        <td>
-          Indicates status of time-series data acquisition. Values are 0=Done and 1=Acquiring.
+          r/o
         </td>
         <td>
-          ATTR_TS_ACQUIRING</td>
+          The time series data arrays of the basic statistics and centroid and sigma statistics
+          described above.
+        </td>
         <td>
-          $(P)$(R)TSAcquiring</td>
+          TS_TIME_SERIES
+        </td>
         <td>
-          bi</td>
+          $(P)$(R)TSArrayValue
+        </td>
+        <td>
+          waveform
+        </td>
       </tr>
       <tr>
         <td align="center" colspan="7,">
@@ -305,23 +245,6 @@
           $(P)$(R)ValueSum_RBV</td>
         <td>
           ai</td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginAttributeTSArrayValue</td>
-        <td>
-          asynFloat64Array</td>
-        <td>
-          r/o</td>
-        <td>
-          Attribute data as a 1-D array, possibly converted in data type from that in the
-          NDArray attribute to epicsFloat64.</td>
-        <td>
-          ATTR_TS_ARRAY_VALUE</td>
-        <td>
-          $(P)$(R)TSArrayValue</td>
-        <td>
-          waveform</td>
       </tr>
     </tbody>
   </table>

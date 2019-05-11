@@ -173,7 +173,7 @@ void NDPluginTimeSeries::createAxisArray()
 
 /**
  * Templated function to append to time series on different NDArray data types.
- * \param[in] NDArray The pointer to the NDArray object
+ * \param[in] pArray The pointer to the NDArray object
  * \return asynStatus
  */
 template <typename epicsType>
@@ -226,7 +226,7 @@ asynStatus NDPluginTimeSeries::doAddToTimeSeriesT(NDArray *pArray)
      
 /**
  * Call the templated doAddToTimeSeries so we can cast correctly. 
- * \param[in] NDArray The pointer to the NDArray object
+ * \param[in] pArray The pointer to the NDArray object
  * \return asynStatus
  */
 asynStatus NDPluginTimeSeries::addToTimeSeries(NDArray *pArray)

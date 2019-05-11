@@ -1,8 +1,11 @@
 #include "NDFileHDF5Dataset.h"
 #include <iostream>
 #include <stdlib.h>
+#include <osiSock.h>
 
 #include <hdf5_hl.h>
+
+#define htonll(x) ( ( (uint64_t)(htonl( (uint32_t)((x << 32) >> 32)))<< 32) | htonl( ((uint32_t)(x >> 32)) ))
 
 static const char *fileName = "NDFileHDF5Dataset";
 
@@ -16,11 +19,22 @@ NDFileHDF5Dataset::NDFileHDF5Dataset(asynUser *pAsynUser, const std::string& nam
 {
   this->maxdims_     = NULL;
   this->dims_        = NULL;
-  this->chunkdims_   = (hsize_t*) calloc(3, sizeof(hsize_t));
+  this->chunkdims_   = (hsize_t*) calloc(ND_ARRAY_MAX_DIMS, sizeof(hsize_t));
   this->offset_      = NULL;
   this->virtualdims_ = NULL;
+  this->virtualchunkdims_ = NULL;
 }
- 
+
+NDFileHDF5Dataset::~NDFileHDF5Dataset()
+{
+  if (this->chunkdims_   != NULL) free(this->chunkdims_);
+  if (this->maxdims_     != NULL) free(this->maxdims_);
+  if (this->dims_        != NULL) free(this->dims_);
+  if (this->offset_      != NULL) free(this->offset_);
+  if (this->virtualdims_ != NULL) free(this->virtualdims_);
+  if (this->virtualchunkdims_ != NULL) free(this->virtualchunkdims_);
+} 
+
 /** configureDims.
  * Setup any extra dimensions required for this dataset
  * \param[in] pArray - A pointer to an NDArray which contains dimension information.
@@ -29,7 +43,7 @@ NDFileHDF5Dataset::NDFileHDF5Dataset(asynUser *pAsynUser, const std::string& nam
  * \param[in] extra_dims - The size of extra dimensions.
  * \param[in] user_chunking - Array of user defined chunking dimensions.
  */
-asynStatus NDFileHDF5Dataset::configureDims(NDArray *pArray, bool multiframe, int extradimensions, int *extra_dims, int *user_chunking)
+asynStatus NDFileHDF5Dataset::configureDims(NDArray *pArray, bool multiframe, int extradimensions, int *extra_dims, int *extra_dim_chunking, int *user_chunking)
 {
   int i=0,j=0, extradims = 0, ndims=0;
   asynStatus status = asynSuccess;
@@ -39,23 +53,25 @@ asynStatus NDFileHDF5Dataset::configureDims(NDArray *pArray, bool multiframe, in
   ndims = pArray->ndims + extradims;
 
   // Store chunk dimensions
-  this->chunkdims_[0] = user_chunking[0];
-  this->chunkdims_[1] = user_chunking[1];
-  this->chunkdims_[2] = user_chunking[2];
+  for (i=0; i<=pArray->ndims; i++) {
+    this->chunkdims_[i] = user_chunking[i];
+  }
 
   // first check whether the dimension arrays have been allocated
   // or the number of dimensions have changed.
   // If necessary free and reallocate new memory.
   if (this->maxdims_ == NULL || this->rank_ != ndims){
-    if (this->maxdims_     != NULL) free(this->maxdims_);
-    if (this->dims_        != NULL) free(this->dims_);
-    if (this->offset_      != NULL) free(this->offset_);
-    if (this->virtualdims_ != NULL) free(this->virtualdims_);
+    if (this->maxdims_          != NULL) free(this->maxdims_);
+    if (this->dims_             != NULL) free(this->dims_);
+    if (this->offset_           != NULL) free(this->offset_);
+    if (this->virtualdims_      != NULL) free(this->virtualdims_);
+    if (this->virtualchunkdims_ != NULL) free(this->virtualchunkdims_);
 
-    this->maxdims_       = (hsize_t*)calloc(ndims,     sizeof(hsize_t));
-    this->dims_          = (hsize_t*)calloc(ndims,     sizeof(hsize_t));
-    this->offset_        = (hsize_t*)calloc(ndims,     sizeof(hsize_t));
-    this->virtualdims_   = (hsize_t*)calloc(extradims, sizeof(hsize_t));
+    this->maxdims_          = (hsize_t*)calloc(ndims,     sizeof(hsize_t));
+    this->dims_             = (hsize_t*)calloc(ndims,     sizeof(hsize_t));
+    this->offset_           = (hsize_t*)calloc(ndims,     sizeof(hsize_t));
+    this->virtualdims_      = (hsize_t*)calloc(extradims, sizeof(hsize_t));
+    this->virtualchunkdims_ = (hsize_t*)calloc(extradims, sizeof(hsize_t));
   }
 
   if (multiframe){
@@ -67,12 +83,14 @@ asynStatus NDFileHDF5Dataset::configureDims(NDArray *pArray, bool multiframe, in
       this->dims_[i]        = 1;
       this->offset_[i]      = 0; // because we increment offset *before* each write we need to start at -1
       this->virtualdims_[i] = extra_dims[i];
+      this->virtualchunkdims_[i] = extra_dim_chunking[i];
     }
   } else {
     this->multiFrame_ = false;
   }
 
   this->rank_ = ndims;
+  this->extra_rank_ = extradims;
 
   for (j=pArray->ndims-1,i=extradims; i<this->rank_; i++,j--){
     this->maxdims_[i]    = pArray->dims[j].size;
@@ -176,22 +194,11 @@ asynStatus NDFileHDF5Dataset::verifyChunking(NDArray *pArray)
       return asynError;
     }
   }
-  // Check dimensions of data
-  if (pArray->ndims > 2) {
-    asynPrint(this->pAsynUser_, ASYN_TRACE_FLOW,
-              "Data must be 1D or 2D to use direct chunk write\n");
-    return asynError;
-  }
   bool mismatch = false;
   if (this->multiFrame_) {
     // If chunk spans multiple frames (or multiple rows of a 1D dataset), then we require the HDF5
     // processing pipeline to stitch together the NDArrays
-    if (this->chunkdims_[2] != 1 ||
-        (pArray->ndims == 1 && this->chunkdims_[1] != 1)) {
-      mismatch = true;
-    }
-    if (this->chunkdims_[1] != 1 &&
-        pArray->dims[0].size != this->chunkdims_[0]) {
+    if (this->chunkdims_[pArray->ndims] != 1) {
       mismatch = true;
     }
   }
@@ -207,6 +214,14 @@ asynStatus NDFileHDF5Dataset::verifyChunking(NDArray *pArray)
               (int)this->chunkdims_[0], (int)this->chunkdims_[1], (int)this->chunkdims_[2],
               (int)pArray->dims[0].size, (int)pArray->dims[1].size);
       return asynError;
+  }
+  // Final check to make sure all extra dimension chunk sizes are set to 1 (or 0 which would default to 1)
+  // All extra dimension chunk sizes must be set to 0 or 1 if we are going to use the direct chunk write.
+  for (int index = 0; index < this->extra_rank_; index++) {
+    if (this->virtualchunkdims_[index] > 1) {
+      // Chunk size is not set to 1 so we cannot use direct chunk write
+      return asynError;      
+    }
   }
   return asynSuccess;
 }
@@ -257,6 +272,7 @@ asynStatus NDFileHDF5Dataset::writeFile(NDArray *pArray, hid_t datatype, hid_t d
     asynPrint(this->pAsynUser_, ASYN_TRACE_ERROR, 
               "%s::%s ERROR Unable to select hyperslab\n", 
               fileName, functionName);
+    H5Sclose(fspace);
     return asynError;
   }
 
@@ -267,18 +283,54 @@ asynStatus NDFileHDF5Dataset::writeFile(NDArray *pArray, hid_t datatype, hid_t d
               "%s::%s NDArray correctly chunked. Using direct chunk write\n",
               fileName, functionName);
     size_t size = pArray->compressedSize;
+    void *pData = pArray->pData;
+    char *temp=0;
+    NDArrayInfo_t info;
+    pArray->getInfo(&info);
     if (pArray->codec.empty()) {
-        NDArrayInfo_t info;
-        pArray->getInfo(&info);
         size = info.totalBytes;
+    }
+    else if (pArray->codec.name == codecName[NDCODEC_LZ4]) {
+        // We need to add a 16-byte header to the lz4 compressed data
+        temp = (char *)malloc(16 + size);
+        // First 8 bytes is the uncompressed array size
+        unsigned long long ui64 = htonll(info.totalBytes);
+        memcpy(temp, &ui64, 8);
+        // Next 4 bytes is the block size = uncompressed size as long as < 1GB which we assume here
+        epicsUInt32 ui32 = htonl((int)info.totalBytes);
+        memcpy(temp+8, &ui32, 4);
+        // Next 4 bytes is the compressed size
+        ui32 = htonl((int)size);
+        memcpy(temp+12, &ui32, 4);
+        // Now copy the data
+        memcpy(temp+16, pArray->pData, size);
+        pData = temp;
+        size += 16;
+    }
+    else if (pArray->codec.name == codecName[NDCODEC_BSLZ4]) {
+        // We need to add a 12-byte header to the bs/lz4 compressed data
+        temp = (char *)malloc(12 + size);
+        // First 8 bytes is the uncompressed array size
+        unsigned long long ui64 = htonll(info.totalBytes);
+        memcpy(temp, &ui64, 8);
+        // Next 4 bytes is the block size * elem_size;  8192 is the default in bitshuffle
+        epicsUInt32 ui32 = htonl(8192);
+        memcpy(temp+8, &ui32, 4);
+        // Now copy the data
+        memcpy(temp+12, pArray->pData, size);
+        pData = temp;
+        size += 12;
     }
     #if H5_VERSION_GE(1, 10, 3)
     hdfstatus = H5Dwrite_chunk(this->dataset_, H5P_DEFAULT, 0x0,
-                               this->offset_, size, pArray->pData);
+                               this->offset_, size, pData);
     #else  // Use deprecated method
     hdfstatus = H5DOwrite_chunk(this->dataset_, H5P_DEFAULT, 0x0,
-                                this->offset_, size, pArray->pData);
+                                this->offset_, size, pData);
     #endif
+    if (temp) {
+        free(temp);
+    }
   } else {
     // Either direct chunk write is not available, or we need to use the HDF5 pipeline for
     // compression / chunk buffering - use standard write method
@@ -287,6 +339,7 @@ asynStatus NDFileHDF5Dataset::writeFile(NDArray *pArray, hid_t datatype, hid_t d
       asynPrint(this->pAsynUser_, ASYN_TRACE_ERROR,
                 "%s::%s ERROR Unable to write pre-compressed data - mismatched chunk definition\n",
                 fileName, functionName);
+      H5Sclose(fspace);
       return asynError;
     }
     asynPrint(this->pAsynUser_, ASYN_TRACE_FLOW,
@@ -299,6 +352,7 @@ asynStatus NDFileHDF5Dataset::writeFile(NDArray *pArray, hid_t datatype, hid_t d
     asynPrint(this->pAsynUser_, ASYN_TRACE_ERROR, 
               "%s::%s ERROR Unable to write data to hyperslab\n", 
               fileName, functionName);
+    H5Sclose(fspace);
     return asynError;
   }
 
@@ -350,4 +404,57 @@ asynStatus NDFileHDF5Dataset::flushDataset()
 
   return asynSuccess;  
 }
+
+/** Return the requested dimension size.
+  * \param[in] index of dimension
+  * \return size of the dimension
+  */
+hsize_t NDFileHDF5Dataset::getDim(int index)
+{
+  hsize_t value = -1;
+  if (index >= 0 && index < this->rank_){
+    value = this->dims_[index];
+  }
+  return value;
+}
+
+/** Return the requested max dimension size.
+  * \param[in] index of dimension
+  * \return size of the dimension
+  */
+hsize_t NDFileHDF5Dataset::getMaxDim(int index)
+{
+  hsize_t value = -1;
+  if (index >= 0 && index < this->rank_){
+    value = this->maxdims_[index];
+  }
+  return value;
+}
+
+/** Return the requested offset size.
+  * \param[in] index of offset
+  * \return size of the offset
+  */
+hsize_t NDFileHDF5Dataset::getOffset(int index)
+{
+  hsize_t value = -1;
+  if (index >= 0 && index < this->rank_){
+    value = this->offset_[index];
+  }
+  return value;
+}
+
+/** Return the requested virtual dimension size.
+  * \param[in] index of dimension
+  * \return size of the dimension
+  */
+hsize_t NDFileHDF5Dataset::getVirtualDim(int index)
+{
+  hsize_t value = -1;
+  if (index >= 0 && index < this->extra_rank_){
+    value = this->virtualdims_[index];
+  }
+  return value;
+}
+
 

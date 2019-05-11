@@ -27,10 +27,9 @@ although it does not support signed 8-bit integers so it treats them as
 unsigned. ImageJ can read all types except NDFloat64. PIL cannot read
 NDInt8, NDUInt32, or NDFloat64.
 
-The TIFF plugin writes all NDAttributes attached to the NDArray as TIFF
-ASCII file tags, up to a maximum of 490 tags. These tags start with
-number 65000. For historical reasons first 4 tags do not have labels.
-These are the following NDArray class members converted to ASCII:
+The TIFF plugin writes four NDArray class members as TIFF tags starting
+with tag number 65000. For historical reasons these tags do not have labels.
+They are the following NDArray class members converted to ASCII:
 
 ::
 
@@ -39,10 +38,11 @@ These are the following NDArray class members converted to ASCII:
     -  65002: epicsTS (seconds)
     -  65003: epicsTS (nano-seconds)
 
-Tags starting with 65004 are the NDAttributes in the NDArray converted
-to ASCII with attribute name, followed by a colon and the attribute
-value. This information can be displayed, for example, with the tiffinfo
-program:
+The TIFF plugin also writes all NDAttributes attached to the NDArray as TIFF
+ASCII file tags, up to a maximum of 536 attributes. These tags start with
+number 65010. The NDAttributes are converted to ASCII with attribute name,
+followed by a colon and the attribute value. This information can be displayed,
+for example, with the tiffinfo program:
 
 ::
 

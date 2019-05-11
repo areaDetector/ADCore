@@ -60,7 +60,6 @@ namespace hdf5
       <group name=\"detector\"> \
         <attribute name=\"NX_class\" source=\"constant\" value=\"NXdetector\" type=\"string\"></attribute> \
         <dataset name=\"data\" source=\"detector\" det_default=\"true\"> \
-          <attribute name=\"NX_class\" source=\"constant\" value=\"SDS\" type=\"string\"></attribute> \
           <attribute name=\"signal\" source=\"constant\" value=\"1\" type=\"int\"></attribute> \
         </dataset> \
         <group name=\"NDAttributes\"> \
@@ -341,6 +340,7 @@ namespace hdf5
     attr_src = xmlTextReaderGetAttribute(this->xmlreader, (const xmlChar*)LayoutXML::ATTR_SOURCE.c_str());
     if (attr_src == NULL) return ret;
     str_attr_src = (char*)attr_src;
+    xmlFree(attr_src);
 
     if (str_attr_src == LayoutXML::ATTR_SRC_DETECTOR){
       out = DataSource( detector );
@@ -368,6 +368,7 @@ namespace hdf5
     attr_src = xmlTextReaderGetAttribute(this->xmlreader, (const xmlChar*)LayoutXML::ATTR_SOURCE.c_str());
     if (attr_src == NULL) return ret;
     str_attr_src = (char*)attr_src;
+    xmlFree(attr_src);
 
     std::string str_attr_val = "";
     xmlChar *attr_val = NULL;
@@ -380,11 +381,17 @@ namespace hdf5
     // Then setup the data source as a ndattribute with the name of the NDAttribute as argument value
     if (str_attr_src == LayoutXML::ATTR_SRC_NDATTR) {
       attr_val = xmlTextReaderGetAttribute(this->xmlreader, (const xmlChar*)LayoutXML::ATTR_SRC_NDATTR.c_str());
-      if (attr_val != NULL) str_attr_val = (char*)attr_val;
+      if (attr_val != NULL) {
+        str_attr_val = (char*)attr_val;
+        xmlFree(attr_val);
+      }
       out.source = DataSource( ndattribute, str_attr_val );
       // Check for a when="OnFileClose" or when="OnFileOpen" tag
       attr_when = xmlTextReaderGetAttribute(this->xmlreader, (const xmlChar*)LayoutXML::ATTR_SRC_WHEN.c_str());
-      if (attr_when != NULL) str_attr_when = (char*)attr_when;
+      if (attr_when != NULL) {
+        str_attr_when = (char*)attr_when;
+        xmlFree(attr_when);
+      }
       if (str_attr_when == "OnFileOpen"){
         out.source.set_when_to_save(OnFileOpen);
       } else if (str_attr_when == "OnFileClose"){
@@ -399,11 +406,15 @@ namespace hdf5
     // at least a int and float as well.
     else if (str_attr_src == LayoutXML::ATTR_SRC_CONST) {
       attr_val = xmlTextReaderGetAttribute(this->xmlreader, (const xmlChar*)LayoutXML::ATTR_SRC_CONST_VALUE.c_str());
-      if (attr_val != NULL) str_attr_val = (char*)attr_val;
+      if (attr_val != NULL) {
+        str_attr_val = (char*)attr_val;
+        xmlFree(attr_val);
+      }
       out.source = DataSource( constant, str_attr_val );
       attr_type = xmlTextReaderGetAttribute(this->xmlreader, (const xmlChar*)LayoutXML::ATTR_SRC_CONST_TYPE.c_str());
       if (attr_type != NULL) {
         str_attr_type = (char*)attr_type;
+        xmlFree(attr_type);
         DataType_t dtype = string;
         if (str_attr_type == "int") dtype = int32;
         else if (str_attr_type == "float") dtype = float64;
@@ -507,6 +518,7 @@ namespace hdf5
     if (dset_name == NULL) return -1;
 
     std::string str_dset_name((char*)dset_name);
+    xmlFree(dset_name);
     Group *parent = (Group *)this->ptr_curr_element;
     Dataset *dset = NULL;
     dset = parent->new_dset(str_dset_name);
@@ -519,6 +531,7 @@ namespace hdf5
     attr_def = xmlTextReaderGetAttribute(this->xmlreader, (const xmlChar*)LayoutXML::ATTR_SRC_DET_DEFAULT.c_str());
     if (attr_def != NULL){
       str_attr_def = (char*)attr_def;
+      xmlFree(attr_def);
       if (str_attr_def == "true"){
         detector_default = true;
       }
@@ -537,12 +550,14 @@ namespace hdf5
       attr_ndname = xmlTextReaderGetAttribute(this->xmlreader, (const xmlChar*)LayoutXML::ATTR_SRC_NDATTR.c_str());
       if (attr_ndname != NULL){
         str_attr_ndname = (char*)attr_ndname;
+        xmlFree(attr_ndname);
         dset->set_ndattr_name(str_attr_ndname);
         //if ndattribute, check for 'when' tag
         xmlChar *attr_when = NULL;
         attr_when = xmlTextReaderGetAttribute(this->xmlreader, (const xmlChar*)LayoutXML::ATTR_SRC_WHEN.c_str());
         if (attr_when != NULL){
           std::string str_attr_when( (char*)attr_when );
+          xmlFree(attr_when);
           When_t when_to_save = OnFrame; //Default is to save every frame
           if (str_attr_when == "OnFileOpen"){
             when_to_save = OnFileOpen;
@@ -555,10 +570,14 @@ namespace hdf5
     } else if (attrval.is_src_constant()){
       //if constant data
       c_val = xmlTextReaderGetAttribute(this->xmlreader, (const xmlChar*)LayoutXML::ATTR_SRC_CONST_VALUE.c_str());
-      if (c_val != NULL) str_val = (char*)c_val;
+      if (c_val != NULL) {
+        str_val = (char*)c_val;
+        xmlFree(c_val);
+      }
       c_type = xmlTextReaderGetAttribute(this->xmlreader, (const xmlChar*)LayoutXML::ATTR_SRC_CONST_TYPE.c_str());
       if (c_type != NULL){
         str_type = (char*)c_type;
+        xmlFree(c_type);
         DataType_t dtype = string;
         if (str_type == "int") dtype = int32;
         else if (str_type == "float") dtype = float64;
@@ -583,6 +602,7 @@ namespace hdf5
     if (ndattr_name == NULL) return -1;
 
     std::string str_ndattr_name((char*)ndattr_name);
+    xmlFree(ndattr_name);
     Attribute ndattr(str_ndattr_name);
     this->process_attribute_xml_attribute(ndattr);
 
@@ -598,12 +618,13 @@ namespace hdf5
     xmlChar *global_name = NULL;
     global_name = xmlTextReaderGetAttribute(this->xmlreader, (const xmlChar*)LayoutXML::ATTR_GLOBAL_NAME.c_str());
     if (global_name == NULL) return -1;
+    std::string str_global_name((char*)global_name);
+    xmlFree(global_name);
     xmlChar *global_value = NULL;
     global_value = xmlTextReaderGetAttribute(this->xmlreader, (const xmlChar*)LayoutXML::ATTR_GLOBAL_VALUE.c_str());
     if (global_value == NULL) return -1;
-
-    std::string str_global_name((char*)global_name);
     std::string str_global_value((char*)global_value);
+    xmlFree(global_value);
 
     this->globals[str_global_name] = str_global_value;
     return ret;
@@ -616,16 +637,17 @@ namespace hdf5
     xmlChar *hardlink_name = NULL;
     hardlink_name = xmlTextReaderGetAttribute(this->xmlreader, (const xmlChar*)LayoutXML::ATTR_ELEMENT_NAME.c_str());
     if (hardlink_name == NULL) return -1;
+    std::string str_hardlink_name((char*)hardlink_name);
+    xmlFree(hardlink_name);
     xmlChar *hardlink_target = NULL;
     hardlink_target = xmlTextReaderGetAttribute(this->xmlreader, (const xmlChar*)LayoutXML::ATTR_HARDLINK_TARGET.c_str());
     if (hardlink_target == NULL) return -1;
-
-    std::string str_hardlink_name((char*)hardlink_name);
+    const std::string str_hardlink_target((char*)hardlink_target);
+    xmlFree(hardlink_target);
     Group *parent = (Group *)this->ptr_curr_element;
     HardLink *hardlink = NULL;
     hardlink = parent->new_hardlink(str_hardlink_name);
     if (hardlink == NULL) return -1;
-    const std::string str_hardlink_target((char*)hardlink_target);
     hardlink->set_target(str_hardlink_target);
     return 0;
   }

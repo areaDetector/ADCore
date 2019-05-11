@@ -95,8 +95,8 @@ std::vector<hsize_t> HDF5FileReader::getDatasetDimensions(const std::string& nam
 
       ndims = H5Sget_simple_extent_ndims(dspace_id);
 
-      hsize_t dims[ndims];
-      hsize_t maxdims[ndims];
+      hsize_t *dims = new hsize_t[ndims];
+      hsize_t *maxdims = new hsize_t[ndims];
       H5Sget_simple_extent_dims(dspace_id, dims, maxdims);
 
       for (int index = 0; index < ndims; index++){
@@ -105,6 +105,9 @@ std::vector<hsize_t> HDF5FileReader::getDatasetDimensions(const std::string& nam
 
       // Close the dataset
       H5Dclose(dataset_id);
+
+      delete dims;
+      delete maxdims;
     }
   }
   return vdims;

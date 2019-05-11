@@ -8,9 +8,10 @@ before_install:
 install:
 - make
 script:
-- "./bin/linux-x86_64/plugin-test --log_level=test_suite"
+- "valgrind --leak-check=yes --log-file=valgrind_output.txt ./bin/linux-x86_64/plugin-test --log_level=test_suite"
 after_success:
 - sh ci/coverage.sh
 - coveralls-lcov --source-encoding=ISO-8859-1 ci/coverage.info
+- tail --lines 15 valgrind_output.txt
 notifications:
   slack: epicsareadetector:xf0ac8PfwqcSqi2gE0tUcUkP

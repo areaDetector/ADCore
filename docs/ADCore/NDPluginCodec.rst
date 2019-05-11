@@ -27,14 +27,14 @@ Uncompressed NDArrays
 Compressed NDArrays
 ~~~~~~~~~~~~~~~~~~~
 
--  ``codec`` holds the name of the codec that was used to compress the
-   data. This plugin currently supports two codecs: "jpeg" and "blosc".
+-  ``codec.name`` holds the name of the codec that was used to compress the
+   data. This plugin currently supports four codecs: "jpeg", "blosc", "lz4", and "bzlz4".
 -  ``compressedSize`` holds the length of the compressed data in
    ``pData``.
 -  ``dataSize`` holds the length of the allocated ``pData`` buffer, as
    usual.
 -  ``pData`` holds the compressed data as ``unsigned char``.
--  ``dataType`` holds the data type of the **compressed** data. This
+-  ``dataType`` holds the data type of the **uncompressed** data. This
    will be used for decompression.
 
 Compression
@@ -48,14 +48,16 @@ the following formula:
 
 ``dataSize/compressedSize``
 
-Currently, three choices are available for the Compressor parameter:
+Currently, five choices are available for the Compressor parameter:
 
 -  None: No compression will be performed. The NDArray will be passed
    forward as-is.
 -  JPEG: The compression will be performed according to the JPEG format.
    ``pData`` will contain a full, valid JPEG file in memory after the
-   compression is done. JPEG compression is controlled with the
-   following parameters:
+   compression is done. JPEG compression is limited to unsigned 8-bit data (UInt8).
+   It is also limited to ColorMode=Mono or RGB1.  For Mono the input data is
+   2-D (NX, NY).  For RGB1 it is 3-D [3, NX, NY].
+   JPEG compression is controlled with the following parameters:
 
    -  JPEGQuality: The image quality to be used for the compression. The
       quality value must be between 1 and 100, with 100 meaning best
@@ -68,12 +70,24 @@ Currently, three choices are available for the Compressor parameter:
       choices: BloscLZ, LZ4, LZ4HC, Snappy, ZLIB and ZSTD.
    -  BloscCLevel: the compression level for the selected algorithm.
    -  BloscShuffle: controls whether data will be shuffled before
-      compression. Choices are None, Bit, and Byte.
+      compression. Choices are None, Byte, and Bit.
    -  BloscNumThreads: controls how many threads will be used by the
       Blosc compressor to improve performance.
+-  LZ4: The compression will be performed according to the LZ4
+   format. This is similar to the Blosc compressor with BloscShuffle=None
+   but uses the native LZ4 library, rather than Blosc.
+   It is one of the compressors used on the ZeroMQ socket interface on 
+   the Eiger detector from Dectris. NDPluginCodec can thus be used to decompress
+   this data.
+-  BSLZ4: The compression will be performed according to the Bitshuffle/LZ4
+   format. This is similar to the Blosc compressor with BloscShuffle=Bit
+   but uses the native LZ4 library, rather than Blosc.
+   It is one of the compressors used on the ZeroMQ socket interface on 
+   the Eiger detector from Dectris. NDPluginCodec can thus be used to decompress
+   this data.
 
 Note that BloscNumThreads controls the number of threads created from a
-single NDPluginCodec thread. The performance of both the JPEG and Blosc
+single NDPluginCodec thread. The performance of all the
 compressors can also be increased by running multiple NDPluginCodec
 threads within a single plugin instance. This is controlled with the
 NumThreads record, as for most other plugins.
@@ -81,8 +95,8 @@ NumThreads record, as for most other plugins.
 It is important to note that plugins downstream of NDCodec that are
 receiving compressed NDArrays **must** have been constructed with
 NDPluginDriver's ``compressionAware=true``, otherwise compressed arrays
-**will be dropped** by them at runtime. Currently only NDPluginCodec and
-NDPluginPva are able to handle compressed NDArrays.
+**will be dropped** by them at runtime. Currently only NDPluginCodec,
+NDPluginPva, and NDFileHDF5 are able to handle compressed NDArrays.
 
 Decompression
 -------------
@@ -162,7 +176,15 @@ following table.
         <td>
           r/w</td>
         <td>
-          Which compressor to use (NDCodecCompressor_t).</td>
+          Which compressor to use (NDCodecCompressor_t).
+          <ul>
+            <li>None</li>
+            <li>JPEG</li>
+            <li>Blosc</li>
+            <li>LZ4</li>
+            <li>BSLZ4</li>
+          </ul>
+          </td>
         <td>
           COMPRESSOR</td>
         <td>
@@ -200,7 +222,7 @@ following table.
         <td>
           r/w</td>
         <td>
-          JPEG compression quality.</td>
+          JPEG compression quality, 1-100.</td>
         <td>
           JPEG_QUALITY</td>
         <td>
@@ -222,7 +244,16 @@ following table.
         <td>
           r/w</td>
         <td>
-          Which Blosc compressor to use (NDCodecBloscComp_t).</td>
+          Which Blosc compressor to use (NDCodecBloscComp_t).
+          <ul>
+            <li>BloscLZ</li>
+            <li>LZ4</li>
+            <li>LZ4HC</li>
+            <li>SNAPPY</li>
+            <li>ZLIB</li>
+            <li>ZSTD</li>
+           </ul>
+          </td>
         <td>
           BLOSC_COMPRESSOR</td>
         <td>

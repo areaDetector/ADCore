@@ -391,7 +391,7 @@ BOOST_AUTO_TEST_CASE(attrplot_multiple_attributes)
     std::string attr1 = attrPlot->readString(NDAttrPlotAttributeString, 0);
     std::string attr2 = attrPlot->readString(NDAttrPlotAttributeString, 1);
     std::string attr3 = attrPlot->readString(NDAttrPlotAttributeString, 2);
-    BOOST_CHECK(attr1 != attr2 and attr2 != attr3 and attr1 != attr3);
+    BOOST_CHECK((attr1 != attr2) && (attr2 != attr3) && (attr1 != attr3));
     BOOST_CHECK(std::find(attributes.begin(), attributes.end(), attr1) != attributes.end());
     BOOST_CHECK(std::find(attributes.begin(), attributes.end(), attr2) != attributes.end());
     BOOST_CHECK(std::find(attributes.begin(), attributes.end(), attr3) != attributes.end());

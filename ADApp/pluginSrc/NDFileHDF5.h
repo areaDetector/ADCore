@@ -20,9 +20,9 @@
 #include "Codec.h"
 
 #define MAXEXTRADIMS 10
+#define MAX_CHUNK_DIMS ND_ARRAY_MAX_DIMS
 
-#define str_NDFileHDF5_nRowChunks        "HDF5_nRowChunks"
-#define str_NDFileHDF5_nColChunks        "HDF5_nColChunks"
+#define str_NDFileHDF5_chunkSizeAuto     "HDF5_chunkSizeAuto"
 #define str_NDFileHDF5_nFramesChunks     "HDF5_nFramesChunks"
 #define str_NDFileHDF5_chunkBoundaryAlign "HDF5_chunkBoundaryAlign"
 #define str_NDFileHDF5_chunkBoundaryThreshold "HDF5_chunkBoundaryThreshold"
@@ -43,6 +43,7 @@
 #define str_NDFileHDF5_bloscShuffleType  "HDF5_bloscShuffleType"
 #define str_NDFileHDF5_bloscCompressor   "HDF5_bloscCompressor"
 #define str_NDFileHDF5_bloscCompressLevel "HDF5_bloscCompressLevel"
+#define str_NDFileHDF5_jpegQuality       "HDF5_jpegQuality"
 #define str_NDFileHDF5_dimAttDatasets    "HDF5_dimAttDatasets"
 #define str_NDFileHDF5_layoutErrorMsg    "HDF5_layoutErrorMsg"
 #define str_NDFileHDF5_layoutValid       "HDF5_layoutValid"
@@ -55,6 +56,7 @@
 #define str_NDFileHDF5_posIndexDimX      "HDF5_posIndexDimX"
 #define str_NDFileHDF5_posIndexDimY      "HDF5_posIndexDimY"
 #define str_NDFileHDF5_fillValue         "HDF5_fillValue"
+#define str_NDFileHDF5_SWMRFlushNow      "HDF5_SWMRFlushNow"
 #define str_NDFileHDF5_SWMRCbCounter     "HDF5_SWMRCbCounter"
 #define str_NDFileHDF5_SWMRSupported     "HDF5_SWMRSupported"
 #define str_NDFileHDF5_SWMRMode          "HDF5_SWMRMode"
@@ -65,6 +67,7 @@
 class epicsShareClass NDFileHDF5 : public NDPluginFile
 {
   public:
+    static const char *str_NDFileHDF5_chunkSize[MAX_CHUNK_DIMS];
     static const char *str_NDFileHDF5_extraDimSize[MAXEXTRADIMS];
     static const char *str_NDFileHDF5_extraDimName[MAXEXTRADIMS];
     static const char *str_NDFileHDF5_extraDimChunk[MAXEXTRADIMS];
@@ -84,6 +87,7 @@ class epicsShareClass NDFileHDF5 : public NDPluginFile
     virtual asynStatus writeInt32(asynUser *pasynUser, epicsInt32 value);
     virtual asynStatus writeOctet(asynUser *pasynUser, const char *value, size_t nChars, size_t *nActual);
 
+    void flushTask();
     asynStatus startSWMR();
     asynStatus flushCallback();
     asynStatus createXMLFileLayout();
@@ -111,6 +115,12 @@ class epicsShareClass NDFileHDF5 : public NDPluginFile
     int fileExists(char *filename);
     int verifyLayoutXMLFile();
 
+    hsize_t getDim(int index);
+    hsize_t getMaxDim(int index);
+    hsize_t getChunkDim(int index);
+    hsize_t getOffset(int index);
+    hsize_t getVirtualDim(int index);
+
     std::map<std::string, NDFileHDF5Dataset *> detDataMap;  // Map of handles to detector datasets, indexed by name
     std::map<std::string, hid_t>               attDataMap;  // Map of handles to attribute datasets, indexed by name
     std::string                                defDsetName; // Name of the default data set
@@ -119,14 +129,12 @@ class epicsShareClass NDFileHDF5 : public NDPluginFile
     std::map<std::string, hdf5::Element *>     onCloseMap;  // Map of handles to elements with onClose ndattributes, indexed by fullname
     Codec_t                                    codec;       // Definition of codec used to compress the data.
 
-#ifndef _UNITTEST_HDF5_
   protected:
-#endif
     /* plugin parameters */
-    int NDFileHDF5_nRowChunks;
-    #define FIRST_NDFILE_HDF5_PARAM NDFileHDF5_nRowChunks
-    int NDFileHDF5_nColChunks;
+    int NDFileHDF5_chunkSizeAuto;
+    #define FIRST_NDFILE_HDF5_PARAM NDFileHDF5_chunkSizeAuto
     int NDFileHDF5_nFramesChunks;
+    int NDFileHDF5_chunkSize[MAX_CHUNK_DIMS];
     int NDFileHDF5_chunkBoundaryAlign;
     int NDFileHDF5_chunkBoundaryThreshold;
     int NDFileHDF5_NDAttributeChunk;
@@ -149,6 +157,7 @@ class epicsShareClass NDFileHDF5 : public NDPluginFile
     int NDFileHDF5_bloscCompressor;
     int NDFileHDF5_bloscCompressLevel;
     int NDFileHDF5_bloscShuffleType;
+    int NDFileHDF5_jpegQuality;
     int NDFileHDF5_dimAttDatasets;
     int NDFileHDF5_layoutErrorMsg;
     int NDFileHDF5_layoutValid;
@@ -157,14 +166,17 @@ class epicsShareClass NDFileHDF5 : public NDPluginFile
     int NDFileHDF5_posName[MAXEXTRADIMS];
     int NDFileHDF5_posIndex[MAXEXTRADIMS];
     int NDFileHDF5_fillValue;
+    int NDFileHDF5_SWMRFlushNow;
     int NDFileHDF5_SWMRCbCounter;
     int NDFileHDF5_SWMRSupported;
     int NDFileHDF5_SWMRMode;
     int NDFileHDF5_SWMRRunning;
 
-#ifndef _UNITTEST_HDF5_
+    asynStatus configureDims(NDArray *pArray);
+    void calcNumFrames();
+    void setMultiFrameFile(bool multi);
+
   private:
-#endif
     /* private helper functions */
     inline bool IsPrime(int number)
     {
@@ -182,7 +194,6 @@ class epicsShareClass NDFileHDF5 : public NDPluginFile
 
     hid_t typeNd2Hdf(NDDataType_t datatype);
     asynStatus configureDatasetDims(NDArray *pArray);
-    asynStatus configureDims(NDArray *pArray);
     asynStatus configureDatasetCompression();
     asynStatus configureCompression(NDArray *pArray);
     char* getDimsReport();
@@ -193,7 +204,6 @@ class epicsShareClass NDFileHDF5 : public NDPluginFile
     asynStatus configurePerformanceDataset();
     asynStatus createPerformanceDataset();
     asynStatus writePerformanceDataset();
-    void calcNumFrames();
     unsigned int calcIstorek();
     hsize_t calcChunkCacheBytes();
     hsize_t calcChunkCacheSlots();
@@ -235,6 +245,9 @@ class epicsShareClass NDFileHDF5 : public NDPluginFile
     int bytesPerElement;
     char *hostname;
 
+    epicsEventId flushEventId;
+    epicsMutex flushLock;
+
     std::list<NDFileHDF5AttributeDataset*> attrList;
 
     /* HDF5 handles and references */
@@ -247,6 +260,7 @@ class epicsShareClass NDFileHDF5 : public NDPluginFile
 
     /* dimension descriptors */
     int rank;               /** < number of dimensions */
+    int nvirtual;           /** < number of extra virtual dimensions */
     hsize_t *dims;          /** < Array of current dimension sizes. This updates as various dimensions grow. */
     hsize_t *maxdims;       /** < Array of maximum dimension sizes. The value -1 is HDF5 term for infinite. */
     hsize_t *chunkdims;     /** < Array of chunk size in each dimension. Only the dimensions that indicate the frame size (width, height) can really be tweaked. All other dimensions should be set to 1. */

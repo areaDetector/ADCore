@@ -83,20 +83,6 @@ ifeq ($(WITH_TIFF),YES)
   endif
 endif
 
-ifeq ($(WITH_JPEG),YES)
-  $(DBD_NAME)_DBD += NDFileJPEG.dbd
-  ifeq ($(JPEG_EXTERNAL),NO)
-    PROD_LIBS += jpeg
-  else
-    ifdef JPEG_LIB
-      jpeg_DIR     = $(JPEG_LIB)
-      PROD_LIBS     += jpeg
-    else
-      PROD_SYS_LIBS += jpeg
-    endif
-  endif
-endif
-
 ifeq ($(XML2_EXTERNAL),NO)
   PROD_LIBS += xml2
 else
@@ -208,6 +194,20 @@ ifeq ($(WITH_BOOST),YES)
       PROD_LIBS     += boost
     else
       PROD_SYS_LIBS += boost_system
+    endif
+  endif
+endof
+
+ifeq ($(WITH_JPEG),YES)
+  $(DBD_NAME)_DBD += NDFileJPEG.dbd
+  ifeq ($(JPEG_EXTERNAL),NO)
+    PROD_LIBS += jpeg
+  else
+    ifdef JPEG_LIB
+      jpeg_DIR     = $(JPEG_LIB)
+      PROD_LIBS     += jpeg
+    else
+      PROD_SYS_LIBS += jpeg
     endif
   endif
 endif

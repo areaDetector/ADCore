@@ -101,6 +101,7 @@ if [[ $XML2_EXTERNAL == "YES" ]]; then
   sudo apt-get install libxml2-dev
 fi
 
+sudo apt-get install valgrind
 # TO DO: Install ZLIB, SZIP, JPEG, NEXUS, NETCDF if we want to use package versions
 
 # Installing latest version of code coverage tool lcov (because the ubuntu package is very old)

@@ -508,22 +508,20 @@ Chunking
 --------
 
 This plugin uses HDF5 chunking to store the raw image data. The chunk
-size (the size of each I/O block) can be configured for the frame X and
-Y dimensions as well as the N'th image (which essentially implies memory
+size (the size of each I/O block) can be either automatically configured
+(ChunkSizeAuto=Yes) or user-configured (ChunkSizeAuto=No). If automatically
+configured then the chunk size in each dimension is the size of the NDArray 
+in that dimension.  NumFramesChunks defaults to 1, but if it is set higher
+then each chunk can be multiple NDArrays, (which essentially implies memory
 caching before writing to disk). Configuring chunking correctly for a
 given application is a complex matter where both the write performance
 and the read performance for a given post processing application will
-have to be evaluated. As a basic starting point, setting the nColChunks
-and nRowChunks parameters to the X and Y frame size respectively, should
-give a decent result. In fact if these parameters are configured by the
-user to the special value 0, they will default to the dimensions of the
-incoming frames. Further explanations and documentation of the HDF5
+have to be evaluated. As a basic starting point, setting the ChunkSizeAuto=Yes, 
+should give a decent result. Further explanations and documentation of the HDF5
 chunking feature is available in the HDF5 documentation:
 
 -  HDF5 documentation advanced topics: `Chunking in
-   HDF5 <http://www.hdfgroup.org/HDF5/doc/Advanced/Chunking/index.html>`__
--  HDF5 User guide: `14.3 Data
-   Chunking <http://www.hdfgroup.org/training/HDFtraining/UsersGuide/Perform.fm2.html>`__
+   HDF5 <https://portal.hdfgroup.org/display/HDF5/Chunking+in+HDF5>`__
 -  hdfgroup presentation: `HDF5 Advanced Topics - Chunking in
    HDF5 <http://www.hdfgroup.org/pubs/presentations/HDF5-EOSXIII-Advanced-Chunking.pdf>`__
 
@@ -531,10 +529,16 @@ Compression
 -----------
 
 The HDF5 library supports a number of compression algorithms. When using
-HDF5 libraries to write and read files the compression is seemless: it
-only need to be switched on when writing and HDF5 enabled applications
-can read the files without any additional configuration. Only one
-compression filter can be applied at the time.
+HDF5 libraries to write and read files the with standard HDF5 compressions
+(N-bit, szip, and libz) it only need to be switched on when writing and HDF5 enabled applications
+can read the files without any additional configuration. When using Blosc, LZ4, BSLZ4 and JPEG no
+additional configuration is required for NDFileHDF5 to write the files, because it registers
+these compression filters.  However, when reading files written with Blosc, LZ4, BSLZ4, or JPEG
+the environment variable HDF5_PLUGIN_PATH must point to a directory containing the shareable libraries
+for the decompression filter plugins.  This allows any application built with HDF5 1.8.11 or later to
+read files written with these compression filters. The areaDetector/ADSupport modules builds these shareable 
+libraries for Linux, Windows, and Mac.
+Only one compression filter can be applied at the time.
 
 The following compression filters are supported in the NDFileHDF5
 plugin:
@@ -558,12 +562,17 @@ plugin:
 -  `N-bit <http://www.hdfgroup.org/HDF5/doc/RM/RM_H5P.html#Property-SetNbit>`__
    compression is a bit-packing scheme to be used when a detector
    provide fewer databits than standard 8,16,32 bit words. Data width
-   and offset in the word is user configurable
+   and offset in the word is user configurable.
+-  `Blosc <http://blosc.org/>`__ compression. Blosc is lossless and contains several compressors,
+    including LZ4 with Bitshuffle.
+-  `LZ4 <https://lz4.github.io/lz4/>`__ compression. LZ4 is lossless.
+-  `Bitshuffle/LZ4 <https://github.com/kiyo-masui/bitshuffle>`__ compression. BSLZ4 is lossless.
+-  `JPEG <https://jpeg.org/>`__ compression. JPEG is lossy, with a user-defined quality factor.
 
 Single Writer Multiple Reader (SWMR)
 ------------------------------------
 
-From version 1-10 of the HDF5 library, reader applications shall be able
+From version 1-10 of the HDF5 library, reader applications shall be ableFrom version 1-10 of the HDF5 library, reader applications shall be able
 to access the file whilst it is being written. The plugin has been
 updated to support the additional SWMR feature when writing a file. The
 plugin will know if SWMR mode is supported depending on the version of
@@ -575,6 +584,8 @@ NDAttributes are flushed and the current SWMR status and number of
 flushes that have taken place are reported for an acquisition. The SWMR
 active status parameter can be used to signify that it is safe for
 readers to open the file (the file has been placed into SWMR mode).
+Data can be flushed to disk on demand using the FlushNow command.
+
 
 Storing Attributes with Dataset Dimensions
 ------------------------------------------
@@ -736,6 +747,43 @@ Parameters and Records
       </tr>
       <tr>
         <td>
+          ChunkSizeAuto</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          No (0) or Yes (1). If Yes then the chunk size for each dimension of the NDArray is set to be the size of the NDArray in that dimension.</td>
+        <td>
+          HDF5_chunkSizeAuto</td>
+        <td>
+          $(P)$(R)ChunkSizeAuto<br />
+          $(P)$(R)ChunkSizeAuto_RBV</td>
+        <td>
+          bo<br />
+          bi</td>
+      </tr>
+      <tr>
+        <td>
+          nColChunks</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Configure HDF5 "chunking" to approriate size for the filesystem: sets number of
+          columns (dimension 0 of NDArray) to use per chunk</td>
+        <td>
+          HDF5_nColChunks</td>
+        <td>
+          $(P)$(R)NumColChunks<br />
+          $(P)$(R)NumColChunks_RBV</td>
+        <td>
+          longout<br />
+          longin</td>
+      </tr>
+      <tr>
+        <td>
           nRowChunks</td>
         <td>
           asynInt32</td>
@@ -743,7 +791,7 @@ Parameters and Records
           r/w</td>
         <td>
           Configure HDF5 "chunking" to approriate size for the filesystem: sets number of
-          rows to use per chunk</td>
+          rows (dimension 1 of NDArray) to use per chunk</td>
         <td>
           HDF5_nRowChunks</td>
         <td>
@@ -755,19 +803,19 @@ Parameters and Records
       </tr>
       <tr>
         <td>
-          nColChunks</td>
+          chunkSize(N), N=2-9</td>
         <td>
           asynInt32</td>
         <td>
           r/w</td>
         <td>
-          Configure HDF5 "chunking" to approriate size for the filesystem: sets number of
-          columns to use per chunk</td>
+          Configure HDF5 "chunking" to approriate size for the filesystem: sets the number of
+          elements in dimension N use per chunk</td>
         <td>
-          HDF5_nColChunks</td>
+          HDF5_chunkSize</td>
         <td>
-          $(P)$(R)NumColChunks<br />
-          $(P)$(R)NumColChunks_RBV</td>
+          $(P)$(R)ChunkSize(N)<br />
+          $(P)$(R)ChunkSize(N)_RBV</td>
         <td>
           longout<br />
           longin</td>
@@ -781,7 +829,7 @@ Parameters and Records
           r/w</td>
         <td>
           Configure HDF5 "chunking" to approriate size for the filesystem: sets number of
-          frames to use per chunk. For a 2D image, setting this parameter > 1 essentially
+          NDArrays to use per chunk. Setting this parameter > 1 essentially
           implies using in-memory cache as HDF5 only writes full chunks to disk.</td>
         <td>
           HDF5_nFramesChunks</td>
@@ -1019,6 +1067,22 @@ Parameters and Records
           $(P)$(R)SWMRCbCounter_RBV</td>
         <td>
           longin</td>
+      </tr>
+      <tr>
+        <td>
+          SWMRFlushNow</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Forces an immediate HDF5 flush.</td>
+        <td>
+          HDF5_SWMRFlushNow</td>
+        <td>
+          $(P)$(R)FlushNow</td>
+        <td>
+          busy</td>
       </tr>
       <tr>
         <td align="center" colspan="7,">
@@ -1655,7 +1719,18 @@ Parameters and Records
         <td>
           r/w</td>
         <td>
-          Select or switch off compression filter</td>
+          Select or switch off compression filter. <br />
+          <ul>
+            <li>None</li>
+            <li>N-bit</li>
+            <li>szip</li>
+            <li>zlib</li>
+            <li>Blosc</li>
+            <li>BSLZ4</li>
+            <li>LZ4</li>
+            <li>JPEG</li>
+          </ul>
+          </td>
         <td>
           HDF5_compressionType</td>
         <td>
@@ -1733,6 +1808,93 @@ Parameters and Records
         <td>
           $(P)$(R)ZLevel<br />
           $(P)$(R)ZLevel_RBV</td>
+        <td>
+          longout<br />
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          bloscCompressor</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Blosc compressor. <br />
+          <ul>
+            <li>BloscLZ</li>
+            <li>LZ4</li>
+            <li>LZ4HC</li>
+            <li>SNAPPY</li>
+            <li>ZLIB</li>
+            <li>ZSTD</li>
+          </ul>
+          </td>
+        <td>
+          HDF5_bloscCompressor</td>
+        <td>
+          $(P)$(R)BloscCompressor<br />
+          $(P)$(R)BloscCompressor_RBV</td>
+        <td>
+          mbbo<br />
+          mbbi</td>
+      </tr>
+      <tr>
+        <td>
+          bloscShuffle</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Blosc shuffle.<br />
+          <ul>
+            <li>None</li>
+            <li>Byte</li>
+            <li>Bit</li>
+          </ul>
+          </td>
+        <td>
+          HDF5_bloscShuffle</td>
+        <td>
+          $(P)$(R)BloscShuffle<br />
+          $(P)$(R)BloscShuffle_RBV</td>
+        <td>
+          mbbo<br />
+          mbbi</td>
+      </tr>
+      <tr>
+        <td>
+          BloscLevel</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Blosc compression filter: compression level [0..9]</td>
+        <td>
+          HDF5_bloscCompressLevel</td>
+        <td>
+          $(P)$(R)BloscLevel<br />
+          $(P)$(R)BloscLevel_RBV</td>
+        <td>
+          longout<br />
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          JPEGQuality</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          JPEG quality level [1..100]</td>
+        <td>
+          HDF5_jpegQuality</td>
+        <td>
+          $(P)$(R)JPEGQuality<br />
+          $(P)$(R)JPEGQuality_RBV</td>
         <td>
           longout<br />
           longin</td>
