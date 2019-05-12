@@ -185,6 +185,11 @@ dbLoadRecords("$(AUTOSAVE)/asApp/Db/save_restoreStatus.db", "P=$(PREFIX)")
 #dbLoadRecords("$(ADPLUGINEDGE)/db/NDEdge.template",  "P=$(PREFIX),R=Edge1:, PORT=EDGE1,ADDR=0,TIMEOUT=1,NDARRAY_PORT=$(PORT)")
 #set_requestfile_path("$(ADPLUGINEDGE)/edgeApp/Db")
 
+# Optional: load NDPluginCV plugin
+#NDCVConfigure("CV1", $(QSIZE), 0, "$(PORT)", 0, 0, 0, 0)
+#dbLoadRecords("$(ADCOMPVISION)/db/NDCV.template",  "P=$(PREFIX),R=CV1:, PORT=CV1,ADDR=0,TIMEOUT=1,NDARRAY_PORT=$(PORT)")
+#set_requestfile_path("$(ADCOMPVISION)/adcvApp/Db")
+
 # Optional: load scan records
 #dbLoadRecords("$(SSCAN)/sscanApp/Db/scan.db", "P=$(PREFIX),MAXPTS1=2000,MAXPTS2=200,MAXPTS3=20,MAXPTS4=10,MAXPTSH=10")
 #set_requestfile_path("$(SSCAN)/sscanApp/Db")
