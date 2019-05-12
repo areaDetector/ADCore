@@ -1,6 +1,6 @@
 
 file {
-	name="/home/epics/devel/areaDetector/ADCore/ADApp/op/adl/ADPlugins.adl"
+	name="/home/epics/devel/areaDetector-3-5/ADCore/ADApp/op/adl/ADPlugins.adl"
 	version=030109
 }
 display {
@@ -423,6 +423,16 @@ text {
 		label="devIocStats"
 		name="ioc_stats_soft.adl"
 		args="ioc=$(P)"
+	}
+	display[4] {
+		label="Open CV #1"
+		name="ADCompVision.adl"
+		args="P=$(P), R=CV1:"
+	}
+	display[5] {
+		label="Edge #1"
+		name="NDPluginEdge.adl"
+		args="P=$(P), R=Edge1:"
 	}
 	clr=14
 	bclr=51
