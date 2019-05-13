@@ -190,6 +190,11 @@ dbLoadRecords("$(AUTOSAVE)/asApp/Db/save_restoreStatus.db", "P=$(PREFIX)")
 #dbLoadRecords("$(ADCOMPVISION)/db/NDCV.template",  "P=$(PREFIX),R=CV1:, PORT=CV1,ADDR=0,TIMEOUT=1,NDARRAY_PORT=$(PORT)")
 #set_requestfile_path("$(ADCOMPVISION)/adcvApp/Db")
 
+# Optional: load NDPluginBar plugin
+#NDBarConfigure("BAR1", $(QSIZE), 0, "$(PORT)", 0, 0, 0, 0)
+#dbLoadRecords("$(ADPLUGINBAR)/db/NDBar.template",  "P=$(PREFIX),R=Bar1:, PORT=BAR1,ADDR=0,TIMEOUT=1,NDARRAY_PORT=$(PORT)")
+#set_requestfile_path("$(ADPLUGINBAR)/barApp/Db")
+
 # Optional: load scan records
 #dbLoadRecords("$(SSCAN)/sscanApp/Db/scan.db", "P=$(PREFIX),MAXPTS1=2000,MAXPTS2=200,MAXPTS3=20,MAXPTS4=10,MAXPTSH=10")
 #set_requestfile_path("$(SSCAN)/sscanApp/Db")
