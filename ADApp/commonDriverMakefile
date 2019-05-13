@@ -191,12 +191,12 @@ ifeq ($(WITH_BOOST),YES)
   else
     ifdef BOOST_LIB
       BOOST_DIR        = $(BOOST_LIB)
-      PROD_LIBS     += boost
+      PROD_LIBS     += boost_system
     else
       PROD_SYS_LIBS += boost_system
     endif
   endif
-endof
+endif
 
 ifeq ($(WITH_JPEG),YES)
   $(DBD_NAME)_DBD += NDFileJPEG.dbd
