@@ -3392,7 +3392,7 @@ asynStatus NDFileHDF5::configureCompression(NDArray *pArray)
         unsigned int cds[2];
         cds[0] = 0; /* bitshuffle selects the block size automatically */
         cds[1] = 2; /* lz4 compression */
-        int h5status = H5Pset_filter(this->cparms, FILTER_BSHUF, H5Z_FLAG_OPTIONAL, 2, cds);
+        int h5status = H5Pset_filter(this->cparms, FILTER_BSHUF, H5Z_FLAG_MANDATORY, 2, cds);
         if (h5status) {
           asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, "Failed to set h5 bitshuffle filter\n");
           break;
@@ -3404,7 +3404,7 @@ asynStatus NDFileHDF5::configureCompression(NDArray *pArray)
         unsigned int cds[2];
         cds[0] = 0; /* lz4 selects the block size automatically */
         cds[1] = 0; /* Number of threads (not implemented) */
-        int h5status = H5Pset_filter(this->cparms, FILTER_LZ4, H5Z_FLAG_OPTIONAL, 2, cds);
+        int h5status = H5Pset_filter(this->cparms, FILTER_LZ4, H5Z_FLAG_MANDATORY, 2, cds);
         if (h5status) {
           asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, "Failed to set h5 lz4 filter\n");
           break;
@@ -3432,7 +3432,7 @@ asynStatus NDFileHDF5::configureCompression(NDArray *pArray)
           break;
         }
         
-        int h5status = H5Pset_filter(this->cparms, FILTER_JPEG, H5Z_FLAG_OPTIONAL, 4, cds);
+        int h5status = H5Pset_filter(this->cparms, FILTER_JPEG, H5Z_FLAG_MANDATORY, 4, cds);
         if (h5status) {
           asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, "Failed to set h5 jpeg filter\n");
           break;
