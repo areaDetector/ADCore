@@ -672,6 +672,11 @@ asynStatus NDFileHDF5::createTree(hdf5::Group* root, hid_t h5handle)
     hdf5::Group::MapDatasets_t::iterator it_dsets;
     hdf5::Group::MapDatasets_t& datasets = root->get_datasets();
     for (it_dsets = datasets.begin(); it_dsets != datasets.end(); ++it_dsets){
+      if (name == "performance" && it_dsets->second->get_name() == "timestamp" && !it_dsets->second->data_source().is_src_ndattribute()) {
+        // Creation of performance/timestamp dataset is deferred to later
+        // in createPerformanceDataset()
+        continue;
+      }
       if (it_dsets->second->data_source().is_src_ndattribute()) {
         // Creation of NDAttribute datasets are deferred to later
         // in createAttributeDataset()
