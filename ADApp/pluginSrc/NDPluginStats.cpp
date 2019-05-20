@@ -664,11 +664,13 @@ asynStatus NDPluginStats::writeInt32(asynUser *pasynUser, epicsInt32 value)
 
     if (function == NDPluginStatsCursorX) {
         if (pPrevInputArray_) {
-            processCallbacks(pPrevInputArray_);
+            // This is not  thread safe anymore, cannot call processCallbacks()
+            //processCallbacks(pPrevInputArray_);
         }
     } else if (function == NDPluginStatsCursorY) {
         if (pPrevInputArray_) {
-            processCallbacks(pPrevInputArray_);
+            // This is not  thread safe anymore, cannot call processCallbacks()
+            //processCallbacks(pPrevInputArray_);
         }
     } else if (function == NDPluginStatsHistSize) {
           status = computeHistX();
@@ -711,7 +713,8 @@ asynStatus  NDPluginStats::writeFloat64(asynUser *pasynUser, epicsFloat64 value)
     if (function == NDPluginStatsCentroidThreshold) {
         getIntegerParam(NDPluginStatsComputeCentroid, &computeCentroid);
         if (computeCentroid && pPrevInputArray_) {
-            processCallbacks(pPrevInputArray_);
+            // This is not  thread safe anymore, cannot call processCallbacks()
+            //processCallbacks(pPrevInputArray_);
         }
     } else if ((function == NDPluginStatsHistMin)  ||
                (function == NDPluginStatsHistMax)) {
