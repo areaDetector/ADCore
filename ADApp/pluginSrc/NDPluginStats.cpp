@@ -693,20 +693,13 @@ asynStatus  NDPluginStats::writeFloat64(asynUser *pasynUser, epicsFloat64 value)
 {
     int function = pasynUser->reason;
     asynStatus status = asynSuccess;
-    int computeCentroid;
     static const char *functionName = "writeFloat64";
 
     /* Set the parameter and readback in the parameter library.  This may be overwritten when we read back the
      * status at the end, but that's OK */
     status = setDoubleParam(function, value);
 
-    if (function == NDPluginStatsCentroidThreshold) {
-        getIntegerParam(NDPluginStatsComputeCentroid, &computeCentroid);
-        if (computeCentroid && pPrevInputArray_) {
-            // This is not  thread safe anymore, cannot call processCallbacks()
-            //processCallbacks(pPrevInputArray_);
-        }
-    } else if ((function == NDPluginStatsHistMin)  ||
+    if ((function == NDPluginStatsHistMin)  ||
                (function == NDPluginStatsHistMax)) {
         status = computeHistX();
     } else {
