@@ -19,7 +19,7 @@ the EXAMPLE_RELEASE_PATHS.local, EXAMPLE_RELEASE_LIBS.local, and EXAMPLE_RELEASE
 files respectively, in the configure/ directory of the appropriate release of the 
 [top-level areaDetector](https://github.com/areaDetector/areaDetector) repository.
 
-## __R3-6 (May XXX, 2019)__
+## __R3-6 (May 29, 2019)__
 
 ### NDFileHDF5
   * Fixed issues with chunking. 
@@ -37,20 +37,32 @@ files respectively, in the configure/ directory of the appropriate release of th
     * Added new ChunkSizeAuto bo record to allow always setting the chunking to automatic or manual. 
       If ChunkSizeAuto=Yes then the chunking in each dimension is automatically set to that dimension of the NDArray, so
       the chunking is one complete NDArray. The automatic control does not affect NumFramesChunks.
-    * Fixed a problem in NDFiileHDF5::calcNumFrames(), it was setting NumCapture to 1 if numExtraDims=0, which is incorrect. 
-      This caused the autosaved value to be replaced by 1 each time the IOC restarted.
+  * Fixed a problem in NDFiileHDF5::calcNumFrames(), it was setting NumCapture to 1 if numExtraDims=0, which is incorrect. 
+    This caused the autosaved value to be replaced by 1 each time the IOC restarted.
   * Added support for JPEG compression.  There is a new JPEGQuality record (1-100) to control the compression quality.
     This requires ADSupport R1-8 which adds HDF5 JPEG codec filter and plugin.
     JPEG compression can be done in the NDFileHDF5 plugin itself, or in NDPluginCodec writing pre-compressed NDArrays with
     HDF5 direct chunk write.
-
-## __R3-6 (May XXX, 2019)__
 
 ### NDFileTIFF
   * Increased the last used defined tag (TIFFTAG_LAST_ATTRIBUTE) from 65500 to 65535,
     which is the maximum allowed by TIFF specification.
   * The last usable tag is now TIFFTAG_LAST_ATTRIBUTE, while previously it was TIFFTAG_LAST_ATTRIBUTE-1. 
   * Fixed bug in memory allocation for user-defined tags that could lead to access violation.
+
+### NDPluginStats
+  * Removed calls to processCallbacks() when CursorX, CursorY, or CentroidThreshold are changed.
+    This is no longer thread safe.
+    To see updates when plugin is not receiving NDArrays change the PV and then press ProcessPlugin.
+
+### NDPluginColorConvert
+  * Added support for converting Bayer color to RGB.  Thanks to Arvinder Palaha for this.
+
+### commonDriverMakefile
+  * Added ADPluginBar and ADCompVision plugins if defined.  ADCompVision requires WITH_BOOST=YES.
+
+### EXAMPLE_commonPlugins.cmd, EXAMPLE_commonPlugin_settings.req
+  * Added commented out lines for ADCompVision and ADPluginBar.
 
 ## __R3-5 (April 12, 2019)__
 
