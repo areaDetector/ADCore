@@ -662,17 +662,7 @@ asynStatus NDPluginStats::writeInt32(asynUser *pasynUser, epicsInt32 value)
     /* Set the parameter in the parameter library. */
     status = (asynStatus) setIntegerParam(function, value);
 
-    if (function == NDPluginStatsCursorX) {
-        if (pPrevInputArray_) {
-            // This is not  thread safe anymore, cannot call processCallbacks()
-            //processCallbacks(pPrevInputArray_);
-        }
-    } else if (function == NDPluginStatsCursorY) {
-        if (pPrevInputArray_) {
-            // This is not  thread safe anymore, cannot call processCallbacks()
-            //processCallbacks(pPrevInputArray_);
-        }
-    } else if (function == NDPluginStatsHistSize) {
+    if (function == NDPluginStatsHistSize) {
           status = computeHistX();
     } else {
         /* If this parameter belongs to a base class call its method */
