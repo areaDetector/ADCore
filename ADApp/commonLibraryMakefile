@@ -167,6 +167,19 @@ ifeq ($(WITH_JPEG),YES)
   endif
 endif
 
+ifeq ($(WITH_ARAVIS),YES)
+  ifeq ($(ARAVIS_EXTERNAL),NO)
+    LIB_LIBS += aravis-0.6
+  else
+    ifdef ARAVIS_LIB
+      aravis-0.6_DIR = $(ARAVIS_LIB)
+      LIB_LIBS     += aravis-0.6
+    else
+      LIB_SYS_LIBS += aravis-0.6
+    endif
+  endif
+endif
+
 ifeq ($(EPICS_LIBCOM_ONLY),YES)
   LIB_LIBS += Com
 else
