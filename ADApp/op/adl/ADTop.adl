@@ -1,6 +1,6 @@
 
 file {
-	name="/home/epics/devel/areaDetector-3-4-0/ADCore/ADApp/op/adl/ADTop.adl"
+	name="/home/epics/devel/areaDetector-3-6/ADCore/ADApp/op/adl/ADTop.adl"
 	version=030109
 }
 display {
@@ -8,7 +8,7 @@ display {
 		x=280
 		y=87
 		width=225
-		height=765
+		height=790
 	}
 	clr=14
 	bclr=4
@@ -150,39 +150,6 @@ text {
 "related display" {
 	object {
 		x=145
-		y=160
-		width=64
-		height=20
-	}
-	display[0] {
-		label="BIS #1 general"
-		name="ADBase.adl"
-		args="P=BIS:, R=cam1: "
-	}
-	display[1] {
-		label="BIS #1 specific"
-		name="BIS.adl"
-		args="P=BIS:, R=cam1:"
-	}
-	clr=14
-	bclr=51
-}
-text {
-	object {
-		x=110
-		y=160
-		width=30
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="BIS"
-	align="horiz. right"
-}
-"related display" {
-	object {
-		x=145
 		y=85
 		width=64
 		height=20
@@ -241,176 +208,6 @@ text {
 	textix="ADC Simulator"
 	align="horiz. right"
 }
-"related display" {
-	object {
-		x=145
-		y=235
-		width=64
-		height=20
-	}
-	display[0] {
-		label="Firewire #1 general"
-		name="ADBase.adl"
-		args="P=13FW1:, R=cam1: "
-	}
-	display[1] {
-		label="Firewire #1 specific"
-		name="firewire.adl"
-		args="P=13FW1:, R=cam1:"
-	}
-	clr=14
-	bclr=51
-}
-text {
-	object {
-		x=60
-		y=235
-		width=80
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Firewire"
-	align="horiz. right"
-}
-"related display" {
-	object {
-		x=145
-		y=184
-		width=64
-		height=20
-	}
-	display[0] {
-		label="Dexela #1 general"
-		name="ADBase.adl"
-		args="P=13DEX1:, R=cam1: "
-	}
-	display[1] {
-		label="Dexela #1 specific"
-		name="Dexela.adl"
-		args="P=13DEX1:, R=cam1:"
-	}
-	clr=14
-	bclr=51
-}
-text {
-	object {
-		x=80
-		y=184
-		width=60
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Dexela"
-	align="horiz. right"
-}
-"related display" {
-	object {
-		x=145
-		y=210
-		width=64
-		height=20
-	}
-	display[0] {
-		label="Eiger #1 general"
-		name="ADBase.adl"
-		args="P=13EIG1:, R=cam1: "
-	}
-	display[1] {
-		label="Eiger #1 specific"
-		name="eigerDetector.adl"
-		args="P=13EIG1:, R=cam1:"
-	}
-	clr=14
-	bclr=51
-}
-text {
-	object {
-		x=90
-		y=210
-		width=50
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Eiger"
-	align="horiz. right"
-}
-"related display" {
-	object {
-		x=145
-		y=310
-		width=64
-		height=20
-	}
-	display[0] {
-		label="mar345 #1 general"
-		name="ADBase.adl"
-		args="P=13MAR345_1:, R=cam1: "
-	}
-	display[1] {
-		label="mar345 #1 specific"
-		name="mar345.adl"
-		args="P=13MAR345_1:, R=cam1:"
-	}
-	clr=14
-	bclr=51
-}
-text {
-	object {
-		x=80
-		y=310
-		width=60
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Mar345"
-	align="horiz. right"
-}
-"related display" {
-	object {
-		x=145
-		y=285
-		width=64
-		height=20
-	}
-	display[0] {
-		label="LightField #1 general"
-		name="ADBase.adl"
-		args="P=13LF1:, R=cam1: "
-	}
-	display[1] {
-		label="LightField #1 specific"
-		name="LightField.adl"
-		args="P=13LF1:, R=cam1:"
-	}
-	display[2] {
-		label="LightField #2 specific"
-		name="LightField.adl"
-		args="P=13LF2:, R=cam1:"
-	}
-	clr=14
-	bclr=51
-}
-text {
-	object {
-		x=39
-		y=285
-		width=100
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="LightField"
-	align="horiz. right"
-}
 text {
 	object {
 		x=40
@@ -444,10 +241,213 @@ text {
 	clr=14
 	bclr=51
 }
+"related display" {
+	object {
+		x=145
+		y=185
+		width=64
+		height=20
+	}
+	display[0] {
+		label="BIS #1 general"
+		name="ADBase.adl"
+		args="P=BIS:, R=cam1: "
+	}
+	display[1] {
+		label="BIS #1 specific"
+		name="BIS.adl"
+		args="P=BIS:, R=cam1:"
+	}
+	clr=14
+	bclr=51
+}
+text {
+	object {
+		x=110
+		y=185
+		width=30
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="BIS"
+	align="horiz. right"
+}
+"related display" {
+	object {
+		x=145
+		y=260
+		width=64
+		height=20
+	}
+	display[0] {
+		label="Firewire #1 general"
+		name="ADBase.adl"
+		args="P=13FW1:, R=cam1: "
+	}
+	display[1] {
+		label="Firewire #1 specific"
+		name="firewire.adl"
+		args="P=13FW1:, R=cam1:"
+	}
+	clr=14
+	bclr=51
+}
+text {
+	object {
+		x=60
+		y=260
+		width=80
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Firewire"
+	align="horiz. right"
+}
+"related display" {
+	object {
+		x=145
+		y=209
+		width=64
+		height=20
+	}
+	display[0] {
+		label="Dexela #1 general"
+		name="ADBase.adl"
+		args="P=13DEX1:, R=cam1: "
+	}
+	display[1] {
+		label="Dexela #1 specific"
+		name="Dexela.adl"
+		args="P=13DEX1:, R=cam1:"
+	}
+	clr=14
+	bclr=51
+}
+text {
+	object {
+		x=80
+		y=209
+		width=60
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Dexela"
+	align="horiz. right"
+}
+"related display" {
+	object {
+		x=145
+		y=235
+		width=64
+		height=20
+	}
+	display[0] {
+		label="Eiger #1 general"
+		name="ADBase.adl"
+		args="P=13EIG1:, R=cam1: "
+	}
+	display[1] {
+		label="Eiger #1 specific"
+		name="eigerDetector.adl"
+		args="P=13EIG1:, R=cam1:"
+	}
+	clr=14
+	bclr=51
+}
+text {
+	object {
+		x=90
+		y=235
+		width=50
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Eiger"
+	align="horiz. right"
+}
+"related display" {
+	object {
+		x=145
+		y=335
+		width=64
+		height=20
+	}
+	display[0] {
+		label="mar345 #1 general"
+		name="ADBase.adl"
+		args="P=13MAR345_1:, R=cam1: "
+	}
+	display[1] {
+		label="mar345 #1 specific"
+		name="mar345.adl"
+		args="P=13MAR345_1:, R=cam1:"
+	}
+	clr=14
+	bclr=51
+}
+text {
+	object {
+		x=80
+		y=335
+		width=60
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Mar345"
+	align="horiz. right"
+}
+"related display" {
+	object {
+		x=145
+		y=310
+		width=64
+		height=20
+	}
+	display[0] {
+		label="LightField #1 general"
+		name="ADBase.adl"
+		args="P=13LF1:, R=cam1: "
+	}
+	display[1] {
+		label="LightField #1 specific"
+		name="LightField.adl"
+		args="P=13LF1:, R=cam1:"
+	}
+	display[2] {
+		label="LightField #2 specific"
+		name="LightField.adl"
+		args="P=13LF2:, R=cam1:"
+	}
+	clr=14
+	bclr=51
+}
+text {
+	object {
+		x=39
+		y=310
+		width=100
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="LightField"
+	align="horiz. right"
+}
 text {
 	object {
 		x=70
-		y=260
+		y=285
 		width=70
 		height=20
 	}
@@ -460,7 +460,7 @@ text {
 "related display" {
 	object {
 		x=145
-		y=260
+		y=285
 		width=64
 		height=20
 	}
@@ -480,7 +480,7 @@ text {
 text {
 	object {
 		x=20
-		y=410
+		y=435
 		width=120
 		height=20
 	}
@@ -493,7 +493,7 @@ text {
 "related display" {
 	object {
 		x=145
-		y=410
+		y=435
 		width=64
 		height=20
 	}
@@ -513,7 +513,7 @@ text {
 text {
 	object {
 		x=30
-		y=385
+		y=410
 		width=110
 		height=20
 	}
@@ -526,7 +526,7 @@ text {
 "related display" {
 	object {
 		x=145
-		y=385
+		y=410
 		width=64
 		height=20
 	}
@@ -546,7 +546,7 @@ text {
 "related display" {
 	object {
 		x=145
-		y=535
+		y=560
 		width=64
 		height=20
 	}
@@ -576,7 +576,7 @@ text {
 text {
 	object {
 		x=50
-		y=535
+		y=560
 		width=90
 		height=20
 	}
@@ -589,7 +589,7 @@ text {
 "related display" {
 	object {
 		x=145
-		y=460
+		y=485
 		width=64
 		height=20
 	}
@@ -609,7 +609,7 @@ text {
 text {
 	object {
 		x=70
-		y=460
+		y=485
 		width=70
 		height=20
 	}
@@ -622,7 +622,7 @@ text {
 "related display" {
 	object {
 		x=145
-		y=485
+		y=510
 		width=64
 		height=20
 	}
@@ -642,7 +642,7 @@ text {
 text {
 	object {
 		x=69
-		y=485
+		y=510
 		width=70
 		height=20
 	}
@@ -655,7 +655,7 @@ text {
 "related display" {
 	object {
 		x=145
-		y=510
+		y=535
 		width=64
 		height=20
 	}
@@ -675,7 +675,7 @@ text {
 text {
 	object {
 		x=39
-		y=510
+		y=535
 		width=100
 		height=20
 	}
@@ -688,7 +688,7 @@ text {
 "related display" {
 	object {
 		x=145
-		y=660
+		y=685
 		width=64
 		height=20
 	}
@@ -718,7 +718,7 @@ text {
 text {
 	object {
 		x=50
-		y=660
+		y=685
 		width=90
 		height=20
 	}
@@ -731,7 +731,7 @@ text {
 "related display" {
 	object {
 		x=145
-		y=635
+		y=660
 		width=64
 		height=20
 	}
@@ -751,7 +751,7 @@ text {
 text {
 	object {
 		x=90
-		y=635
+		y=660
 		width=50
 		height=20
 	}
@@ -764,7 +764,7 @@ text {
 "related display" {
 	object {
 		x=145
-		y=610
+		y=635
 		width=64
 		height=20
 	}
@@ -784,7 +784,7 @@ text {
 text {
 	object {
 		x=109
-		y=610
+		y=635
 		width=30
 		height=20
 	}
@@ -797,7 +797,7 @@ text {
 "related display" {
 	object {
 		x=145
-		y=585
+		y=610
 		width=64
 		height=20
 	}
@@ -817,7 +817,7 @@ text {
 text {
 	object {
 		x=90
-		y=585
+		y=610
 		width=50
 		height=20
 	}
@@ -830,7 +830,7 @@ text {
 "related display" {
 	object {
 		x=145
-		y=560
+		y=585
 		width=64
 		height=20
 	}
@@ -850,7 +850,7 @@ text {
 text {
 	object {
 		x=50
-		y=560
+		y=585
 		width=90
 		height=20
 	}
@@ -863,7 +863,7 @@ text {
 text {
 	object {
 		x=50
-		y=435
+		y=460
 		width=90
 		height=20
 	}
@@ -876,7 +876,7 @@ text {
 "related display" {
 	object {
 		x=145
-		y=435
+		y=460
 		width=64
 		height=20
 	}
@@ -896,7 +896,7 @@ text {
 text {
 	object {
 		x=110
-		y=710
+		y=735
 		width=30
 		height=20
 	}
@@ -909,7 +909,7 @@ text {
 "related display" {
 	object {
 		x=145
-		y=710
+		y=735
 		width=64
 		height=20
 	}
@@ -929,40 +929,7 @@ text {
 text {
 	object {
 		x=50
-		y=685
-		width=90
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Spinnaker"
-	align="horiz. right"
-}
-"related display" {
-	object {
-		x=145
-		y=685
-		width=64
-		height=20
-	}
-	display[0] {
-		label="Spinnaker #1 general"
-		name="ADBase.adl"
-		args="P=13SP1:, R=cam1: "
-	}
-	display[1] {
-		label="Spinnaker #1 specific"
-		name="ADSpinnaker.adl"
-		args="P=13SP1:, R=cam1:"
-	}
-	clr=14
-	bclr=51
-}
-text {
-	object {
-		x=50
-		y=735
+		y=760
 		width=90
 		height=20
 	}
@@ -975,7 +942,7 @@ text {
 "related display" {
 	object {
 		x=145
-		y=735
+		y=760
 		width=64
 		height=20
 	}
@@ -990,7 +957,7 @@ text {
 "related display" {
 	object {
 		x=145
-		y=335
+		y=360
 		width=64
 		height=20
 	}
@@ -1010,7 +977,7 @@ text {
 text {
 	object {
 		x=80
-		y=335
+		y=360
 		width=60
 		height=20
 	}
@@ -1023,7 +990,7 @@ text {
 "related display" {
 	object {
 		x=145
-		y=360
+		y=385
 		width=64
 		height=20
 	}
@@ -1043,7 +1010,7 @@ text {
 text {
 	object {
 		x=90
-		y=360
+		y=385
 		width=50
 		height=20
 	}
@@ -1052,4 +1019,70 @@ text {
 	}
 	textix="MMPAD"
 	align="horiz. right"
+}
+text {
+	object {
+		x=50
+		y=710
+		width=90
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Spinnaker"
+	align="horiz. right"
+}
+"related display" {
+	object {
+		x=145
+		y=710
+		width=64
+		height=20
+	}
+	display[0] {
+		label="Spinnaker #1 general"
+		name="ADBase.adl"
+		args="P=13SP1:, R=cam1: "
+	}
+	display[1] {
+		label="Spinnaker #1 specific"
+		name="ADSpinnaker.adl"
+		args="P=13SP1:, R=cam1:"
+	}
+	display[2] {
+		label="GenICam BFLY-20E4C"
+		name="GenICam.adl"
+		args="P=13SP1:, R=cam1:, C=PGR_Blackfly_20E4C"
+	}
+	clr=14
+	bclr=51
+}
+text {
+	object {
+		x=60
+		y=160
+		width=80
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="ADAravis"
+	align="horiz. right"
+}
+"related display" {
+	object {
+		x=145
+		y=160
+		width=64
+		height=20
+	}
+	display[0] {
+		label="GenICam BFLY-20E4C"
+		name="GenICam.adl"
+		args="P=13ARV1:, R=cam1:, C=PGR_Blackfly_20E4C"
+	}
+	clr=14
+	bclr=51
 }
