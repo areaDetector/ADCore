@@ -3011,27 +3011,7 @@ $(pv_value)</tooltip>
   <widget typeId="org.csstudio.opibuilder.widgets.MenuButton" version="1.0.0">
     <actions hook="false" hook_all="false">
       <action type="OPEN_DISPLAY">
-        <path>ADBase.opi</path>
-        <macros>
-          <include_parent_macros>true</include_parent_macros>
-          <P>13SP1:</P>
-          <R>cam1:</R>
-        </macros>
-        <mode>1</mode>
-        <description>Spinnaker #1 general</description>
-      </action>
-      <action type="OPEN_DISPLAY">
         <path>ADSpinnaker.opi</path>
-        <macros>
-          <include_parent_macros>true</include_parent_macros>
-          <P>13SP1:</P>
-          <R>cam1:</R>
-        </macros>
-        <mode>1</mode>
-        <description>Spinnaker #1 specific</description>
-      </action>
-      <action type="OPEN_DISPLAY">
-        <path>GenICam.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
           <P>13SP1:</P>
@@ -3039,7 +3019,18 @@ $(pv_value)</tooltip>
           <C>PGR_Blackfly_20E4C</C>
         </macros>
         <mode>1</mode>
-        <description>GenICam BFLY-20E4C</description>
+        <description>Blackfly 20E4C</description>
+      </action>
+      <action type="OPEN_DISPLAY">
+        <path>ADSpinnaker.opi</path>
+        <macros>
+          <include_parent_macros>true</include_parent_macros>
+          <P>13SP1:</P>
+          <R>cam1:</R>
+          <C>FLIR_ORX_10G_51S5</C>
+        </macros>
+        <mode>1</mode>
+        <description>Oryx 51S5</description>
       </action>
     </actions>
     <actions_from_pv>false</actions_from_pv>
