@@ -212,19 +212,6 @@ ifeq ($(WITH_JPEG),YES)
   endif
 endif
 
-ifeq ($(WITH_ARAVIS),YES)
-  ifeq ($(ARAVIS_EXTERNAL),NO)
-    PROD_LIBS += aravis-0.6
-  else
-    ifdef ARAVIS_LIB
-      aravis-0.6_DIR = $(ARAVIS_LIB)
-      PROD_LIBS     += aravis-0.6
-    else
-      PROD_SYS_LIBS += aravis-0.6
-    endif
-  endif
-endif
-
 ifdef FFMPEGSERVER
   $(DBD_NAME)_DBD += ffmpegServer.dbd
   PROD_LIBS       += ffmpegServer
