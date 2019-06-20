@@ -46,113 +46,53 @@ It is useful to define some conventions for attribute names, so that
 plugins or data analysis programs can look for a specific attribute. The
 following are the attribute conventions used in current plugins:
 
-.. raw:: html
+.. cssclass:: table-bordered table-striped table-hover
+.. flat-table::
+  :header-rows: 2
+  :widths: 20 60 20
 
-  <table class="table table-bordered">
-    <tbody>
-      <tr>
-        <td align="center" colspan="4">
-          <b>Conventions for standard attribute names</b> </td>
-      </tr>
-      <tr>
-        <th>
-          Attribute name
-        </th>
-        <th>
-          Description
-        </th>
-        <th>
-          Data type
-        </th>
-      </tr>
-      <tr>
-        <td>
-          ColorMode </td>
-        <td>
-          Color mode of the NDArray. Used by many plugins to determine how to process the
-          array. </td>
-        <td>
-          NDAttrInt32 (NDColorMode_t) </td>
-      </tr>
-      <tr>
-        <td>
-          BayerPattern </td>
-        <td>
-          Bayer patter of an image collect by a color camera with a Bayer mask. Could be used
-          to convert to a an RGB color image. This capability may be added to NDPluginColorConvert.
-        </td>
-        <td>
-          NDAttrInt32 (NDBayerPattern_t) </td>
-      </tr>
-      <tr>
-        <td>
-          DriverFilename </td>
-        <td>
-          The name of the file originally collected by the driver. This is used by NDPluginFile
-          to delete the original driver file if the DeleteDriverFile flag is set and the NDArray
-          has been successfully saved in another file. </td>
-        <td>
-          NDAttrString </td>
-      </tr>
-      <tr>
-        <td>
-          FilePluginDestination </td>
-        <td>
-          This is used by NDPluginFile to determine whether to process this NDArray. If this
-          attribute is present and is "all" or the name of this plugin then the NDArray is
-          processed, otherwise it is ignored. </td>
-        <td>
-          NDAttrString </td>
-      </tr>
-      <tr>
-        <td>
-          FilePluginFileName </td>
-        <td>
-          This is used by NDPluginFile to set the file name when saving this NDArray. </td>
-        <td>
-          NDAttrString </td>
-      </tr>
-      <tr>
-        <td>
-          FilePluginFileNumber </td>
-        <td>
-          This is used by NDPluginFile to set the file number when saving this NDArray.
-        </td>
-        <td>
-          NDAttrInt32 </td>
-      </tr>
-      <tr>
-        <td>
-          FilePluginFileClose </td>
-        <td>
-          This is used by NDPluginFile to close the file after processing this NDArray.
-        </td>
-        <td>
-          NDAttrInt32 </td>
-      </tr>
-      <tr>
-        <td>
-          [HDF dataset name] </td>
-        <td>
-          This is used by NDFileHDF5 to determine which dataset in the file this NDArray should
-          be written to. The attribute name is the name of the HDF5 dataset. </td>
-        <td>
-          NDAttrString </td>
-      </tr>
-      <tr>
-        <td>
-          [posName] </td>
-        <td>
-          This is used by NDFileHDF5 to determine which position in the dataset this NDArray
-          should be written to. The attribute name is contained in a *PosName* record defined
-          in NDFileHDF5.template. This is designed to allow, for example, "snake scan" data
-          to be placed in the correct order in an HDF5 file. </td>
-        <td>
-          NDAttrInt32 </td>
-      </tr>
-    </tbody>
-  </table>
-
+  * -
+    - **Conventions for standard attribute names**
+  * - Attribute name
+    - Description
+    - Data type
+  * - ColorMode
+    - Color mode of the NDArray. Used by many plugins to determine how to process the
+      array.
+    - NDAttrInt32 (NDColorMode_t)
+  * - BayerPattern
+    - Bayer patter of an image collect by a color camera with a Bayer mask. Could be used
+      to convert to a an RGB color image. This capability may be added to NDPluginColorConvert.
+    - NDAttrInt32 (NDBayerPattern_t)
+  * - DriverFilename
+    - The name of the file originally collected by the driver. This is used by NDPluginFile
+      to delete the original driver file if the DeleteDriverFile flag is set and the NDArray
+      has been successfully saved in another file.
+    - NDAttrString
+  * - FilePluginDestination
+    - This is used by NDPluginFile to determine whether to process this NDArray. If this
+      attribute is present and is "all" or the name of this plugin then the NDArray is
+      processed, otherwise it is ignored.
+    - NDAttrString
+  * - FilePluginFileName
+    - This is used by NDPluginFile to set the file name when saving this NDArray.
+    - NDAttrString
+  * - FilePluginFileNumber
+    - This is used by NDPluginFile to set the file number when saving this NDArray.
+    - NDAttrInt32
+  * - FilePluginFileClose
+    - This is used by NDPluginFile to close the file after processing this NDArray.
+    - NDAttrInt32
+  * - [HDF dataset name]
+    - This is used by NDFileHDF5 to determine which dataset in the file this NDArray should
+      be written to. The attribute name is the name of the HDF5 dataset.
+    - NDAttrString
+  * - [posName]
+    - This is used by NDFileHDF5 to determine which position in the dataset this NDArray
+      should be written to. The attribute name is contained in a *PosName* record defined
+      in NDFileHDF5.template. This is designed to allow, for example, "snake scan" data
+      to be placed in the correct order in an HDF5 file.
+    - NDAttrInt32
 
 Attribute names are case-sensitive. For attributes not in this table a
 good convention would be to use the corresponding driver parameter
@@ -318,1025 +258,487 @@ ADBase.template with driver-specific choices by loading a
 driver-specific template file that redefines that record field after
 loading ADBase.template.
 
-.. raw:: html
+.. cssclass:: table-bordered table-striped table-hover
+.. flat-table::
+  :header-rows: 2
+  :widths: 5 5 5 70 5 5 5
 
-  <table class="table table-bordered">
-    <tbody>
-      <tr>
-        <td align="center" colspan="7">
-          <b>Parameter Definitions in asynNDArrayDriver.h and EPICS Record Definitions in NDArrayBase.template
-            (file-related records are in NDFile.template)</b> </td>
-      </tr>
-      <tr>
-        <th>
-          Parameter index variable
-        </th>
-        <th>
-          asyn interface
-        </th>
-        <th>
-          Access
-        </th>
-        <th>
-          Description
-        </th>
-        <th>
-          drvInfo string
-        </th>
-        <th>
-          EPICS record name
-        </th>
-        <th>
-          EPICS record type
-        </th>
-      </tr>
-      <tr>
-        <td align="center" colspan="7">
-          <b>Information about the version of ADCore and the plugin or driver</b> </td>
-      </tr>
-      <tr>
-        <td>
-          NDADCoreVersion </td>
-        <td>
-          asynOctet </td>
-        <td>
-          r/o </td>
-        <td>
-          ADCore version number. This can be used by Channel Access clients to alter their
-          behavior depending on the version of ADCore that was used to build this driver or
-          plugin. </td>
-        <td>
-          ADCORE_VERSION </td>
-        <td>
-          $(P)$(R)ADCoreVersion_RBV </td>
-        <td>
-          stringin </td>
-      </tr>
-      <tr>
-        <td>
-          NDDriverVersion </td>
-        <td>
-          asynOctet </td>
-        <td>
-          r/o </td>
-        <td>
-          Driver or plugin version number. This can be used by Channel Access clients to alter
-          their behavior depending on the version of the plugin or driver. </td>
-        <td>
-          DRIVER_VERSION </td>
-        <td>
-          $(P)$(R)DriverVersion_RBV </td>
-        <td>
-          stringin </td>
-      </tr>
-      <tr>
-        <td align="center" colspan="7">
-          <b>Information about the asyn port</b> </td>
-      </tr>
-      <tr>
-        <td>
-          NDPortNameSelf </td>
-        <td>
-          asynOctet </td>
-        <td>
-          r/o </td>
-        <td>
-          asyn port name </td>
-        <td>
-          PORT_NAME_SELF </td>
-        <td>
-          $(P)$(R)PortName_RBV </td>
-        <td>
-          stringin </td>
-      </tr>
-      <tr>
-        <td align="center" colspan="7">
-          <b>Data type</b> </td>
-      </tr>
-      <tr>
-        <td>
-          NDDataType </td>
-        <td>
-          asynInt32 </td>
-        <td>
-          r/w </td>
-        <td>
-          Data type (NDDataType_t). </td>
-        <td>
-          DATA_TYPE </td>
-        <td>
-          $(P)$(R)DataType<br />
-          $(P)$(R)DataType_RBV </td>
-        <td>
-          mbbo<br />
-          mbbi </td>
-      </tr>
-      <tr>
-        <td align="center" colspan="7">
-          <b>Color mode</b> </td>
-      </tr>
-      <tr>
-        <td>
-          NDColorMode </td>
-        <td>
-          asynInt32 </td>
-        <td>
-          r/w </td>
-        <td>
-          Color mode (NDColorMode_t). </td>
-        <td>
-          COLOR_MODE </td>
-        <td>
-          $(P)$(R)ColorMode<br />
-          $(P)$(R)ColorMode_RBV </td>
-        <td>
-          mbbo<br />
-          mbbi </td>
-      </tr>
-      <tr>
-        <td>
-          NDBayerPattern </td>
-        <td>
-          asynInt32 </td>
-        <td>
-          r/o </td>
-        <td>
-          Bayer pattern (NDBayerPattern_t) of NDArray data. </td>
-        <td>
-          BAYER_PATTERN </td>
-        <td>
-          $(P)$(R)BayerPattern_RBV </td>
-        <td>
-          mbbi </td>
-      </tr>
-      <tr>
-        <td align="center" colspan="7">
-          <b>Actual dimensions of array data</b> </td>
-      </tr>
-      <tr>
-        <td>
-          NDNDimensions </td>
-        <td>
-          asynInt32 </td>
-        <td>
-          r/w </td>
-        <td>
-          Number of dimensions in the array </td>
-        <td>
-          ARRAY_NDIMENSIONS </td>
-        <td>
-          $(P)$(R)NDimensions<br />
-          $(P)$(R)NDimensions_RBV </td>
-        <td>
-          longout
-          <br />
-          longin </td>
-      </tr>
-      <tr>
-        <td>
-          NDDimensions </td>
-        <td>
-          asynInt32Array </td>
-        <td>
-          r/w </td>
-        <td>
-          Size of each dimension in the array </td>
-        <td>
-          ARRAY_DIMENSIONS </td>
-        <td>
-          $(P)$(R)Dimensions<br />
-          $(P)$(R)Dimensions_RBV </td>
-        <td>
-          waveform (out)<br />
-          waveform (in) </td>
-      </tr>
-      <tr>
-        <td>
-          N.A. </td>
-        <td>
-          N.A </td>
-        <td>
-          r/o </td>
-        <td>
-          Size of each array dimension, extracted from the $(P)$(R)Dimensions and $(P)$(R)Dimensions_RBV
-          waveform records. Note that these are both longin record, i.e. readonly values using
-          subarray records. In the future longout records may be added to write to the individual
-          values in $(P)$(R)Dimensions. </td>
-        <td>
-          N.A. </td>
-        <td>
-          $(P)$(R)ArraySize[N] N=0-9
-          <br />
-          (P)$(R)ArraySize[N]_RBV </td>
-        <td>
-          longin
-          <br />
-          longin </td>
-      </tr>
-      <tr>
-        <td>
-          NDArraySizeX </td>
-        <td>
-          asynInt32 </td>
-        <td>
-          r/o </td>
-        <td>
-          Size of the array data in the X direction </td>
-        <td>
-          ARRAY_SIZE_X </td>
-        <td>
-          $(P)$(R)ArraySizeX_RBV </td>
-        <td>
-          longin </td>
-      </tr>
-      <tr>
-        <td>
-          NDArraySizeY </td>
-        <td>
-          asynInt32 </td>
-        <td>
-          r/o </td>
-        <td>
-          Size of the array data in the Y direction </td>
-        <td>
-          ARRAY_SIZE_Y </td>
-        <td>
-          $(P)$(R)ArraySizeY_RBV </td>
-        <td>
-          longin </td>
-      </tr>
-      <tr>
-        <td>
-          NDArraySizeZ </td>
-        <td>
-          asynInt32 </td>
-        <td>
-          r/o </td>
-        <td>
-          Size of the array data in the Z direction </td>
-        <td>
-          ARRAY_SIZE_Z </td>
-        <td>
-          $(P)$(R)ArraySizeZ_RBV </td>
-        <td>
-          longin </td>
-      </tr>
-      <tr>
-        <td>
-          NDArraySize </td>
-        <td>
-          asynInt32 </td>
-        <td>
-          r/o </td>
-        <td>
-          Total size of the array data in bytes </td>
-        <td>
-          ARRAY_SIZE </td>
-        <td>
-          $(P)$(R)ArraySize_RBV </td>
-        <td>
-          longin </td>
-      </tr>
-      <tr>
-        <td>
-          NDCodec </td>
-        <td>
-          asynOctet </td>
-        <td>
-          r/o </td>
-        <td>
-          The codec used to compress this array </td>
-        <td>
-          CODEC </td>
-        <td>
-          $(P)$(R)Codec_RBV </td>
-        <td>
-          stringin </td>
-      </tr>
-      <tr>
-        <td>
-          NDCompressedSize </td>
-        <td>
-          asynInt32 </td>
-        <td>
-          r/o </td>
-        <td>
-          Compressed size of the array data in bytes. Only meaningful if NDCodec is not empty
-          string. </td>
-        <td>
-          COMPRESSED_SIZE </td>
-        <td>
-          $(P)$(R)Compressed_RBV </td>
-        <td>
-          longin </td>
-      </tr>
-      <tr>
-        <td align="center" colspan="7">
-          <b>Array data</b> </td>
-      </tr>
-      <tr>
-        <td>
-          NDArrayCallbacks </td>
-        <td>
-          asynInt32 </td>
-        <td>
-          r/w </td>
-        <td>
-          Controls whether the driver or plugin does callbacks with the array data to registered
-          plugins. 0=No, 1=Yes. Setting this to 0 in a driver can reduce overhead in the case
-          that the driver is being used only to control the device, and not to make the data
-          available to plugins or to EPICS clients. Setting this to 0 in a plugin can reduce
-          overhead by eliminating the need to copy the NDArray if that plugin is not being
-          used as a source of NDArrays to other plugins. </td>
-        <td>
-          ARRAY_CALLBACKS </td>
-        <td>
-          $(P)$(R)ArrayCallbacks<br />
-          $(P)$(R)ArrayCallbacks_RBV </td>
-        <td>
-          bo<br />
-          bi </td>
-      </tr>
-      <tr>
-        <td>
-          NDArrayData </td>
-        <td>
-          asynGenericPointer </td>
-        <td>
-          r/w </td>
-        <td>
-          The array data as an NDArray object </td>
-        <td>
-          NDARRAY_DATA </td>
-        <td>
-          N/A. EPICS access to array data is through NDStdArrays plugin. </td>
-        <td>
-          N/A </td>
-      </tr>
-      <tr>
-        <td>
-          NDArrayCounter </td>
-        <td>
-          asynInt32 </td>
-        <td>
-          r/w </td>
-        <td>
-          Counter that increments by 1 each time an array is acquired. Can be reset by writing
-          a value to it. </td>
-        <td>
-          ARRAY_COUNTER </td>
-        <td>
-          $(P)$(R)ArrayCounter<br />
-          $(P)$(R)ArrayCounter_RBV </td>
-        <td>
-          longout<br />
-          longin </td>
-      </tr>
-      <tr>
-        <td>
-          N/A </td>
-        <td>
-          N/A </td>
-        <td>
-          r/o </td>
-        <td>
-          Rate at which arrays are being acquired. Computed in the ADBase.template database.
-        </td>
-        <td>
-          N/A </td>
-        <td>
-          $(P)$(R)ArrayRate_RBV </td>
-        <td>
-          calc </td>
-      </tr>
-      <tr>
-        <td align="center" colspan="7">
-          <b>Array attributes</b> </td>
-      </tr>
-      <tr>
-        <td>
-          NDAttributesFile </td>
-        <td>
-          asynOctet </td>
-        <td>
-          r/w </td>
-        <td>
-          The name of an XML file defining the NDAttributes to be added to each NDArray by
-          this driver or plugin. The format of the XML file is described in the documentation
-          for <a href="../areaDetectorDoxygenHTML/classasyn_n_d_array_driver.html">asynNDArrayDriver::readNDAttributesFile().</a>
-        </td>
-        <td>
-          ND_ATTRIBUTES_FILE </td>
-        <td>
-          $(P)$(R)NDAttributesFile </td>
-        <td>
-          waveform </td>
-      </tr>
-      <tr>
-        <td>
-          NDAttributesMacros </td>
-        <td>
-          asynOctet </td>
-        <td>
-          r/w </td>
-        <td>
-          A macro definition string that can be used to do macro substitution in the XML file.
-          For example if this string is "CAMERA=13SIM1:cam1:,ID=ID13us:" then all $(CAMERA)
-          and $(ID) strings in the XML file will be replaced with 13SIM1:cam1: and ID13us:
-          respectively. </td>
-        <td>
-          ND_ATTRIBUTES_MACROS </td>
-        <td>
-          $(P)$(R)NDAttributesMacros </td>
-        <td>
-          waveform </td>
-      </tr>
-      <tr>
-        <td>
-          NDAttributesStatus </td>
-        <td>
-          asynInt32 </td>
-        <td>
-          r/o </td>
-        <td>
-          The status of reading and parsing the XML attributes file. This is used to indicate
-          if the file cannot be found, if there is an XML syntax error, or if there is a macro
-          substitutions error. </td>
-        <td>
-          ND_ATTRIBUTES_STATUS </td>
-        <td>
-          $(P)$(R)NDAttributesStatus </td>
-        <td>
-          mbbi </td>
-      </tr>
-      <tr>
-        <td align="center" colspan="7">
-          <b>Array pool status</b> </td>
-      </tr>
-      <tr>
-        <td>
-          NDPoolMaxMemory </td>
-        <td>
-          asynFloat64 </td>
-        <td>
-          r/o </td>
-        <td>
-          The maximum number of NDArrayPool memory bytes that can be allocated. 0=unlimited.
-        </td>
-        <td>
-          POOL_MAX_MEMORY </td>
-        <td>
-          $(P)$(R)PoolMaxMem </td>
-        <td>
-          ai </td>
-      </tr>
-      <tr>
-        <td>
-          NDPoolUsedMemory </td>
-        <td>
-          asynFloat64 </td>
-        <td>
-          r/o </td>
-        <td>
-          The number of NDArrayPool memory bytes currently allocated. The SCAN rate of this
-          record controls the scanning of all of the dynamic NDArrayPool status records.
-        </td>
-        <td>
-          POOL_USED_MEMORY </td>
-        <td>
-          $(P)$(R)PoolUsedMem </td>
-        <td>
-          ai </td>
-      </tr>
-      <tr>
-        <td>
-          NDPoolAllocBuffers </td>
-        <td>
-          asynInt32 </td>
-        <td>
-          r/o </td>
-        <td>
-          The number of NDArrayPool buffers currently allocated. </td>
-        <td>
-          POOL_ALLOC_BUFFERS </td>
-        <td>
-          $(P)$(R)PoolAllocBuffers </td>
-        <td>
-          longin </td>
-      </tr>
-      <tr>
-        <td>
-          NDPoolFreeBuffers </td>
-        <td>
-          asynInt32 </td>
-        <td>
-          r/o </td>
-        <td>
-          The number of NDArrayPool buffers currently allocated but free. </td>
-        <td>
-          POOL_FREE_BUFFERS </td>
-        <td>
-          $(P)$(R)PoolFreeBuffers </td>
-        <td>
-          longin </td>
-      </tr>
-      <tr>
-        <td>
-          N.A. </td>
-        <td>
-          N.A. </td>
-        <td>
-          r/o </td>
-        <td>
-          The number of NDArrayPool buffers currently in use. This is calculated as NDPoolAllocBuffers
-          - NDPoolFreeBuffers. </td>
-        <td>
-          N.A. </td>
-        <td>
-          $(P)$(R)PoolUsedBuffers </td>
-        <td>
-          calc </td>
-      </tr>
-      <tr>
-        <td>
-          NDPoolEmptyFreeList </td>
-        <td>
-          asynInt32 </td>
-        <td>
-          r/w </td>
-        <td>
-          Processing this record deletes all of the NDArrays on the freelist and sets the
-          freelist size to 0. This provides a mechanism to free large amounts of memory and
-          return it to the operating system, for example after a rapid acquisition with large
-          plugin queues. On Windows the memory is returned to the operating system immediately.
-          On Linux the freed memory may not actually be returned to the operating system even
-          though it has been freed in the areaDetector process. On Centos7 (and presumably
-          many other versions of Linux) setting the value of the environment variable MALLOC_TRIM_THRESHOLD_
-          to a small value will allow the memory to actually be returned to the operating
-          system. </td>
-        <td>
-          POOL_EMPTY_FREELIST </td>
-        <td>
-          $(P)$(R)EmptyFreeList </td>
-        <td>
-          bo </td>
-      </tr>
-      <tr>
-        <td>
-          NDNumQueuedArrays </td>
-        <td>
-          asynInt32 </td>
-        <td>
-          r/o </td>
-        <td>
-          The number of NDArrays from this driver's NDArrayPool that are currently queued
-          for processing by plugins. When this number goes to 0 the plugins have all completed
-          processing. </td>
-        <td>
-          NUM_QUEUED_ARRAYS </td>
-        <td>
-          $(P)$(R)NumQueuedArrays </td>
-        <td>
-          longin </td>
-      </tr>
-      <tr>
-        <td align="center" colspan="7">
-          <b>Debugging control</b> </td>
-      </tr>
-      <tr>
-        <td>
-          N/A </td>
-        <td>
-          N/A </td>
-        <td>
-          N/A </td>
-        <td>
-          asyn record to control debugging (asynTrace) </td>
-        <td>
-          N/A </td>
-        <td>
-          $(P)$(R)AsynIO </td>
-        <td>
-          asyn </td>
-      </tr>
-      <tr>
-        <td align="center" colspan="7">
-          <b>File saving parameters (records are defined in NDFile.template)</b> </td>
-      </tr>
-      <tr>
-        <td>
-          NDFilePath </td>
-        <td>
-          asynOctet </td>
-        <td>
-          r/w </td>
-        <td>
-          File path </td>
-        <td>
-          FILE_PATH </td>
-        <td>
-          $(P)$(R)FilePath<br />
-          $(P)$(R)FilePath_RBV </td>
-        <td>
-          waveform<br />
-          waveform </td>
-      </tr>
-      <tr>
-        <td>
-          NDFilePathExists </td>
-        <td>
-          asynInt32 </td>
-        <td>
-          r/o </td>
-        <td>
-          Flag indicating if file path exists </td>
-        <td>
-          FILE_PATH_EXISTS </td>
-        <td>
-          $(P)$(R)FilePathExists_RBV </td>
-        <td>
-          bi </td>
-      </tr>
-      <tr>
-        <td>
-          NDFileName </td>
-        <td>
-          asynOctet </td>
-        <td>
-          r/w </td>
-        <td>
-          File name </td>
-        <td>
-          FILE_NAME </td>
-        <td>
-          $(P)$(R)FileName<br />
-          $(P)$(R)FileName_RBV </td>
-        <td>
-          waveform<br />
-          waveform </td>
-      </tr>
-      <tr>
-        <td>
-          NDFileNumber </td>
-        <td>
-          asynInt32 </td>
-        <td>
-          r/w </td>
-        <td>
-          File number </td>
-        <td>
-          FILE_NUMBER </td>
-        <td>
-          $(P)$(R)FileNumber<br />
-          $(P)$(R)FileNumber_RBV </td>
-        <td>
-          longout<br />
-          longin </td>
-      </tr>
-      <tr>
-        <td>
-          NDFileTemplate </td>
-        <td>
-          asynOctet </td>
-        <td>
-          r/w </td>
-        <td>
-          Format string for constructing NDFullFileName from NDFilePath, NDFileName, and NDFileNumber.
-          The final file name (which is placed in NDFullFileName) is created with the following
-          code:
-          <pre>epicsSnprintf(
-    FullFilename, 
-    sizeof(FullFilename), 
-    FileTemplate, FilePath, 
-    Filename, FileNumber);
-        </pre>
-          FilePath, Filename, FileNumber are converted in that order with FileTemplate. An
-          example file format is <code>"%s%s%4.4d.tif"</code>. The first %s converts the FilePath,
-          followed immediately by another %s for Filename. FileNumber is formatted with %4.4d,
-          which results in a fixed field with of 4 digits, with leading zeros as required.
-          Finally, the .tif extension is added to the file name. This mechanism for creating
-          file names is very flexible. Other characters, such as _ can be put in Filename
-          or FileTemplate as desired. If one does not want to have FileNumber in the file
-          name at all, then just omit the %d format specifier from FileTemplate. If the client
-          wishes to construct the complete file name itself, then it can just put that file
-          name into NDFileTemplate with no format specifiers at all, in which case NDFilePath,
-          NDFileName, and NDFileNumber will be ignored. </td>
-        <td>
-          FILE_TEMPLATE </td>
-        <td>
-          $(P)$(R)FileTemplate<br />
-          $(P)$(R)FileTemplate_RBV </td>
-        <td>
-          waveform<br />
-          waveform </td>
-      </tr>
-      <tr>
-        <td>
-          NDFullFileName </td>
-        <td>
-          asynOctet </td>
-        <td>
-          r/o </td>
-        <td>
-          Full file name constructed using the algorithm described in NDFileTemplate </td>
-        <td>
-          FULL_FILE_NAME </td>
-        <td>
-          $(P)$(R)FullFileName_RBV </td>
-        <td>
-          waveform<br />
-          waveform </td>
-      </tr>
-      <tr>
-        <td>
-          NDAutoIncrement </td>
-        <td>
-          asynInt32 </td>
-        <td>
-          r/w </td>
-        <td>
-          Auto-increment flag. Controls whether FileNumber is automatically incremented by
-          1 each time a file is saved (0=No, 1=Yes) </td>
-        <td>
-          AUTO_INCREMENT </td>
-        <td>
-          $(P)$(R)AutoIncrement<br />
-          $(P)$(R)AutoIncrement_RBV </td>
-        <td>
-          bo<br />
-          bi </td>
-      </tr>
-      <tr>
-        <td>
-          NDAutoSave </td>
-        <td>
-          asynInt32 </td>
-        <td>
-          r/w </td>
-        <td>
-          Auto-save flag (0=No, 1=Yes) controlling whether a file is automatically saved each
-          time acquisition completes. </td>
-        <td>
-          AUTO_SAVE </td>
-        <td>
-          $(P)$(R)AutoSave<br />
-          $(P)$(R)AutoSave_RBV </td>
-        <td>
-          bo<br />
-          bi </td>
-      </tr>
-      <tr>
-        <td>
-          NDFileFormat </td>
-        <td>
-          asynInt32 </td>
-        <td>
-          r/w </td>
-        <td>
-          File format. The format to write/read data in (e.g. TIFF, netCDF, etc.) </td>
-        <td>
-          FILE_FORMAT </td>
-        <td>
-          $(P)$(R)FileFormat<br />
-          $(P)$(R)FileFormat_RBV </td>
-        <td>
-          mbbo<br />
-          mbbi </td>
-      </tr>
-      <tr>
-        <td>
-          NDWriteFile </td>
-        <td>
-          asynInt32 </td>
-        <td>
-          r/w </td>
-        <td>
-          Manually save the most recent array to a file when value=1 </td>
-        <td>
-          WRITE_FILE </td>
-        <td>
-          $(P)$(R)WriteFile<br />
-          $(P)$(R)WriteFile_RBV </td>
-        <td>
-          busy<br />
-          bi </td>
-      </tr>
-      <tr>
-        <td>
-          NDReadFile </td>
-        <td>
-          asynInt32 </td>
-        <td>
-          r/w </td>
-        <td>
-          Manually read a file when value=1 </td>
-        <td>
-          READ_FILE </td>
-        <td>
-          $(P)$(R)ReadFile<br />
-          $(P)$(R)ReadFile_RBV </td>
-        <td>
-          busy<br />
-          bi </td>
-      </tr>
-      <tr>
-        <td>
-          NDFileWriteMode </td>
-        <td>
-          asynInt32 </td>
-        <td>
-          r/w </td>
-        <td>
-          File saving mode (Single, Capture, Stream)(NDFileMode_t) </td>
-        <td>
-          WRITE_MODE </td>
-        <td>
-          $(P)$(R)FileWriteMode<br />
-          $(P)$(R)FileWriteMode_RBV </td>
-        <td>
-          mbbo<br />
-          mbbi </td>
-      </tr>
-      <tr>
-        <td>
-          NDFileWriteStatus </td>
-        <td>
-          asynInt32 </td>
-        <td>
-          r/o </td>
-        <td>
-          File write status. Gives status information on last file open or file write operation.
-          Values are WriteOK (0) and WriteError (1). </td>
-        <td>
-          WRITE_STATUS </td>
-        <td>
-          $(P)$(R)FileWriteStatus </td>
-        <td>
-          mbbi </td>
-      </tr>
-      <tr>
-        <td>
-          NDFileWriteMessage </td>
-        <td>
-          asynOctet </td>
-        <td>
-          r/o </td>
-        <td>
-          File write error message. An error message string if the previous file open or file
-          write operation resulted in an error. </td>
-        <td>
-          WRITE_MESSAGE </td>
-        <td>
-          $(P)$(R)FileWriteMessage </td>
-        <td>
-          waveform </td>
-      </tr>
-      <tr>
-        <td>
-          NDFileCapture </td>
-        <td>
-          asynInt32 </td>
-        <td>
-          r/w </td>
-        <td>
-          Start (1) or stop (0) file capture or streaming </td>
-        <td>
-          CAPTURE </td>
-        <td>
-          $(P)$(R)Capture<br />
-          $(P)$(R)Capture_RBV </td>
-        <td>
-          busy<br />
-          bi </td>
-      </tr>
-      <tr>
-        <td>
-          NDFileNumCapture </td>
-        <td>
-          asynInt32 </td>
-        <td>
-          r/w </td>
-        <td>
-          Number of frames to acquire in capture or streaming mode </td>
-        <td>
-          NUM_CAPTURE </td>
-        <td>
-          $(P)$(R)NumCapture<br />
-          $(P)$(R)NumCapture_RBV </td>
-        <td>
-          longout<br />
-          longin </td>
-      </tr>
-      <tr>
-        <td>
-          NDFileNumCaptured </td>
-        <td>
-          asynInt32 </td>
-        <td>
-          r/o </td>
-        <td>
-          Number of arrays currently acquired capture or streaming mode </td>
-        <td>
-          NUM_CAPTURED </td>
-        <td>
-          $(P)$(R)NumCaptured_RBV </td>
-        <td>
-          longin </td>
-      </tr>
-      <tr>
-        <td>
-          NDFileDeleteDriverFile </td>
-        <td>
-          asynInt32 </td>
-        <td>
-          r/w </td>
-        <td>
-          Flag to enable deleting original driver file after a plugin has re-written the file
-          in a different format. This can be useful for detectors that must write the data
-          to disk in order for the areaDetector driver to read it back. Once a file-writing
-          plugin has rewritten the data in another format it can be desireable to then delete
-          the original file. </td>
-        <td>
-          DELETE_DRIVER_FILE </td>
-        <td>
-          $(P)$(R)DeleteDriverFile<br />
-          $(P)$(R)DeleteDriverFile_RBV </td>
-        <td>
-          bo<br />
-          bi </td>
-      </tr>
-      <tr>
-        <td>
-          NDFileLazyOpen </td>
-        <td>
-          asynInt32 </td>
-        <td>
-          r/w </td>
-        <td>
-          Flag to defer the creation of a new file until the first NDArray to write has been
-          received. This removes the need for passing an extra NDArray through the file writing
-          plugin to initialise dimensions and possibly NDAttribute list before opening the
-          file. The downside is that file creation can potentially be time-consuming so processing
-          the first NDArray may be slower than subsequent ones.
-          <br />
-          Only makes sense to use with file plugins which support multiple frames per file
-          and only in "Stream" mode. </td>
-        <td>
-          FILE_LAZY_OPEN </td>
-        <td>
-          $(P)$(R)LazyOpen<br />
-          $(P)$(R)LazyOpen_RBV </td>
-        <td>
-          bo<br />
-          bi </td>
-      </tr>
-      <tr>
-        <td>
-          NDFileCreateDir </td>
-        <td>
-          asynInt32 </td>
-        <td>
-          r/w </td>
-        <td>
-          This parameter is used to automatically create directories if they don't exist.
-          If it is zero (default), no directories are created. If it is negative, then the
-          absolute value is the maximum of directories that will be created (i.e. -1 will
-          create a maximum of one directory to complete the path, -2 will create a maximum
-          of 2 directories). If it is positive, then at least that many directories in the
-          path must exist (i.e. a value of 1 will create all directories below the root directory
-          and 2 will not create a directory in the root directory). </td>
-        <td>
-          CREATE_DIR </td>
-        <td>
-          $(P)$(R)CreateDirectory<br />
-          $(P)$(R)CreateDirectory_RBV </td>
-        <td>
-          longout<br />
-          longin </td>
-      </tr>
-      <tr>
-        <td>
-          NDFileTempSuffix </td>
-        <td>
-          asynOctet </td>
-        <td>
-          r/w </td>
-        <td>
-          If this string is non-null, the file is opened with this suffix temporarily appended
-          to the file name. When the file is closed it is then renamed to the correct file
-          name without the suffix. This is useful for processing software watching for the
-          file to appear since the file appears as an atomic operation when it is ready to
-          be opened. </td>
-        <td>
-          FILE_TEMP_SUFFIX </td>
-        <td>
-          $(P)$(R)TempSuffix<br />
-          $(P)$(R)TempSuffix_RBV </td>
-        <td>
-          stringout<br />
-          stringin </td>
-      </tr>
-    </tbody>
-  </table>
+  * - **Parameter Definitions in asynNDArrayDriver.h and EPICS Record Definitions in NDArrayBase.template
+      (file-related records are in NDFile.template)**
+  * - Parameter index variable
+    - asyn interface
+    - Access
+    - Description
+    - drvInfo string
+    - EPICS record name
+    - EPICS record type
+  * -
+    -
+    -
+    - **Information about the version of ADCore and the plugin or driver**
+  * - NDADCoreVersion
+    - asynOctet
+    - r/o
+    - ADCore version number. This can be used by Channel Access clients to alter their
+      behavior depending on the version of ADCore that was used to build this driver or
+      plugin.
+    - ADCORE_VERSION
+    - $(P)$(R)ADCoreVersion_RBV
+    - stringin
+  * - NDDriverVersion
+    - asynOctet
+    - r/o
+    - Driver or plugin version number. This can be used by Channel Access clients to alter
+      their behavior depending on the version of the plugin or driver.
+    - DRIVER_VERSION
+    - $(P)$(R)DriverVersion_RBV
+    - stringin
+  * -
+    -
+    -
+    - **Information about the asyn port**
+  * - NDPortNameSelf
+    - asynOctet
+    - r/o
+    - asyn port name
+    - PORT_NAME_SELF
+    - $(P)$(R)PortName_RBV
+    - stringin
+  * -
+    -
+    -
+    - **Data type**
+  * - NDDataType
+    - asynInt32
+    - r/w
+    - Data type (NDDataType_t).
+    - DATA_TYPE
+    - $(P)$(R)DataType, $(P)$(R)DataType_RBV
+    - mbbo, mbbi
+  * -
+    -
+    -
+    - **Color mode**
+  * - NDColorMode
+    - asynInt32
+    - r/w
+    - Color mode (NDColorMode_t).
+    - COLOR_MODE
+    - $(P)$(R)ColorMode, $(P)$(R)ColorMode_RBV
+    - mbbo, mbbi
+  * - NDBayerPattern
+    - asynInt32
+    - r/o
+    - Bayer pattern (NDBayerPattern_t) of NDArray data.
+    - BAYER_PATTERN
+    - $(P)$(R)BayerPattern_RBV
+    - mbbi
+  * -
+    -
+    -
+    - **Actual dimensions of array data**
+  * - NDNDimensions
+    - asynInt32
+    - r/w
+    - Number of dimensions in the array
+    - ARRAY_NDIMENSIONS
+    - $(P)$(R)NDimensions, $(P)$(R)NDimensions_RBV
+    - longout, longin
+  * - NDDimensions
+    - asynInt32Array
+    - r/w
+    - Size of each dimension in the array
+    - ARRAY_DIMENSIONS
+    - $(P)$(R)Dimensions, $(P)$(R)Dimensions_RBV
+    - waveform (out), waveform (in)
+  * - N.A.
+    - N.A
+    - r/o
+    - Size of each array dimension, extracted from the $(P)$(R)Dimensions and $(P)$(R)Dimensions_RBV
+      waveform records. Note that these are both longin record, i.e. readonly values using
+      subarray records. In the future longout records may be added to write to the individual
+      values in $(P)$(R)Dimensions.
+    - N.A.
+    - $(P)$(R)ArraySize[N] N=0-9
+      , (P)$(R)ArraySize[N]_RBV
+    - longin, longin
+  * - NDArraySizeX
+    - asynInt32
+    - r/o
+    - Size of the array data in the X direction
+    - ARRAY_SIZE_X
+    - $(P)$(R)ArraySizeX_RBV
+    - longin
+  * - NDArraySizeY
+    - asynInt32
+    - r/o
+    - Size of the array data in the Y direction
+    - ARRAY_SIZE_Y
+    - $(P)$(R)ArraySizeY_RBV
+    - longin
+  * - NDArraySizeZ
+    - asynInt32
+    - r/o
+    - Size of the array data in the Z direction
+    - ARRAY_SIZE_Z
+    - $(P)$(R)ArraySizeZ_RBV
+    - longin
+  * - NDArraySize
+    - asynInt32
+    - r/o
+    - Total size of the array data in bytes
+    - ARRAY_SIZE
+    - $(P)$(R)ArraySize_RBV
+    - longin
+  * - NDCodec
+    - asynOctet
+    - r/o
+    - The codec used to compress this array
+    - CODEC
+    - $(P)$(R)Codec_RBV
+    - stringin
+  * - NDCompressedSize
+    - asynInt32
+    - r/o
+    - Compressed size of the array data in bytes. Only meaningful if NDCodec is not empty
+      string.
+    - COMPRESSED_SIZE
+    - $(P)$(R)Compressed_RBV
+    - longin
+  * -
+    -
+    -
+    - **Array data**
+  * - NDArrayCallbacks
+    - asynInt32
+    - r/w
+    - Controls whether the driver or plugin does callbacks with the array data to registered
+      plugins. 0=No, 1=Yes. Setting this to 0 in a driver can reduce overhead in the case
+      that the driver is being used only to control the device, and not to make the data
+      available to plugins or to EPICS clients. Setting this to 0 in a plugin can reduce
+      overhead by eliminating the need to copy the NDArray if that plugin is not being
+      used as a source of NDArrays to other plugins.
+    - ARRAY_CALLBACKS
+    - $(P)$(R)ArrayCallbacks, $(P)$(R)ArrayCallbacks_RBV
+    - bo, bi
+  * - NDArrayData
+    - asynGenericPointer
+    - r/w
+    - The array data as an NDArray object
+    - NDARRAY_DATA
+    - N/A. EPICS access to array data is through NDStdArrays plugin.
+    - N/A
+  * - NDArrayCounter
+    - asynInt32
+    - r/w
+    - Counter that increments by 1 each time an array is acquired. Can be reset by writing
+      a value to it.
+    - ARRAY_COUNTER
+    - $(P)$(R)ArrayCounter, $(P)$(R)ArrayCounter_RBV
+    - longout, longin
+  * - N/A
+    - N/A
+    - r/o
+    - Rate at which arrays are being acquired. Computed in the ADBase.template database.
+    - N/A
+    - $(P)$(R)ArrayRate_RBV
+    - calc
+  * -
+    -
+    -
+    - **Array attributes**
+  * - NDAttributesFile
+    - asynOctet
+    - r/w
+    - The name of an XML file defining the NDAttributes to be added to each NDArray by
+      this driver or plugin. The format of the XML file is described in the documentation
+      for `asynNDArrayDriver::readNDAttributesFile() <../areaDetectorDoxygenHTML/classasyn_n_d_array_driver.html>`__ 
+    - ND_ATTRIBUTES_FILE
+    - $(P)$(R)NDAttributesFile
+    - waveform
+  * - NDAttributesMacros
+    - asynOctet
+    - r/w
+    - A macro definition string that can be used to do macro substitution in the XML file.
+      For example if this string is "CAMERA=13SIM1:cam1:,ID=ID13us:" then all $(CAMERA)
+      and $(ID) strings in the XML file will be replaced with 13SIM1:cam1: and ID13us:
+      respectively.
+    - ND_ATTRIBUTES_MACROS
+    - $(P)$(R)NDAttributesMacros
+    - waveform
+  * - NDAttributesStatus
+    - asynInt32
+    - r/o
+    - The status of reading and parsing the XML attributes file. This is used to indicate
+      if the file cannot be found, if there is an XML syntax error, or if there is a macro
+      substitutions error.
+    - ND_ATTRIBUTES_STATUS
+    - $(P)$(R)NDAttributesStatus
+    - mbbi
+  * -
+    -
+    -
+    - **Array pool status**
+  * - NDPoolMaxMemory
+    - asynFloat64
+    - r/o
+    - The maximum number of NDArrayPool memory bytes that can be allocated. 0=unlimited.
+    - POOL_MAX_MEMORY
+    - $(P)$(R)PoolMaxMem
+    - ai
+  * - NDPoolUsedMemory
+    - asynFloat64
+    - r/o
+    - The number of NDArrayPool memory bytes currently allocated. The SCAN rate of this
+      record controls the scanning of all of the dynamic NDArrayPool status records.
+    - POOL_USED_MEMORY
+    - $(P)$(R)PoolUsedMem
+    - ai
+  * - NDPoolAllocBuffers
+    - asynInt32
+    - r/o
+    - The number of NDArrayPool buffers currently allocated.
+    - POOL_ALLOC_BUFFERS
+    - $(P)$(R)PoolAllocBuffers
+    - longin
+  * - NDPoolFreeBuffers
+    - asynInt32
+    - r/o
+    - The number of NDArrayPool buffers currently allocated but free.
+    - POOL_FREE_BUFFERS
+    - $(P)$(R)PoolFreeBuffers
+    - longin
+  * - N.A.
+    - N.A.
+    - r/o
+    - The number of NDArrayPool buffers currently in use. This is calculated as NDPoolAllocBuffers
+      - NDPoolFreeBuffers.
+    - N.A.
+    - $(P)$(R)PoolUsedBuffers
+    - calc
+  * - NDPoolEmptyFreeList
+    - asynInt32
+    - r/w
+    - Processing this record deletes all of the NDArrays on the freelist and sets the
+      freelist size to 0. This provides a mechanism to free large amounts of memory and
+      return it to the operating system, for example after a rapid acquisition with large
+      plugin queues. On Windows the memory is returned to the operating system immediately.
+      On Linux the freed memory may not actually be returned to the operating system even
+      though it has been freed in the areaDetector process. On Centos7 (and presumably
+      many other versions of Linux) setting the value of the environment variable `MALLOC_TRIM_THRESHOLD_`
+      to a small value will allow the memory to actually be returned to the operating
+      system.
+    - POOL_EMPTY_FREELIST
+    - $(P)$(R)EmptyFreeList
+    - bo
+  * - NDNumQueuedArrays
+    - asynInt32
+    - r/o
+    - The number of NDArrays from this driver's NDArrayPool that are currently queued
+      for processing by plugins. When this number goes to 0 the plugins have all completed
+      processing.
+    - NUM_QUEUED_ARRAYS
+    - $(P)$(R)NumQueuedArrays
+    - longin
+  * -
+    -
+    -
+    - **Debugging control**
+  * - N/A
+    - N/A
+    - N/A
+    - asyn record to control debugging (asynTrace)
+    - N/A
+    - $(P)$(R)AsynIO
+    - asyn
+  * -
+    -
+    -
+    - **File saving parameters (records are defined in NDFile.template)**
+  * - NDFilePath
+    - asynOctet
+    - r/w
+    - File path
+    - FILE_PATH
+    - $(P)$(R)FilePath, $(P)$(R)FilePath_RBV
+    - waveform, waveform
+  * - NDFilePathExists
+    - asynInt32
+    - r/o
+    - Flag indicating if file path exists
+    - FILE_PATH_EXISTS
+    - $(P)$(R)FilePathExists_RBV
+    - bi
+  * - NDFileName
+    - asynOctet
+    - r/w
+    - File name
+    - FILE_NAME
+    - $(P)$(R)FileName, $(P)$(R)FileName_RBV
+    - waveform, waveform
+  * - NDFileNumber
+    - asynInt32
+    - r/w
+    - File number
+    - FILE_NUMBER
+    - $(P)$(R)FileNumber, $(P)$(R)FileNumber_RBV
+    - longout, longin
+  * - NDFileTemplate
+    - asynOctet
+    - r/w
+    - Format string for constructing NDFullFileName from NDFilePath, NDFileName, and NDFileNumber.
+      The final file name (which is placed in NDFullFileName) is created with the following
+      code:
+      ``epicsSnprintf(FullFilename, sizeof(FullFilename), FileTemplate, FilePath, Filename, FileNumber);``
+      FilePath, Filename, FileNumber are converted in that order with FileTemplate. An
+      example file format is `"%s%s%4.4d.tif"`. The first %s converts the FilePath,
+      followed immediately by another %s for Filename. FileNumber is formatted with %4.4d,
+      which results in a fixed field with of 4 digits, with leading zeros as required.
+      Finally, the .tif extension is added to the file name. This mechanism for creating
+      file names is very flexible. Other characters, such as _ can be put in Filename
+      or FileTemplate as desired. If one does not want to have FileNumber in the file
+      name at all, then just omit the %d format specifier from FileTemplate. If the client
+      wishes to construct the complete file name itself, then it can just put that file
+      name into NDFileTemplate with no format specifiers at all, in which case NDFilePath,
+      NDFileName, and NDFileNumber will be ignored.
+    - FILE_TEMPLATE
+    - $(P)$(R)FileTemplate, $(P)$(R)FileTemplate_RBV
+    - waveform, waveform
+  * - NDFullFileName
+    - asynOctet
+    - r/o
+    - Full file name constructed using the algorithm described in NDFileTemplate
+    - FULL_FILE_NAME
+    - $(P)$(R)FullFileName_RBV
+    - waveform, waveform
+  * - NDAutoIncrement
+    - asynInt32
+    - r/w
+    - Auto-increment flag. Controls whether FileNumber is automatically incremented by
+      1 each time a file is saved (0=No, 1=Yes)
+    - AUTO_INCREMENT
+    - $(P)$(R)AutoIncrement, $(P)$(R)AutoIncrement_RBV
+    - bo, bi
+  * - NDAutoSave
+    - asynInt32
+    - r/w
+    - Auto-save flag (0=No, 1=Yes) controlling whether a file is automatically saved each
+      time acquisition completes.
+    - AUTO_SAVE
+    - $(P)$(R)AutoSave, $(P)$(R)AutoSave_RBV
+    - bo, bi
+  * - NDFileFormat
+    - asynInt32
+    - r/w
+    - File format. The format to write/read data in (e.g. TIFF, netCDF, etc.)
+    - FILE_FORMAT
+    - $(P)$(R)FileFormat, $(P)$(R)FileFormat_RBV
+    - mbbo, mbbi
+  * - NDWriteFile
+    - asynInt32
+    - r/w
+    - Manually save the most recent array to a file when value=1
+    - WRITE_FILE
+    - $(P)$(R)WriteFile, $(P)$(R)WriteFile_RBV
+    - busy, bi
+  * - NDReadFile
+    - asynInt32
+    - r/w
+    - Manually read a file when value=1
+    - READ_FILE
+    - $(P)$(R)ReadFile, $(P)$(R)ReadFile_RBV
+    - busy, bi
+  * - NDFileWriteMode
+    - asynInt32
+    - r/w
+    - File saving mode (Single, Capture, Stream)(NDFileMode_t)
+    - WRITE_MODE
+    - $(P)$(R)FileWriteMode, $(P)$(R)FileWriteMode_RBV
+    - mbbo, mbbi
+  * - NDFileWriteStatus
+    - asynInt32
+    - r/o
+    - File write status. Gives status information on last file open or file write operation.
+      Values are WriteOK (0) and WriteError (1).
+    - WRITE_STATUS
+    - $(P)$(R)FileWriteStatus
+    - mbbi
+  * - NDFileWriteMessage
+    - asynOctet
+    - r/o
+    - File write error message. An error message string if the previous file open or file
+      write operation resulted in an error.
+    - WRITE_MESSAGE
+    - $(P)$(R)FileWriteMessage
+    - waveform
+  * - NDFileCapture
+    - asynInt32
+    - r/w
+    - Start (1) or stop (0) file capture or streaming
+    - CAPTURE
+    - $(P)$(R)Capture, $(P)$(R)Capture_RBV
+    - busy, bi
+  * - NDFileNumCapture
+    - asynInt32
+    - r/w
+    - Number of frames to acquire in capture or streaming mode
+    - NUM_CAPTURE
+    - $(P)$(R)NumCapture, $(P)$(R)NumCapture_RBV
+    - longout, longin
+  * - NDFileNumCaptured
+    - asynInt32
+    - r/o
+    - Number of arrays currently acquired capture or streaming mode
+    - NUM_CAPTURED
+    - $(P)$(R)NumCaptured_RBV
+    - longin
+  * - NDFileDeleteDriverFile
+    - asynInt32
+    - r/w
+    - Flag to enable deleting original driver file after a plugin has re-written the file
+      in a different format. This can be useful for detectors that must write the data
+      to disk in order for the areaDetector driver to read it back. Once a file-writing
+      plugin has rewritten the data in another format it can be desireable to then delete
+      the original file.
+    - DELETE_DRIVER_FILE
+    - $(P)$(R)DeleteDriverFile, $(P)$(R)DeleteDriverFile_RBV
+    - bo, bi
+  * - NDFileLazyOpen
+    - asynInt32
+    - r/w
+    - Flag to defer the creation of a new file until the first NDArray to write has been
+      received. This removes the need for passing an extra NDArray through the file writing
+      plugin to initialise dimensions and possibly NDAttribute list before opening the
+      file. The downside is that file creation can potentially be time-consuming so processing
+      the first NDArray may be slower than subsequent ones.
+      , Only makes sense to use with file plugins which support multiple frames per file
+      and only in "Stream" mode.
+    - FILE_LAZY_OPEN
+    - $(P)$(R)LazyOpen, $(P)$(R)LazyOpen_RBV
+    - bo, bi
+  * - NDFileCreateDir
+    - asynInt32
+    - r/w
+    - This parameter is used to automatically create directories if they don't exist.
+      If it is zero (default), no directories are created. If it is negative, then the
+      absolute value is the maximum of directories that will be created (i.e. -1 will
+      create a maximum of one directory to complete the path, -2 will create a maximum
+      of 2 directories). If it is positive, then at least that many directories in the
+      path must exist (i.e. a value of 1 will create all directories below the root directory
+      and 2 will not create a directory in the root directory).
+    - CREATE_DIR
+    - $(P)$(R)CreateDirectory, $(P)$(R)CreateDirectory_RBV
+    - longout, longin
+  * - NDFileTempSuffix
+    - asynOctet
+    - r/w
+    - If this string is non-null, the file is opened with this suffix temporarily appended
+      to the file name. When the file is closed it is then renamed to the correct file
+      name without the suffix. This is useful for processing software watching for the
+      file to appear since the file appears as an atomic operation when it is ready to
+      be opened.
+    - FILE_TEMP_SUFFIX
+    - $(P)$(R)TempSuffix, $(P)$(R)TempSuffix_RBV
+    - stringout, stringin
 
 
