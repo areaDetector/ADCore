@@ -69,233 +69,110 @@ of the same names.
 -  **global:** Rather than representing a HDF5 object; this element
    represents a global functionality definition
 
-.. raw:: html
+.. cssclass:: table-bordered table-striped table-hover
+.. flat-table::
+  :header-rows: 1
 
-  <table class="table table-bordered">
-    <tbody>
-      <tr>
-        <th>
-          XML attribute</th>
-        <th>
-          Required</th>
-        <th>
-          Description</th>
-        <th>
-          Value</th>
-      </tr>
-      <tr>
-        <td align="center" colspan="4,">
-          XML <b>"attribute"</b> element attributes </td>
-      </tr>
-      <tr>
-        <td>
-          name</td>
-        <td>
-          yes</td>
-        <td>
-          Name (key) of the HDF attribute (key, value) pair</td>
-        <td>
-          string</td>
-      </tr>
-      <tr>
-        <td>
-          source</td>
-        <td>
-          yes</td>
-        <td>
-          Definition of where the attribute gets its value from</td>
-        <td>
-          Enum string: "constant", "ndattribute"</td>
-      </tr>
-      <tr>
-        <td>
-          when</td>
-        <td>
-          optional</td>
-        <td>
-          Event when the attribute data is updated</td>
-        <td>
-          Enum string: "OnFileOpen", "OnFileClose", "OnFileWrite"</td>
-      </tr>
-      <tr>
-        <td>
-          value</td>
-        <td>
-          Required only if source="constant"</td>
-        <td>
-          The constant value to give the attribute</td>
-        <td>
-          string (possibly containing an int or float)</td>
-      </tr>
-      <tr>
-        <td>
-          type</td>
-        <td>
-          optional - use if source="constant"</td>
-        <td>
-          The constant datatype</td>
-        <td>
-          Enum string: "int", "float", "string"</td>
-      </tr>
-      <tr>
-        <td>
-          ndattribute</td>
-        <td>
-          Required only if source="ndattribute"</td>
-        <td>
-          Name of the areaDetector NDAttribute which is the source of this HDF5 attribute's
-          data value</td>
-        <td>
-          string containing the name of an NDAttribute</td>
-      </tr>
-      <tr>
-        <td align="center" colspan="4,">
-          XML <b>"group"</b> element attributes </td>
-      </tr>
-      <tr>
-        <td>
-          name</td>
-        <td>
-          yes</td>
-        <td>
-          The (relative) name of the HDF5 group</td>
-        <td>
-          string</td>
-      </tr>
-      <tr>
-        <td>
-          ndattr_default</td>
-        <td>
-          optional</td>
-        <td>
-          This attribute flags a group as being a 'default' container for NDAttributes which
-          have not been defined to be stored elsewhere. If there is no group defined with
-          ndaddr_default=true, and if the root group does not have auto_ndattr_default=false,
-          then the 'default' container will be the root group.</td>
-        <td>
-          boolean (default=false)</td>
-      </tr>
-      <tr>
-        <td>
-          auto_ndattr_default</td>
-        <td>
-          optional</td>
-        <td>
-          If this attribute is present for the root group and is set to false then NDAttributes
-          which have not been defined to be stored elsewhere will not be stored at all</td>
-        <td>
-          boolean (default=false)</td>
-      </tr>
-      <tr>
-        <td align="center" colspan="4,">
-          XML <b>"dataset"</b> element attributes </td>
-      </tr>
-      <tr>
-        <td>
-          name</td>
-        <td>
-          yes</td>
-        <td>
-          Name of the HDF5 dataset</td>
-        <td>
-          string</td>
-      </tr>
-      <tr>
-        <td>
-          source</td>
-        <td>
-          yes</td>
-        <td>
-          Definition of where the dataset gets its data values from</td>
-        <td>
-          string enum: "detector", "ndattribute", "constant"</td>
-      </tr>
-      <tr>
-        <td>
-          value</td>
-        <td>
-          Required only if source="constant"</td>
-        <td>
-          Constant value to write directly into the HDF5 dataset</td>
-        <td>
-          String - possibly containing int or float values. Arrays of int and float values
-          can also be represented in a comma-separated string</td>
-      </tr>
-      <tr>
-        <td>
-          ndattribute</td>
-        <td>
-          Required only if source="ndattribute"</td>
-        <td>
-          The name of the areaDetector NDAttribute to use as a data source for this HDF5 dataset
-        </td>
-        <td>
-          string containing the name of the NDAttribute</td>
-      </tr>
-      <tr>
-        <td>
-          det_default</td>
-        <td>
-          optional</td>
-        <td>
-          Flag to indicate that this HDF5 dataset is the default dataset for the detector
-          to write NDArrays into. Only sensible to set true if source="detector"</td>
-        <td>
-          boolean (default=false)</td>
-      </tr>
-      <tr>
-        <td align="center" colspan="4,">
-          XML <b>"global"</b> element attributes </td>
-      </tr>
-      <tr>
-        <td>
-          name</td>
-        <td>
-          yes</td>
-        <td>
-          Name of the global functionality or parameter to set</td>
-        <td>
-          enum string: "detector_data_destination"
-          <br />
-          (currently only one supported parameter)</td>
-      </tr>
-      <tr>
-        <td>
-          ndattribute</td>
-        <td>
-          Required when name="detector_data_destination"</td>
-        <td>
-          Name of the NDAttribute which defines the name of the dataset where incoming NDArrays
-          are to be stored</td>
-        <td>
-          string containing the name of an NDAttribute</td>
-      </tr>
-      <tr>
-        <td align="center" colspan="4,">
-          XML <b>"hardlink"</b> element attributes </td>
-      </tr>
-      <tr>
-        <td>
-          name</td>
-        <td>
-          yes</td>
-        <td>
-          Name of the link</td>
-        <td>
-          string: string containing the name of the hardlink being created </td>
-      </tr>
-      <tr>
-        <td>
-          target</td>
-        <td>
-          yes</td>
-        <td>
-          Name of the existing target object in the HDF5 file being linked to.</td>
-        <td>
-          string containing the name of the target object being linked to</td>
-      </tr>
-    </tbody>
-  </table>
+  * - XML attribute
+    - Required
+    - Description
+    - Value
+  * -
+    -
+    - **XML "attribute" element attributes**
+  * - name
+    - yes
+    - Name (key) of the HDF attribute (key, value) pair
+    - string
+  * - source
+    - yes
+    - Definition of where the attribute gets its value from
+    - Enum string: "constant", "ndattribute"
+  * - when
+    - optional
+    - Event when the attribute data is updated
+    - Enum string: "OnFileOpen", "OnFileClose", "OnFileWrite"
+  * - value
+    - Required only if source="constant"
+    - The constant value to give the attribute
+    - string (possibly containing an int or float)
+  * - type
+    - optional - use if source="constant"
+    - The constant datatype
+    - Enum string: "int", "float", "string"
+  * - ndattribute
+    - Required only if source="ndattribute"
+    - Name of the areaDetector NDAttribute which is the source of this HDF5 attribute's
+      data value
+    - string containing the name of an NDAttribute
+  * -
+    -
+    - **XML "group" element attributes**
+  * - name
+    - yes
+    - The (relative) name of the HDF5 group
+    - string
+  * - ndattr_default
+    - optional
+    - This attribute flags a group as being a 'default' container for NDAttributes which
+      have not been defined to be stored elsewhere. If there is no group defined with
+      ndaddr_default=true, and if the root group does not have auto_ndattr_default=false,
+      then the 'default' container will be the root group.
+    - boolean (default=false)
+  * - auto_ndattr_default
+    - optional
+    - If this attribute is present for the root group and is set to false then NDAttributes
+      which have not been defined to be stored elsewhere will not be stored at all
+    - boolean (default=false)
+  * -
+    -
+    - **XML "dataset" element attributes**
+  * - name
+    - yes
+    - Name of the HDF5 dataset
+    - string
+  * - source
+    - yes
+    - Definition of where the dataset gets its data values from
+    - string enum: "detector", "ndattribute", "constant"
+  * - value
+    - Required only if source="constant"
+    - Constant value to write directly into the HDF5 dataset
+    - String - possibly containing int or float values. Arrays of int and float values
+      can also be represented in a comma-separated string
+  * - ndattribute
+    - Required only if source="ndattribute"
+    - The name of the areaDetector NDAttribute to use as a data source for this HDF5 dataset
+    - string containing the name of the NDAttribute
+  * - det_default
+    - optional
+    - Flag to indicate that this HDF5 dataset is the default dataset for the detector
+      to write NDArrays into. Only sensible to set true if source="detector"
+    - boolean (default=false)
+  * -
+    -
+    - **XML "global" element attributes**
+  * - name
+    - yes
+    - Name of the global functionality or parameter to set
+    - enum string: "detector_data_destination"
+      , (currently only one supported parameter)
+  * - ndattribute
+    - Required when name="detector_data_destination"
+    - Name of the NDAttribute which defines the name of the dataset where incoming NDArrays
+      are to be stored
+    - string containing the name of an NDAttribute
+  * -
+    -
+    - **XML "hardlink" element attributes**
+  * - name
+    - yes
+    - Name of the link
+    - string: string containing the name of the hardlink being created
+  * - target
+    - yes
+    - Name of the existing target object in the HDF5 file being linked to.
+    - string containing the name of the target object being linked to
 
 An example XML layout file is provided in
 ``ADExample/iocs/simDetectorIOC/iocBoot/iocSimDetector/hdf5_layout_demo.xml``.
@@ -572,7 +449,7 @@ plugin:
 Single Writer Multiple Reader (SWMR)
 ------------------------------------
 
-From version 1-10 of the HDF5 library, reader applications shall be ableFrom version 1-10 of the HDF5 library, reader applications shall be able
+From version 1-10 of the HDF5 library, reader applications shall be able
 to access the file whilst it is being written. The plugin has been
 updated to support the additional SWMR feature when writing a file. The
 plugin will know if SWMR mode is supported depending on the version of
@@ -659,1248 +536,456 @@ a 1D dataset will be produced containing the values (0, 1, 2).
 Parameters and Records
 ----------------------
 
-.. raw:: html
+.. cssclass:: table-bordered table-striped table-hover
+.. flat-table::
+  :header-rows: 2
+  :widths: 5 5 50 10 15 10
 
-  <table class="table table-bordered">
-    <tbody>
-      <tr>
-        <td align="center" colspan="7,">
-          <b>Parameter Definitions and EPICS Record Definitions in NDFileHDF5.template</b>
-        </td>
-      </tr>
-      <tr>
-        <th>
-          Parameter index variable</th>
-        <th>
-          asyn interface</th>
-        <th>
-          Access</th>
-        <th>
-          Description</th>
-        <th>
-          drvInfo string</th>
-        <th>
-          EPICS record name</th>
-        <th>
-          EPICS record type</th>
-      </tr>
-      <tr>
-        <td align="center" colspan="7,">
-          <b>HDF5 XML Layout Definition</b></td>
-      </tr>
-      <tr>
-        <td>
-          XMLFileName</td>
-        <td>
-          asynOctet</td>
-        <td>
-          r/w</td>
-        <td>
-          XML filename, pointing to an XML HDF5 Layout Definition<br />
-          This waveform also supports loading raw XML code directly; up to a maximum of 1MB
-          long (NELM=1MB)</td>
-        <td>
-          HDF5_layoutFilename</td>
-        <td>
-          $(P)$(R)XMLFileName<br />
-          $(P)$(R)XMLFileName_RBV</td>
-        <td>
-          waveform</td>
-      </tr>
-      <tr>
-        <td>
-          layoutValid</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/o</td>
-        <td>
-          Flag to report the validity (xml syntax only) of the loaded XML. Updated when the
-          XMLFileName is updated with a new filename and when the XML file is read at HDF5
-          file creation</td>
-        <td>
-          HDF5_layoutValid</td>
-        <td>
-          $(P)$(R)XMLValid_RBV</td>
-        <td>
-          bi</td>
-      </tr>
-      <tr>
-        <td>
-          layoutErrorMsg</td>
-        <td>
-          asynOctet</td>
-        <td>
-          r/o</td>
-        <td>
-          XML parser error message</td>
-        <td>
-          HDF5_layoutErrorMsg</td>
-        <td>
-          $(P)$(R)XMLErrorMsg_RBV</td>
-        <td>
-          waveform</td>
-      </tr>
-      <tr>
-        <td align="center" colspan="7,">
-          <b>HDF5 Chunk Configuration</b></td>
-      </tr>
-      <tr>
-        <td>
-          ChunkSizeAuto</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          No (0) or Yes (1). If Yes then the chunk size for each dimension of the NDArray is set to be the size of the NDArray in that dimension.</td>
-        <td>
-          HDF5_chunkSizeAuto</td>
-        <td>
-          $(P)$(R)ChunkSizeAuto<br />
-          $(P)$(R)ChunkSizeAuto_RBV</td>
-        <td>
-          bo<br />
-          bi</td>
-      </tr>
-      <tr>
-        <td>
-          nColChunks</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          Configure HDF5 "chunking" to approriate size for the filesystem: sets number of
-          columns (dimension 0 of NDArray) to use per chunk</td>
-        <td>
-          HDF5_nColChunks</td>
-        <td>
-          $(P)$(R)NumColChunks<br />
-          $(P)$(R)NumColChunks_RBV</td>
-        <td>
-          longout<br />
-          longin</td>
-      </tr>
-      <tr>
-        <td>
-          nRowChunks</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          Configure HDF5 "chunking" to approriate size for the filesystem: sets number of
-          rows (dimension 1 of NDArray) to use per chunk</td>
-        <td>
-          HDF5_nRowChunks</td>
-        <td>
-          $(P)$(R)NumRowChunks<br />
-          $(P)$(R)NumRowChunks_RBV</td>
-        <td>
-          longout<br />
-          longin</td>
-      </tr>
-      <tr>
-        <td>
-          chunkSize(N), N=2-9</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          Configure HDF5 "chunking" to approriate size for the filesystem: sets the number of
-          elements in dimension N use per chunk</td>
-        <td>
-          HDF5_chunkSize</td>
-        <td>
-          $(P)$(R)ChunkSize(N)<br />
-          $(P)$(R)ChunkSize(N)_RBV</td>
-        <td>
-          longout<br />
-          longin</td>
-      </tr>
-      <tr>
-        <td>
-          nFramesChunks</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          Configure HDF5 "chunking" to approriate size for the filesystem: sets number of
-          NDArrays to use per chunk. Setting this parameter > 1 essentially
-          implies using in-memory cache as HDF5 only writes full chunks to disk.</td>
-        <td>
-          HDF5_nFramesChunks</td>
-        <td>
-          $(P)$(R)NumFramesChunks<br />
-          $(P)$(R)NumFramesChunks_RBV</td>
-        <td>
-          longout<br />
-          longin</td>
-      </tr>
-      <tr>
-        <td align="center" colspan="7,">
-          <b>Disk Boundary Alignment</b></td>
-      </tr>
-      <tr>
-        <td>
-          chunkBoundaryAlign</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          Set the disk boundary alignment in bytes. This parameter can be used to optimise
-          file I/O performance on some file systems. For instance on the Lustre file system
-          where the it is optimal to align data to the 'stripe size' (default 1MB).
-          <br />
-          This parameter applies to all datasets in the file.
-          <br />
-          Setting this parameter to 0 disables use of disk boundary alignment.
-          <br />
-          <i>Warning: setting this parameter to a larger size than the size of a single chunk
-            will cause datafiles to grow larger than the actual contained data.</i> </td>
-        <td>
-          HDF5_chunkBoundaryAlign</td>
-        <td>
-          $(P)$(R)BoundaryAlign<br />
-          $(P)$(R)BoundaryAlign_RBV</td>
-        <td>
-          longout<br />
-          longin</td>
-      </tr>
-      <tr>
-        <td>
-          chunkBoundaryThreshold</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          Set a minimum size (bytes) of chunk or dataset where boundary alignment is to be
-          applied. This can be used to filter out small datasets like NDAttributes from the
-          boundary alignment as it could blow up the file size.
-          <br />
-          Setting this parameter to 0 will disable the use of boundary alignment </td>
-        <td>
-          HDF5_chunkBoundaryThreshold</td>
-        <td>
-          $(P)$(R)BoundaryThreshold<br />
-          $(P)$(R)BoundaryThreshold_RBV</td>
-        <td>
-          longout<br />
-          longin</td>
-      </tr>
-      <tr>
-        <td align="center" colspan="7,">
-          <b>Metadata</b></td>
-      </tr>
-      <tr>
-        <td>
-          storeAttributes</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          Enable or disable support for storing NDArray attributes in file</td>
-        <td>
-          HDF5_storeAttributes</td>
-        <td>
-          $(P)$(R)StoreAttr<br />
-          $(P)$(R)StoreAttr_RBV</td>
-        <td>
-          bo<br />
-          bi</td>
-      </tr>
-      <tr>
-        <td>
-          storePerformance</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          Enable or disable support for storing file IO timing measurements in file</td>
-        <td>
-          HDF5_storePerformance</td>
-        <td>
-          $(P)$(R)StorePerform<br />
-          $(P)$(R)StorePerform_RBV</td>
-        <td>
-          bo<br />
-          bi</td>
-      </tr>
-      <tr>
-        <td>
-          dimAttDatasets</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          Turn on or off NDAttribute dataset dimensions (1 = On, 0 = Off). When switched on
-          NDAttribute datasets are forced to have the same dimensionality as the main dataset.
-        </td>
-        <td>
-          HDF5_dimAttDatasets</td>
-        <td>
-          $(P)$(R)DimAttDatasets<br />
-          $(P)$(R)DimAttDatasets_RBV</td>
-        <td>
-          bo<br />
-          bi</td>
-      </tr>
-      <tr>
-        <td align="center" colspan="7,">
-          <b>SWMR</b></td>
-      </tr>
-      <tr>
-        <td>
-          SWMRSupported</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/o</td>
-        <td>
-          Does the HDF5 library version support SWMR mode of operation (1 = Supported, 0 =
-          Not Supported).</td>
-        <td>
-          HDF5_SWMRSupported</td>
-        <td>
-          $(P)$(R)SWMRSupported_RBV</td>
-        <td>
-          bi</td>
-      </tr>
-      <tr>
-        <td>
-          SWMRMode</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          Turn on or off SWMR mode for the next acquisition (1 = On, 0 = Off). Turning on
-          will only work if SWMR mode is supported.</td>
-        <td>
-          HDF5_SWMRMode</td>
-        <td>
-          $(P)$(R)SWMRMode<br />
-          $(P)$(R)SMWRMode_RBV</td>
-        <td>
-          bo<br />
-          bi</td>
-      </tr>
-      <tr>
-        <td>
-          SWMRRunning</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/o</td>
-        <td>
-          This value is set to 1 once a file has been opened and placed into SWMR mode. It
-          returns to 0 once the acquisition has completed.</td>
-        <td>
-          HDF5_SWMRRunning</td>
-        <td>
-          $(P)$(R)SWMRActive_RBV</td>
-        <td>
-          bi</td>
-      </tr>
-      <tr>
-        <td>
-          flushNthFrame</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          Flush the image to disk every N'th frame.</td>
-        <td>
-          HDF5_flushNthFrame</td>
-        <td>
-          $(P)$(R)NumFramesFlush<br />
-          $(P)$(R)NumFramesFlush_RBV</td>
-        <td>
-          longout<br />
-          longin</td>
-      </tr>
-      <tr>
-        <td>
-          NDAttributeChunk</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          This value is used to determine when to flush NDAttribute datasets to disk, and
-          the corresponding datasets chunk size. A value of zero will default where possible
-          to the size of the dataset for a one dimensional dataset.</td>
-        <td>
-          HDF5_NDAttributeChunk</td>
-        <td>
-          $(P)$(R)NDAttributeChunk<br />
-          $(P)$(R)NDAttributeChunk_RBV</td>
-        <td>
-          longout<br />
-          longin</td>
-      </tr>
-      <tr>
-        <td>
-          SWMRCbCounter</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/o</td>
-        <td>
-          The number of flushes that have taken place for the current acquisition. In the
-          case where flushing occurs for every frame and no flushing is set for NDAttribute
-          datasets then this value will increment by one for each frame, and once the acquisition
-          has completed it will jump by the number of flushes required for the NDAttribute
-          datasets, one flush for each dataset.</td>
-        <td>
-          HDF5_SWMRCbCounter</td>
-        <td>
-          $(P)$(R)SWMRCbCounter_RBV</td>
-        <td>
-          longin</td>
-      </tr>
-      <tr>
-        <td>
-          SWMRFlushNow</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          Forces an immediate HDF5 flush.</td>
-        <td>
-          HDF5_SWMRFlushNow</td>
-        <td>
-          $(P)$(R)FlushNow</td>
-        <td>
-          busy</td>
-      </tr>
-      <tr>
-        <td align="center" colspan="7,">
-          <b>Additional Virtual Dimensions</b></td>
-      </tr>
-      <tr>
-        <td>
-          nExtraDims</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          Number of extra dimensions [0..9]</td>
-        <td>
-          HDF5_nExtraDims</td>
-        <td>
-          $(P)$(R)NumExtraDims<br />
-          $(P)$(R)NumExtraDims</td>
-        <td>
-          mbbo<br />
-          mbbi</td>
-      </tr>
-      <tr>
-        <td>
-          extraDimSizeN</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          Size of extra dimension N (no. of frames per point)</td>
-        <td>
-          HDF5_extraDimSizeN</td>
-        <td>
-          $(P)$(R)ExtraDimSizeN<br />
-          $(P)$(R)ExtraDimSizeN_RBV</td>
-        <td>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          extraDimSizeX</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          Size of extra dimension X</td>
-        <td>
-          HDF5_extraDimSizeX</td>
-        <td>
-          $(P)$(R)ExtraDimSizeX<br />
-          $(P)$(R)ExtraDimSizeX_RBV</td>
-        <td>
-          longout<br />
-          longin</td>
-      </tr>
-      <tr>
-        <td>
-          extraDimSizeY</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          Size of extra dimension Y</td>
-        <td>
-          HDF5_extraDimSizeY</td>
-        <td>
-          $(P)$(R)ExtraDimSizeY<br />
-          $(P)$(R)ExtraDimSizeY_RBV</td>
-        <td>
-          longout<br />
-          longin</td>
-      </tr>
-      <tr>
-        <td>
-          extraDimSize3</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          Size of extra dimension 3</td>
-        <td>
-          HDF5_extraDimSize3</td>
-        <td>
-          $(P)$(R)ExtraDimSize3<br />
-          $(P)$(R)ExtraDimSize3_RBV</td>
-        <td>
-          longout<br />
-          longin</td>
-      </tr>
-      <tr>
-        <td>
-          extraDimSize4</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          Size of extra dimension 4</td>
-        <td>
-          HDF5_extraDimSize4</td>
-        <td>
-          $(P)$(R)ExtraDimSize4<br />
-          $(P)$(R)ExtraDimSize4_RBV</td>
-        <td>
-          longout<br />
-          longin</td>
-      </tr>
-      <tr>
-        <td>
-          extraDimSize5</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          Size of extra dimension 5</td>
-        <td>
-          HDF5_extraDimSize5</td>
-        <td>
-          $(P)$(R)ExtraDimSize5<br />
-          $(P)$(R)ExtraDimSize5_RBV</td>
-        <td>
-          longout<br />
-          longin</td>
-      </tr>
-      <tr>
-        <td>
-          extraDimSize6</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          Size of extra dimension 6</td>
-        <td>
-          HDF5_extraDimSize6</td>
-        <td>
-          $(P)$(R)ExtraDimSize6<br />
-          $(P)$(R)ExtraDimSize6_RBV</td>
-        <td>
-          longout<br />
-          longin</td>
-      </tr>
-      <tr>
-        <td>
-          extraDimSize7</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          Size of extra dimension 7</td>
-        <td>
-          HDF5_extraDimSize7</td>
-        <td>
-          $(P)$(R)ExtraDimSize7<br />
-          $(P)$(R)ExtraDimSize7_RBV</td>
-        <td>
-          longout<br />
-          longin</td>
-      </tr>
-      <tr>
-        <td>
-          extraDimSize8</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          Size of extra dimension 8</td>
-        <td>
-          HDF5_extraDimSize8</td>
-        <td>
-          $(P)$(R)ExtraDimSize8<br />
-          $(P)$(R)ExtraDimSize8_RBV</td>
-        <td>
-          longout<br />
-          longin</td>
-      </tr>
-      <tr>
-        <td>
-          extraDimSize9</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          Size of extra dimension 9</td>
-        <td>
-          HDF5_extraDimSize9</td>
-        <td>
-          $(P)$(R)ExtraDimSize9<br />
-          $(P)$(R)ExtraDimSize9_RBV</td>
-        <td>
-          longout<br />
-          longin</td>
-      </tr>
-      <tr>
-        <td align="center" colspan="7,">
-          <b>Positional Placement</b></td>
-      </tr>
-      <tr>
-        <td>
-          posRunning</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          Turn on/off positional placement mode</td>
-        <td>
-          HDF5_posRunning</td>
-        <td>
-          $(P)$(R)PositionMode<br />
-          $(P)$(R)PositionMode_RBV</td>
-        <td>
-          bo<br />
-          bi</td>
-      </tr>
-      <tr>
-        <td>
-          posName[0]</td>
-        <td>
-          asynOctet</td>
-        <td>
-          r/w</td>
-        <td>
-          Specify the NDAttribute name for the N index</td>
-        <td>
-          HDF5_posNameDimN</td>
-        <td>
-          $(P)$(R)PosNameDimN<br />
-          $(P)$(R)PosNameDimN_RBV</td>
-        <td>
-          stringout<br />
-          stringin</td>
-      </tr>
-      <tr>
-        <td>
-          posName[1]</td>
-        <td>
-          asynOctet</td>
-        <td>
-          r/w</td>
-        <td>
-          Specify the NDAttribute name for the X index</td>
-        <td>
-          HDF5_posNameDimX</td>
-        <td>
-          $(P)$(R)PosNameDimX<br />
-          $(P)$(R)PosNameDimX_RBV</td>
-        <td>
-          stringout<br />
-          stringin</td>
-      </tr>
-      <tr>
-        <td>
-          posName[2]</td>
-        <td>
-          asynOctet</td>
-        <td>
-          r/w</td>
-        <td>
-          Specify the NDAttribute name for the Y index</td>
-        <td>
-          HDF5_posNameDimY</td>
-        <td>
-          $(P)$(R)PosNameDimY<br />
-          $(P)$(R)PosNameDimY_RBV</td>
-        <td>
-          stringout<br />
-          stringin</td>
-      </tr>
-      <tr>
-        <td>
-          posName[3]</td>
-        <td>
-          asynOctet</td>
-        <td>
-          r/w</td>
-        <td>
-          Specify the NDAttribute name for the 3rd index</td>
-        <td>
-          HDF5_posNameDim3</td>
-        <td>
-          $(P)$(R)PosNameDim3<br />
-          $(P)$(R)PosNameDim3_RBV</td>
-        <td>
-          stringout<br />
-          stringin</td>
-      </tr>
-      <tr>
-        <td>
-          posName[4]</td>
-        <td>
-          asynOctet</td>
-        <td>
-          r/w</td>
-        <td>
-          Specify the NDAttribute name for the 4th index</td>
-        <td>
-          HDF5_posNameDim4</td>
-        <td>
-          $(P)$(R)PosNameDim4<br />
-          $(P)$(R)PosNameDim4_RBV</td>
-        <td>
-          stringout<br />
-          stringin</td>
-      </tr>
-      <tr>
-        <td>
-          posName[5]</td>
-        <td>
-          asynOctet</td>
-        <td>
-          r/w</td>
-        <td>
-          Specify the NDAttribute name for the 5th index</td>
-        <td>
-          HDF5_posNameDim5</td>
-        <td>
-          $(P)$(R)PosNameDim5<br />
-          $(P)$(R)PosNameDim5_RBV</td>
-        <td>
-          stringout<br />
-          stringin</td>
-      </tr>
-      <tr>
-        <td>
-          posName[6]</td>
-        <td>
-          asynOctet</td>
-        <td>
-          r/w</td>
-        <td>
-          Specify the NDAttribute name for the 6th index</td>
-        <td>
-          HDF5_posNameDim6</td>
-        <td>
-          $(P)$(R)PosNameDim6<br />
-          $(P)$(R)PosNameDim6_RBV</td>
-        <td>
-          stringout<br />
-          stringin</td>
-      </tr>
-      <tr>
-        <td>
-          posName[7]</td>
-        <td>
-          asynOctet</td>
-        <td>
-          r/w</td>
-        <td>
-          Specify the NDAttribute name for the 7th index</td>
-        <td>
-          HDF5_posNameDim7</td>
-        <td>
-          $(P)$(R)PosNameDim7<br />
-          $(P)$(R)PosNameDim7_RBV</td>
-        <td>
-          stringout<br />
-          stringin</td>
-      </tr>
-      <tr>
-        <td>
-          posName[8]</td>
-        <td>
-          asynOctet</td>
-        <td>
-          r/w</td>
-        <td>
-          Specify the NDAttribute name for the 8th index</td>
-        <td>
-          HDF5_posNameDim8</td>
-        <td>
-          $(P)$(R)PosNameDim8<br />
-          $(P)$(R)PosNameDim8_RBV</td>
-        <td>
-          stringout<br />
-          stringin</td>
-      </tr>
-      <tr>
-        <td>
-          posName[9]</td>
-        <td>
-          asynOctet</td>
-        <td>
-          r/w</td>
-        <td>
-          Specify the NDAttribute name for the 9th index</td>
-        <td>
-          HDF5_posNameDim9</td>
-        <td>
-          $(P)$(R)PosNameDim9<br />
-          $(P)$(R)PosNameDim9_RBV</td>
-        <td>
-          stringout<br />
-          stringin</td>
-      </tr>
-      <tr>
-        <td align="center" colspan="7,">
-          <b>Index Datasets</b></td>
-      </tr>
-      <tr>
-        <td>
-          posIndex[0]</td>
-        <td>
-          asynOctet</td>
-        <td>
-          r/w</td>
-        <td>
-          Specify the NDAttribute index for the N dimension</td>
-        <td>
-          HDF5_posIndexDimN</td>
-        <td>
-          $(P)$(R)PosIndexDimN<br />
-          $(P)$(R)PosIndexDimN_RBV</td>
-        <td>
-          stringout<br />
-          stringin</td>
-      </tr>
-      <tr>
-        <td>
-          posIndex[1]</td>
-        <td>
-          asynOctet</td>
-        <td>
-          r/w</td>
-        <td>
-          Specify the NDAttribute index for the X dimension</td>
-        <td>
-          HDF5_posIndexDimX</td>
-        <td>
-          $(P)$(R)posIndexDimX<br />
-          $(P)$(R)posIndexDimX_RBV</td>
-        <td>
-          stringout<br />
-          stringin</td>
-      </tr>
-      <tr>
-        <td>
-          posIndex[2]</td>
-        <td>
-          asynOctet</td>
-        <td>
-          r/w</td>
-        <td>
-          Specify the NDAttribute index for the Y dimension</td>
-        <td>
-          HDF5_posIndexDimY</td>
-        <td>
-          $(P)$(R)posIndexDimY<br />
-          $(P)$(R)posIndexDimY_RBV</td>
-        <td>
-          stringout<br />
-          stringin</td>
-      </tr>
-      <tr>
-        <td>
-          posIndex[3]</td>
-        <td>
-          asynOctet</td>
-        <td>
-          r/w</td>
-        <td>
-          Specify the NDAttribute index for the 3rd dimension</td>
-        <td>
-          HDF5_posIndexDim3</td>
-        <td>
-          $(P)$(R)posIndexDim3<br />
-          $(P)$(R)posIndexDim3_RBV</td>
-        <td>
-          stringout<br />
-          stringin</td>
-      </tr>
-      <tr>
-        <td>
-          posIndex[4]</td>
-        <td>
-          asynOctet</td>
-        <td>
-          r/w</td>
-        <td>
-          Specify the NDAttribute index for the 4th dimension</td>
-        <td>
-          HDF5_posIndexDim4</td>
-        <td>
-          $(P)$(R)posIndexDim4<br />
-          $(P)$(R)posIndexDim4_RBV</td>
-        <td>
-          stringout<br />
-          stringin</td>
-      </tr>
-      <tr>
-        <td>
-          posIndex[5]</td>
-        <td>
-          asynOctet</td>
-        <td>
-          r/w</td>
-        <td>
-          Specify the NDAttribute index for the 5th dimension</td>
-        <td>
-          HDF5_posIndexDim5</td>
-        <td>
-          $(P)$(R)posIndexDim5<br />
-          $(P)$(R)posIndexDim5_RBV</td>
-        <td>
-          stringout<br />
-          stringin</td>
-      </tr>
-      <tr>
-        <td>
-          posIndex[6]</td>
-        <td>
-          asynOctet</td>
-        <td>
-          r/w</td>
-        <td>
-          Specify the NDAttribute index for the 6th dimension</td>
-        <td>
-          HDF5_posIndexDim6</td>
-        <td>
-          $(P)$(R)posIndexDim6<br />
-          $(P)$(R)posIndexDim6_RBV</td>
-        <td>
-          stringout<br />
-          stringin</td>
-      </tr>
-      <tr>
-        <td>
-          posIndex[7]</td>
-        <td>
-          asynOctet</td>
-        <td>
-          r/w</td>
-        <td>
-          Specify the NDAttribute index for the 7th dimension</td>
-        <td>
-          HDF5_posIndexDim7</td>
-        <td>
-          $(P)$(R)posIndexDim7<br />
-          $(P)$(R)posIndexDim7_RBV</td>
-        <td>
-          stringout<br />
-          stringin</td>
-      </tr>
-      <tr>
-        <td>
-          posIndex[8]</td>
-        <td>
-          asynOctet</td>
-        <td>
-          r/w</td>
-        <td>
-          Specify the NDAttribute index for the 8th dimension</td>
-        <td>
-          HDF5_posIndexDim8</td>
-        <td>
-          $(P)$(R)posIndexDim8<br />
-          $(P)$(R)posIndexDim8_RBV</td>
-        <td>
-          stringout<br />
-          stringin</td>
-      </tr>
-      <tr>
-        <td>
-          posIndex[9]</td>
-        <td>
-          asynOctet</td>
-        <td>
-          r/w</td>
-        <td>
-          Specify the NDAttribute index for the 9th dimension</td>
-        <td>
-          HDF5_posIndexDim9</td>
-        <td>
-          $(P)$(R)posIndexDim9<br />
-          $(P)$(R)posIndexDim9_RBV</td>
-        <td>
-          stringout<br />
-          stringin</td>
-      </tr>
-      <tr>
-        <td align="center" colspan="7,">
-          <b>Runtime Statistics</b></td>
-      </tr>
-      <tr>
-        <td>
-          totalRuntime</td>
-        <td>
-          asynFloat64</td>
-        <td>
-          r/o</td>
-        <td>
-          Total runtime in seconds from first frame to file closed</td>
-        <td>
-          HDF5_totalRuntime</td>
-        <td>
-          $(P)$(R)Runtime</td>
-        <td>
-          ai</td>
-      </tr>
-      <tr>
-        <td>
-          totalIoSpeed</td>
-        <td>
-          asynFloat64</td>
-        <td>
-          r/o</td>
-        <td>
-          Overall IO write speed in megabit per second from first frame to file closed</td>
-        <td>
-          HDF5_totalIoSpeed</td>
-        <td>
-          $(P)$(R)IOSpeed</td>
-        <td>
-          ai</td>
-      </tr>
-      <tr>
-        <td align="center" colspan="7,">
-          <b>Compression Filters</b></td>
-      </tr>
-      <tr>
-        <td>
-          compressionType</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          Select or switch off compression filter. <br />
-          <ul>
-            <li>None</li>
-            <li>N-bit</li>
-            <li>szip</li>
-            <li>zlib</li>
-            <li>Blosc</li>
-            <li>BSLZ4</li>
-            <li>LZ4</li>
-            <li>JPEG</li>
-          </ul>
-          </td>
-        <td>
-          HDF5_compressionType</td>
-        <td>
-          $(P)$(R)Compression<br />
-          $(P)$(R)Compression_RBV</td>
-        <td>
-          mbbo<br />
-          mbbi</td>
-      </tr>
-      <tr>
-        <td>
-          nbitsPrecision</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          N-bit compression filter: number of data bits per pixel</td>
-        <td>
-          HDF5_nbitsPrecision</td>
-        <td>
-          $(P)$(R)NumDataBits<br />
-          $(P)$(R)NumDataBits_RBV</td>
-        <td>
-          longout<br />
-          longin</td>
-      </tr>
-      <tr>
-        <td>
-          nbitsOffset</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          N-bit compression filter: dataword bit-offset in pixel</td>
-        <td>
-          HDF5_nbitsOffset</td>
-        <td>
-          $(P)$(R)DataBitsOffset<br />
-          $(P)$(R)DataBitsOffset_RBV</td>
-        <td>
-          longout<br />
-          longin</td>
-      </tr>
-      <tr>
-        <td>
-          szipNumPixels</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          szip compression filter: number of pixels in filter [1..32]</td>
-        <td>
-          HDF5_szipNumPixels</td>
-        <td>
-          $(P)$(R)SZipNumPixels<br />
-          $(P)$(R)SZipNumPixels_RBV</td>
-        <td>
-          longout<br />
-          longin</td>
-      </tr>
-      <tr>
-        <td>
-          zCompressLevel</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          zlib compression filter: compression level [1..9]</td>
-        <td>
-          HDF5_zCompressLevel</td>
-        <td>
-          $(P)$(R)ZLevel<br />
-          $(P)$(R)ZLevel_RBV</td>
-        <td>
-          longout<br />
-          longin</td>
-      </tr>
-      <tr>
-        <td>
-          bloscCompressor</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          Blosc compressor. <br />
-          <ul>
-            <li>BloscLZ</li>
-            <li>LZ4</li>
-            <li>LZ4HC</li>
-            <li>SNAPPY</li>
-            <li>ZLIB</li>
-            <li>ZSTD</li>
-          </ul>
-          </td>
-        <td>
-          HDF5_bloscCompressor</td>
-        <td>
-          $(P)$(R)BloscCompressor<br />
-          $(P)$(R)BloscCompressor_RBV</td>
-        <td>
-          mbbo<br />
-          mbbi</td>
-      </tr>
-      <tr>
-        <td>
-          bloscShuffle</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          Blosc shuffle.<br />
-          <ul>
-            <li>None</li>
-            <li>Byte</li>
-            <li>Bit</li>
-          </ul>
-          </td>
-        <td>
-          HDF5_bloscShuffle</td>
-        <td>
-          $(P)$(R)BloscShuffle<br />
-          $(P)$(R)BloscShuffle_RBV</td>
-        <td>
-          mbbo<br />
-          mbbi</td>
-      </tr>
-      <tr>
-        <td>
-          BloscLevel</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          Blosc compression filter: compression level [0..9]</td>
-        <td>
-          HDF5_bloscCompressLevel</td>
-        <td>
-          $(P)$(R)BloscLevel<br />
-          $(P)$(R)BloscLevel_RBV</td>
-        <td>
-          longout<br />
-          longin</td>
-      </tr>
-      <tr>
-        <td>
-          JPEGQuality</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          JPEG quality level [1..100]</td>
-        <td>
-          HDF5_jpegQuality</td>
-        <td>
-          $(P)$(R)JPEGQuality<br />
-          $(P)$(R)JPEGQuality_RBV</td>
-        <td>
-          longout<br />
-          longin</td>
-      </tr>
-    </tbody>
-  </table>
+  * -
+    -
+    - **Parameter Definitions and EPICS Record Definitions in NDFileHDF5.template**
+  * - asyn interface
+    - Access
+    - Description
+    - drvInfo string
+    - EPICS record name
+    - EPICS record type
+  * -
+    -
+    - **HDF5 XML Layout Definition**
+  * - asynOctet
+    - r/w
+    - XML filename, pointing to an XML HDF5 Layout Definition, This waveform also supports loading raw XML code directly; up to a maximum of 1MB
+      long (NELM=1MB)
+    - HDF5_layoutFilename
+    - $(P)$(R)XMLFileName, $(P)$(R)XMLFileName_RBV
+    - waveform
+  * - asynInt32
+    - r/o
+    - Flag to report the validity (xml syntax only) of the loaded XML. Updated when the
+      XMLFileName is updated with a new filename and when the XML file is read at HDF5
+      file creation
+    - HDF5_layoutValid
+    - $(P)$(R)XMLValid_RBV
+    - bi
+  * - asynOctet
+    - r/o
+    - XML parser error message
+    - HDF5_layoutErrorMsg
+    - $(P)$(R)XMLErrorMsg_RBV
+    - waveform
+  * -
+    -
+    - **HDF5 Chunk Configuration**
+  * - asynInt32
+    - r/w
+    - No (0) or Yes (1). If Yes then the chunk size for each dimension of the NDArray is set to be the size of the NDArray in that dimension.
+    - HDF5_chunkSizeAuto
+    - $(P)$(R)ChunkSizeAuto, $(P)$(R)ChunkSizeAuto_RBV
+    - bo, bi
+  * - asynInt32
+    - r/w
+    - Configure HDF5 "chunking" to approriate size for the filesystem: sets number of
+      columns (dimension 0 of NDArray) to use per chunk
+    - HDF5_nColChunks
+    - $(P)$(R)NumColChunks, $(P)$(R)NumColChunks_RBV
+    - longout, longin
+  * - asynInt32
+    - r/w
+    - Configure HDF5 "chunking" to approriate size for the filesystem: sets number of
+      rows (dimension 1 of NDArray) to use per chunk
+    - HDF5_nRowChunks
+    - $(P)$(R)NumRowChunks, $(P)$(R)NumRowChunks_RBV
+    - longout, longin
+  * - asynInt32
+    - r/w
+    - Configure HDF5 "chunking" to approriate size for the filesystem: sets the number of
+      elements in dimension N use per chunk
+    - HDF5_chunkSize
+    - $(P)$(R)ChunkSize(N), $(P)$(R)ChunkSize(N)_RBV
+    - longout, longin
+  * - asynInt32
+    - r/w
+    - Configure HDF5 "chunking" to approriate size for the filesystem: sets number of
+      NDArrays to use per chunk. Setting this parameter > 1 essentially
+      implies using in-memory cache as HDF5 only writes full chunks to disk.
+    - HDF5_nFramesChunks
+    - $(P)$(R)NumFramesChunks, $(P)$(R)NumFramesChunks_RBV
+    - longout, longin
+  * -
+    -
+    - **Disk Boundary Alignment**
+  * - asynInt32
+    - r/w
+    - Set the disk boundary alignment in bytes. This parameter can be used to optimise
+      file I/O performance on some file systems. For instance on the Lustre file system
+      where the it is optimal to align data to the 'stripe size' (default 1MB).
+      , This parameter applies to all datasets in the file.
+      , Setting this parameter to 0 disables use of disk boundary alignment.
+      , *Warning: setting this parameter to a larger size than the size of a single chunk
+      will cause datafiles to grow larger than the actual contained data.*
+    - HDF5_chunkBoundaryAlign
+    - $(P)$(R)BoundaryAlign, $(P)$(R)BoundaryAlign_RBV
+    - longout, longin
+  * - asynInt32
+    - r/w
+    - Set a minimum size (bytes) of chunk or dataset where boundary alignment is to be
+      applied. This can be used to filter out small datasets like NDAttributes from the
+      boundary alignment as it could blow up the file size.
+      , Setting this parameter to 0 will disable the use of boundary alignment
+    - HDF5_chunkBoundaryThreshold
+    - $(P)$(R)BoundaryThreshold, $(P)$(R)BoundaryThreshold_RBV
+    - longout, longin
+  * -
+    -
+    - **Metadata**
+  * - asynInt32
+    - r/w
+    - Enable or disable support for storing NDArray attributes in file
+    - HDF5_storeAttributes
+    - $(P)$(R)StoreAttr, $(P)$(R)StoreAttr_RBV
+    - bo, bi
+  * - asynInt32
+    - r/w
+    - Enable or disable support for storing file IO timing measurements in file
+    - HDF5_storePerformance
+    - $(P)$(R)StorePerform, $(P)$(R)StorePerform_RBV
+    - bo, bi
+  * - asynInt32
+    - r/w
+    - Turn on or off NDAttribute dataset dimensions (1 = On, 0 = Off). When switched on
+      NDAttribute datasets are forced to have the same dimensionality as the main dataset.
+    - HDF5_dimAttDatasets
+    - $(P)$(R)DimAttDatasets, $(P)$(R)DimAttDatasets_RBV
+    - bo, bi
+  * -
+    -
+    - **SWMR**
+  * - asynInt32
+    - r/o
+    - Does the HDF5 library version support SWMR mode of operation (1 = Supported, 0 =
+      Not Supported).
+    - HDF5_SWMRSupported
+    - $(P)$(R)SWMRSupported_RBV
+    - bi
+  * - asynInt32
+    - r/w
+    - Turn on or off SWMR mode for the next acquisition (1 = On, 0 = Off). Turning on
+      will only work if SWMR mode is supported.
+    - HDF5_SWMRMode
+    - $(P)$(R)SWMRMode, $(P)$(R)SMWRMode_RBV
+    - bo, bi
+  * - asynInt32
+    - r/o
+    - This value is set to 1 once a file has been opened and placed into SWMR mode. It
+      returns to 0 once the acquisition has completed.
+    - HDF5_SWMRRunning
+    - $(P)$(R)SWMRActive_RBV
+    - bi
+  * - asynInt32
+    - r/w
+    - Flush the image to disk every N'th frame.
+    - HDF5_flushNthFrame
+    - $(P)$(R)NumFramesFlush, $(P)$(R)NumFramesFlush_RBV
+    - longout, longin
+  * - asynInt32
+    - r/w
+    - This value is used to determine when to flush NDAttribute datasets to disk, and
+      the corresponding datasets chunk size. A value of zero will default where possible
+      to the size of the dataset for a one dimensional dataset.
+    - HDF5_NDAttributeChunk
+    - $(P)$(R)NDAttributeChunk, $(P)$(R)NDAttributeChunk_RBV
+    - longout, longin
+  * - asynInt32
+    - r/o
+    - The number of flushes that have taken place for the current acquisition. In the
+      case where flushing occurs for every frame and no flushing is set for NDAttribute
+      datasets then this value will increment by one for each frame, and once the acquisition
+      has completed it will jump by the number of flushes required for the NDAttribute
+      datasets, one flush for each dataset.
+    - HDF5_SWMRCbCounter
+    - $(P)$(R)SWMRCbCounter_RBV
+    - longin
+  * - asynInt32
+    - r/w
+    - Forces an immediate HDF5 flush.
+    - HDF5_SWMRFlushNow
+    - $(P)$(R)FlushNow
+    - busy
+  * -
+    -
+    - **Additional Virtual Dimensions**
+  * - asynInt32
+    - r/w
+    - Number of extra dimensions [0..9]
+    - HDF5_nExtraDims
+    - $(P)$(R)NumExtraDims, $(P)$(R)NumExtraDims
+    - mbbo, mbbi
+  * - asynInt32
+    - r/w
+    - Size of extra dimension N (no. of frames per point)
+    - HDF5_extraDimSizeN
+    - $(P)$(R)ExtraDimSizeN, $(P)$(R)ExtraDimSizeN_RBV
+    -
+  * - asynInt32
+    - r/w
+    - Size of extra dimension X
+    - HDF5_extraDimSizeX
+    - $(P)$(R)ExtraDimSizeX, $(P)$(R)ExtraDimSizeX_RBV
+    - longout, longin
+  * - asynInt32
+    - r/w
+    - Size of extra dimension Y
+    - HDF5_extraDimSizeY
+    - $(P)$(R)ExtraDimSizeY, $(P)$(R)ExtraDimSizeY_RBV
+    - longout, longin
+  * - asynInt32
+    - r/w
+    - Size of extra dimension 3
+    - HDF5_extraDimSize3
+    - $(P)$(R)ExtraDimSize3, $(P)$(R)ExtraDimSize3_RBV
+    - longout, longin
+  * - asynInt32
+    - r/w
+    - Size of extra dimension 4
+    - HDF5_extraDimSize4
+    - $(P)$(R)ExtraDimSize4, $(P)$(R)ExtraDimSize4_RBV
+    - longout, longin
+  * - asynInt32
+    - r/w
+    - Size of extra dimension 5
+    - HDF5_extraDimSize5
+    - $(P)$(R)ExtraDimSize5, $(P)$(R)ExtraDimSize5_RBV
+    - longout, longin
+  * - asynInt32
+    - r/w
+    - Size of extra dimension 6
+    - HDF5_extraDimSize6
+    - $(P)$(R)ExtraDimSize6, $(P)$(R)ExtraDimSize6_RBV
+    - longout, longin
+  * - asynInt32
+    - r/w
+    - Size of extra dimension 7
+    - HDF5_extraDimSize7
+    - $(P)$(R)ExtraDimSize7, $(P)$(R)ExtraDimSize7_RBV
+    - longout, longin
+  * - asynInt32
+    - r/w
+    - Size of extra dimension 8
+    - HDF5_extraDimSize8
+    - $(P)$(R)ExtraDimSize8, $(P)$(R)ExtraDimSize8_RBV
+    - longout, longin
+  * - asynInt32
+    - r/w
+    - Size of extra dimension 9
+    - HDF5_extraDimSize9
+    - $(P)$(R)ExtraDimSize9, $(P)$(R)ExtraDimSize9_RBV
+    - longout, longin
+  * -
+    -
+    - **Positional Placement**
+  * - asynInt32
+    - r/w
+    - Turn on/off positional placement mode
+    - HDF5_posRunning
+    - $(P)$(R)PositionMode, $(P)$(R)PositionMode_RBV
+    - bo, bi
+  * - asynOctet
+    - r/w
+    - Specify the NDAttribute name for the N index
+    - HDF5_posNameDimN
+    - $(P)$(R)PosNameDimN, $(P)$(R)PosNameDimN_RBV
+    - stringout, stringin
+  * - asynOctet
+    - r/w
+    - Specify the NDAttribute name for the X index
+    - HDF5_posNameDimX
+    - $(P)$(R)PosNameDimX, $(P)$(R)PosNameDimX_RBV
+    - stringout, stringin
+  * - asynOctet
+    - r/w
+    - Specify the NDAttribute name for the Y index
+    - HDF5_posNameDimY
+    - $(P)$(R)PosNameDimY, $(P)$(R)PosNameDimY_RBV
+    - stringout, stringin
+  * - asynOctet
+    - r/w
+    - Specify the NDAttribute name for the 3rd index
+    - HDF5_posNameDim3
+    - $(P)$(R)PosNameDim3, $(P)$(R)PosNameDim3_RBV
+    - stringout, stringin
+  * - asynOctet
+    - r/w
+    - Specify the NDAttribute name for the 4th index
+    - HDF5_posNameDim4
+    - $(P)$(R)PosNameDim4, $(P)$(R)PosNameDim4_RBV
+    - stringout, stringin
+  * - asynOctet
+    - r/w
+    - Specify the NDAttribute name for the 5th index
+    - HDF5_posNameDim5
+    - $(P)$(R)PosNameDim5, $(P)$(R)PosNameDim5_RBV
+    - stringout, stringin
+  * - asynOctet
+    - r/w
+    - Specify the NDAttribute name for the 6th index
+    - HDF5_posNameDim6
+    - $(P)$(R)PosNameDim6, $(P)$(R)PosNameDim6_RBV
+    - stringout, stringin
+  * - asynOctet
+    - r/w
+    - Specify the NDAttribute name for the 7th index
+    - HDF5_posNameDim7
+    - $(P)$(R)PosNameDim7, $(P)$(R)PosNameDim7_RBV
+    - stringout, stringin
+  * - asynOctet
+    - r/w
+    - Specify the NDAttribute name for the 8th index
+    - HDF5_posNameDim8
+    - $(P)$(R)PosNameDim8, $(P)$(R)PosNameDim8_RBV
+    - stringout, stringin
+  * - asynOctet
+    - r/w
+    - Specify the NDAttribute name for the 9th index
+    - HDF5_posNameDim9
+    - $(P)$(R)PosNameDim9, $(P)$(R)PosNameDim9_RBV
+    - stringout, stringin
+  * -
+    -
+    - **Index Datasets**
+  * - asynOctet
+    - r/w
+    - Specify the NDAttribute index for the N dimension
+    - HDF5_posIndexDimN
+    - $(P)$(R)PosIndexDimN, $(P)$(R)PosIndexDimN_RBV
+    - stringout, stringin
+  * - asynOctet
+    - r/w
+    - Specify the NDAttribute index for the X dimension
+    - HDF5_posIndexDimX
+    - $(P)$(R)posIndexDimX, $(P)$(R)posIndexDimX_RBV
+    - stringout, stringin
+  * - asynOctet
+    - r/w
+    - Specify the NDAttribute index for the Y dimension
+    - HDF5_posIndexDimY
+    - $(P)$(R)posIndexDimY, $(P)$(R)posIndexDimY_RBV
+    - stringout, stringin
+  * - asynOctet
+    - r/w
+    - Specify the NDAttribute index for the 3rd dimension
+    - HDF5_posIndexDim3
+    - $(P)$(R)posIndexDim3, $(P)$(R)posIndexDim3_RBV
+    - stringout, stringin
+  * - asynOctet
+    - r/w
+    - Specify the NDAttribute index for the 4th dimension
+    - HDF5_posIndexDim4
+    - $(P)$(R)posIndexDim4, $(P)$(R)posIndexDim4_RBV
+    - stringout, stringin
+  * - asynOctet
+    - r/w
+    - Specify the NDAttribute index for the 5th dimension
+    - HDF5_posIndexDim5
+    - $(P)$(R)posIndexDim5, $(P)$(R)posIndexDim5_RBV
+    - stringout, stringin
+  * - asynOctet
+    - r/w
+    - Specify the NDAttribute index for the 6th dimension
+    - HDF5_posIndexDim6
+    - $(P)$(R)posIndexDim6, $(P)$(R)posIndexDim6_RBV
+    - stringout, stringin
+  * - asynOctet
+    - r/w
+    - Specify the NDAttribute index for the 7th dimension
+    - HDF5_posIndexDim7
+    - $(P)$(R)posIndexDim7, $(P)$(R)posIndexDim7_RBV
+    - stringout, stringin
+  * - asynOctet
+    - r/w
+    - Specify the NDAttribute index for the 8th dimension
+    - HDF5_posIndexDim8
+    - $(P)$(R)posIndexDim8, $(P)$(R)posIndexDim8_RBV
+    - stringout, stringin
+  * - asynOctet
+    - r/w
+    - Specify the NDAttribute index for the 9th dimension
+    - HDF5_posIndexDim9
+    - $(P)$(R)posIndexDim9, $(P)$(R)posIndexDim9_RBV
+    - stringout, stringin
+  * -
+    -
+    - **Runtime Statistics**
+  * - asynFloat64
+    - r/o
+    - Total runtime in seconds from first frame to file closed
+    - HDF5_totalRuntime
+    - $(P)$(R)Runtime
+    - ai
+  * - asynFloat64
+    - r/o
+    - Overall IO write speed in megabit per second from first frame to file closed
+    - HDF5_totalIoSpeed
+    - $(P)$(R)IOSpeed
+    - ai
+  * -
+    -
+    - **Compression Filters**
+  * - asynInt32
+    - r/w
+    - Select or switch off compression filter. Choices are: [None, N-bit, szip, zlib, Blosc, BSLZ4, LZ4, JPEG]
+    - HDF5_compressionType
+    - $(P)$(R)Compression, $(P)$(R)Compression_RBV
+    - mbbo, mbbi
+  * - asynInt32
+    - r/w
+    - N-bit compression filter: number of data bits per pixel
+    - HDF5_nbitsPrecision
+    - $(P)$(R)NumDataBits, $(P)$(R)NumDataBits_RBV
+    - longout, longin
+  * - asynInt32
+    - r/w
+    - N-bit compression filter: dataword bit-offset in pixel
+    - HDF5_nbitsOffset
+    - $(P)$(R)DataBitsOffset, $(P)$(R)DataBitsOffset_RBV
+    - longout, longin
+  * - asynInt32
+    - r/w
+    - szip compression filter: number of pixels in filter [1..32]
+    - HDF5_szipNumPixels
+    - $(P)$(R)SZipNumPixels, $(P)$(R)SZipNumPixels_RBV
+    - longout, longin
+  * - asynInt32
+    - r/w
+    - zlib compression filter: compression level [1..9]
+    - HDF5_zCompressLevel
+    - $(P)$(R)ZLevel, $(P)$(R)ZLevel_RBV
+    - longout, longin
+  * - asynInt32
+    - r/w
+    - Blosc compressor. Choices are: [BloscLZ, LZ4, LZ4HC, SNAPPY, ZLIB, ZSTD]
+    - HDF5_bloscCompressor
+    - $(P)$(R)BloscCompressor, $(P)$(R)BloscCompressor_RBV
+    - mbbo, mbbi
+  * - asynInt32
+    - r/w
+    - Blosc shuffle. Choices are: [None, Byte, Bit]
+    - HDF5_bloscShuffle
+    - $(P)$(R)BloscShuffle, $(P)$(R)BloscShuffle_RBV
+    - mbbo, mbbi
+  * - asynInt32
+    - r/w
+    - Blosc compression filter: compression level [0..9]
+    - HDF5_bloscCompressLevel
+    - $(P)$(R)BloscLevel, $(P)$(R)BloscLevel_RBV
+    - longout, longin
+  * - asynInt32
+    - r/w
+    - JPEG quality level [1..100]
+    - HDF5_jpegQuality
+    - $(P)$(R)JPEGQuality, $(P)$(R)JPEGQuality_RBV
+    - longout, longin
+
 
 Screenshots
 -----------

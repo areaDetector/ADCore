@@ -89,7 +89,7 @@ for that array if the following are all true:
 
    ::
 
-       <Attribute name="DriverFileName" type="PARAM" source="FULL_FILE_NAME" datatype="string" description="Driver file name"/>
+       <Attribute name="DriverFileName" type="PARAM" source="FULL_FILE_NAME" datatype="STRING" description="Driver file name"/>
 
 The file saving plugins normally determine the name of the file from the
 FileName and FileNumber records. However, it is possible to have these

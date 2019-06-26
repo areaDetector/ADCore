@@ -113,11 +113,16 @@ asynStatus ADDriver::setIntegerParam(int list, int index, int value)
   * should set the value of the parameter in the parameter library. */
 asynStatus ADDriver::writeInt32(asynUser *pasynUser, epicsInt32 value)
 {
-    int function = pasynUser->reason;
+    int function;
+    int addr;
+    const char *paramName;
     asynStatus status = asynSuccess;
     const char *functionName = "writeInt32";
 
-    status = setIntegerParam(function, value);
+    status = parseAsynUser(pasynUser, &function, &addr, &paramName); 
+    if (status != asynSuccess) return status;
+
+    status = setIntegerParam(addr, function, value);
 
     if (function == ADShutterControl) {
         setShutter(value);
@@ -131,12 +136,12 @@ asynStatus ADDriver::writeInt32(asynUser *pasynUser, epicsInt32 value)
 
     if (status)
         asynPrint(pasynUser, ASYN_TRACE_ERROR,
-              "%s:%s: error, status=%d function=%d, value=%d\n",
-              driverName, functionName, status, function, value);
+              "%s:%s: error, status=%d function=%d, paramName=%s, value=%d\n",
+              driverName, functionName, status, function, paramName, value);
     else
         asynPrint(pasynUser, ASYN_TRACEIO_DRIVER,
-              "%s:%s: function=%d, value=%d\n",
-              driverName, functionName, function, value);
+              "%s:%s: function=%d, paramName=%s, value=%d\n",
+              driverName, functionName, function, paramName, value);
     return status;
 }
 
