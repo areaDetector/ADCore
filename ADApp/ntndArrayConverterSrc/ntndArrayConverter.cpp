@@ -92,11 +92,12 @@ NDColorMode_t NTNDArrayConverter::getColorMode (void)
         if(nameFld->get() == "ColorMode")
         {
             PVUnionPtr valueUnion((*it)->getSubFieldT<PVUnion>("value"));
-            PVIntPtr valueFld(valueUnion->get<PVInt>());
-            if(!valueFld)
-                throw std::runtime_error("ColorMode attribute is not of type PVInt");
-            int cm = valueFld->get();
-            colorMode = (NDColorMode_t) cm;
+            PVScalar::shared_pointer valueFld(valueUnion->get<PVScalar>());
+            if(valueFld) {
+                int cm = valueFld->getAs<int32>();
+                colorMode = (NDColorMode_t) cm;
+            } else
+                throw std::runtime_error("Error accessing attribute ColorMode");
         }
     }
 
