@@ -88,10 +88,13 @@ NDColorMode_t NTNDArrayConverter::getColorMode (void)
     for(PVStructureArray::const_svector::iterator it(attrs.cbegin());
             it != attrs.cend(); ++it)
     {
-        if((*it)->getSubField<PVString>("name")->get() == "ColorMode")
+        PVStringPtr nameFld((*it)->getSubFieldT<PVString>("name"));
+        if(!nameFld)
+                throw std::runtime_error("name attribute is not of type PVString");
+        if(nameFld->get() == "ColorMode")
         {
-            PVUnionPtr destUnion((*it)->getSubFieldT<PVUnion>("value"));
-            PVIntPtr valueFld(destUnion->get<PVInt>());
+            PVUnionPtr valueUnion((*it)->getSubFieldT<PVUnion>("value"));
+            PVIntPtr valueFld(valueUnion->get<PVInt>());
             if(!valueFld)
                 throw std::runtime_error("ColorMode attribute is not of type PVInt");
             int cm = valueFld->get();
