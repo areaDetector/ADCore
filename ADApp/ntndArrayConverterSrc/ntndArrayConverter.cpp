@@ -89,8 +89,6 @@ NDColorMode_t NTNDArrayConverter::getColorMode (void)
             it != attrs.cend(); ++it)
     {
         PVStringPtr nameFld((*it)->getSubFieldT<PVString>("name"));
-        if(!nameFld)
-                throw std::runtime_error("name attribute is not of type PVString");
         if(nameFld->get() == "ColorMode")
         {
             PVUnionPtr valueUnion((*it)->getSubFieldT<PVUnion>("value"));
@@ -524,7 +522,7 @@ void NTNDArrayConverter::fromAttribute (PVStructurePtr dest, NDAttribute *src)
     src->getValue(src->getDataType(), (void*)&value);
 
     PVUnionPtr destUnion(dest->getSubFieldT<PVUnion>("value"));
-    std::tr1::shared_ptr<pvAttrType> valueFld(destUnion->get<pvAttrType>());
+    typename pvAttrType::shared_pointer valueFld(destUnion->get<pvAttrType>());
     if(!valueFld) {
         valueFld = PVDC->createPVScalar<pvAttrType>();
         destUnion->set(valueFld);
