@@ -88,11 +88,16 @@ NDColorMode_t NTNDArrayConverter::getColorMode (void)
     for(PVStructureArray::const_svector::iterator it(attrs.cbegin());
             it != attrs.cend(); ++it)
     {
-        if((*it)->getSubField<PVString>("name")->get() == "ColorMode")
+        PVStringPtr nameFld((*it)->getSubFieldT<PVString>("name"));
+        if(nameFld->get() == "ColorMode")
         {
-            PVUnionPtr field((*it)->getSubField<PVUnion>("value"));
-            int cm = static_pointer_cast<PVInt>(field->get())->get();
-            colorMode = (NDColorMode_t) cm;
+            PVUnionPtr valueUnion((*it)->getSubFieldT<PVUnion>("value"));
+            PVScalar::shared_pointer valueFld(valueUnion->get<PVScalar>());
+            if(valueFld) {
+                int cm = valueFld->getAs<int32>();
+                colorMode = (NDColorMode_t) cm;
+            } else
+                throw std::runtime_error("Error accessing attribute ColorMode");
         }
     }
 
@@ -517,12 +522,13 @@ void NTNDArrayConverter::fromAttribute (PVStructurePtr dest, NDAttribute *src)
     valueType value;
     src->getValue(src->getDataType(), (void*)&value);
 
-    PVUnionPtr destUnion(dest->getSubField<PVUnion>("value"));
-
-    if(!destUnion->get())
-        destUnion->set(PVDC->createPVScalar<pvAttrType>());
-
-    static_pointer_cast<pvAttrType>(destUnion->get())->put(value);
+    PVUnionPtr destUnion(dest->getSubFieldT<PVUnion>("value"));
+    typename pvAttrType::shared_pointer valueFld(destUnion->get<pvAttrType>());
+    if(!valueFld) {
+        valueFld = PVDC->createPVScalar<pvAttrType>();
+        destUnion->set(valueFld);
+    }
+    valueFld->put(value);
 }
 
 void NTNDArrayConverter::fromStringAttribute (PVStructurePtr dest, NDAttribute *src)
@@ -531,17 +537,16 @@ void NTNDArrayConverter::fromStringAttribute (PVStructurePtr dest, NDAttribute *
     size_t attrDataSize;
 
     src->getValueInfo(&attrDataType, &attrDataSize);
+    std::vector<char> value(attrDataSize);
+    src->getValue(attrDataType, &value[0], attrDataSize);
 
-    char *value = (char *)malloc(sizeof(char) * attrDataSize);
-    src->getValue(attrDataType, value, attrDataSize);
-
-    PVUnionPtr destUnion(dest->getSubField<PVUnion>("value"));
-
-    if(!destUnion->get())
-        destUnion->set(PVDC->createPVScalar<PVString>());
-
-    static_pointer_cast<PVString>(destUnion->get())->put(value);
-    free(value);
+    PVUnionPtr destUnion(dest->getSubFieldT<PVUnion>("value"));
+    PVStringPtr valueFld(destUnion->get<PVString>());
+    if(!valueFld) {
+        valueFld = PVDC->createPVScalar<PVString>();
+        destUnion->set(valueFld);
+    }
+    valueFld->put(&value[0]);
 }
 
 void NTNDArrayConverter::fromUndefinedAttribute (PVStructurePtr dest)
