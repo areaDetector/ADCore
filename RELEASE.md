@@ -19,7 +19,7 @@ the EXAMPLE_RELEASE_PATHS.local, EXAMPLE_RELEASE_LIBS.local, and EXAMPLE_RELEASE
 files respectively, in the configure/ directory of the appropriate release of the 
 [top-level areaDetector](https://github.com/areaDetector/areaDetector) repository.
 
-## __R3-7 (August XXX, 2019)__
+## __R3-7 (August 8, 2019)__
 
 Note: This release requires asyn R4-36 because it uses new features of asynPortDriver.
 
