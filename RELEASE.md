@@ -19,7 +19,7 @@ the EXAMPLE_RELEASE_PATHS.local, EXAMPLE_RELEASE_LIBS.local, and EXAMPLE_RELEASE
 files respectively, in the configure/ directory of the appropriate release of the 
 [top-level areaDetector](https://github.com/areaDetector/areaDetector) repository.
 
-## __R3-7 (July XXX, 2019)__
+## __R3-7 (August 8, 2019)__
 
 Note: This release requires asyn R4-36 because it uses new features of asynPortDriver.
 
@@ -30,6 +30,8 @@ Note: This release requires asyn R4-36 because it uses new features of asynPortD
   * Began conversion of raw HTML tables to Sphinx list-table or flat-table.
 ### ntndArrayConverter
   * Fixed bugs that could cause a crash when attributes were added to the NDArrays.
+### NDFileTIFF
+  * Fixed stack overflow problem on vxWorks
 
 ## __R3-6 (May 29, 2019)__
 

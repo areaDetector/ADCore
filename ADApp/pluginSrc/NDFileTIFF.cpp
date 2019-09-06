@@ -622,6 +622,10 @@ extern "C" int NDFileTIFFConfigure(const char *portName, int queueSize, int bloc
                                    const char *NDArrayPort, int NDArrayAddr,
                                    int priority, int stackSize)
 {
+    // Stack size must be a minimum of 40000 on vxWorks because of automatic variables in NDFileTIFF::openFile()
+    #ifdef vxWorks
+        if (stackSize < 40000) stackSize = 40000;
+    #endif
     NDFileTIFF *pPlugin = new NDFileTIFF(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr,
                                          priority, stackSize);
     return pPlugin->start();
