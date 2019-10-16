@@ -74,11 +74,6 @@ typedef enum
   * The driver will place in pasynUser->reason an integer to be used when the
   * standard asyn interface methods are called. */
  /*                               String                 asyn interface  access   Description  */
-#define ADManufacturerString        "MANUFACTURER"          /**< (asynOctet,    r/o) Detector manufacturer name */
-#define ADModelString               "MODEL"                 /**< (asynOctet,    r/o) Detector model name */
-#define ADSerialNumberString        "SERIAL_NUMBER"         /**< (asynOctet,    r/o) Detector serial number */
-#define ADSDKVersionString          "SDK_VERSION"           /**< (asynOctet,    r/o) Vendor SDK version */
-#define ADFirmwareVersionString     "FIRMWARE_VERSION"      /**< (asynOctet,    r/o) Detector firmware version */
 
 #define ADGainString                "GAIN"                  /**< (asynFloat64,  r/w) Gain */
 
@@ -108,9 +103,6 @@ typedef enum
 #define ADAcquireTimeString         "ACQ_TIME"              /**< (asynFloat64,  r/w) Acquisition time per image */
 #define ADAcquirePeriodString       "ACQ_PERIOD"            /**< (asynFloat64,  r/w) Acquisition period between images */
 #define ADStatusString              "STATUS"                /**< (asynInt32,    r/o) Acquisition status (ADStatus_t) */
-#define ADAcquireString             "ACQUIRE"               /**< (asynInt32,    r/w) Start(1) or Stop(0) acquisition */
-#define ADAcquireBusyString         "ACQUIRE_BUSY"          /**< (asynInt32,    r/w) 0 when acquire done including plugins */
-#define ADWaitForPluginsString      "WAIT_FOR_PLUGINS"      /**< (asynInt32,    r/w) Wait for plugins before AcquireBusy goes to 0 */
 
     /* Shutter parameters */
 #define ADShutterControlString      "SHUTTER_CONTROL"       /**< (asynInt32,    r/w) (ADShutterStatus_t) Open (1) or Close(0) shutter */
@@ -147,20 +139,13 @@ public:
 
     /* These are the methods that we override from asynPortDriver */
     virtual asynStatus writeInt32(asynUser *pasynUser, epicsInt32 value);
-    virtual asynStatus setIntegerParam(int index, int value);
-    virtual asynStatus setIntegerParam(int list, int index, int value);
 
     /* These are the methods that are new to this class */
     virtual void setShutter(int open);
 
 protected:
-    int ADManufacturer;
-    #define FIRST_AD_PARAM ADManufacturer
-    int ADModel;
-    int ADSerialNumber;
-    int ADSDKVersion;
-    int ADFirmwareVersion;
     int ADGain;
+    #define FIRST_AD_PARAM ADGain
     int ADBinX;
     int ADBinY;
     int ADMinX;
@@ -182,9 +167,6 @@ protected:
     int ADTimeRemaining;
     int ADStatus;
     int ADTriggerMode;
-    int ADAcquire;
-    int ADAcquireBusy;
-    int ADWaitForPlugins;
     int ADShutterControl;
     int ADShutterControlEPICS;
     int ADShutterStatus;

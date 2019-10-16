@@ -54,56 +54,6 @@ void ADDriver::setShutter(int open)
     }
 }
 
-/** Sets the value for an integer in the parameter library.
-  * Calls setIntegerParam(0, index, value) i.e. for parameter list 0.
-  * \param[in] index The parameter number
-  * \param[in] value Value to set. */
-asynStatus ADDriver::setIntegerParam(int index, int value)
-{
-    return this->setIntegerParam(0, index, value);
-}
-
-/** Sets the value for an integer in the parameter library.
-  * \param[in] list The parameter list number.  Must be < maxAddr passed to asynPortDriver::asynPortDriver.
-  * \param[in] index The parameter number
-  * \param[in] value Value to set. 
-  * This function was added to trap the driver setting ADAcquire to 0 and
-  * asynNDArrayDriver setting NumQueuedArrays.  It implements the logic of
-   * setting ADAcquireBusy to reflect whether acquisition is done.
-  * If WaitForPlugins is true then this includes waiting for NumQueuedArrays to be 0.
-  * When ADAcquire goes to 0 it must use getQueuedArrayCount rather then NumQueuedArrays
-  * from the parameter library, because NumQueuedArrays is updated in a separate thread
-  * and might not have been set yet.  getQueuedArrayCount updates immediately. */
-asynStatus ADDriver::setIntegerParam(int list, int index, int value)
-{
-
-    if (index == ADAcquire) {
-        if (value == 0) {
-            int waitForPlugins;
-            getIntegerParam(list, ADWaitForPlugins, &waitForPlugins);
-            if (waitForPlugins) {
-                int count = getQueuedArrayCount();
-                if (count == 0) {
-                    asynNDArrayDriver::setIntegerParam(list, ADAcquireBusy, 0);
-                }
-            } else {
-                asynNDArrayDriver::setIntegerParam(list, ADAcquireBusy, 0);
-            }
-        } else {
-            asynNDArrayDriver::setIntegerParam(list, ADAcquireBusy, 1);
-        }
-    }
-    else if ((index == NDNumQueuedArrays) && (value == 0)) {
-        int acquire;
-        getIntegerParam(list, ADAcquire, &acquire);
-        if (acquire == 0) {
-            asynNDArrayDriver::setIntegerParam(list, ADAcquireBusy, 0);
-        }
-    }
-    return asynNDArrayDriver::setIntegerParam(list, index, value);
-}
-
-
 /** Sets an int32 parameter.
   * \param[in] pasynUser asynUser structure that contains the function code in pasynUser->reason. 
   * \param[in] value The value for this parameter 
@@ -165,11 +115,6 @@ ADDriver::ADDriver(const char *portName, int maxAddr, int numParams, int maxBuff
 {
     //char *functionName = "ADDriver";
 
-    createParam(ADManufacturerString,        asynParamOctet, &ADManufacturer);
-    createParam(ADModelString,               asynParamOctet, &ADModel);
-    createParam(ADSerialNumberString,        asynParamOctet, &ADSerialNumber);
-    createParam(ADSDKVersionString,          asynParamOctet, &ADSDKVersion);
-    createParam(ADFirmwareVersionString,     asynParamOctet, &ADFirmwareVersion);
     createParam(ADGainString,                asynParamFloat64, &ADGain);
     createParam(ADBinXString,                asynParamInt32, &ADBinX);
     createParam(ADBinYString,                asynParamInt32, &ADBinY);
@@ -192,9 +137,6 @@ ADDriver::ADDriver(const char *portName, int maxAddr, int numParams, int maxBuff
     createParam(ADTimeRemainingString,       asynParamFloat64, &ADTimeRemaining);
     createParam(ADStatusString,              asynParamInt32, &ADStatus);
     createParam(ADTriggerModeString,         asynParamInt32, &ADTriggerMode);
-    createParam(ADAcquireString,             asynParamInt32, &ADAcquire);
-    createParam(ADAcquireBusyString,         asynParamInt32, &ADAcquireBusy);
-    createParam(ADWaitForPluginsString,      asynParamInt32, &ADWaitForPlugins);
     createParam(ADShutterControlString,      asynParamInt32, &ADShutterControl);
     createParam(ADShutterControlEPICSString, asynParamInt32, &ADShutterControlEPICS);
     createParam(ADShutterStatusString,       asynParamInt32, &ADShutterStatus);
