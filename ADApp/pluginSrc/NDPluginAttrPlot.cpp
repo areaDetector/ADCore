@@ -172,6 +172,8 @@ void NDPluginAttrPlot::rebuild_attributes(NDAttributeList& attr_list) {
                 type == NDAttrUInt16 ||
                 type == NDAttrInt32 ||
                 type == NDAttrUInt32 ||
+                type == NDAttrInt64 ||
+                type == NDAttrUInt64 ||
                 type == NDAttrFloat32 ||
                 type == NDAttrFloat64)
         {

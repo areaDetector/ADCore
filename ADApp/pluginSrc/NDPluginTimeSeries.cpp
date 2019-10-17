@@ -252,6 +252,12 @@ asynStatus NDPluginTimeSeries::addToTimeSeries(NDArray *pArray)
   case NDUInt32:
     status = doAddToTimeSeriesT<epicsUInt32>(pArray);
     break;
+  case NDInt64:
+    status = doAddToTimeSeriesT<epicsInt64>(pArray);
+    break;
+  case NDUInt64:
+    status = doAddToTimeSeriesT<epicsUInt64>(pArray);
+    break;
   case NDFloat32:
     status = doAddToTimeSeriesT<epicsFloat32>(pArray);
     break;
@@ -326,6 +332,12 @@ asynStatus NDPluginTimeSeries::doTimeSeriesCallbacks()
     break;
   case NDUInt32:
     doTimeSeriesCallbacksT<epicsUInt32>();
+    break;
+  case NDInt64:
+    doTimeSeriesCallbacksT<epicsInt64>();
+    break;
+  case NDUInt64:
+    doTimeSeriesCallbacksT<epicsUInt64>();
     break;
   case NDFloat32:
     doTimeSeriesCallbacksT<epicsFloat32>();

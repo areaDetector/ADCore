@@ -142,6 +142,7 @@ void NDPluginStdArrays::processCallbacks(NDArray *pArray)
     int int8Initialized=0;
     int int16Initialized=0;
     int int32Initialized=0;
+    int int64Initialized=0;
     int float32Initialized=0;
     int float64Initialized=0;
     bool wasThrottled=false;
@@ -172,6 +173,11 @@ void NDPluginStdArrays::processCallbacks(NDArray *pArray)
     arrayInterruptCallback<epicsInt32, asynInt32ArrayInterrupt>(pArray, this->pNDArrayPool, 
                              pInterfaces->int32ArrayInterruptPvt,
                              &int32Initialized, NDInt32, &wasThrottled);
+    
+    /* Pass interrupts for int64Array data*/
+    arrayInterruptCallback<epicsInt64, asynInt64ArrayInterrupt>(pArray, this->pNDArrayPool, 
+                             pInterfaces->int64ArrayInterruptPvt,
+                             &int64Initialized, NDInt64, &wasThrottled);
     
     /* Pass interrupts for float32Array data*/
     arrayInterruptCallback<epicsFloat32, asynFloat32ArrayInterrupt>(pArray, this->pNDArrayPool, 
@@ -242,6 +248,22 @@ asynStatus NDPluginStdArrays::readInt32Array(asynUser *pasynUser, epicsInt32 *va
     
 }
 
+/** Called when asyn clients call pasynInt64Array->read().
+  * Converts the last NDArray callback data to epicsInt64 (if necessary) and returns it.  
+  * \param[in] pasynUser pasynUser structure that encodes the reason and address.
+  * \param[in] value Pointer to the array to read.
+  * \param[in] nElements Number of elements to read.
+  * \param[out] nIn Number of elements actually read. */
+asynStatus NDPluginStdArrays::readInt64Array(asynUser *pasynUser, epicsInt64 *value, size_t nElements, size_t *nIn)
+{
+    asynStatus status;
+    status = readArray<epicsInt64>(pasynUser, value, nElements, nIn, NDInt64);
+    if (status != asynSuccess) 
+        status = NDPluginDriver::readInt64Array(pasynUser, value, nElements, nIn);
+    return(status);
+    
+}
+
 /** Called when asyn clients call pasynFloat32Array->read().
   * Converts the last NDArray callback data to epicsFloat32 (if necessary) and returns it.  
   * \param[in] pasynUser pasynUser structure that encodes the reason and address.
@@ -292,10 +314,10 @@ NDPluginStdArrays::NDPluginStdArrays(const char *portName, int queueSize, int bl
     : NDPluginDriver(portName, queueSize, blockingCallbacks, 
                    NDArrayPort, NDArrayAddr, 1, maxBuffers, maxMemory,
                    
-                   asynInt8ArrayMask | asynInt16ArrayMask | asynInt32ArrayMask | 
+                   asynInt8ArrayMask | asynInt16ArrayMask | asynInt32ArrayMask | asynInt64ArrayMask |
                    asynFloat32ArrayMask | asynFloat64ArrayMask,
                    
-                   asynInt8ArrayMask | asynInt16ArrayMask | asynInt32ArrayMask | 
+                   asynInt8ArrayMask | asynInt16ArrayMask | asynInt32ArrayMask | asynInt64ArrayMask |
                    asynFloat32ArrayMask | asynFloat64ArrayMask,
                    
                    /* asynFlags is set to 0, because this plugin cannot block and is not multi-device.

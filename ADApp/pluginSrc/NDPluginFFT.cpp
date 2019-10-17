@@ -360,6 +360,12 @@ void NDPluginFFT::processCallbacks(NDArray *pArray)
   case NDUInt32:
     convertToDoubleT<epicsUInt32>(pArray, pPvt);
     break;
+  case NDInt64:
+    convertToDoubleT<epicsInt64>(pArray, pPvt);
+    break;
+  case NDUInt64:
+    convertToDoubleT<epicsUInt64>(pArray, pPvt);
+    break;
   case NDFloat32:
     convertToDoubleT<epicsFloat32>(pArray, pPvt);
     break;

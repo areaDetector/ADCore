@@ -276,6 +276,12 @@ int NDPluginOverlay::doOverlay(NDArray *pArray, NDOverlay_t *pOverlay, NDArrayIn
     case NDUInt32:
       doOverlayT<epicsUInt32>(pArray, pOverlay, pArrayInfo);
       break;
+    case NDInt64:
+      doOverlayT<epicsInt64>(pArray, pOverlay, pArrayInfo);
+      break;
+    case NDUInt64:
+      doOverlayT<epicsUInt64>(pArray, pOverlay, pArrayInfo);
+      break;
     case NDFloat32:
       doOverlayT<epicsFloat32>(pArray, pOverlay, pArrayInfo);
       break;

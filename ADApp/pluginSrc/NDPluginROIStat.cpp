@@ -179,6 +179,12 @@ asynStatus NDPluginROIStat::doComputeStatistics(NDArray *pArray, NDROI_t *pROI)
   case NDUInt32:
     status = doComputeStatisticsT<epicsUInt32>(pArray, pROI);
     break;
+  case NDInt64:
+    status = doComputeStatisticsT<epicsInt64>(pArray, pROI);
+    break;
+  case NDUInt64:
+    status = doComputeStatisticsT<epicsUInt64>(pArray, pROI);
+    break;
   case NDFloat32:
     status = doComputeStatisticsT<epicsFloat32>(pArray, pROI);
     break;

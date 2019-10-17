@@ -98,6 +98,12 @@ asynStatus NDPluginStats::doComputeHistogram(NDArray *pArray, NDStats_t *pStats)
         case NDUInt32:
             status = doComputeHistogramT<epicsUInt32>(pArray, pStats);
             break;
+        case NDInt64:
+            status = doComputeHistogramT<epicsInt64>(pArray, pStats);
+            break;
+        case NDUInt64:
+            status = doComputeHistogramT<epicsUInt64>(pArray, pStats);
+            break;
         case NDFloat32:
             status = doComputeHistogramT<epicsFloat32>(pArray, pStats);
             break;
@@ -170,6 +176,12 @@ int NDPluginStats::doComputeStatistics(NDArray *pArray, NDStats_t *pStats)
             break;
         case NDUInt32:
             doComputeStatisticsT<epicsUInt32>(pArray, pStats);
+            break;
+        case NDInt64:
+            doComputeStatisticsT<epicsInt64>(pArray, pStats);
+            break;
+        case NDUInt64:
+            doComputeStatisticsT<epicsUInt64>(pArray, pStats);
             break;
         case NDFloat32:
             doComputeStatisticsT<epicsFloat32>(pArray, pStats);
@@ -306,6 +318,12 @@ asynStatus NDPluginStats::doComputeCentroid(NDArray *pArray, NDStats_t *pStats)
         case NDUInt32:
             status = doComputeCentroidT<epicsUInt32>(pArray, pStats);
             break;
+        case NDInt64:
+            status = doComputeCentroidT<epicsInt64>(pArray, pStats);
+            break;
+        case NDUInt64:
+            status = doComputeCentroidT<epicsUInt64>(pArray, pStats);
+            break;
         case NDFloat32:
             status = doComputeCentroidT<epicsFloat32>(pArray, pStats);
             break;
@@ -381,6 +399,12 @@ asynStatus NDPluginStats::doComputeProfiles(NDArray *pArray, NDStats_t *pStats)
             break;
         case NDUInt32:
             status = doComputeProfilesT<epicsUInt32>(pArray, pStats);
+            break;
+        case NDInt64:
+            status = doComputeProfilesT<epicsInt64>(pArray, pStats);
+            break;
+        case NDUInt64:
+            status = doComputeProfilesT<epicsUInt64>(pArray, pStats);
             break;
         case NDFloat32:
             status = doComputeProfilesT<epicsFloat32>(pArray, pStats);
