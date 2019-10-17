@@ -367,6 +367,12 @@ template <typename dataTypeOut> int convertTypeSwitch (NDArray *pIn, NDArray *pO
     case NDUInt32:
       convertType<epicsUInt32, dataTypeOut> (pIn, pOut);
       break;
+    case NDInt64:
+      convertType<epicsInt64, dataTypeOut> (pIn, pOut);
+      break;
+    case NDUInt64:
+      convertType<epicsUInt64, dataTypeOut> (pIn, pOut);
+      break;
     case NDFloat32:
       convertType<epicsFloat32, dataTypeOut> (pIn, pOut);
       break;
@@ -444,6 +450,12 @@ template <typename dataTypeOut> int convertDimensionSwitch(NDArray *pIn, NDArray
     case NDUInt32:
       convertDim <epicsUInt32, dataTypeOut> (pIn, pOut, pDataIn, pDataOut, dim);
       break;
+    case NDInt64:
+      convertDim <epicsInt64, dataTypeOut> (pIn, pOut, pDataIn, pDataOut, dim);
+      break;
+    case NDUInt64:
+      convertDim <epicsUInt64, dataTypeOut> (pIn, pOut, pDataIn, pDataOut, dim);
+      break;
     case NDFloat32:
       convertDim <epicsFloat32, dataTypeOut> (pIn, pOut, pDataIn, pDataOut, dim);
       break;
@@ -487,6 +499,12 @@ static int convertDimension(NDArray *pIn,
       break;
     case NDUInt32:
       convertDimensionSwitch <epicsUInt32> (pIn, pOut, pDataIn, pDataOut, dim);
+      break;
+    case NDInt64:
+      convertDimensionSwitch <epicsInt64> (pIn, pOut, pDataIn, pDataOut, dim);
+      break;
+    case NDUInt64:
+      convertDimensionSwitch <epicsUInt64> (pIn, pOut, pDataIn, pDataOut, dim);
       break;
     case NDFloat32:
       convertDimensionSwitch <epicsFloat32> (pIn, pOut, pDataIn, pDataOut, dim);
@@ -628,6 +646,12 @@ int NDArrayPool::convert(NDArray *pIn,
           break;
         case NDUInt32:
           convertTypeSwitch <epicsUInt32> (pIn, pOut);
+          break;
+        case NDInt64:
+          convertTypeSwitch <epicsInt64> (pIn, pOut);
+          break;
+        case NDUInt64:
+          convertTypeSwitch <epicsUInt64> (pIn, pOut);
           break;
         case NDFloat32:
           convertTypeSwitch <epicsFloat32> (pIn, pOut);

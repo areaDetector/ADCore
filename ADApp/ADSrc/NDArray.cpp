@@ -104,6 +104,12 @@ int NDArray::computeArrayInfo(int ndims, size_t *dims, NDDataType_t dataType, ND
     case NDUInt32:
       pInfo->bytesPerElement = sizeof(epicsUInt32);
       break;
+    case NDInt64:
+      pInfo->bytesPerElement = sizeof(epicsInt64);
+      break;
+    case NDUInt64:
+      pInfo->bytesPerElement = sizeof(epicsUInt64);
+      break;
     case NDFloat32:
       pInfo->bytesPerElement = sizeof(epicsFloat32);
       break;

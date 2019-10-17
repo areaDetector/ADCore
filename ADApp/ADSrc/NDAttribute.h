@@ -32,6 +32,8 @@ typedef enum
     NDUInt16,   /**< Unsigned 16-bit integer */
     NDInt32,    /**< Signed 32-bit integer */
     NDUInt32,   /**< Unsigned 32-bit integer */
+    NDInt64,    /**< Signed 64-bit integer */
+    NDUInt64,   /**< Unsigned 64-bit integer */
     NDFloat32,  /**< 32-bit float */
     NDFloat64   /**< 64-bit float */
 } NDDataType_t;
@@ -45,6 +47,8 @@ typedef enum
     NDAttrUInt16  = NDUInt16,   /**< Unsigned 16-bit integer */
     NDAttrInt32   = NDInt32,    /**< Signed 32-bit integer */
     NDAttrUInt32  = NDUInt32,   /**< Unsigned 32-bit integer */
+    NDAttrInt64   = NDInt64,    /**< Signed 64-bit integer */
+    NDAttrUInt64  = NDUInt64,   /**< Unsigned 64-bit integer */
     NDAttrFloat32 = NDFloat32,  /**< 32-bit float */
     NDAttrFloat64 = NDFloat64,  /**< 64-bit float */
     NDAttrString,               /**< Dynamic length string */
@@ -69,6 +73,8 @@ typedef union {
     epicsUInt16  ui16;  /**< Unsigned 16-bit integer */
     epicsInt32   i32;   /**< Signed 32-bit integer */
     epicsUInt32  ui32;  /**< Unsigned 32-bit integer */
+    epicsInt64   i64;   /**< Signed 64-bit integer */
+    epicsUInt64  ui64;  /**< Unsigned 64-bit integer */
     epicsFloat32 f32;   /**< 32-bit float */
     epicsFloat64 f64;   /**< 64-bit float */
 } NDAttrValue;

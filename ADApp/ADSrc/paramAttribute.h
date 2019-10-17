@@ -18,6 +18,7 @@
 
 typedef enum {
     paramAttrTypeInt,
+    paramAttrTypeInt64,
     paramAttrTypeDouble,
     paramAttrTypeString,
     paramAttrTypeUnknown
