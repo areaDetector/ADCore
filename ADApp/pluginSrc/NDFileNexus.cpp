@@ -383,6 +383,14 @@ int NDFileNexus::processNode(xmlNode *curNode, NDArray *pArray) {
           dataOutType = NX_UINT32;
           wordSize = 4;
           break;
+        case NDInt64:
+          dataOutType = NX_INT64;
+          wordSize = 8;
+          break;
+        case NDUInt64:
+          dataOutType = NX_UINT64;
+          wordSize = 8;
+          break;
         case NDFloat32:
           dataOutType = NX_FLOAT32;
           wordSize = 4;
@@ -581,6 +589,14 @@ void NDFileNexus::getAttrTypeNSize(NDAttribute *pAttr, int *retType, int *retSiz
       dataOutType = NX_UINT32;
       wordSize = 4;
       break;
+    case NDAttrInt64:
+      dataOutType = NX_INT64;
+      wordSize = 8;
+      break;
+    case NDAttrUInt64:
+      dataOutType = NX_UINT64;
+      wordSize = 8;
+      break;
     case NDAttrFloat32:
        dataOutType = NX_FLOAT32;
       wordSize = 4;
@@ -638,6 +654,10 @@ void * NDFileNexus::allocConstValue(int dataType, size_t length ) {
     case NX_UINT32:
       pValue = calloc( length, sizeof(int) );
       break;
+    case NX_INT64:
+    case NX_UINT64:
+      pValue = calloc( length, sizeof(epicsInt64) );
+      break;
     case NX_FLOAT32:
       pValue = calloc( length, sizeof(float) );
       break;
@@ -658,6 +678,7 @@ void * NDFileNexus::allocConstValue(int dataType, size_t length ) {
 void NDFileNexus::constTextToDataType(char *inText, int dataType, void *pValue) {
   double dval;
   int ival;
+  epicsInt64 i64val;
   int ii;
 
   switch (dataType) {
@@ -684,6 +705,14 @@ void NDFileNexus::constTextToDataType(char *inText, int dataType, void *pValue) 
     case NX_UINT32:
       sscanf((const char *)inText, "%d", &ival);
       *(unsigned int *)pValue = (unsigned int)ival;
+      break;
+    case NX_INT64:
+      sscanf((const char *)inText, "%lld", &i64val);
+      *(epicsInt64 *)pValue = i64val;
+      break;
+    case NX_UINT64:
+      sscanf((const char *)inText, "%llu", &i64val);
+      *(epicsUInt64 *)pValue = (epicsUInt64)i64val;
       break;
     case NX_FLOAT32:
       sscanf((const char *)inText, "%lf", &dval);
@@ -730,6 +759,12 @@ int NDFileNexus::typeStringToVal( const char * typeStr ) {
   }
   else if (strcmp(typeStr, "NX_UINT32") == 0) {
     return NX_UINT32;
+  }
+  else if (strcmp(typeStr, "NX_INT64") == 0) {
+    return NX_INT64;
+  }
+  else if (strcmp(typeStr, "NX_UINT64") == 0) {
+    return NX_UINT64;
   }
   else if (strcmp(typeStr, "NX_FLOAT32") == 0) {
     return NX_FLOAT32;

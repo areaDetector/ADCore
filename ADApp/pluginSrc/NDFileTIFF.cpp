@@ -167,6 +167,14 @@ asynStatus NDFileTIFF::openFile(const char *fileName, NDFileOpenMode_t openMode,
             sampleFormat = SAMPLEFORMAT_UINT;
             bitsPerSample = 32;
             break;
+        case NDInt64:
+            sampleFormat = SAMPLEFORMAT_INT;
+            bitsPerSample = 64;
+            break;
+        case NDUInt64:
+            sampleFormat = SAMPLEFORMAT_UINT;
+            bitsPerSample = 64;
+            break;
         case NDFloat32:
             sampleFormat = SAMPLEFORMAT_IEEEFP;
             bitsPerSample = 32;
@@ -299,9 +307,11 @@ asynStatus NDFileTIFF::openFile(const char *fileName, NDFileOpenMode_t openMode,
             case NDAttrInt16:
             case NDAttrUInt16:
             case NDAttrInt32:
-            case NDAttrUInt32: {
-                pAttribute->getValue(attrDataType, &value.i32);
-                epicsSnprintf(tagString, sizeof(tagString)-1, "%s:%d", attributeName, value.i32);
+            case NDAttrUInt32:
+            case NDAttrInt64:
+            case NDAttrUInt64: {
+                pAttribute->getValue(attrDataType, &value.i64);
+                epicsSnprintf(tagString, sizeof(tagString)-1, "%s:%lld", attributeName, value.i64);
                 break;
             }
             case NDAttrFloat32: {
@@ -461,6 +471,8 @@ asynStatus NDFileTIFF::readFile(NDArray **pArray)
     else if ((bitsPerSample == 16) && (sampleFormat == SAMPLEFORMAT_UINT))    dataType = NDUInt16;
     else if ((bitsPerSample == 32) && (sampleFormat == SAMPLEFORMAT_INT))     dataType = NDInt32;
     else if ((bitsPerSample == 32) && (sampleFormat == SAMPLEFORMAT_UINT))    dataType = NDUInt32;
+    else if ((bitsPerSample == 64) && (sampleFormat == SAMPLEFORMAT_INT))     dataType = NDInt64;
+    else if ((bitsPerSample == 64) && (sampleFormat == SAMPLEFORMAT_UINT))    dataType = NDUInt64;
     else if ((bitsPerSample == 32) && (sampleFormat == SAMPLEFORMAT_IEEEFP))  dataType = NDFloat32;
     else if ((bitsPerSample == 64) && (sampleFormat == SAMPLEFORMAT_IEEEFP))  dataType = NDFloat64;
     else {

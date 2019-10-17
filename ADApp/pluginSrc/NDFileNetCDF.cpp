@@ -168,6 +168,10 @@ asynStatus NDFileNetCDF::openFile(const char *fileName, NDFileOpenMode_t openMod
         case NDUInt32:
             ncType = NC_INT;
             break;
+        case NDInt64:
+        case NDUInt64:
+            ncType = NC_INT64;
+            break;
         case NDFloat32:
             ncType = NC_FLOAT;
             break;
@@ -237,6 +241,12 @@ asynStatus NDFileNetCDF::openFile(const char *fileName, NDFileOpenMode_t openMod
             case NDAttrUInt32:
                 dataTypeString = "UInt32";
                 break;
+            case NDAttrInt64:
+                dataTypeString = "Int64";
+                break;
+            case NDAttrUInt64:
+                dataTypeString = "UInt64";
+                break;
             case NDAttrFloat32:
                 dataTypeString = "Float32";
                 break;
@@ -286,6 +296,10 @@ asynStatus NDFileNetCDF::openFile(const char *fileName, NDFileOpenMode_t openMod
             case NDAttrInt32:
             case NDAttrUInt32:
                 ncType = NC_INT;
+                break;
+            case NDAttrInt64:
+            case NDAttrUInt64:
+                ncType = NC_INT64;
                 break;
             case NDAttrFloat32:
                 ncType = NC_FLOAT;
@@ -392,6 +406,11 @@ asynStatus NDFileNetCDF::writeFile(NDArray *pArray)
             if ((retval = nc_put_vara_int(this->ncId, this->arrayDataId, start, count, (int *)pArray->pData)))
                 ERR(retval);
             break;
+        case NDInt64:
+        case NDUInt64:
+            if ((retval = nc_put_vara_longlong(this->ncId, this->arrayDataId, start, count, (long long *)pArray->pData)))
+                ERR(retval);
+            break;
         case NDFloat32:
             if ((retval = nc_put_vara_float(this->ncId, this->arrayDataId, start, count, (float *)pArray->pData)))
                 ERR(retval);
@@ -430,6 +449,12 @@ asynStatus NDFileNetCDF::writeFile(NDArray *pArray)
             case NDAttrUInt32:
                 pAttribute->getValue(attrDataType, &attrVal.i32);
                 if ((retval = nc_put_vara_int(this->ncId, attrId, start, count, (int *)&attrVal.i32)))
+                    ERR(retval);
+                break;
+            case NDAttrInt64:
+            case NDAttrUInt64:
+                pAttribute->getValue(attrDataType, &attrVal.i64);
+                if ((retval = nc_put_vara_longlong(this->ncId, attrId, start, count, (long long *)&attrVal.i64)))
                     ERR(retval);
                 break;
             case NDAttrFloat32:

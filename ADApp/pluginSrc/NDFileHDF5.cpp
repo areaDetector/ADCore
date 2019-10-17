@@ -1307,6 +1307,10 @@ hid_t NDFileHDF5::fromHdfToHidDatatype(hdf5::DataType_t in) const
     out = H5T_NATIVE_INT32; break;
   case hdf5::uint32:
     out = H5T_NATIVE_UINT32; break;
+  case hdf5::int64:
+    out = H5T_NATIVE_INT64; break;
+  case hdf5::uint64:
+    out = H5T_NATIVE_UINT64; break;
   case hdf5::float32:
     out = H5T_NATIVE_FLOAT; break;
   case hdf5::float64:
@@ -3500,6 +3504,14 @@ hid_t NDFileHDF5::typeNd2Hdf(NDDataType_t datatype)
     case NDUInt32:
       result = H5T_NATIVE_UINT32;
       *(epicsUInt32*)this->ptrFillValue = (epicsUInt32)fillvalue;
+      break;
+    case NDInt64:
+      result = H5T_NATIVE_INT64;
+      *(epicsInt64*)this->ptrFillValue = (epicsInt64)fillvalue;
+      break;
+    case NDUInt64:
+      result = H5T_NATIVE_UINT64;
+      *(epicsUInt64*)this->ptrFillValue = (epicsUInt64)fillvalue;
       break;
     case NDFloat32:
       result = H5T_NATIVE_FLOAT;

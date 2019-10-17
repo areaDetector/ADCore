@@ -64,6 +64,10 @@ asynStatus NDFileMagick::openFile(const char *fileName, NDFileOpenMode_t openMod
         case NDUInt32:
             this->storageType = IntegerPixel;
             break;
+        case NDInt64:
+        case NDUInt64:
+            this->storageType = LongPixel;
+            break;
         case NDFloat32:
             this->storageType = FloatPixel;
             break;

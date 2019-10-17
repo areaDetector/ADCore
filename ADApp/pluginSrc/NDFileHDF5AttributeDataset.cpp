@@ -355,6 +355,14 @@ asynStatus NDFileHDF5AttributeDataset::typeAsHdf()
       datatype_ = H5T_NATIVE_UINT32;
       *(epicsUInt32*)this->ptrFillValue_ = (epicsUInt32)fillvalue;
       break;
+    case NDInt64:
+      datatype_ = H5T_NATIVE_INT64;
+      *(epicsInt64*)this->ptrFillValue_ = (epicsInt64)fillvalue;
+      break;
+    case NDUInt64:
+      datatype_ = H5T_NATIVE_UINT64;
+      *(epicsUInt64*)this->ptrFillValue_ = (epicsUInt64)fillvalue;
+      break;
     case NDFloat32:
       datatype_ = H5T_NATIVE_FLOAT;
       *(epicsFloat32*)this->ptrFillValue_ = (epicsFloat32)fillvalue;
