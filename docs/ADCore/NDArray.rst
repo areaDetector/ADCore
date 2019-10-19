@@ -296,6 +296,84 @@ loading ADBase.template.
   * -
     -
     -
+    - **Information about the device**
+  * - ADManufacturer 
+    - asynOctet 
+    - r/o 
+    - Detector manufacturer name 
+    - MANUFACTURER 
+    - $(P)$(R)Manufacturer_RBV 
+    - stringin 
+  * - ADModel 
+    - asynOctet 
+    - r/o 
+    - Detector model name 
+    - MODEL 
+    - $(P)$(R)Model_RBV 
+    - stringin 
+  * - ADSerialNumber 
+    - asynOctet 
+    - r/o 
+    - Detector serial number 
+    - SERIAL_NUMBER 
+    - $(P)$(R)SerialNumber_RBV 
+    - stringin 
+  * - ADFirmwareVersion 
+    - asynOctet 
+    - r/o 
+    - Detector firmware version 
+    - FIRMWARE_VERSION 
+    - $(P)$(R)FirmwareVersion_RBV 
+    - stringin 
+  * - ADSDKVersion 
+    - asynOctet 
+    - r/o 
+    - Detector vendor's Software Development Kit (SDK) version number. 
+    - SDK_VERSION 
+    - $(P)$(R)SDKVersion_RBV 
+    - stringin 
+  * - ADFirmwareVersion 
+    - asynOctet 
+    - r/o 
+    - Detector firmware version number. 
+    - FIRMWARE_VERSION 
+    - $(P)$(R)FirmwareVersion_RBV 
+    - stringin 
+  * -
+    - 
+    - 
+    - **Acquisition control** 
+  * - ADAcquire 
+    - asynInt32 
+    - r/w 
+    - Start (1) or stop (0) image acquisition. This record forward links to $(P)$(R)AcquireBusy
+      which is an EPICS busy record that does not process its forward link until acquisition
+      is complete. Clients should write 1 to the Acquire record to start acquisition,
+      and wait for AcquireBusy to go to 0 to know that acquisition is complete. This can
+      be done automatically with ca_put_callback. 
+    - ACQUIRE 
+    - $(P)$(R)Acquire, $(P)$(R)Acquire_RBV 
+    - bo, bi 
+  * - N.A. 
+    - N.A. 
+    - r/o 
+    - This is an EPICS busy record that is set to 1 when Acquire is set to 1 and not process
+      its forward link until acquisition is complete. 
+    - N.A. 
+    - $(P)$(R)AcquireBusy 
+    - busy 
+  * - N.A. 
+    - N.A. 
+    - r/o 
+    - This record controls whether AcquireBusy goes to 0 when the detector is done (Acquire=0),
+      or whether it waits until $(P)$(R)NumQueuedArrays also goes to 0, i.e. that all
+      plugins are also done. Choices are No (0) and Yes(1). 
+    - N.A. 
+    - $(P)$(R)WaitForPlugins 
+    - bo 
+  * -
+    -
+    -
     - **Information about the asyn port**
   * - NDPortNameSelf
     - asynOctet
