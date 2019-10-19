@@ -19,6 +19,49 @@ the EXAMPLE_RELEASE_PATHS.local, EXAMPLE_RELEASE_LIBS.local, and EXAMPLE_RELEASE
 files respectively, in the configure/ directory of the appropriate release of the 
 [top-level areaDetector](https://github.com/areaDetector/areaDetector) repository.
 
+## __R3-8 (August 20, 2019)__
+
+Note: This release requires asyn R4-37 because it uses new asynInt64 support.
+
+### 64-bit integer support
+  * NDArray now supports NDInt64 and NDUInt64 data types
+  * NDAttribute now supports NDAttrInt64 and NDAttrUInt64 data types
+  * All standard plugins were modified to handle the new 64-bit NDArray and NDAttribute data types
+  * The following file plugins can now write NDArray data types NDInt64 and NDUInt64, and NDAttribute data types
+    NDAttrInt64 and NDAttrUInt64:
+    * NDFileHDF
+    * NDFileNexus
+    * NDFileTIFF
+  * NDFileNetCDF cannot write the 64-bit integer data types because the netCDF3 "Classic" data model does not support them.
+  * 64-bit integer TIFF files cannot be read by ImageJ, but they can be read by IDL.
+    
+  * ntndArrayConverter converts NDInt64 and NDUInt64 to the equivalent pvData "long" and "ulong".
+
+### asynNDArrayDriver, ADDriver
+  * Moved the following parameters from ADDriver to asynNDArrayDriver.
+    This allows them to be used with other drivers that derive from asynNDArrayDriver:
+    * ADAcquire
+    * ADAcquireBusy
+    * ADWaitForPlugins
+    * ADManufacturer
+    * ADModel
+    * ADSerialNumber
+    * ADFirmwareVersion
+    * ADSDKVersion
+    
+    These changes should be transparent to derived classes.
+
+### Makefiles
+  * Changes to avoid compiler warnings.
+
+### myAttributeFunctions.cpp
+  * Added new TIME64 parameter and functTime64 function.  
+    This creates an attribute of type NDAttrUInt64 that contains the current EPICS time with secPastEpoch in the
+    high-order 32-bits and nsec in the low order 32-bits.  This allows testing 64-bit attribute handling.
+
+### ADTop.[adl, .ui, .opi, .edl]
+  * Added additional ADSpinnaker and ADVimba cameras
+
 ## __R3-7 (August 8, 2019)__
 
 Note: This release requires asyn R4-36 because it uses new features of asynPortDriver.
