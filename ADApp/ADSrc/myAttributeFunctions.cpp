@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <registryFunction.h>
 #include <epicsExport.h>
+#include <epicsTime.h>
 #include "functAttribute.h"
 
 // These functions demonstrate using user-defined attribute functions
@@ -14,7 +15,8 @@ typedef enum {
     functPi,
     functE,
     functTen,
-    functGettysburg
+    functGettysburg,
+    functTime64
 } myFunct_t;
 
 static int myAttrFunct1(const char *paramString, void **functionPvt, functAttribute *pAttribute)
@@ -46,6 +48,10 @@ static int myAttrFunct1(const char *paramString, void **functionPvt, functAttrib
             pAttribute->setDataType(NDAttrString);
             *paramIndex = functGettysburg;
         } 
+        else if (!strcmp(paramString, "TIME64")) {
+            pAttribute->setDataType(NDAttrInt64);
+            *paramIndex = functTime64;
+        } 
         else {
             printf("Error, unknown parameter string = %s\n", paramString);
             *paramIndex = functPi;
@@ -70,6 +76,15 @@ static int myAttrFunct1(const char *paramString, void **functionPvt, functAttrib
         case functGettysburg:
             pAttribute->setValue((char *)gettysburg);
             break;
+
+        case functTime64: {
+            epicsTimeStamp now;
+            epicsTimeGetCurrent(&now);
+            epicsInt64 value = now.secPastEpoch;
+            value = (value << 32) | now.nsec;
+            pAttribute->setValue(&value);
+            break;
+          }
             
         default:
             return ND_ERROR;
