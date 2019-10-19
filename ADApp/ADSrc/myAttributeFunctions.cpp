@@ -49,7 +49,7 @@ static int myAttrFunct1(const char *paramString, void **functionPvt, functAttrib
             *paramIndex = functGettysburg;
         } 
         else if (!strcmp(paramString, "TIME64")) {
-            pAttribute->setDataType(NDAttrInt64);
+            pAttribute->setDataType(NDAttrUInt64);
             *paramIndex = functTime64;
         } 
         else {
@@ -80,7 +80,7 @@ static int myAttrFunct1(const char *paramString, void **functionPvt, functAttrib
         case functTime64: {
             epicsTimeStamp now;
             epicsTimeGetCurrent(&now);
-            epicsInt64 value = now.secPastEpoch;
+            epicsUInt64 value = now.secPastEpoch;
             value = (value << 32) | now.nsec;
             pAttribute->setValue(&value);
             break;
