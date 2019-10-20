@@ -19,7 +19,7 @@ the EXAMPLE_RELEASE_PATHS.local, EXAMPLE_RELEASE_LIBS.local, and EXAMPLE_RELEASE
 files respectively, in the configure/ directory of the appropriate release of the 
 [top-level areaDetector](https://github.com/areaDetector/areaDetector) repository.
 
-## __R3-8 (October XXX, 2019)__
+## __R3-8 (October 20, 2019)__
 
 Note: This release requires asyn R4-37 because it uses new asynInt64 support.
 
