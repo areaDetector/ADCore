@@ -10,6 +10,11 @@ DBD         += NDPluginSupport.dbd
 # Persuade travis (ubuntu 12.04) to use HDF5 API V2 (1.8 rather than default 1.6)
 USR_CXXFLAGS_Linux += -DH5_NO_DEPRECATED_SYMBOLS -DH5Gopen_vers=2
 
+ifneq ($(SHARED_LIBRARIES), YES)
+   USR_CFLAGS_WIN32 += -DLIBXML_STATIC
+   USR_CXXFLAGS_WIN32 += -DLIBXML_STATIC
+endif
+
 INC      += NDPluginDriver.h
 LIB_SRCS += NDPluginDriver.cpp
 LIB_SRCS += throttler.cpp
