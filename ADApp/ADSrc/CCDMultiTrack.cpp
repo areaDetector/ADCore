@@ -33,22 +33,52 @@ CCDMultiTrack::CCDMultiTrack(asynPortDriver* asynPortDriver)
     asynPortDriver->createParam(CCDMultiTrackBinString, asynParamInt32Array, &mCCDMultiTrackBin);
 }
 
+void CCDMultiTrack::storeTrackAttributes(NDAttributeList* pAttributeList)
+{
+    std::string ROIString = "ROI";
+    std::string TrackString = "Track ";
+    if (pAttributeList)
+    {
+        for (size_t TrackNum = 0; TrackNum < size(); TrackNum++)
+        {
+            // Add new attributes listing.
+            std::string TrackNumString = std::to_string(TrackNum + 1);
+            std::string TrackStartName = ROIString + TrackNumString + "start";
+            std::string TrackStartDescription = TrackString + TrackNumString + " start";
+            int TrackStart = CCDMultiTrack::TrackStart(TrackNum);
+            pAttributeList->add(TrackStartName.c_str(), TrackStartDescription.c_str(), NDAttrInt32, &TrackStart);
+            // Set new attributes.
+            std::string TrackEndName = ROIString + TrackNumString + "end";
+            std::string TrackEndDescription = TrackString + TrackNumString + " end";
+            int TrackEnd = CCDMultiTrack::TrackEnd(TrackNum);
+            pAttributeList->add(TrackEndName.c_str(), TrackEndDescription.c_str(), NDAttrInt32, &TrackEnd);
+            // Set new attributes.
+            std::string TrackBinName = ROIString + TrackNumString + "bin";
+            std::string TrackBinDescription = TrackString + TrackNumString + " end";
+            int TrackBin = CCDMultiTrack::TrackBin(TrackNum);
+            pAttributeList->add(TrackBinName.c_str(), TrackBinDescription.c_str(), NDAttrInt32, &TrackBin);
+        }
+    }
+}
+
 void CCDMultiTrack::writeTrackStart(epicsInt32 *value, size_t nElements)
 {
-    mTrackStart.resize(nElements);
-    for (size_t TrackNum = 0; TrackNum < mTrackStart.size(); TrackNum++)
+    std::vector<int> TrackStart(nElements);
+    for (size_t TrackNum = 0; TrackNum < TrackStart.size(); TrackNum++)
     {
         if (value[TrackNum] < 1)
             throw std::string("Tracks starts must be >= 1");
-        if ((TrackNum > 0) && (value[TrackNum] <= TrackStart(TrackNum - 1)))
+        if ((TrackNum > 0) && (value[TrackNum] <= CCDMultiTrack::TrackStart(TrackNum - 1)))
             throw std::string("Tracks starts must be in ascending order");
         /* Copy the new data */
-        mTrackStart[TrackNum] = value[TrackNum];
+        TrackStart[TrackNum] = value[TrackNum];
     }
+    if (mTrackStart != TrackStart)
+        mTrackStart = TrackStart;
     std::vector<int> TrackEnd(mTrackStart.size());
     /* If binning is already set, this can define the track end. */
     for (size_t TrackNum = 0; TrackNum < TrackEnd.size(); TrackNum++)
-        TrackEnd[TrackNum] = TrackStart(TrackNum) + TrackHeight(TrackNum) - 1;
+        TrackEnd[TrackNum] = CCDMultiTrack::TrackStart(TrackNum) + TrackHeight(TrackNum) - 1;
     std::vector<int> TrackBin(mTrackStart.size());
     /* If track end is already set, this can define the binning. */
     for (size_t TrackNum = 0; TrackNum < TrackBin.size(); TrackNum++)
@@ -67,16 +97,19 @@ void CCDMultiTrack::writeTrackStart(epicsInt32 *value, size_t nElements)
 
 void CCDMultiTrack::writeTrackEnd(epicsInt32 *value, size_t nElements)
 {
+    std::vector<int> TrackEnd(nElements);
     mTrackEnd.resize(nElements);
-    for (size_t TrackNum = 0; TrackNum < mTrackEnd.size(); TrackNum++)
+    for (size_t TrackNum = 0; TrackNum < TrackEnd.size(); TrackNum++)
     {
         if (value[TrackNum] < 2)
             throw std::string("Tracks ends must be >= 2");
-        if ((TrackNum > 0) && (value[TrackNum] <= TrackEnd(TrackNum - 1)))
+        if ((TrackNum > 0) && (value[TrackNum] <= CCDMultiTrack::TrackEnd(TrackNum - 1)))
             throw std::string("Tracks ends must be in ascending order");
         /* Copy the new data */
-        mTrackEnd[TrackNum] = value[TrackNum];
+        TrackEnd[TrackNum] = value[TrackNum];
     }
+    if (mTrackEnd != TrackEnd)
+        mTrackEnd = TrackEnd;
     std::vector<int> TrackBin(mTrackEnd.size());
     /* If track start is already set, this can define the binning */
     for (size_t TrackNum = 0; TrackNum < TrackBin.size(); TrackNum++)
@@ -90,16 +123,18 @@ void CCDMultiTrack::writeTrackEnd(epicsInt32 *value, size_t nElements)
 
 void CCDMultiTrack::writeTrackBin(epicsInt32 *value, size_t nElements)
 {
-    mTrackBin.resize(nElements);
-    for (size_t TrackNum = 0; TrackNum < mTrackBin.size(); TrackNum++)
+    std::vector<int> TrackBin(nElements);
+    for (size_t TrackNum = 0; TrackNum < TrackBin.size(); TrackNum++)
     {
         if (value[TrackNum] < 1)
             throw std::string("The track binning must be >= 1.");
         if (TrackHeight(TrackNum) % value[TrackNum] != 0)
             throw std::string("Track height must be divisible by binning.");
         /* Copy the new data */
-        mTrackBin[TrackNum] = value[TrackNum];
+        TrackBin[TrackNum] = value[TrackNum];
     }
+    if (mTrackBin != TrackBin)
+        mTrackBin = TrackBin;
 }
 
 asynStatus CCDMultiTrack::writeInt32Array(asynUser *pasynUser, epicsInt32 *value, size_t nElements)

@@ -12,6 +12,7 @@
 #define CCD_MULTI_TRACK_H
 
 #include <asynPortDriver.h>
+#include <NDAttributeList.h>
 #include <shareLib.h>
 
 class epicsShareClass CCDMultiTrack
@@ -59,10 +60,13 @@ public:
     CCDMultiTrack(asynPortDriver* asynPortDriver);
     asynStatus writeInt32Array(asynUser *pasynUser, epicsInt32 *value, size_t nElements);
 
+    void storeTrackAttributes(NDAttributeList* pAttributeList);
+
 private:
     void writeTrackStart(epicsInt32 *value, size_t nElements);
     void writeTrackEnd(epicsInt32 *value, size_t nElements);
     void writeTrackBin(epicsInt32 *value, size_t nElements);
+
 };
 
 #endif //CCD_MULTI_TRACK_H
