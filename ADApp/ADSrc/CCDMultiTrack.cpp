@@ -42,7 +42,8 @@ void CCDMultiTrack::storeTrackAttributes(NDAttributeList* pAttributeList)
         for (size_t TrackNum = 0; TrackNum < size(); TrackNum++)
         {
             // Add new attributes listing.
-            std::string TrackNumString = std::to_string(TrackNum + 1);
+            char Buf[10];
+            std::string TrackNumString = _itoa(TrackNum + 1, Buf, 10);
             std::string TrackStartName = ROIString + TrackNumString + "start";
             std::string TrackStartDescription = TrackString + TrackNumString + " start";
             int TrackStart = CCDMultiTrack::TrackStart(TrackNum);
