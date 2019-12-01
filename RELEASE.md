@@ -19,6 +19,15 @@ the EXAMPLE_RELEASE_PATHS.local, EXAMPLE_RELEASE_LIBS.local, and EXAMPLE_RELEASE
 files respectively, in the configure/ directory of the appropriate release of the 
 [top-level areaDetector](https://github.com/areaDetector/areaDetector) repository.
 
+## __R3-9 (December XXX, 2019)__
+
+### NDPluginStats
+  * Fixed an off-by-one bug in the histogram calculation.
+    It was incorrectly reporting the number of elements above HistMax and the mid-point element of
+    the histogram had 0 counts when it should not.
+### docs
+  * Replaced all raw HTML tables in .rst files with Sphinx flat-tables.
+
 ## __R3-8 (October 20, 2019)__
 
 Note: This release requires asyn R4-37 because it uses new asynInt64 support.
