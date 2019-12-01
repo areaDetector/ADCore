@@ -15,50 +15,28 @@ of the structure of the NTNDArray normative type is available.
 
 NDPluginPva defines the following parameters.
 
-.. raw:: html
+.. cssclass:: table-bordered table-striped table-hover
+.. flat-table::
+  :header-rows: 2
+  :widths: 5 5 5 70 5 5 5
 
-
-  <table class="table table-bordered">
-    <tbody>
-      <tr>
-        <td align="center" colspan="7,">
-          <b>Parameter Definitions in NDPluginPva.h and EPICS Record Definitions in NDPva.template</b>
-        </td>
-      </tr>
-      <tr>
-        <th>
-          Parameter index variable</th>
-        <th>
-          asyn interface</th>
-        <th>
-          Access</th>
-        <th>
-          Description</th>
-        <th>
-          drvInfo string</th>
-        <th>
-          EPICS record name</th>
-        <th>
-          EPICS record type</th>
-      </tr>
-      <tr>
-        <td>
-          NDPluginPvaPvName</td>
-        <td>
-          asynOctet</td>
-        <td>
-          r/o</td>
-        <td>
-          Name of the EPICSv4 PV being served</td>
-        <td>
-          PV_NAME</td>
-        <td>
-          $(P)$(R)PvName_RBV</td>
-        <td>
-          waveform</td>
-      </tr>
-    </tbody>
-  </table>
+  * -
+    -
+    - **Parameter Definitions in NDPluginPva.h and EPICS Record Definitions in NDPva.template**
+  * - Parameter index variable
+    - asyn interface
+    - Access
+    - Description
+    - drvInfo string
+    - EPICS record name
+    - EPICS record type
+  * - NDPluginPvaPvName
+    - asynOctet
+    - r/o
+    - Name of the EPICSv4 PV being served
+    - PV_NAME
+    - $(P)$(R)PvName_RBV
+    - waveform
 
 
 Configuration
@@ -100,17 +78,25 @@ A performance test was conducted at NSLS-II to evaluate the benefits of
 using NDPva instead of NDStdArrays to transport images for visualization
 purposes. Eight AVT cameras of four different models were used:
 
-+---------------------------+-------------------------------------+------------+
-| Model                     | Resolution                          | Frame Rate |
-+===========================+=====================================+============+
-| Manta G125B (3 instances) | 1292x964x1                          | 30 Hz      |
-+---------------------------+-------------------------------------+------------+
-| GT2450 (3 instances)      | 2448x2050x1                         | 15 Hz      |
-+---------------------------+-------------------------------------+------------+
-| GT3400C (1 instance)      | 3384x2704x3 (binned to 1692x1352x3) | 17 Hz      |
-+---------------------------+-------------------------------------+------------+
-| Mako G131C (1 instance)   | 1280x1024x3                         | 28 Hz      |
-+---------------------------+-------------------------------------+------------+
+.. cssclass:: table-bordered table-striped table-hover
+.. flat-table::
+  :header-rows: 2
+
+  * - Model
+    - Resolution
+    - Frame Rate
+  * - Manta G125B (3 instances)
+    - 1292x964x1
+    - 30 Hz
+  * - GT2450 (3 instances)
+    - 2448x2050x1
+    - 15 Hz
+  * - GT3400C (1 instance)
+    - 3384x2704x3 (binned to 1692x1352x3)
+    - 17 Hz
+  * - Mako G131C (1 instance)
+    - 1280x1024x3
+    - 28 Hz
 
 All camera IOCs were concurrently running and acquiring on a HP ProLiant
 DL360 Gen9 server with 32GB of memory and a 12-core Xeon E5-2620 @ 2.40
@@ -133,35 +119,68 @@ running CS-Studio version 4.3.3. Five tests were performed:
 
 The results of these tests are tabulated as follows:
 
-.. raw:: html
+.. cssclass:: table-bordered table-striped table-hover
+.. flat-table::
+  :header-rows: 2
+  :stub-columns: 1
 
-  <table class="table table-bordered">
-    <tr>
-      <th> Model </th>
-      <th> Resolution </th>
-      <th> Frame Rate </th>
-    </tr>
-    <tr>
-      <td> Manta G125B (3 instances)</td>
-      <td> 1292x964x1 </td>
-      <td> 30 Hz </td>
-    </tr>
-    <tr>
-      <td> GT2450 (3 instances)</td>
-      <td> 2448x2050x1 </td>
-      <td> 15 Hz </td>
-    </tr>
-    <tr>
-      <td> GT3400C (1 instance)</td>
-      <td> 3384x2704x3  (binned to 1692x1352x3)</td>
-      <td> 17 Hz </td>
-    </tr>
-    <tr>
-      <td> Mako G131C (1 instance)</td>
-      <td> 1280x1024x3 </td>
-      <td> 28 Hz </td>
-    </tr>
-  </table>
+  * -
+    -
+    - **CPU Usage**
+  * - Camera
+    - Baseline
+    - NDPva, no CS-Studio
+    - NDPva + CS-Studio
+    - NDStdArrays, no CS-Studio
+    - NDStdArrays + CS-Studio
+  * - Cam 1: Manta G125B
+    - 10%
+    - 11%
+    - 13%
+    - 15%
+    - 35%
+  * - Cam 2: Manta G125B
+    - 10%
+    - 11%
+    - 13%
+    - 15%
+    - 35%
+  * - Cam 3: GT2450
+    - 18%
+    - 18%
+    - 23%
+    - 30%
+    - 65%
+  * - Cam 4: Manta G125B
+    - 10%
+    - 11%
+    - 13%
+    - 15%
+    - 35%
+  * - Cam 5: GT2450
+    - 18%
+    - 18%
+    - 23%
+    - 30%
+    - 65%
+  * - Cam 6: GT2450
+    - 18%
+    - 18%
+    - 23%
+    - 30%
+    - 65%
+  * - Cam 7: GT3400C
+    - 20%
+    - 25%
+    - 30%
+    - 40%
+    - 65%
+  * - Cam 8: Mako G131C
+    - 19%
+    - 21%
+    - 28%
+    - 40%
+    - 65%
 
 
 And, in form of a graph:

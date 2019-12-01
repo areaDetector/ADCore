@@ -50,595 +50,247 @@ following table. Note that to reduce the width of this table the
 parameter index variable names have been split into 2 lines, but these
 are just a single name, for example ``NDPluginROIName``.
 
-.. raw:: html
+.. cssclass:: table-bordered table-striped table-hover
+.. flat-table::
+  :header-rows: 2
+  :widths: 5 5 5 70 5 5 5
 
-  <table class="table table-bordered">
-    <tbody>
-      <tr>
-        <td align="center" colspan="7,">
-          <b>Parameter Definitions in NDPluginROI.h and EPICS Record Definitions in NDROI.template</b>
-        </td>
-      </tr>
-      <tr>
-        <th>
-          Parameter index variable</th>
-        <th>
-          asyn interface</th>
-        <th>
-          Access</th>
-        <th>
-          Description</th>
-        <th>
-          drvInfo string</th>
-        <th>
-          EPICS record name</th>
-        <th>
-          EPICS record type</th>
-      </tr>
-      <tr>
-        <td>
-          NDPluginROI<br />
-          Name</td>
-        <td>
-          asynOctet</td>
-        <td>
-          r/w</td>
-        <td>
-          Name of this ROI</td>
-        <td>
-          NAME</td>
-        <td>
-          $(P)$(R)Name<br />
-          $(P)$(R)Name_RBV</td>
-        <td>
-          stringout<br />
-          stringin</td>
-      </tr>
-      <tr>
-        <td align="center" colspan="7,">
-          <b>ROI definition</b></td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginROI<br />
-          Dim0Enable</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          Enable ROI calculations in the X dimension. If not enabled then the start, size,
-          binning, and reverse operations are disabled in the X dimension, and the values
-          from the input array are used.</td>
-        <td>
-          DIM0_ENABLE</td>
-        <td>
-          $(P)$(R)EnableX<br />
-          $(P)$(R)EnableX_RBV</td>
-        <td>
-          bo<br />
-          bi</td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginROI<br />
-          Dim1Enable</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          Enable ROI calculations in the Y dimension. If not enabled then the start, size,
-          binning, and reverse operations are disabled in the Y dimension, and the values
-          from the input array are used.</td>
-        <td>
-          DIM1_ENABLE</td>
-        <td>
-          $(P)$(R)EnableY<br />
-          $(P)$(R)EnableY_RBV</td>
-        <td>
-          bo<br />
-          bi</td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginROI<br />
-          Dim2Enable</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          Enable ROI calculations in the Z dimension. If not enabled then the start, size,
-          binning, and reverse operations are disabled in the Z dimension, and the values
-          from the input array are used.</td>
-        <td>
-          DIM2_ENABLE</td>
-        <td>
-          $(P)$(R)EnableZ<br />
-          $(P)$(R)EnableZ_RBV</td>
-        <td>
-          bo<br />
-          bi</td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginROI<br />
-          Dim0Bin</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          Binning in the X dimension</td>
-        <td>
-          DIM0_BIN</td>
-        <td>
-          $(P)$(R)BinX<br />
-          $(P)$(R)BinX_RBV</td>
-        <td>
-          longout<br />
-          longin</td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginROI<br />
-          Dim1Bin</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          Binning in the Y dimension</td>
-        <td>
-          DIM1_BIN</td>
-        <td>
-          $(P)$(R)BinY<br />
-          $(P)$(R)BinY_RBV</td>
-        <td>
-          longout<br />
-          longin</td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginROI<br />
-          Dim2Bin</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          Binning in the Z dimension</td>
-        <td>
-          DIM2_BIN</td>
-        <td>
-          $(P)$(R)BinZ<br />
-          $(P)$(R)BinZ_RBV</td>
-        <td>
-          longout<br />
-          longin</td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginROI<br />
-          Dim0Min</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          First pixel in the ROI in the X dimension. 0 is the first pixel in the array.</td>
-        <td>
-          DIM0_MIN</td>
-        <td>
-          $(P)$(R)MinX<br />
-          $(P)$(R)MinX_RBV</td>
-        <td>
-          longout<br />
-          longin</td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginROI<br />
-          Dim1Min</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          First pixel in the ROI in the Y dimension.<br />
-          0 is the first pixel in the array.</td>
-        <td>
-          DIM1_MIN</td>
-        <td>
-          $(P)$(R)MinY<br />
-          $(P)$(R)MinY_RBV</td>
-        <td>
-          longout<br />
-          longin</td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginROI<br />
-          Dim2Min</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          First pixel in the ROI in the Z dimension.<br />
-          0 is the first pixel in the array.</td>
-        <td>
-          DIM2_MIN</td>
-        <td>
-          $(P)$(R)MinZ<br />
-          $(P)$(R)MinZ_RBV</td>
-        <td>
-          longout<br />
-          longin</td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginROI<br />
-          Dim0Size</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          Size of the ROI in the X dimension</td>
-        <td>
-          DIM0_SIZE</td>
-        <td>
-          $(P)$(R)SizeX<br />
-          $(P)$(R)SizeX_RBV</td>
-        <td>
-          longout<br />
-          longin</td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginROI<br />
-          Dim1Size</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          Size of the ROI in the Y dimension</td>
-        <td>
-          DIM1_SIZE</td>
-        <td>
-          $(P)$(R)SizeY<br />
-          $(P)$(R)SizeY_RBV</td>
-        <td>
-          longout<br />
-          longin</td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginROI<br />
-          Dim2Size</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          Size of the ROI in the Z dimension</td>
-        <td>
-          DIM2_SIZE</td>
-        <td>
-          $(P)$(R)SizeZ<br />
-          $(P)$(R)SizeZ_RBV</td>
-        <td>
-          longout<br />
-          longin</td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginROI<br />
-          Dim0AutoSize</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          Automatically set SizeX to the input array size minus MinX</td>
-        <td>
-          DIM0_AUTO_SIZE</td>
-        <td>
-          $(P)$(R)AutoSizeX<br />
-          $(P)$(R)AutoSizeX_RBV</td>
-        <td>
-          bo<br />
-          bi</td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginROI<br />
-          Dim1AutoSize</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          Automatically set SizeY to the input array size minus MinY</td>
-        <td>
-          DIM1_AUTO_SIZE</td>
-        <td>
-          $(P)$(R)AutoSizeY<br />
-          $(P)$(R)AutoSizeY_RBV</td>
-        <td>
-          bo<br />
-          bi</td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginROI<br />
-          Dim2AutoSize</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          Automatically set SizeZ to the input array size minus MinZ</td>
-        <td>
-          DIM2_AUTO_SIZE</td>
-        <td>
-          $(P)$(R)AutoSizeZ<br />
-          $(P)$(R)AutoSizeZ_RBV</td>
-        <td>
-          bo<br />
-          bi</td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginROI<br />
-          Dim0MaxSize</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/o</td>
-        <td>
-          Maximum size of the ROI in the X dimension</td>
-        <td>
-          DIM0_MAX_SIZE</td>
-        <td>
-          $(P)$(R)MaxSizeX_RBV</td>
-        <td>
-          longin</td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginROI<br />
-          Dim1MaxSize</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/o</td>
-        <td>
-          Maximum size of the ROI in the Y dimension</td>
-        <td>
-          DIM1_MAX_SIZE</td>
-        <td>
-          $(P)$(R)MaxSizeY_RBV</td>
-        <td>
-          longin</td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginROI<br />
-          Dim2MaxSize</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/o</td>
-        <td>
-          Maximum size of the ROI in the Z dimension</td>
-        <td>
-          DIM2_MAX_SIZE</td>
-        <td>
-          $(P)$(R)MaxSizeZ_RBV</td>
-        <td>
-          longin</td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginROI<br />
-          Dim0Reverse</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          Reverse ROI in the X dimension. (0=No, 1=Yes)</td>
-        <td>
-          DIM0_REVERSE</td>
-        <td>
-          $(P)$(R)ReverseX<br />
-          $(P)$(R)ReverseX_RBV</td>
-        <td>
-          longout<br />
-          longin</td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginROI<br />
-          Dim1Reverse</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          Reverse ROI in the Y dimension. (0=No, 1=Yes)</td>
-        <td>
-          DIM1_REVERSE</td>
-        <td>
-          $(P)$(R)ReverseY<br />
-          $(P)$(R)ReverseY_RBV</td>
-        <td>
-          longout<br />
-          longin</td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginROI<br />
-          Dim2Reverse</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          Reverse ROI in the Z dimension. (0=No, 1=Yes)</td>
-        <td>
-          DIM2_REVERSE</td>
-        <td>
-          $(P)$(R)ReverseZ<br />
-          $(P)$(R)ReverseZ_RBV</td>
-        <td>
-          longout<br />
-          longin</td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginROI<br />
-          DataType</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          Data type of the ROI (NDDataType_t). This can be different from the data type of
-          the NDArray callback data.</td>
-        <td>
-          ROI_DATA_TYPE</td>
-        <td>
-          $(P)$(R)DataType<br />
-          $(P)$(R)DataType_RBV</td>
-        <td>
-          mbbo<br />
-          mbbi</td>
-      </tr>
-      <tr>
-        <td>
-          NDArraySizeX</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/o</td>
-        <td>
-          Size of the ROI data in the X dimension</td>
-        <td>
-          ARRAY_SIZE_X</td>
-        <td>
-          $(P)$(R)ArraySizeX_RBV</td>
-        <td>
-          longin</td>
-      </tr>
-      <tr>
-        <td>
-          NDArraySizeY</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/o</td>
-        <td>
-          Size of the ROI data in the Y dimension</td>
-        <td>
-          ARRAY_SIZE_Y</td>
-        <td>
-          $(P)$(R)ArraySizeY_RBV</td>
-        <td>
-          longin</td>
-      </tr>
-      <tr>
-        <td>
-          NDArraySizeZ</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/o</td>
-        <td>
-          Size of the ROI data in the Z dimension</td>
-        <td>
-          ARRAY_SIZE_Z</td>
-        <td>
-          $(P)$(R)ArraySizeZ_RBV</td>
-        <td>
-          longin</td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginROI<br />
-          EnableScale</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          Enable dividing by the Scale value. (0=Disable, 1=Enable). This is very useful when
-          binning or when converting from a higher precision data type to a lower precision
-          data type. For example when binning 2x2, then Scale=4 (dividing by 4) will prevent
-          integer overflow. Similarly, when converting from 16-bit to 8-bit integers one might
-          scale by 256, or perhaps a smaller number if the 16-bit data does not use the full
-          16-bit range.</td>
-        <td>
-          ENABLE_SCALE</td>
-        <td>
-          $(P)$(R)EnableScale<br />
-          $(P)$(R)EnableScale_RBV</td>
-        <td>
-          bo<br />
-          bi</td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginROI<br />
-          Scale</td>
-        <td>
-          asynFloat64</td>
-        <td>
-          r/w</td>
-        <td>
-          The scale value to divide by if EnableScale is enabled.</td>
-        <td>
-          SCALE_VALUE</td>
-        <td>
-          $(P)$(R)Scale<br />
-          $(P)$(R)Scale_RBV</td>
-        <td>
-          ao<br />
-          ai</td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginROI<br />
-          CollapseDims</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          Collapse (remove) output array dimensions whose value is 1. Consider the case when
-          the input array to the ROI plugin has dimensions [4, 256, 256] and the plugin is
-          configured with MinX=1, SizeX=1, MinY=0, SizeY=256, MinZ=0, SizeZ=256. If CollapseDims=Disable
-          then the output arrays will be of size [1, 256, 256]. If CollapseDims=Enable then
-          the output array will be [256, 256]. This is convenient for some purposes. For example
-          file plugins like JPEG or TIFF will not work with arrays of [1, 256, 256], nor will
-          the ImageJ display plugin. They all require that the array have only 2 dimensions
-          unless it is the special case of 3-D color arrays (RGB1, RGB2, RGB3) where one of
-          the dimensons is 3.</td>
-        <td>
-          COLLAPSE_DIMS</td>
-        <td>
-          $(P)$(R)CollapseDims<br />
-          $(P)$(R)CollapseDims_RBV</td>
-        <td>
-          bo<br />
-          bi</td>
-      </tr>
-    </tbody>
-  </table>
+  * -
+    -
+    - **Parameter Definitions in NDPluginROI.h and EPICS Record Definitions in NDROI.template**
+  * - Parameter index variable
+    - asyn interface
+    - Access
+    - Description
+    - drvInfo string
+    - EPICS record name
+    - EPICS record type
+  * - NDPluginROI, Name
+    - asynOctet
+    - r/w
+    - Name of this ROI
+    - NAME
+    - $(P)$(R)Name, $(P)$(R)Name_RBV
+    - stringout, stringin
+  * -
+    -
+    - **ROI definition**
+  * - NDPluginROI, Dim0Enable
+    - asynInt32
+    - r/w
+    - Enable ROI calculations in the X dimension. If not enabled then the start, size,
+      binning, and reverse operations are disabled in the X dimension, and the values
+      from the input array are used.
+    - DIM0_ENABLE
+    - $(P)$(R)EnableX, $(P)$(R)EnableX_RBV
+    - bo, bi
+  * - NDPluginROI, Dim1Enable
+    - asynInt32
+    - r/w
+    - Enable ROI calculations in the Y dimension. If not enabled then the start, size,
+      binning, and reverse operations are disabled in the Y dimension, and the values
+      from the input array are used.
+    - DIM1_ENABLE
+    - $(P)$(R)EnableY, $(P)$(R)EnableY_RBV
+    - bo, bi
+  * - NDPluginROI, Dim2Enable
+    - asynInt32
+    - r/w
+    - Enable ROI calculations in the Z dimension. If not enabled then the start, size,
+      binning, and reverse operations are disabled in the Z dimension, and the values
+      from the input array are used.
+    - DIM2_ENABLE
+    - $(P)$(R)EnableZ, $(P)$(R)EnableZ_RBV
+    - bo, bi
+  * - NDPluginROI, Dim0Bin
+    - asynInt32
+    - r/w
+    - Binning in the X dimension
+    - DIM0_BIN
+    - $(P)$(R)BinX, $(P)$(R)BinX_RBV
+    - longout, longin
+  * - NDPluginROI, Dim1Bin
+    - asynInt32
+    - r/w
+    - Binning in the Y dimension
+    - DIM1_BIN
+    - $(P)$(R)BinY, $(P)$(R)BinY_RBV
+    - longout, longin
+  * - NDPluginROI, Dim2Bin
+    - asynInt32
+    - r/w
+    - Binning in the Z dimension
+    - DIM2_BIN
+    - $(P)$(R)BinZ, $(P)$(R)BinZ_RBV
+    - longout, longin
+  * - NDPluginROI, Dim0Min
+    - asynInt32
+    - r/w
+    - First pixel in the ROI in the X dimension. 0 is the first pixel in the array.
+    - DIM0_MIN
+    - $(P)$(R)MinX, $(P)$(R)MinX_RBV
+    - longout, longin
+  * - NDPluginROI, Dim1Min
+    - asynInt32
+    - r/w
+    - First pixel in the ROI in the Y dimension., 0 is the first pixel in the array.
+    - DIM1_MIN
+    - $(P)$(R)MinY, $(P)$(R)MinY_RBV
+    - longout, longin
+  * - NDPluginROI, Dim2Min
+    - asynInt32
+    - r/w
+    - First pixel in the ROI in the Z dimension., 0 is the first pixel in the array.
+    - DIM2_MIN
+    - $(P)$(R)MinZ, $(P)$(R)MinZ_RBV
+    - longout, longin
+  * - NDPluginROI, Dim0Size
+    - asynInt32
+    - r/w
+    - Size of the ROI in the X dimension
+    - DIM0_SIZE
+    - $(P)$(R)SizeX, $(P)$(R)SizeX_RBV
+    - longout, longin
+  * - NDPluginROI, Dim1Size
+    - asynInt32
+    - r/w
+    - Size of the ROI in the Y dimension
+    - DIM1_SIZE
+    - $(P)$(R)SizeY, $(P)$(R)SizeY_RBV
+    - longout, longin
+  * - NDPluginROI, Dim2Size
+    - asynInt32
+    - r/w
+    - Size of the ROI in the Z dimension
+    - DIM2_SIZE
+    - $(P)$(R)SizeZ, $(P)$(R)SizeZ_RBV
+    - longout, longin
+  * - NDPluginROI, Dim0AutoSize
+    - asynInt32
+    - r/w
+    - Automatically set SizeX to the input array size minus MinX
+    - DIM0_AUTO_SIZE
+    - $(P)$(R)AutoSizeX, $(P)$(R)AutoSizeX_RBV
+    - bo, bi
+  * - NDPluginROI, Dim1AutoSize
+    - asynInt32
+    - r/w
+    - Automatically set SizeY to the input array size minus MinY
+    - DIM1_AUTO_SIZE
+    - $(P)$(R)AutoSizeY, $(P)$(R)AutoSizeY_RBV
+    - bo, bi
+  * - NDPluginROI, Dim2AutoSize
+    - asynInt32
+    - r/w
+    - Automatically set SizeZ to the input array size minus MinZ
+    - DIM2_AUTO_SIZE
+    - $(P)$(R)AutoSizeZ, $(P)$(R)AutoSizeZ_RBV
+    - bo, bi
+  * - NDPluginROI, Dim0MaxSize
+    - asynInt32
+    - r/o
+    - Maximum size of the ROI in the X dimension
+    - DIM0_MAX_SIZE
+    - $(P)$(R)MaxSizeX_RBV
+    - longin
+  * - NDPluginROI, Dim1MaxSize
+    - asynInt32
+    - r/o
+    - Maximum size of the ROI in the Y dimension
+    - DIM1_MAX_SIZE
+    - $(P)$(R)MaxSizeY_RBV
+    - longin
+  * - NDPluginROI, Dim2MaxSize
+    - asynInt32
+    - r/o
+    - Maximum size of the ROI in the Z dimension
+    - DIM2_MAX_SIZE
+    - $(P)$(R)MaxSizeZ_RBV
+    - longin
+  * - NDPluginROI, Dim0Reverse
+    - asynInt32
+    - r/w
+    - Reverse ROI in the X dimension. (0=No, 1=Yes)
+    - DIM0_REVERSE
+    - $(P)$(R)ReverseX, $(P)$(R)ReverseX_RBV
+    - longout, longin
+  * - NDPluginROI, Dim1Reverse
+    - asynInt32
+    - r/w
+    - Reverse ROI in the Y dimension. (0=No, 1=Yes)
+    - DIM1_REVERSE
+    - $(P)$(R)ReverseY, $(P)$(R)ReverseY_RBV
+    - longout, longin
+  * - NDPluginROI, Dim2Reverse
+    - asynInt32
+    - r/w
+    - Reverse ROI in the Z dimension. (0=No, 1=Yes)
+    - DIM2_REVERSE
+    - $(P)$(R)ReverseZ, $(P)$(R)ReverseZ_RBV
+    - longout, longin
+  * - NDPluginROI, DataType
+    - asynInt32
+    - r/w
+    - Data type of the ROI (NDDataType_t). This can be different from the data type of
+      the NDArray callback data.
+    - ROI_DATA_TYPE
+    - $(P)$(R)DataType, $(P)$(R)DataType_RBV
+    - mbbo, mbbi
+  * - NDArraySizeX
+    - asynInt32
+    - r/o
+    - Size of the ROI data in the X dimension
+    - ARRAY_SIZE_X
+    - $(P)$(R)ArraySizeX_RBV
+    - longin
+  * - NDArraySizeY
+    - asynInt32
+    - r/o
+    - Size of the ROI data in the Y dimension
+    - ARRAY_SIZE_Y
+    - $(P)$(R)ArraySizeY_RBV
+    - longin
+  * - NDArraySizeZ
+    - asynInt32
+    - r/o
+    - Size of the ROI data in the Z dimension
+    - ARRAY_SIZE_Z
+    - $(P)$(R)ArraySizeZ_RBV
+    - longin
+  * - NDPluginROI, EnableScale
+    - asynInt32
+    - r/w
+    - Enable dividing by the Scale value. (0=Disable, 1=Enable). This is very useful when
+      binning or when converting from a higher precision data type to a lower precision
+      data type. For example when binning 2x2, then Scale=4 (dividing by 4) will prevent
+      integer overflow. Similarly, when converting from 16-bit to 8-bit integers one might
+      scale by 256, or perhaps a smaller number if the 16-bit data does not use the full
+      16-bit range.
+    - ENABLE_SCALE
+    - $(P)$(R)EnableScale, $(P)$(R)EnableScale_RBV
+    - bo, bi
+  * - NDPluginROI, Scale
+    - asynFloat64
+    - r/w
+    - The scale value to divide by if EnableScale is enabled.
+    - SCALE_VALUE
+    - $(P)$(R)Scale, $(P)$(R)Scale_RBV
+    - ao, ai
+  * - NDPluginROI, CollapseDims
+    - asynInt32
+    - r/w
+    - Collapse (remove) output array dimensions whose value is 1. Consider the case when
+      the input array to the ROI plugin has dimensions [4, 256, 256] and the plugin is
+      configured with MinX=1, SizeX=1, MinY=0, SizeY=256, MinZ=0, SizeZ=256. If CollapseDims=Disable
+      then the output arrays will be of size [1, 256, 256]. If CollapseDims=Enable then
+      the output array will be [256, 256]. This is convenient for some purposes. For example
+      file plugins like JPEG or TIFF will not work with arrays of [1, 256, 256], nor will
+      the ImageJ display plugin. They all require that the array have only 2 dimensions
+      unless it is the special case of 3-D color arrays (RGB1, RGB2, RGB3) where one of
+      the dimensons is 3.
+    - COLLAPSE_DIMS
+    - $(P)$(R)CollapseDims, $(P)$(R)CollapseDims_RBV
+    - bo, bi
 
 
 A special case is made when the NDArray data has

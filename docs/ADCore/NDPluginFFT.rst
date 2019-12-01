@@ -51,311 +51,155 @@ the standard plugin parameters from
 listed above provide access to these parameters, listed in the following
 tables.
 
-.. raw:: html
+.. |br| raw:: html
 
-  <table class="table table-bordered">
-    <tbody>
-      <tr>
-        <td align="center" colspan="7">
-          <b>Parameters for entire plugin.
-            <br />
-            Parameter Definitions in NDPluginFFT.h and EPICS Record Definitions in NDFFT.template</b>
-        </td>
-      </tr>
-      <tr>
-        <th>
-          Parameter index variable</th>
-        <th>
-          asyn interface</th>
-        <th>
-          Access</th>
-        <th>
-          Description</th>
-        <th>
-          drvInfo string</th>
-        <th>
-          EPICS record name</th>
-        <th>
-          EPICS record type</th>
-      </tr>
-      <tr>
-        <td>
-          FFTTimePerPoint</td>
-        <td>
-          asynFloat64</td>
-        <td>
-          r/w</td>
-        <td>
-          The time interval between samples in the waveforms from the driver. This value is
-          normally updated automatically using the FFTTimePerPointLink record described below.
-          It can also be manually changed if there is no EPICS record available to provide
-          this value automatically.</td>
-        <td>
-          FFT_TIME_PER_POINT</td>
-        <td>
-          $(P)$(R)FFTTimePerPoint<br />
-          $(P)$(R)FFTTimePerPoint_RBV</td>
-        <td>
-          ao<br />
-          ai</td>
-      </tr>
-      <tr>
-        <td>
-          N.A.</td>
-        <td>
-          N.A.</td>
-        <td>
-          r/w</td>
-        <td>
-          This record has OMSL="closed_loop" and DOL set to an record that contains the time
-          between points from the driver. The link will normally have the CP attribute, so
-          this record processes whenever the input record changes. The OUT field of this record
-          is FFTTimePerPoint.</td>
-        <td>
-          N.A.</td>
-        <td>
-          $(P)$(R)FFTTimePerPointLink</td>
-        <td>
-          ao</td>
-      </tr>
-      <tr>
-        <td>
-          FFTTimeAxis</td>
-        <td>
-          asynFloat64ArrayIn</td>
-        <td>
-          r/o</td>
-        <td>
-          A waveform record containing the time value of each point in the TimeSeries waveforms.
-          FFTTimeAxis[i] = FFTTimePerPoint * i. Note that this record is useful for 1-D FFTs
-          where the input array is a time-series and the TimePerPoint value is correctly set.
-        </td>
-        <td>
-          FFT_TIME_AXIS</td>
-        <td>
-          $(P)$(R)FFTTimeAxis</td>
-        <td>
-          waveform</td>
-      </tr>
-      <tr>
-        <td>
-          FFTFreqAxis</td>
-        <td>
-          asynFloat64ArrayIn</td>
-        <td>
-          r/o</td>
-        <td>
-          A waveform record containing the frequency value of each point in the FFT waveform
-          records. FFTFreqAxis[i] = FrequencyStep * i, where FrequencyStep is controlled by
-          TimePerPoint and the number of time points in the input array. Note that this record
-          is useful for 1-D FFTs where the input array is a time-series and the TimePerPoint
-          value is correctly set.</td>
-        <td>
-          FFT_FREQ_AXIS</td>
-        <td>
-          $(P)$(R)FFTFreqAxis</td>
-        <td>
-          waveform</td>
-      </tr>
-      <tr>
-        <td>
-          FFTDirection</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          The FFT direction. Choices are:<br />
-          0: Time to frequency<br />
-          1: Frequency to time<br />
-          NOTE: This is not yet implemented because frequency to time requires complex data,
-          and complex data is not yet supported in areaDetector. Currently only Time to frequency
-          is supported, and the frequency output consists of float64 arrays containing the
-          real part, imaginary part, and absolute value of the FFT.</td>
-        <td>
-          FFT_DIRECTION</td>
-        <td>
-          $(P)$(R)FFTDirection<br />
-          $(P)$(R)FFTDirection_RBV</td>
-        <td>
-          bo<br />
-          bi</td>
-      </tr>
-      <tr>
-        <td>
-          FFTSuppressDC</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          Option to set the zero frequency (DC) value in the output arrays to 0. Choices are:<br />
-          0: Disable<br />
-          1: Enable<br />
-          If the signal has a large DC offset then setting the zero frequency component to
-          0 in the output arrays can make plots look better. This is because the DC component
-          can be much larger than all other frequency components.</td>
-        <td>
-          FFT_SUPPRESS_DC</td>
-        <td>
-          $(P)$(R)FFTSuppressDC<br />
-          $(P)$(R)FFTSuppressDC_RBV</td>
-        <td>
-          bo<br />
-          bi</td>
-      </tr>
-      <tr>
-        <td>
-          FFTNumAverage</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          The characteristic number of FFTs in the recursive average. The equations for the
-          FFT averaging are:<br />
-          <code>Out = ((1-1/NumAveraged) * Old) + (1/NumAveraged * New)<br />
-            Old = Out
-            <br />
-            if (NumAveraged < NumAverage) NumAveraged = NumAveraged + 1
-            <br />
-          </code>when Old is the previous output and New is the latest FFT calculation. If
-          NumAverage=1 then there is no averaging. </td>
-        <td>
-          FFT_NUM_AVERAGE</td>
-        <td>
-          $(P)$(R)FFTNumAverage<br />
-          $(P)$(R)FFTNumAverage_RBV</td>
-        <td>
-          longout<br />
-          longin</td>
-      </tr>
-      <tr>
-        <td>
-          FFTNumAveraged</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/o</td>
-        <td>
-          The number of FFTs averaged in the current output. This value increases until it
-          reaches the value of NumAverage. See the equations for NumAverage above. </td>
-        <td>
-          FFT_NUM_AVERAGED</td>
-        <td>
-          $(P)$(R)FFTNumAveraged</td>
-        <td>
-          longin</td>
-      </tr>
-      <tr>
-        <td>
-          FFTResetAverage</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/o</td>
-        <td>
-          Setting this record to 1 resets NumAveraged to 0, so the averaging process starts
-          over. </td>
-        <td>
-          FFT_RESET_AVERAGE</td>
-        <td>
-          $(P)$(R)FFTResetAverage</td>
-        <td>
-          bo</td>
-      </tr>
-      <tr>
-        <td>
-          N.A.</td>
-        <td>
-          N.A.</td>
-        <td>
-          r/w</td>
-        <td>
-          The name for this signal.</td>
-        <td>
-          N.A.</td>
-        <td>
-          $(P)$(R)SignalName</td>
-        <td>
-          stringout</td>
-      </tr>
-      <tr>
-        <td>
-          FFTTimeSeries</td>
-        <td>
-          asynFloat64ArrayIn</td>
-        <td>
-          r/o</td>
-        <td>
-          The time series data array. </td>
-        <td>
-          FFT_TIME_SERIES </td>
-        <td>
-          $(P)$(R)TimeSeries</td>
-        <td>
-          waveform</td>
-      </tr>
-      <tr>
-        <td>
-          FFTReal</td>
-        <td>
-          asynFloat64ArrayIn</td>
-        <td>
-          r/o</td>
-        <td>
-          The real part of the FFT.
-          <br />
-          NOTE: this value is only available as a 1-D waveform. It is not exported as an NDArray.
-          For 2-D FFTs it contains only the first row of the FFT.</td>
-        <td>
-          FFT_FFT_REAL </td>
-        <td>
-          $(P)$(R)FFTReal</td>
-        <td>
-          waveform</td>
-      </tr>
-      <tr>
-        <td>
-          FFTImaginary</td>
-        <td>
-          asynFloat64ArrayIn</td>
-        <td>
-          r/o</td>
-        <td>
-          The imaginary part of the FFT.
-          <br />
-          NOTE: this value is only available as a 1-D waveform. It is not exported as an NDArray.
-          For 2-D FFTs it contains only the first row of the FFT.</td>
-        <td>
-          FFT_FFT_IMAGINARY </td>
-        <td>
-          $(P)$(R)FFTImaginary</td>
-        <td>
-          waveform</td>
-      </tr>
-      <tr>
-        <td>
-          FFTAbsValue</td>
-        <td>
-          asynFloat64ArrayIn</td>
-        <td>
-          r/o</td>
-        <td>
-          The absolute value of the FFT.
-          <br />
-          NOTE: this is exported as an NDArray, either 1-D or 2-D depending on the rank of
-          the input NDArray. However, for 2-D arrays the waveform record contains only the
-          first row of the FFT.</td>
-        <td>
-          FFT_ABS_VALUE</td>
-        <td>
-          $(P)$(R)FFTAbsValue</td>
-        <td>
-          waveform</td>
-      </tr>
-    </tbody>
-  </table>
+    <br>
+
+.. cssclass:: table-bordered table-striped table-hover
+.. flat-table::
+  :header-rows: 2
+  :widths: 5 5 5 70 5 5 5
+
+  * - Parameters for entire plugin. Parameter Definitions in NDPluginFFT.h and 
+      EPICS Record Definitions in NDFFT.template
+  * - Parameter index variable
+    - asyn interface
+    - Access
+    - Description
+    - drvInfo string
+    - EPICS record name
+    - EPICS record type
+  * - FFTTimePerPoint
+    - asynFloat64
+    - r/w
+    - The time interval between samples in the waveforms from the driver. This value is
+      normally updated automatically using the FFTTimePerPointLink record described below.
+      It can also be manually changed if there is no EPICS record available to provide
+      this value automatically.
+    - FFT_TIME_PER_POINT
+    - $(P)$(R)FFTTimePerPoint, $(P)$(R)FFTTimePerPoint_RBV
+    - ao, ai
+  * - N.A.
+    - N.A.
+    - r/w
+    - This record has OMSL="closed_loop" and DOL set to an record that contains the time
+      between points from the driver. The link will normally have the CP attribute, so
+      this record processes whenever the input record changes. The OUT field of this record
+      is FFTTimePerPoint.
+    - N.A.
+    - $(P)$(R)FFTTimePerPointLink
+    - ao
+  * - FFTTimeAxis
+    - asynFloat64ArrayIn
+    - r/o
+    - A waveform record containing the time value of each point in the TimeSeries waveforms.
+      FFTTimeAxis[i] = FFTTimePerPoint * i. Note that this record is useful for 1-D FFTs
+      where the input array is a time-series and the TimePerPoint value is correctly set.
+    - FFT_TIME_AXIS
+    - $(P)$(R)FFTTimeAxis
+    - waveform
+  * - FFTFreqAxis
+    - asynFloat64ArrayIn
+    - r/o
+    - A waveform record containing the frequency value of each point in the FFT waveform
+      records. FFTFreqAxis[i] = FrequencyStep * i, where FrequencyStep is controlled by
+      TimePerPoint and the number of time points in the input array. Note that this record
+      is useful for 1-D FFTs where the input array is a time-series and the TimePerPoint
+      value is correctly set.
+    - FFT_FREQ_AXIS
+    - $(P)$(R)FFTFreqAxis
+    - waveform
+  * - FFTDirection
+    - asynInt32
+    - r/w
+    - The FFT direction. Choices are:, 0: Time to frequency, 1: Frequency to time, NOTE: This is not yet implemented because frequency to time requires complex data,
+      and complex data is not yet supported in areaDetector. Currently only Time to frequency
+      is supported, and the frequency output consists of float64 arrays containing the
+      real part, imaginary part, and absolute value of the FFT.
+    - FFT_DIRECTION
+    - $(P)$(R)FFTDirection, $(P)$(R)FFTDirection_RBV
+    - bo, bi
+  * - FFTSuppressDC
+    - asynInt32
+    - r/w
+    - Option to set the zero frequency (DC) value in the output arrays to 0. Choices are:, 0: Disable, 1: Enable, If the signal has a large DC offset then setting the zero frequency component to
+      0 in the output arrays can make plots look better. This is because the DC component
+      can be much larger than all other frequency components.
+    - FFT_SUPPRESS_DC
+    - $(P)$(R)FFTSuppressDC, $(P)$(R)FFTSuppressDC_RBV
+    - bo, bi
+  * - FFTNumAverage
+    - asynInt32
+    - r/w
+    - The characteristic number of FFTs in the recursive average. The equations for the
+      FFT averaging are: |br|
+      `Out = ((1-1/NumAveraged) * Old) + (1/NumAveraged * New)` |br|
+      `Old = Out` |br|
+      `if (NumAveraged < NumAverage) NumAveraged = NumAveraged + 1` |br|
+      when Old is the previous output and New is the latest FFT calculation. |br|
+      If NumAverage=1 then there is no averaging.
+    - FFT_NUM_AVERAGE
+    - $(P)$(R)FFTNumAverage, $(P)$(R)FFTNumAverage_RBV
+    - longout, longin
+  * - FFTNumAveraged
+    - asynInt32
+    - r/o
+    - The number of FFTs averaged in the current output. This value increases until it
+      reaches the value of NumAverage. See the equations for NumAverage above.
+    - FFT_NUM_AVERAGED
+    - $(P)$(R)FFTNumAveraged
+    - longin
+  * - FFTResetAverage
+    - asynInt32
+    - r/o
+    - Setting this record to 1 resets NumAveraged to 0, so the averaging process starts
+      over.
+    - FFT_RESET_AVERAGE
+    - $(P)$(R)FFTResetAverage
+    - bo
+  * - N.A.
+    - N.A.
+    - r/w
+    - The name for this signal.
+    - N.A.
+    - $(P)$(R)SignalName
+    - stringout
+  * - FFTTimeSeries
+    - asynFloat64ArrayIn
+    - r/o
+    - The time series data array.
+    - FFT_TIME_SERIES
+    - $(P)$(R)TimeSeries
+    - waveform
+  * - FFTReal
+    - asynFloat64ArrayIn
+    - r/o
+    - The real part of the FFT. |br|
+      NOTE: this value is only available as a 1-D waveform. It is not exported as an NDArray.
+      For 2-D FFTs it contains only the first row of the FFT.
+    - FFT_FFT_REAL
+    - $(P)$(R)FFTReal
+    - waveform
+  * - FFTImaginary
+    - asynFloat64ArrayIn
+    - r/o
+    - The imaginary part of the FFT. |br|
+      NOTE: this value is only available as a 1-D waveform. It is not exported as an NDArray.
+      For 2-D FFTs it contains only the first row of the FFT.
+    - FFT_FFT_IMAGINARY
+    - $(P)$(R)FFTImaginary
+    - waveform
+  * - FFTAbsValue
+    - asynFloat64ArrayIn
+    - r/o
+    - The absolute value of the FFT.
+      , NOTE: this is exported as an NDArray, either 1-D or 2-D depending on the rank of
+      the input NDArray. However, for 2-D arrays the waveform record contains only the
+      first row of the FFT.
+    - FFT_ABS_VALUE
+    - $(P)$(R)FFTAbsValue
+    - waveform
+
 
 Configuration
 -------------

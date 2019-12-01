@@ -145,299 +145,139 @@ counter and continue to process frames.
 Parameters and Records
 ----------------------
 
-.. raw:: html
+.. cssclass:: table-bordered table-striped table-hover
+.. flat-table::
+  :header-rows: 2
+  :widths: 5 5 5 70 5 5 5
 
-
-  <table class="table table-bordered">
-    <tbody>
-      <tr>
-        <td align="center" colspan="7,">
-          <b>Parameter Definitions and EPICS Record Definitions in NDPosPlugin.template</b>
-        </td>
-      </tr>
-      <tr>
-        <th>
-          Parameter index variable</th>
-        <th>
-          asyn interface</th>
-        <th>
-          Access</th>
-        <th>
-          Description</th>
-        <th>
-          drvInfo string</th>
-        <th>
-          EPICS record name</th>
-        <th>
-          EPICS record type</th>
-      </tr>
-      <tr>
-        <td align="center" colspan="7,">
-          <b>XML Position Definition</b></td>
-      </tr>
-      <tr>
-        <td>
-          NDPos_Filename</td>
-        <td>
-          asynOctet</td>
-        <td>
-          r/w</td>
-        <td>
-          XML filename, pointing to an XML position set description<br />
-          This waveform also supports loading raw XML code directly; up to a maximum of 1,000,000
-          Bytes long (NELM=1,000,000).</td>
-        <td>
-          NDPos_Filename</td>
-        <td>
-          $(P)$(R)FileName<br />
-          $(P)$(R)FileName_RBV</td>
-        <td>
-          waveform</td>
-      </tr>
-      <tr>
-        <td>
-          NDPos_FileValid</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/o</td>
-        <td>
-          Flag to report the validity (xml syntax only) of the loaded XML. Updated when the
-          NDPos_Filename is updated with a new filename.</td>
-        <td>
-          NDPos_FileValid</td>
-        <td>
-          $(P)$(R)FileValid_RBV</td>
-        <td>
-          bi</td>
-      </tr>
-      <tr>
-        <td align="center" colspan="7,">
-          <b>Execution</b></td>
-      </tr>
-      <tr>
-        <td>
-          NDPos_Running</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          Start or stop appending of position data to NDArrays.</td>
-        <td>
-          NDPos_Running</td>
-        <td>
-          $(P)$(R)Running<br />
-          $(P)$(R)Running_RBV</td>
-        <td>
-          busy<br />
-          bi</td>
-      </tr>
-      <tr>
-        <td>
-          NDPos_Restart</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          Reset the current position index to zero (front of FIFO) when executing in <b>Keep</b>
-          mode. Has no effect if executing in <b>Discard</b> mode.</td>
-        <td>
-          NDPos_Restart</td>
-        <td>
-          $(P)$(R)Reset</td>
-        <td>
-          bo</td>
-      </tr>
-      <tr>
-        <td>
-          NDPos_Delete</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          Delete any position data in the FIFO. If the plugin is running then this will stop
-          the plugin. The size and current index will both be set to zero.</td>
-        <td>
-          NDPos_Delete</td>
-        <td>
-          $(P)$(R)Delete</td>
-        <td>
-          bo</td>
-      </tr>
-      <tr>
-        <td>
-          NDPos_Mode</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          Select the mode of operation, <b>Discard</b> or <b>Keep</b>. Discard mode throws
-          away each position once it has been attached to an NDArray, whereas Keep mode keeps
-          the value and traverses through the FIFO, reatining all position data.</td>
-        <td>
-          NDPos_Mode</td>
-        <td>
-          $(P)$(R)Mode<br />
-          $(P)$(R)Mode_RBV</td>
-        <td>
-          bo<br />
-          bi</td>
-      </tr>
-      <tr>
-        <td>
-          NDPos_IDName</td>
-        <td>
-          asynOctet</td>
-        <td>
-          r/w</td>
-        <td>
-          Use this attribute name for the incoming frame IDs. If this parameter is left empty
-          then the incoming frame's uniqueId is used for the index count.</td>
-        <td>
-          NDPos_IDName</td>
-        <td>
-          $(P)$(R)IDName<br />
-          $(P)$(R)IDName_RBV</td>
-        <td>
-          stringout<br />
-          stringin</td>
-      </tr>
-      <tr>
-        <td>
-          NDPos_IDStart</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          When a new acquisition is started this value is the expected ID for the first processed
-          frame.</td>
-        <td>
-          NDPos_IDName</td>
-        <td>
-          $(P)$(R)IDStart<br />
-          $(P)$(R)IDStart_RBV</td>
-        <td>
-          longout<br />
-          longin</td>
-      </tr>
-      <tr>
-        <td>
-          NDPos_IDDifference</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          This value represents the delta ID between each processed frame, and is useful is
-          frames are processed by plugins before reaching this plugin (eg integration of several
-          frames into one). If the start ID is set to 1 and this parameter is set to 2 then
-          the expected IDs would be 1,3,5,7,9....</td>
-        <td>
-          NDPos_IDDifference</td>
-        <td>
-          $(P)$(R)IDDifference<br />
-          $(P)$(R)IDDifference_RBV</td>
-        <td>
-          longout<br />
-          longin</td>
-      </tr>
-      <tr>
-        <td align="center" colspan="7,">
-          <b>Information</b></td>
-      </tr>
-      <tr>
-        <td>
-          NDPos_CurrentQty</td>
-        <td>
-          asynInt3264</td>
-        <td>
-          r/o</td>
-        <td>
-          Current number of position points in the FIFO.</td>
-        <td>
-          NDPos_CurrentQty</td>
-        <td>
-          $(P)$(R)Qty_RBV</td>
-        <td>
-          longin</td>
-      </tr>
-      <tr>
-        <td>
-          NDPos_CurrentIndex</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/o</td>
-        <td>
-          Current index of pointer to position within FIFO (0 for Discard mode).</td>
-        <td>
-          NDPos_CurrentIndex</td>
-        <td>
-          $(P)$(R)Index_RBV</td>
-        <td>
-          longin</td>
-      </tr>
-      <tr>
-        <td>
-          NDPos_CurrentPos</td>
-        <td>
-          asynOctet</td>
-        <td>
-          r/o</td>
-        <td>
-          String representation of the last position to be attached to an NDArray.</td>
-        <td>
-          NDPos_CurrentPos</td>
-        <td>
-          $(P)$(R)Position_RBV</td>
-        <td>
-          stringin</td>
-      </tr>
-      <tr>
-        <td>
-          NDPos_MissingFrames</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          Counter of the number of missed/dropped frames. Write a 0 to the parameter to reset.
-        </td>
-        <td>
-          NDPos_MissingFrames</td>
-        <td>
-          $(P)$(R)Missing<br />
-          $(P)$(R)Missing_RBV</td>
-        <td>
-          longout<br />
-          longin</td>
-      </tr>
-      <tr>
-        <td>
-          NDPos_DuplicateFrames</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          Counter of the number of duplicated frames. Write a 0 to the parameter to reset.
-        </td>
-        <td>
-          NDPos_DuplicateFrames</td>
-        <td>
-          $(P)$(R)Duplicate<br />
-          $(P)$(R)Duplicate_RBV</td>
-        <td>
-          longout<br />
-          longin</td>
-      </tr>
-    </tbody>
-  </table>
+  * -
+    -
+    - **Parameter Definitions and EPICS Record Definitions in NDPosPlugin.template**
+  * - Parameter index variable
+    - asyn interface
+    - Access
+    - Description
+    - drvInfo string
+    - EPICS record name
+    - EPICS record type
+  * -
+    -
+    - **XML Position Definition**
+  * - NDPos_Filename
+    - asynOctet
+    - r/w
+    - XML filename, pointing to an XML position set description, This waveform also supports loading raw XML code directly; up to a maximum of 1,000,000
+      Bytes long (NELM=1,000,000).
+    - NDPos_Filename
+    - $(P)$(R)FileName, $(P)$(R)FileName_RBV
+    - waveform
+  * - NDPos_FileValid
+    - asynInt32
+    - r/o
+    - Flag to report the validity (xml syntax only) of the loaded XML. Updated when the
+      NDPos_Filename is updated with a new filename.
+    - NDPos_FileValid
+    - $(P)$(R)FileValid_RBV
+    - bi
+  * -
+    -
+    - **Execution**
+  * - NDPos_Running
+    - asynInt32
+    - r/w
+    - Start or stop appending of position data to NDArrays.
+    - NDPos_Running
+    - $(P)$(R)Running, $(P)$(R)Running_RBV
+    - busy, bi
+  * - NDPos_Restart
+    - asynInt32
+    - r/w
+    - Reset the current position index to zero (front of FIFO) when executing in **Keep**
+      mode. Has no effect if executing in **Discard** mode.
+    - NDPos_Restart
+    - $(P)$(R)Reset
+    - bo
+  * - NDPos_Delete
+    - asynInt32
+    - r/w
+    - Delete any position data in the FIFO. If the plugin is running then this will stop
+      the plugin. The size and current index will both be set to zero.
+    - NDPos_Delete
+    - $(P)$(R)Delete
+    - bo
+  * - NDPos_Mode
+    - asynInt32
+    - r/w
+    - Select the mode of operation, **Discard** or **Keep**. Discard mode throws
+      away each position once it has been attached to an NDArray, whereas Keep mode keeps
+      the value and traverses through the FIFO, reatining all position data.
+    - NDPos_Mode
+    - $(P)$(R)Mode, $(P)$(R)Mode_RBV
+    - bo, bi
+  * - NDPos_IDName
+    - asynOctet
+    - r/w
+    - Use this attribute name for the incoming frame IDs. If this parameter is left empty
+      then the incoming frame's uniqueId is used for the index count.
+    - NDPos_IDName
+    - $(P)$(R)IDName, $(P)$(R)IDName_RBV
+    - stringout, stringin
+  * - NDPos_IDStart
+    - asynInt32
+    - r/w
+    - When a new acquisition is started this value is the expected ID for the first processed
+      frame.
+    - NDPos_IDName
+    - $(P)$(R)IDStart, $(P)$(R)IDStart_RBV
+    - longout, longin
+  * - NDPos_IDDifference
+    - asynInt32
+    - r/w
+    - This value represents the delta ID between each processed frame, and is useful is
+      frames are processed by plugins before reaching this plugin (eg integration of several
+      frames into one). If the start ID is set to 1 and this parameter is set to 2 then
+      the expected IDs would be 1,3,5,7,9....
+    - NDPos_IDDifference
+    - $(P)$(R)IDDifference, $(P)$(R)IDDifference_RBV
+    - longout, longin
+  * -
+    -
+    - **Information**
+  * - NDPos_CurrentQty
+    - asynInt3264
+    - r/o
+    - Current number of position points in the FIFO.
+    - NDPos_CurrentQty
+    - $(P)$(R)Qty_RBV
+    - longin
+  * - NDPos_CurrentIndex
+    - asynInt32
+    - r/o
+    - Current index of pointer to position within FIFO (0 for Discard mode).
+    - NDPos_CurrentIndex
+    - $(P)$(R)Index_RBV
+    - longin
+  * - NDPos_CurrentPos
+    - asynOctet
+    - r/o
+    - String representation of the last position to be attached to an NDArray.
+    - NDPos_CurrentPos
+    - $(P)$(R)Position_RBV
+    - stringin
+  * - NDPos_MissingFrames
+    - asynInt32
+    - r/w
+    - Counter of the number of missed/dropped frames. Write a 0 to the parameter to reset.
+    - NDPos_MissingFrames
+    - $(P)$(R)Missing, $(P)$(R)Missing_RBV
+    - longout, longin
+  * - NDPos_DuplicateFrames
+    - asynInt32
+    - r/w
+    - Counter of the number of duplicated frames. Write a 0 to the parameter to reset.
+    - NDPos_DuplicateFrames
+    - $(P)$(R)Duplicate, $(P)$(R)Duplicate_RBV
+    - longout, longin
 
 Screen Shots
 ------------

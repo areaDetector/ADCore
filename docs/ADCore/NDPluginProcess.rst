@@ -48,1167 +48,393 @@ following table. Note that to reduce the width of this table the
 parameter index variable names have been split into 2 lines, but these
 are just a single name, for example ``NDPluginProcessSaveBackground``.
 
-.. raw:: html
+.. |br| raw:: html
 
-  <table class="table table-bordered">
-    <tbody>
-      <tr>
-        <td align="center" colspan="7,">
-          <b>Parameter Definitions in NDPluginProcess.h and EPICS Record Definitions in NDProcess.template</b>
-        </td>
-      </tr>
-      <tr>
-        <th>
-          Parameter index variable
-        </th>
-        <th>
-          asyn interface
-        </th>
-        <th>
-          Access
-        </th>
-        <th>
-          Description
-        </th>
-        <th>
-          drvInfo string
-        </th>
-        <th>
-          EPICS record name
-        </th>
-        <th>
-          EPICS record type
-        </th>
-      </tr>
-      <tr>
-        <td align="center" colspan="7,">
-          <b>Background subtraction</b>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginProcess<br />
-          SaveBackground
-        </td>
-        <td>
-          asynInt32
-        </td>
-        <td>
-          r/w
-        </td>
-        <td>
-          Command to use the most recently acquired array as a background. Note that this
-          recently acquired array should have been acquired with EnableBackground=0, or else
-          that array will already have had the background subtracted, which is probably not
-          what was intended!
-        </td>
-        <td>
-          SAVE_BACKGROUND
-        </td>
-        <td>
-          $(P)$(R)SaveBackground<br />
-          $(P)$(R)SaveBackground_RBV
-        </td>
-        <td>
-          bo<br />
-          bi
-        </td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginProcess<br />
-          ValidBackground
-        </td>
-        <td>
-          asynInt32
-        </td>
-        <td>
-          r/o
-        </td>
-        <td>
-          Flag indicating whether there is a valid background array that has been acquired
-          for this array using SaveBackground. This flag will be Invalid (0) if no background
-          has been acquired, or if the size of the array has changed since the background
-          was last acquired.
-        </td>
-        <td>
-          VALID_BACKGROUND
-        </td>
-        <td>
-          $(P)$(R)ValidBackground_RBV
-        </td>
-        <td>
-          bi
-        </td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginProcess<br />
-          EnableBackground
-        </td>
-        <td>
-          asynInt32
-        </td>
-        <td>
-          r/w
-        </td>
-        <td>
-          Flag indicating whether the background array acquired with SaveBackground should
-          be subtracted when processing the array. If ValidBackground=0 then no background
-          subtraction is done even if EnableBackground=Enable.
-        </td>
-        <td>
-          ENABLE_BACKGROUND
-        </td>
-        <td>
-          $(P)$(R)EnableBackground<br />
-          $(P)$(R)EnableBackground_RBV
-        </td>
-        <td>
-          bo<br />
-          bi
-        </td>
-      </tr>
-      <tr>
-        <td>
-          N.A.
-        </td>
-        <td>
-          N.A.
-        </td>
-        <td>
-          r/w
-        </td>
-        <td>
-          This is a convenience sseq record to simplify reading the background array from
-          a TIFF file. Prior to processing this record the $(P)$(R)TIFF: plugin records must
-          be correctly configured to read the desired background TIFF file. Processing this
-          record does the following steps.
-          <ol>
-            <li>Saves the current value of $(P)$(R)NDArrayPort in a temporary location.</li>
-            <li>Sets the NDArrayPort to $(P)$(R)TIFF:PortName_RBV, i.e. the TIFF plugin associated
-              with this plugin.</li>
-            <li>Enables ArrayCallbacks for the TIFF plugin in case they were not enabled.</li>
-            <li>Writes 1 to $(R)$(P)TIFF:ReadFile. This causes the TIFF plugin to read the selected
-              file, do callbacks to the Process plugin.</li>
-            <li>Writes 1 to $(P$(R)SaveBackground, saving the array read from the TIFF plugin
-              as the new background.</li>
-            <li>Restores $(P)$(R)NDArrayPort from the temporary location</li>
-          </ol>
-        </td>
-        <td>
-          N.A.
-        </td>
-        <td>
-          $(P)$(R)ReadBackgroundTIFFSeq
-        </td>
-        <td>
-          sseq
-        </td>
-      </tr>
-      <tr>
-        <td align="center" colspan="7,">
-          <b>Flat field normalization</b>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginProcess<br />
-          SaveFlatField
-        </td>
-        <td>
-          asynInt32
-        </td>
-        <td>
-          r/w
-        </td>
-        <td>
-          Command to use the most recently acquired array as a flat field. Note that this
-          recently acquired array should have been acquired with EnableFlatField=0, or else
-          that array will already have been flat field normalized, which is probably not what
-          was intended!
-        </td>
-        <td>
-          SAVE_FLAT_FIELD
-        </td>
-        <td>
-          $(P)$(R)SaveFlatField<br />
-          $(P)$(R)SaveFlatField_RBV
-        </td>
-        <td>
-          bo<br />
-          bi
-        </td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginProcess<br />
-          ValidFlatField
-        </td>
-        <td>
-          asynInt32
-        </td>
-        <td>
-          r/o
-        </td>
-        <td>
-          Flag indicating whether there is a valid flat field array that has been acquired
-          for this array using SaveFlatField. This flag will be Invalid (0) if no flat field
-          has been acquired, or if the size of the array has changed since the flat field
-          was last acquired.
-        </td>
-        <td>
-          VALID_FLAT_FIELD
-        </td>
-        <td>
-          $(P)$(R)ValidFlatField_RBV
-        </td>
-        <td>
-          bi
-        </td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginProcess<br />
-          EnableFlatField
-        </td>
-        <td>
-          asynInt32
-        </td>
-        <td>
-          r/w
-        </td>
-        <td>
-          Flag indicating whether the array should be divided by the flat field array (acquired
-          with SaveFlatField) when processing the array. If ValidFlatField=0 then no flat
-          field normalization is done even if EnableBackground=Enable. The processing step
-          consists of:
-          <br />
-          Array = Array / FlatField * ScaleFlatField
-        </td>
-        <td>
-          ENABLE_FLAT_FIELD
-        </td>
-        <td>
-          $(P)$(R)EnableFlatField<br />
-          $(P)$(R)EnableFlatField_RBV
-        </td>
-        <td>
-          bo<br />
-          bi
-        </td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginProcess<br />
-          ScaleFlatField
-        </td>
-        <td>
-          asynFloat64
-        </td>
-        <td>
-          r/w
-        </td>
-        <td>
-          The scale factor to multiply by after dividing the array by the flat field array.
-          This scale factor is normally chosen so that the data after scaling fills the dynamic
-          range of the output data type.
-        </td>
-        <td>
-          SCALE_FLAT_FIELD
-        </td>
-        <td>
-          $(P)$(R)ScaleFlatField<br />
-          $(P)$(R)ScaleFlatField_RBV
-        </td>
-        <td>
-          ao<br />
-          ai
-        </td>
-        <tr>
-          <td>
-            N.A.
-          </td>
-          <td>
-            N.A.
-          </td>
-          <td>
-            r/w
-          </td>
-          <td>
-            This is a convenience sseq record to simplify reading the flatfield array from a
-            TIFF file. Prior to processing this record the $(P)$(R)TIFF: plugin records must
-            be correctly configured to read the desired flatfield TIFF file. Processing this
-            record does the following steps.
-            <ol>
-              <li>Saves the current value of $(P)$(R)NDArrayPort in a temporary location.</li>
-              <li>Sets the NDArrayPort to $(P)$(R)TIFF:PortName_RBV, i.e. the TIFF plugin associated
-                with this plugin.</li>
-              <li>Enables ArrayCallbacks for the TIFF plugin in case they were not enabled.</li>
-              <li>Writes 1 to $(R)$(P)TIFF:ReadFile. This causes the TIFF plugin to read the selected
-                file, do callbacks to the Process plugin.</li>
-              <li>Writes 1 to $(P$(R)SaveFlatFeild, saving the array read from the TIFF plugin as
-                the new flatfield.</li>
-              <li>Restores $(P)$(R)NDArrayPort from the temporary location</li>
-            </ol>
-          </td>
-          <td>
-            N.A.
-          </td>
-          <td>
-            $(P)$(R)ReadFlatFieldTIFFSeq
-          </td>
-          <td>
-            sseq
-          </td>
-        </tr>
-      </tr>
-      <tr>
-        <td align="center" colspan="7,">
-          <b>Scaling and offset</b>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginProcess<br />
-          EnableOffsetScale
-        </td>
-        <td>
-          asynInt32
-        </td>
-        <td>
-          r/w
-        </td>
-        <td>
-          Flag indicating whether the array should be multiplied by Scale and then summed
-          with Offset when processing the array. The processing step consists of:
-          <br />
-          Array = Array * Scale + Offset
-        </td>
-        <td>
-          ENABLE_OFFSET_SCALE
-        </td>
-        <td>
-          $(P)$(R)EnableOffsetScale<br />
-          $(P)$(R)EnableOffsetScale_RBV
-        </td>
-        <td>
-          bo<br />
-          bi
-        </td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginProcess<br />
-          AutoOffsetScale
-        </td>
-        <td>
-          asynInt32
-        </td>
-        <td>
-          r/w
-        </td>
-        <td>
-          Processing this record will enable Offset and Scale calculations, and set the Offset=-min(Array)
-          and Scale=MaxScale/(max(Array)-min(Array)), where MaxScale is the maximum value
-          of the output data type. The output array will thus be scaled to completely fill
-          the range of the output data type. Note that the calculation of the offset and scale
-          factors is only done once when this record is processed, and these values are used
-          for subsequent array callbacks, i.e. it does not autoscale on each array callback.
-          Thanks to Tom Cobb for this addition.
-        </td>
-        <td>
-          AUTO_OFFSET_SCALE
-        </td>
-        <td>
-          $(P)$(R)AutoOffsetScale
-        </td>
-        <td>
-          busy
-        </td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginProcess<br />
-          Scale
-        </td>
-        <td>
-          asynFloat64
-        </td>
-        <td>
-          r/w
-        </td>
-        <td>
-          The scale factor to multiply by.
-        </td>
-        <td>
-          SCALE
-        </td>
-        <td>
-          $(P)$(R)Scale<br />
-          $(P)$(R)Scale_RBV
-        </td>
-        <td>
-          ao<br />
-          ai
-        </td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginProcess<br />
-          Offset
-        </td>
-        <td>
-          asynFloat64
-        </td>
-        <td>
-          r/w
-        </td>
-        <td>
-          The offset to add.
-        </td>
-        <td>
-          OFFSET
-        </td>
-        <td>
-          $(P)$(R)Offset<br />
-          $(P)$(R)Offset_RBV
-        </td>
-        <td>
-          ao<br />
-          ai
-        </td>
-      </tr>
-      <tr>
-        <td align="center" colspan="7,">
-          <b>Low and high clipping</b>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginProcess<br />
-          EnableLowClip
-        </td>
-        <td>
-          asynInt32
-        </td>
-        <td>
-          r/w
-        </td>
-        <td>
-          Flag to control whether to clip values to the LowClip value for this array (0=Disable,
-          1=Enable).
-        </td>
-        <td>
-          ENABLE_LOW_CLIP
-        </td>
-        <td>
-          $(P)$(R)EnableLowClip<br />
-          $(P)$(R)EnableLowClip_RBV
-        </td>
-        <td>
-          bo<br />
-          bi
-        </td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginProcess<br />
-          LowClip
-        </td>
-        <td>
-          asynFloat64
-        </td>
-        <td>
-          r/w
-        </td>
-        <td>
-          The minimum allowed value for this array. If EnableLowClip=1, then all values in
-          the array less than LowClip will be replaced by LowClip.
-        </td>
-        <td>
-          LOW_CLIP
-        </td>
-        <td>
-          $(P)$(R)LowClip<br />
-          $(P)$(R)LowClip_RBV
-        </td>
-        <td>
-          ao<br />
-          ai
-        </td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginProcess<br />
-          EnableHighClip
-        </td>
-        <td>
-          asynInt32
-        </td>
-        <td>
-          r/w
-        </td>
-        <td>
-          Flag to control whether to clip values to the HighClip value for this array (0=Disable,
-          1=Enable).
-        </td>
-        <td>
-          ENABLE_HIGH_CLIP
-        </td>
-        <td>
-          $(P)$(R)EnableHighClip<br />
-          $(P)$(R)EnableHighClip_RBV
-        </td>
-        <td>
-          bo<br />
-          bi
-        </td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginProcess<br />
-          HighClip
-        </td>
-        <td>
-          asynFloat64
-        </td>
-        <td>
-          r/w
-        </td>
-        <td>
-          The maximum allowed value for this array. If EnableHighClip=1, then all values in
-          the array greater than HighClip will be replaced by HighClip.
-        </td>
-        <td>
-          HIGH_CLIP
-        </td>
-        <td>
-          $(P)$(R)HighClip<br />
-          $(P)$(R)HighClip_RBV
-        </td>
-        <td>
-          ao<br />
-          ai
-        </td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginProcess<br />
-          DataType
-        </td>
-        <td>
-          asynInt32
-        </td>
-        <td>
-          r/w
-        </td>
-        <td>
-          Data type of the output array (NDDataType_t). This can be different from the data
-          type of the NDArray callback data.
-        </td>
-        <td>
-          PROCESS_DATA_TYPE
-        </td>
-        <td>
-          $(P)$(R)DataTypeOut<br />
-          $(P)$(R)DataTypeOut_RBV
-        </td>
-        <td>
-          mbbo<br />
-          mbbi
-        </td>
-      </tr>
-      <tr>
-        <td align="center" colspan="7,">
-          <b>Recursive filter</b>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginProcess<br />
-          EnableFilter
-        </td>
-        <td>
-          asynInt32
-        </td>
-        <td>
-          r/w
-        </td>
-        <td>
-          Flag indicating whether the array should be processed with a recursive filter. The
-          details of the filter operation are explained below.<br />
-        </td>
-        <td>
-          ENABLE_FILTER
-        </td>
-        <td>
-          $(P)$(R)EnableFilter<br />
-          $(P)$(R)EnableFilter_RBV
-        </td>
-        <td>
-          bo<br />
-          bi
-        </td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginProcess<br />
-          ResetFilter
-        </td>
-        <td>
-          asynInt32
-        </td>
-        <td>
-          r/w
-        </td>
-        <td>
-          Command to reset the filter back to its initial state.
-        </td>
-        <td>
-          RESET_FILTER
-        </td>
-        <td>
-          $(P)$(R)ResetFilter<br />
-          $(P)$(R)ResetFilter_RBV
-        </td>
-        <td>
-          bo<br />
-          bi
-        </td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginProcess<br />
-          AutoResetFilter
-        </td>
-        <td>
-          asynInt32
-        </td>
-        <td>
-          r/w
-        </td>
-        <td>
-          If enabled then when NumFiltered=NumFilter the filter automatically resets. This
-          can be very useful when using the Average or Sum filter modes. As soon as N sums
-          or averages have been performed the filter resets, so the next sum or average is
-          computed.
-        </td>
-        <td>
-          AUTO_RESET_FILTER
-        </td>
-        <td>
-          $(P)$(R)AutoResetFilter<br />
-          $(P)$(R)AutoResetFilter_RBV
-        </td>
-        <td>
-          bo<br />
-          bi
-        </td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginProcess<br />
-          FilterCallbacks
-        </td>
-        <td>
-          asynInt32
-        </td>
-        <td>
-          r/w
-        </td>
-        <td>
-          Choices are "Every array" and "Array N only". If "Every array" is selected then
-          the plugin does callbacks for every incoming array it receives. If "Array N only"
-          is selected then the plugin only does callbacks when NumFiltered=NumFilter. This
-          can be very useful when using the Sum or Average filter modes. Callbacks are then
-          done only when N sums or averages have been performed. If used with AutoResetFilter
-          then as input arrays arrive the plugin will continually output one summed or averaged
-          array after every N incoming arrays.
-        </td>
-        <td>
-          FILTER_CALLBACKS
-        </td>
-        <td>
-          $(P)$(R)FilterCallbacks<br />
-          $(P)$(R)FilterCallbacks_RBV
-        </td>
-        <td>
-          bo<br />
-          bi
-        </td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginProcess<br />
-          NumFilter
-        </td>
-        <td>
-          asynInt32
-        </td>
-        <td>
-          r/w
-        </td>
-        <td>
-          The characteristic number of arrays to use when filtering. The value of NumFiltered
-          will increase as each array is processed, until it reaches the value of NumFilter,
-          when it will no longer increase. The value of NumFiltered is used in the filter
-          equations, as explained below.
-        </td>
-        <td>
-          NUM_FILTER
-        </td>
-        <td>
-          $(P)$(R)NumFilter<br />
-          $(P)$(R)NumFilter_RBV
-        </td>
-        <td>
-          longout<br />
-          longin
-        </td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginProcess<br />
-          NumFiltered
-        </td>
-        <td>
-          asynInt32
-        </td>
-        <td>
-          r/o
-        </td>
-        <td>
-          The number of arrays that have been processed by the filter since the filter was
-          last reset. The value of NumFiltered is incremented as each array is processed,
-          until it reaches the value of NumFilter, when it will cease incrementing. The value
-          of NumFiltered is used in the filter equations, as explained below.
-        </td>
-        <td>
-          NUM_FILTERED
-        </td>
-        <td>
-          $(P)$(R)NumFiltered_RBV
-        </td>
-        <td>
-          longin
-        </td>
-      </tr>
-      <tr>
-        <td>
-          N.A.
-        </td>
-        <td>
-          N.A.
-        </td>
-        <td>
-          r/w
-        </td>
-        <td>
-          The filter type, chosen from a predefined list, as described below.
-        </td>
-        <td>
-          N.A.
-        </td>
-        <td>
-          $(P)$(R)FilterType
-        </td>
-        <td>
-          mbbo
-        </td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginProcess<br />
-          OOffset
-        </td>
-        <td>
-          asynFloat64
-        </td>
-        <td>
-          r/w
-        </td>
-        <td>
-          Output offset coefficient.
-        </td>
-        <td>
-          FILTER_OOFFSET
-        </td>
-        <td>
-          $(P)$(R)OOffset<br />
-          $(P)$(R)OOffset_RBV
-        </td>
-        <td>
-          ao<br />
-          ai
-        </td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginProcess<br />
-          OScale
-        </td>
-        <td>
-          asynFloat64
-        </td>
-        <td>
-          r/w
-        </td>
-        <td>
-          Output scale coefficient.
-        </td>
-        <td>
-          FILTER_OSCALE
-        </td>
-        <td>
-          $(P)$(R)OScale<br />
-          $(P)$(R)OScale_RBV
-        </td>
-        <td>
-          ao<br />
-          ai
-        </td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginProcess<br />
-          OC1
-        </td>
-        <td>
-          asynFloat64
-        </td>
-        <td>
-          r/w
-        </td>
-        <td>
-          Output coefficient #1.
-        </td>
-        <td>
-          FILTER_OC1
-        </td>
-        <td>
-          $(P)$(R)OC1<br />
-          $(P)$(R)OC1_RBV
-        </td>
-        <td>
-          ao<br />
-          ai
-        </td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginProcess<br />
-          OC2
-        </td>
-        <td>
-          asynFloat64
-        </td>
-        <td>
-          r/w
-        </td>
-        <td>
-          Output coefficient #2.
-        </td>
-        <td>
-          FILTER_OC2
-        </td>
-        <td>
-          $(P)$(R)OC2<br />
-          $(P)$(R)OC2_RBV
-        </td>
-        <td>
-          ao<br />
-          ai
-        </td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginProcess<br />
-          OC3
-        </td>
-        <td>
-          asynFloat64
-        </td>
-        <td>
-          r/w
-        </td>
-        <td>
-          Output coefficient #3.
-        </td>
-        <td>
-          FILTER_OC3
-        </td>
-        <td>
-          $(P)$(R)OC3<br />
-          $(P)$(R)OC3_RBV
-        </td>
-        <td>
-          ao<br />
-          ai
-        </td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginProcess<br />
-          OC4
-        </td>
-        <td>
-          asynFloat64
-        </td>
-        <td>
-          r/w
-        </td>
-        <td>
-          Output coefficient #4.
-        </td>
-        <td>
-          FILTER_OC4
-        </td>
-        <td>
-          $(P)$(R)OC4<br />
-          $(P)$(R)OC4_RBV
-        </td>
-        <td>
-          ao<br />
-          ai
-        </td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginProcess<br />
-          FOffset
-        </td>
-        <td>
-          asynFloat64
-        </td>
-        <td>
-          r/w
-        </td>
-        <td>
-          Filter offset coefficient.
-        </td>
-        <td>
-          FILTER_FOFFSET
-        </td>
-        <td>
-          $(P)$(R)FOffset<br />
-          $(P)$(R)FOffset_RBV
-        </td>
-        <td>
-          ao<br />
-          ai
-        </td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginProcess<br />
-          FScale
-        </td>
-        <td>
-          asynFloat64
-        </td>
-        <td>
-          r/w
-        </td>
-        <td>
-          Filter scale coefficient.
-        </td>
-        <td>
-          FILTER_FSCALE
-        </td>
-        <td>
-          $(P)$(R)FScale<br />
-          $(P)$(R)FScale_RBV
-        </td>
-        <td>
-          ao<br />
-          ai
-        </td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginProcess<br />
-          FC1
-        </td>
-        <td>
-          asynFloat64
-        </td>
-        <td>
-          r/w
-        </td>
-        <td>
-          Filter coefficient #1.
-        </td>
-        <td>
-          FILTER_FC1
-        </td>
-        <td>
-          $(P)$(R)FC1<br />
-          $(P)$(R)FC1_RBV
-        </td>
-        <td>
-          ao<br />
-          ai
-        </td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginProcess<br />
-          FC2
-        </td>
-        <td>
-          asynFloat64
-        </td>
-        <td>
-          r/w
-        </td>
-        <td>
-          Filter coefficient #2.
-        </td>
-        <td>
-          FILTER_FC2
-        </td>
-        <td>
-          $(P)$(R)FC2<br />
-          $(P)$(R)FC2_RBV
-        </td>
-        <td>
-          ao<br />
-          ai
-        </td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginProcess<br />
-          FC3
-        </td>
-        <td>
-          asynFloat64
-        </td>
-        <td>
-          r/w
-        </td>
-        <td>
-          Filter coefficient #3.
-        </td>
-        <td>
-          FILTER_FC3
-        </td>
-        <td>
-          $(P)$(R)FC3<br />
-          $(P)$(R)FC3_RBV
-        </td>
-        <td>
-          ao<br />
-          ai
-        </td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginProcess<br />
-          FC4
-        </td>
-        <td>
-          asynFloat64
-        </td>
-        <td>
-          r/w
-        </td>
-        <td>
-          Filter coefficient #4.
-        </td>
-        <td>
-          FILTER_FC4
-        </td>
-        <td>
-          $(P)$(R)FC4<br />
-          $(P)$(R)FC4_RBV
-        </td>
-        <td>
-          ao<br />
-          ai
-        </td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginProcess<br />
-          ROffset
-        </td>
-        <td>
-          asynFloat64
-        </td>
-        <td>
-          r/w
-        </td>
-        <td>
-          Reset offset coefficient.
-        </td>
-        <td>
-          FILTER_ROFFSET
-        </td>
-        <td>
-          $(P)$(R)ROffset<br />
-          $(P)$(R)ROffset_RBV
-        </td>
-        <td>
-          ao<br />
-          ai
-        </td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginProcess<br />
-          RC1
-        </td>
-        <td>
-          asynFloat64
-        </td>
-        <td>
-          r/w
-        </td>
-        <td>
-          Filter coefficient #1.
-        </td>
-        <td>
-          FILTER_RC1
-        </td>
-        <td>
-          $(P)$(R)RC1<br />
-          $(P)$(R)RC1_RBV
-        </td>
-        <td>
-          ao<br />
-          ai
-        </td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginProcess<br />
-          RC2
-        </td>
-        <td>
-          asynFloat64
-        </td>
-        <td>
-          r/w
-        </td>
-        <td>
-          Filter coefficient #2.
-        </td>
-        <td>
-          FILTER_RC2
-        </td>
-        <td>
-          $(P)$(R)RC2<br />
-          $(P)$(R)RC2_RBV
-        </td>
-        <td>
-          ao<br />
-          ai
-        </td>
-      </tr>
-    </tbody>
-  </table>
+    <br>
+
+.. cssclass:: table-bordered table-striped table-hover
+.. flat-table::
+  :header-rows: 2
+  :widths: 5 5 5 70 5 5 5
+
+  * -
+    -
+    - **Parameter Definitions in NDPluginProcess.h and EPICS Record Definitions in NDProcess.template**
+  * - Parameter index variable
+    - asyn interface
+    - Access
+    - Description
+    - drvInfo string
+    - EPICS record name
+    - EPICS record type
+  * -
+    -
+    - **Background subtraction**
+  * - NDPluginProcess, SaveBackground
+    - asynInt32
+    - r/w
+    - Command to use the most recently acquired array as a background. Note that this
+      recently acquired array should have been acquired with EnableBackground=0, or else
+      that array will already have had the background subtracted, which is probably not
+      what was intended!
+    - SAVE_BACKGROUND
+    - $(P)$(R)SaveBackground, $(P)$(R)SaveBackground_RBV
+    - bo, bi
+  * - NDPluginProcess, ValidBackground
+    - asynInt32
+    - r/o
+    - Flag indicating whether there is a valid background array that has been acquired
+      for this array using SaveBackground. This flag will be Invalid (0) if no background
+      has been acquired, or if the size of the array has changed since the background
+      was last acquired.
+    - VALID_BACKGROUND
+    - $(P)$(R)ValidBackground_RBV
+    - bi
+  * - NDPluginProcess, EnableBackground
+    - asynInt32
+    - r/w
+    - Flag indicating whether the background array acquired with SaveBackground should
+      be subtracted when processing the array. If ValidBackground=0 then no background
+      subtraction is done even if EnableBackground=Enable.
+    - ENABLE_BACKGROUND
+    - $(P)$(R)EnableBackground, $(P)$(R)EnableBackground_RBV
+    - bo, bi
+  * - N.A.
+    - N.A.
+    - r/w
+    - This is a convenience sseq record to simplify reading the background array from
+      a TIFF file. Prior to processing this record the $(P)$(R)TIFF: plugin records must
+      be correctly configured to read the desired background TIFF file. Processing this
+      record does the following steps. |br|
+      1. Saves the current value of $(P)$(R)NDArrayPort in a temporary location. |br|
+      2. Sets the NDArrayPort to $(P)$(R)TIFF:PortName_RBV, i.e. the TIFF plugin associated
+      with this plugin. |br|
+      3. Enables ArrayCallbacks for the TIFF plugin in case they were not enabled. |br|
+      4. Writes 1 to $(R)$(P)TIFF:ReadFile. This causes the TIFF plugin to read the selected
+      file, do callbacks to the Process plugin. |br|
+      5. Writes 1 to $(P$(R)SaveBackground, saving the array read from the TIFF plugin
+      as the new background. |br|
+      6. Restores $(P)$(R)NDArrayPort from the temporary location |br|
+    - N.A.
+    - $(P)$(R)ReadBackgroundTIFFSeq
+    - sseq
+  * -
+    -
+    - **Flat field normalization**
+  * - NDPluginProcess, SaveFlatField
+    - asynInt32
+    - r/w
+    - Command to use the most recently acquired array as a flat field. Note that this
+      recently acquired array should have been acquired with EnableFlatField=0, or else
+      that array will already have been flat field normalized, which is probably not what
+      was intended!
+    - SAVE_FLAT_FIELD
+    - $(P)$(R)SaveFlatField, $(P)$(R)SaveFlatField_RBV
+    - bo, bi
+  * - NDPluginProcess, ValidFlatField
+    - asynInt32
+    - r/o
+    - Flag indicating whether there is a valid flat field array that has been acquired
+      for this array using SaveFlatField. This flag will be Invalid (0) if no flat field
+      has been acquired, or if the size of the array has changed since the flat field
+      was last acquired.
+    - VALID_FLAT_FIELD
+    - $(P)$(R)ValidFlatField_RBV
+    - bi
+  * - NDPluginProcess, EnableFlatField
+    - asynInt32
+    - r/w
+    - Flag indicating whether the array should be divided by the flat field array (acquired
+      with SaveFlatField) when processing the array. If ValidFlatField=0 then no flat
+      field normalization is done even if EnableBackground=Enable. The processing step
+      consists of:
+      , Array = Array / FlatField * ScaleFlatField
+    - ENABLE_FLAT_FIELD
+    - $(P)$(R)EnableFlatField, $(P)$(R)EnableFlatField_RBV
+    - bo, bi
+  * - NDPluginProcess, ScaleFlatField
+    - asynFloat64
+    - r/w
+    - The scale factor to multiply by after dividing the array by the flat field array.
+      This scale factor is normally chosen so that the data after scaling fills the dynamic
+      range of the output data type.
+    - SCALE_FLAT_FIELD
+    - $(P)$(R)ScaleFlatField, $(P)$(R)ScaleFlatField_RBV
+    - ao, ai
+  * - N.A.
+    - N.A.
+    - r/w
+    - This is a convenience sseq record to simplify reading the flatfield array from a
+      TIFF file. Prior to processing this record the $(P)$(R)TIFF: plugin records must
+      be correctly configured to read the desired flatfield TIFF file. Processing this
+      record does the following steps. |br|
+      1. Saves the current value of $(P)$(R)NDArrayPort in a temporary location. |br|
+      2. Sets the NDArrayPort to $(P)$(R)TIFF:PortName_RBV, i.e. the TIFF plugin associated
+      with this plugin. |br|
+      3. Enables ArrayCallbacks for the TIFF plugin in case they were not enabled. |br|
+      4. Writes 1 to $(R)$(P)TIFF:ReadFile. This causes the TIFF plugin to read the selected
+      file, do callbacks to the Process plugin. |br|
+      5. Writes 1 to $(P$(R)SaveFlatFeild, saving the array read from the TIFF plugin as
+      the new flatfield. |br|
+      6. Restores $(P)$(R)NDArrayPort from the temporary location |br|
+    - N.A.
+    - $(P)$(R)ReadFlatFieldTIFFSeq
+    - sseq
+  * -
+    -
+    - **Scaling and offset**
+  * - NDPluginProcess, EnableOffsetScale
+    - asynInt32
+    - r/w
+    - Flag indicating whether the array should be multiplied by Scale and then summed
+      with Offset when processing the array. The processing step consists of:
+      , Array = Array * Scale + Offset
+    - ENABLE_OFFSET_SCALE
+    - $(P)$(R)EnableOffsetScale, $(P)$(R)EnableOffsetScale_RBV
+    - bo, bi
+  * - NDPluginProcess, AutoOffsetScale
+    - asynInt32
+    - r/w
+    - Processing this record will enable Offset and Scale calculations, and set the Offset=-min(Array)
+      and Scale=MaxScale/(max(Array)-min(Array)), where MaxScale is the maximum value
+      of the output data type. The output array will thus be scaled to completely fill
+      the range of the output data type. Note that the calculation of the offset and scale
+      factors is only done once when this record is processed, and these values are used
+      for subsequent array callbacks, i.e. it does not autoscale on each array callback.
+      Thanks to Tom Cobb for this addition.
+    - AUTO_OFFSET_SCALE
+    - $(P)$(R)AutoOffsetScale
+    - busy
+  * - NDPluginProcess, Scale
+    - asynFloat64
+    - r/w
+    - The scale factor to multiply by.
+    - SCALE
+    - $(P)$(R)Scale, $(P)$(R)Scale_RBV
+    - ao, ai
+  * - NDPluginProcess, Offset
+    - asynFloat64
+    - r/w
+    - The offset to add.
+    - OFFSET
+    - $(P)$(R)Offset, $(P)$(R)Offset_RBV
+    - ao, ai
+  * -
+    -
+    - **Low and high clipping**
+  * - NDPluginProcess, EnableLowClip
+    - asynInt32
+    - r/w
+    - Flag to control whether to clip values to the LowClip value for this array (0=Disable,
+      1=Enable).
+    - ENABLE_LOW_CLIP
+    - $(P)$(R)EnableLowClip, $(P)$(R)EnableLowClip_RBV
+    - bo, bi
+  * - NDPluginProcess, LowClip
+    - asynFloat64
+    - r/w
+    - The minimum allowed value for this array. If EnableLowClip=1, then all values in
+      the array less than LowClip will be replaced by LowClip.
+    - LOW_CLIP
+    - $(P)$(R)LowClip, $(P)$(R)LowClip_RBV
+    - ao, ai
+  * - NDPluginProcess, EnableHighClip
+    - asynInt32
+    - r/w
+    - Flag to control whether to clip values to the HighClip value for this array (0=Disable,
+      1=Enable).
+    - ENABLE_HIGH_CLIP
+    - $(P)$(R)EnableHighClip, $(P)$(R)EnableHighClip_RBV
+    - bo, bi
+  * - NDPluginProcess, HighClip
+    - asynFloat64
+    - r/w
+    - The maximum allowed value for this array. If EnableHighClip=1, then all values in
+      the array greater than HighClip will be replaced by HighClip.
+    - HIGH_CLIP
+    - $(P)$(R)HighClip, $(P)$(R)HighClip_RBV
+    - ao, ai
+  * - NDPluginProcess, DataType
+    - asynInt32
+    - r/w
+    - Data type of the output array (NDDataType_t). This can be different from the data
+      type of the NDArray callback data.
+    - PROCESS_DATA_TYPE
+    - $(P)$(R)DataTypeOut, $(P)$(R)DataTypeOut_RBV
+    - mbbo, mbbi
+  * -
+    -
+    - **Recursive filter**
+  * - NDPluginProcess, EnableFilter
+    - asynInt32
+    - r/w
+    - Flag indicating whether the array should be processed with a recursive filter. The
+      details of the filter operation are explained below., - ENABLE_FILTER
+    - $(P)$(R)EnableFilter, $(P)$(R)EnableFilter_RBV
+    - bo, bi
+  * - NDPluginProcess, ResetFilter
+    - asynInt32
+    - r/w
+    - Command to reset the filter back to its initial state.
+    - RESET_FILTER
+    - $(P)$(R)ResetFilter, $(P)$(R)ResetFilter_RBV
+    - bo, bi
+  * - NDPluginProcess, AutoResetFilter
+    - asynInt32
+    - r/w
+    - If enabled then when NumFiltered=NumFilter the filter automatically resets. This
+      can be very useful when using the Average or Sum filter modes. As soon as N sums
+      or averages have been performed the filter resets, so the next sum or average is
+      computed.
+    - AUTO_RESET_FILTER
+    - $(P)$(R)AutoResetFilter, $(P)$(R)AutoResetFilter_RBV
+    - bo, bi
+  * - NDPluginProcess, FilterCallbacks
+    - asynInt32
+    - r/w
+    - Choices are "Every array" and "Array N only". If "Every array" is selected then
+      the plugin does callbacks for every incoming array it receives. If "Array N only"
+      is selected then the plugin only does callbacks when NumFiltered=NumFilter. This
+      can be very useful when using the Sum or Average filter modes. Callbacks are then
+      done only when N sums or averages have been performed. If used with AutoResetFilter
+      then as input arrays arrive the plugin will continually output one summed or averaged
+      array after every N incoming arrays.
+    - FILTER_CALLBACKS
+    - $(P)$(R)FilterCallbacks, $(P)$(R)FilterCallbacks_RBV
+    - bo, bi
+  * - NDPluginProcess, NumFilter
+    - asynInt32
+    - r/w
+    - The characteristic number of arrays to use when filtering. The value of NumFiltered
+      will increase as each array is processed, until it reaches the value of NumFilter,
+      when it will no longer increase. The value of NumFiltered is used in the filter
+      equations, as explained below.
+    - NUM_FILTER
+    - $(P)$(R)NumFilter, $(P)$(R)NumFilter_RBV
+    - longout, longin
+  * - NDPluginProcess, NumFiltered
+    - asynInt32
+    - r/o
+    - The number of arrays that have been processed by the filter since the filter was
+      last reset. The value of NumFiltered is incremented as each array is processed,
+      until it reaches the value of NumFilter, when it will cease incrementing. The value
+      of NumFiltered is used in the filter equations, as explained below.
+    - NUM_FILTERED
+    - $(P)$(R)NumFiltered_RBV
+    - longin
+  * - N.A.
+    - N.A.
+    - r/w
+    - The filter type, chosen from a predefined list, as described below.
+    - N.A.
+    - $(P)$(R)FilterType
+    - mbbo
+  * - NDPluginProcess, OOffset
+    - asynFloat64
+    - r/w
+    - Output offset coefficient.
+    - FILTER_OOFFSET
+    - $(P)$(R)OOffset, $(P)$(R)OOffset_RBV
+    - ao, ai
+  * - NDPluginProcess, OScale
+    - asynFloat64
+    - r/w
+    - Output scale coefficient.
+    - FILTER_OSCALE
+    - $(P)$(R)OScale, $(P)$(R)OScale_RBV
+    - ao, ai
+  * - NDPluginProcess, OC1
+    - asynFloat64
+    - r/w
+    - Output coefficient #1.
+    - FILTER_OC1
+    - $(P)$(R)OC1, $(P)$(R)OC1_RBV
+    - ao, ai
+  * - NDPluginProcess, OC2
+    - asynFloat64
+    - r/w
+    - Output coefficient #2.
+    - FILTER_OC2
+    - $(P)$(R)OC2, $(P)$(R)OC2_RBV
+    - ao, ai
+  * - NDPluginProcess, OC3
+    - asynFloat64
+    - r/w
+    - Output coefficient #3.
+    - FILTER_OC3
+    - $(P)$(R)OC3, $(P)$(R)OC3_RBV
+    - ao, ai
+  * - NDPluginProcess, OC4
+    - asynFloat64
+    - r/w
+    - Output coefficient #4.
+    - FILTER_OC4
+    - $(P)$(R)OC4, $(P)$(R)OC4_RBV
+    - ao, ai
+  * - NDPluginProcess, FOffset
+    - asynFloat64
+    - r/w
+    - Filter offset coefficient.
+    - FILTER_FOFFSET
+    - $(P)$(R)FOffset, $(P)$(R)FOffset_RBV
+    - ao, ai
+  * - NDPluginProcess, FScale
+    - asynFloat64
+    - r/w
+    - Filter scale coefficient.
+    - FILTER_FSCALE
+    - $(P)$(R)FScale, $(P)$(R)FScale_RBV
+    - ao, ai
+  * - NDPluginProcess, FC1
+    - asynFloat64
+    - r/w
+    - Filter coefficient #1.
+    - FILTER_FC1
+    - $(P)$(R)FC1, $(P)$(R)FC1_RBV
+    - ao, ai
+  * - NDPluginProcess, FC2
+    - asynFloat64
+    - r/w
+    - Filter coefficient #2.
+    - FILTER_FC2
+    - $(P)$(R)FC2, $(P)$(R)FC2_RBV
+    - ao, ai
+  * - NDPluginProcess, FC3
+    - asynFloat64
+    - r/w
+    - Filter coefficient #3.
+    - FILTER_FC3
+    - $(P)$(R)FC3, $(P)$(R)FC3_RBV
+    - ao, ai
+  * - NDPluginProcess, FC4
+    - asynFloat64
+    - r/w
+    - Filter coefficient #4.
+    - FILTER_FC4
+    - $(P)$(R)FC4, $(P)$(R)FC4_RBV
+    - ao, ai
+  * - NDPluginProcess, ROffset
+    - asynFloat64
+    - r/w
+    - Reset offset coefficient.
+    - FILTER_ROFFSET
+    - $(P)$(R)ROffset, $(P)$(R)ROffset_RBV
+    - ao, ai
+  * - NDPluginProcess, RC1
+    - asynFloat64
+    - r/w
+    - Filter coefficient #1.
+    - FILTER_RC1
+    - $(P)$(R)RC1, $(P)$(R)RC1_RBV
+    - ao, ai
+  * - NDPluginProcess, RC2
+    - asynFloat64
+    - r/w
+    - Filter coefficient #2.
+    - FILTER_RC2
+    - $(P)$(R)RC2, $(P)$(R)RC2_RBV
+    - ao, ai
+
 
 Recursive filter implementation
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

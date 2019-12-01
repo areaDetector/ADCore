@@ -118,250 +118,119 @@ of the standard plugin parameters from
 NDCodec.template provides access to these parameters, listed in the
 following table.
 
-.. raw:: html
+.. |br| raw:: html
 
-  <table class="table table-bordered">
-    <tbody>
-      <tr>
-        <td align="center" colspan="7,">
-          <b>Parameter Definitions in NDPluginCodec.h and EPICS Record Definitions in NDCodec.template</b>
-        </td>
-      </tr>
-      <tr>
-        <th>
-          Parameter index variable
-        </th>
-        <th>
-          asyn interface
-        </th>
-        <th>
-          Access
-        </th>
-        <th>
-          Description
-        </th>
-        <th>
-          drvInfo string
-        </th>
-        <th>
-          EPICS record name
-        </th>
-        <th>
-          EPICS record type
-        </th>
-      </tr>
-      <tr>
-        <td>
-          NDCodecMode</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          The plugin mode (NDCodecMode_t).</td>
-        <td>
-          MODE</td>
-        <td>
-          $(P)$(R)Mode<br />
-          $(P)$(R)Mode_RBV </td>
-        <td>
-          mbbo<br />
-          mbbi </td>
-      </tr>
-      <tr>
-        <td>
-          NDCodecCompressor</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          Which compressor to use (NDCodecCompressor_t).
-          <ul>
-            <li>None</li>
-            <li>JPEG</li>
-            <li>Blosc</li>
-            <li>LZ4</li>
-            <li>BSLZ4</li>
-          </ul>
-          </td>
-        <td>
-          COMPRESSOR</td>
-        <td>
-          $(P)$(R)Compressor<br />
-          $(P)$(R)Compressor_RBV </td>
-        <td>
-          mbbo<br />
-          mbbi </td>
-      </tr>
-      <tr>
-        <td>
-          NDCodecCompFactor</td>
-        <td>
-          asynFloat64</td>
-        <td>
-          r/w</td>
-        <td>
-          Compression factor.</td>
-        <td>
-          COMP_FACTOR</td>
-        <td>
-          $(P)$(R)CompFactor</td>
-        <td>
-          ai</td>
-      </tr>
-      <tr>
-        <td align="center" colspan="7,">
-          <b>Parameters for the JPEG Compressor</b> </td>
-      </tr>
-      <tr>
-        <td>
-          NDCodecJPEGQuality</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          JPEG compression quality, 1-100.</td>
-        <td>
-          JPEG_QUALITY</td>
-        <td>
-          $(P)$(R)JPEGQuality<br />
-          $(P)$(R)JPEGQuality_RBV </td>
-        <td>
-          longout<br />
-          longin </td>
-      </tr>
-      <tr>
-        <td align="center" colspan="7,">
-          <b>Parameters for the Blosc Compressor</b> </td>
-      </tr>
-      <tr>
-        <td>
-          NDCodecBloscCompressor</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          Which Blosc compressor to use (NDCodecBloscComp_t).
-          <ul>
-            <li>BloscLZ</li>
-            <li>LZ4</li>
-            <li>LZ4HC</li>
-            <li>SNAPPY</li>
-            <li>ZLIB</li>
-            <li>ZSTD</li>
-           </ul>
-          </td>
-        <td>
-          BLOSC_COMPRESSOR</td>
-        <td>
-          $(P)$(R)BloscCompressor<br />
-          $(P)$(R)BloscCompressor_RBV </td>
-        <td>
-          mbbo<br />
-          mbbi </td>
-      </tr>
-      <tr>
-        <td>
-          NDCodecBloscCLevel</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          Blosc compression level.</td>
-        <td>
-          BLOSC_CLEVEL</td>
-        <td>
-          $(P)$(R)BloscCLevel<br />
-          $(P)$(R)BloscCLevel_RBV </td>
-        <td>
-          longout<br />
-          longin </td>
-      </tr>
-      <tr>
-        <td>
-          NDCodecBloscShuffle</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          Blosc shuffle data before compression:<br />
-          <ul>
-            <li>None</li>
-            <li>Bit Shuffle</li>
-            <li>Byte Shuffle</li>
-          </ul>
-        </td>
-        <td>
-          BLOSC_SHUFFLE</td>
-        <td>
-          $(P)$(R)BloscShuffle<br />
-          $(P)$(R)BloscShuffle_RBV </td>
-        <td>
-          mbbo<br />
-          mbbi </td>
-      </tr>
-      <tr>
-        <td>
-          NDCodecBloscNumThreads</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          Blosc number of threads for compression/decompression.</td>
-        <td>
-          BLOSC_NUMTHREADS</td>
-        <td>
-          $(P)$(R)BloscNumThreads<br />
-          $(P)$(R)BloscNumThreads_RBV </td>
-        <td>
-          longout<br />
-          longin </td>
-      </tr>
-      <tr>
-        <td align="center" colspan="7,">
-          <b>Parameters for Diagnostics</b> </td>
-      </tr>
-      <tr>
-        <td>
-          NDCodecCodecStatus</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/o</td>
-        <td>
-          Status of the compression/decompression. Values are "Success", "Warning", and "Error".
-        </td>
-        <td>
-          CODEC_STATUS</td>
-        <td>
-          $(P)$(R)CodecStatus</td>
-        <td>
-          mbbi</td>
-      </tr>
-      <tr>
-        <td>
-          NDCodecCodecError</td>
-        <td>
-          asynOctet</td>
-        <td>
-          r/o</td>
-        <td>
-          Error message if CodecStatus is "Warning" or "Error". </td>
-        <td>
-          CODEC_ERROR</td>
-        <td>
-          $(P)$(R)CodecError</td>
-        <td>
-          waveform</td>
-      </tr>
-    </tbody>
-  </table>
+    <br>
+
+.. cssclass:: table-bordered table-striped table-hover
+.. flat-table::
+  :header-rows: 2
+  :widths: 10 10 10 40 10 10 10
+
+  * -
+    -
+    - **Parameter Definitions in NDPluginCodec.h and EPICS Record Definitions in NDCodec.template**
+  * - Parameter index variable
+    - asyn interface
+    - Access
+    - Description
+    - drvInfo string
+    - EPICS record name
+    - EPICS record type
+  * - NDCodecMode
+    - asynInt32
+    - r/w
+    - The plugin mode (NDCodecMode_t).
+    - MODE
+    - $(P)$(R)Mode, $(P)$(R)Mode_RBV
+    - mbbo, mbbi
+  * - NDCodecCompressor
+    - asynInt32
+    - r/w
+    - Which compressor to use (NDCodecCompressor_t). Choices are: |br|
+      None |br|
+      JPEG |br|
+      Blosc |br|
+      LZ4 |br|
+      BSLZ4 |br|
+    - COMPRESSOR
+    - $(P)$(R)Compressor, $(P)$(R)Compressor_RBV
+    - mbbo, mbbi
+  * - NDCodecCompFactor
+    - asynFloat64
+    - r/w
+    - Compression factor.
+    - COMP_FACTOR
+    - $(P)$(R)CompFactor
+    - ai
+  * -
+    -
+    - **Parameters for the JPEG Compressor**
+  * - NDCodecJPEGQuality
+    - asynInt32
+    - r/w
+    - JPEG compression quality, 1-100.
+    - JPEG_QUALITY
+    - $(P)$(R)JPEGQuality, $(P)$(R)JPEGQuality_RBV
+    - longout, longin
+  * -
+    -
+    - **Parameters for the Blosc Compressor**
+  * - NDCodecBloscCompressor
+    - asynInt32
+    - r/w
+    - Which Blosc compressor to use (NDCodecBloscComp_t). Choices are: |br|
+      BloscLZ |br|
+      LZ4 |br|
+      LZ4HC |br|
+      SNAPPY |br|
+      ZLIB |br|
+      ZSTD |br|
+    - BLOSC_COMPRESSOR
+    - $(P)$(R)BloscCompressor, $(P)$(R)BloscCompressor_RBV
+    - mbbo, mbbi
+  * - NDCodecBloscCLevel
+    - asynInt32
+    - r/w
+    - Blosc compression level.
+    - BLOSC_CLEVEL
+    - $(P)$(R)BloscCLevel, $(P)$(R)BloscCLevel_RBV
+    - longout, longin
+  * - NDCodecBloscShuffle
+    - asynInt32
+    - r/w
+    - Blosc shuffle data before compression. Choices are: |br|
+      None |br|
+      Bit Shuffle |br|
+      Byte Shuffle |br|
+    - BLOSC_SHUFFLE
+    - $(P)$(R)BloscShuffle, $(P)$(R)BloscShuffle_RBV
+    - mbbo, mbbi
+  * - NDCodecBloscNumThreads
+    - asynInt32
+    - r/w
+    - Blosc number of threads for compression/decompression.
+    - BLOSC_NUMTHREADS
+    - $(P)$(R)BloscNumThreads, $(P)$(R)BloscNumThreads_RBV
+    - longout, longin
+  * -
+    -
+    - **Parameters for Diagnostics**
+  * - NDCodecCodecStatus
+    - asynInt32
+    - r/o
+    - Status of the compression/decompression. Values are "Success", "Warning", and "Error".
+    - CODEC_STATUS
+    - $(P)$(R)CodecStatus
+    - mbbi
+  * - NDCodecCodecError
+    - asynOctet
+    - r/o
+    - Error message if CodecStatus is "Warning" or "Error".
+    - CODEC_ERROR
+    - $(P)$(R)CodecError
+    - waveform
+
 
 Configuration
 -------------

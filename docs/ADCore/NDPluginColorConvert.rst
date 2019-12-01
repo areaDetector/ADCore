@@ -24,75 +24,37 @@ implements all of the standard plugin parameters from
 NDColorConvert.template provides access to these parameters, listed in
 the following table.
 
-.. raw:: html
+.. cssclass:: table-bordered table-striped table-hover
+.. flat-table::
+  :header-rows: 2
+  :widths: 5 5 5 70 5 5 5
 
-  <table class="table table-bordered">
-    <tbody>
-      <tr>
-        <td align="center" colspan="7,">
-          <b>Parameter Definitions in NDPluginColorConvert.h and EPICS Record Definitions in
-            NDColorConvert.template</b></td>
-      </tr>
-      <tr>
-        <th>
-          Parameter index variable</th>
-        <th>
-          asyn interface</th>
-        <th>
-          Access</th>
-        <th>
-          Description</th>
-        <th>
-          drvInfo string</th>
-        <th>
-          EPICS record name</th>
-        <th>
-          EPICS record type</th>
-      </tr>
-      <tr>
-        <td>
-          NDPluginColorConvertColorModeOut</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          The output color mode (NDColorMode_t).</td>
-        <td>
-          COLOR_MODE_OUT</td>
-        <td>
-          $(P)$(R)ColorModeOut
-          <br />
-          $(P)$(R)ColorModeOut_RBV </td>
-        <td>
-          mbbo
-          <br />
-          mbbi</td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginColorConvertFalseColor</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          The false color map index. There are currently 2 false color maps defined, Rainbow
-          and Iron. Additional color maps can easily be added in the future.</td>
-        <td>
-          FALSE_COLOR</td>
-        <td>
-          $(P)$(R)FalseColor
-          <br />
-          $(P)$(R)FalseColor_RBV </td>
-        <td>
-          mbbo
-          <br />
-          mbbi</td>
-      </tr>
-    </tbody>
-  </table>
-
+  * -
+    - **Parameter Definitions in NDPluginColorConvert.h and EPICS Record Definitions in
+      NDColorConvert.template**
+  * - Parameter index variable
+    - asyn interface
+    - Access
+    - Description
+    - drvInfo string
+    - EPICS record name
+    - EPICS record type
+  * - NDPluginColorConvertColorModeOut
+    - asynInt32
+    - r/w
+    - The output color mode (NDColorMode_t).
+    - COLOR_MODE_OUT
+    - $(P)$(R)ColorModeOut, $(P)$(R)ColorModeOut_RBV
+    - mbbo, mbbi
+  * - NDPluginColorConvertFalseColor
+    - asynInt32
+    - r/w
+    - The false color map index. There are currently 2 false color maps defined, Rainbow
+      and Iron. Additional color maps can easily be added in the future.
+    - FALSE_COLOR
+    - $(P)$(R)FalseColor, $(P)$(R)FalseColor_RBV
+    - mbbo, mbbi
+      
 When converting from 8-bit mono to RGB1, RGB2 or RGB3 a false-color map
 will be applied if FalseColor is not zero.
 
@@ -134,14 +96,80 @@ in ``NDPluginDriver.h`` and ``NDPluginColorConvert.h`` through records in
 .. image:: NDColorConvert.png
     :align: center
 
+Performance
+-----------
+
+The following performance for Bayer conversion was measured on a RHEL6 workstation with a 
+3.6 GHz 4C/8T Intel W-2123 CPU and 16 GB of RAM. 
+The first two rows show the plugin not having to do anything, and the next four show 
+real conversions with two different image sizes and different output modes.
+
+.. cssclass:: table-bordered table-striped table-hover
+.. flat-table::
+  :header-rows: 1
+
+  * - Input
+    - Output
+    - SizeX
+    - Size Y
+    - Average (ms)
+    - S.D. (ms)
+    - Samples
+  * - RGB	
+    - RGB
+    - 1292
+    - 964
+    - 1.436
+    - 0.344
+    - 103
+  * - RGB
+    - RGB
+    - 646
+    - 482
+    - 0.488	
+    - 0.142
+    - 158
+  * - Bayer
+    - RGB
+    - 1292
+    - 964
+    - 19.534
+    - 3.247
+    - 154
+  * - Bayer
+    - RGB
+    - 646
+    - 482
+    - 9.306
+    - 2.912
+    - 148
+  * - Bayer	
+    - Mono
+    - 1292
+    - 964
+    - 20.889
+    - 2.737
+    - 151
+  * - Bayer
+    - Mono
+    - 646
+    - 482
+    - 8.985
+    - 2.927
+    - 135
+
 Restrictions
 ------------
 
--  The Bayer color conversion is done using a library function provided
-   in the Prosilica library. The source code for this function is not
-   provided, and the binaries are only available on Linux and Windows.
-   All other conversions are supported on all platforms.
--  YUV color conversion is not supported. This may be added in a future
-   release.
+- The Bayer color conversion uses a simple linear interpolation and as seen in the table above can only
+  process about 60 MPixels per second. 
+
+  * For Point Grey/FLIR cameras the ADPointGrey and ADSpinnaker drivers do Bayer color conversion
+    in the vendor library, which is significantly faster.
+  * For Prosilica/AVT cameras the ADProsilica and ADVimba drivers also do Bayer color conversion
+    in the vendor library, which is significantly faster.
+
+- YUV color conversion is not supported. This may be added in a future
+  release.
 
 

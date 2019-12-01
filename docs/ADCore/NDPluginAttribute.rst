@@ -51,176 +51,80 @@ describes this class in detail.
 NDPluginAttribute defines the following parameters. It also implements
 all of the standard plugin parameters from :doc:`NDPluginDriver`
 
+.. |br| raw:: html
 
-.. raw:: html
+    <br>
 
-  <table class="table table-bordered">
-    <tbody>
-      <tr>
-        <td align="center" colspan="7,">
-          <b>Parameter Definitions in NDPluginAttribute.h and EPICS Record Definitions in NDAttribute.template</b>
-        </td>
-      </tr>
-      <tr>
-        <th>
-          Parameter index variable</th>
-        <th>
-          asyn interface</th>
-        <th>
-          Access</th>
-        <th>
-          Description</th>
-        <th>
-          drvInfo string</th>
-        <th>
-          EPICS record name</th>
-        <th>
-          EPICS record type</th>
-      </tr>
-      <tr>
-        <td>
-          NDPluginAttribute<br />
-          Reset</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          Reset the plugin data. This zeros the array, and resets the value sum and value
-          to zero. </td>
-        <td>
-          ATTR_RESET</td>
-        <td>
-          $(P)$(R)Reset</td>
-        <td>
-          bo</td>
-      </tr>
-      <tr>
-        <td align="center" colspan="7,">
-          <b>Time-Series data</b><br />
-        </td>
-      </tr>
-      <tr>
-        <td colspan="7,">
-          The time series is implemented by loading an instance of the <a href="NDPluginTimeSeries.html">
-          NDPluginTimeSeries</a> for each NDPluginStats plugin, and the time series control
-          uses records in NDTimeSeries.template. That documentation should be consulted for
-          an explanation of these records. The prefix and record name macro for the time-series
-          plugin records from NDTimeSeries.template is $(P)$(R)TS:.<br />
-          <b>NOTE:</b> The time-series plugin is often used with drivers which sample at a
-          fixed well-defined time interval. This cannot be guaranteed with the statistics
-          plugin, so the averaging time records and time axis waveform record from NDPluginTimeSeries
-          are typically not used, and the statistics data are plotted against time point #,
-          rather than actual time.
-          <br />
-          The time-series waveform records for each statistic are defined in NDAttributeN.template.
-        </td>
-     </tr>
-      <tr>
-        <td>
-          NDPluginTimeSeries<br />
-          TSTimeSeries
-        </td>
-        <td>
-          asynFloat64Array
-        </td>
-        <td>
-          r/o
-        </td>
-        <td>
-          The time series data arrays of the basic statistics and centroid and sigma statistics
-          described above.
-        </td>
-        <td>
-          TS_TIME_SERIES
-        </td>
-        <td>
-          $(P)$(R)TSArrayValue
-        </td>
-        <td>
-          waveform
-        </td>
-      </tr>
-      <tr>
-        <td align="center" colspan="7,">
-          <b>Parameter Definitions in NDPluginAttribute.h and EPICS Record Definitions in NDAttributeN.template.
-            There is one of these records for each attribute in the plugin.</b> </td>
-      </tr>
-      <tr>
-        <th>
-          Parameter index variable</th>
-        <th>
-          asyn interface</th>
-        <th>
-          Access</th>
-        <th>
-          Description</th>
-        <th>
-          drvInfo string</th>
-        <th>
-          EPICS record name</th>
-        <th>
-          EPICS record type</th>
-      </tr>
-      <tr>
-        <td>
-          NDPluginAttributeAttrName</td>
-        <td>
-          asynOctet</td>
-        <td>
-          r/w</td>
-        <td>
-          The name of the NDAttribute parameter that we want to publish. This can be modified
-          at runtime.</td>
-        <td>
-          ATTR_ATTRNAME</td>
-        <td>
-          $(P)$(R)AttrName
-          <br />
-          $(P)$(R)AttrName_RBV</td>
-        <td>
-          waveform</td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginAttributeVal</td>
-        <td>
-          asynFloat64</td>
-        <td>
-          r/o</td>
-        <td>
-          Attribute value</td>
-        <td>
-          ATTR_VAL</td>
-        <td>
-          $(P)$(R)Value_RBV</td>
-        <td>
-          ai</td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginAttributeValSum</td>
-        <td>
-          asynFloat64</td>
-        <td>
-          r/o</td>
-        <td>
-          Sum of the attribute value, since the last reset.</td>
-        <td>
-          ATTR_VAL_SUM</td>
-        <td>
-          $(P)$(R)ValueSum_RBV</td>
-        <td>
-          ai</td>
-      </tr>
-    </tbody>
-  </table>
+.. cssclass:: table-bordered table-striped table-hover
+.. flat-table::
+  :header-rows: 2
+  :widths: 5 5 5 70 5 5 5
 
-If the array data contains more than 16K bytes then in order for EPICS
-clients to receive this data they must be built with EPICS R3.14 (not
-R3.13), and the environment variable ``EPICS_CA_MAX_ARRAY_BYTES`` on both
-the EPICS IOC computer and EPICS client computer must be set to a value
-at least as large as the array size in bytes.
+  * -
+    - Parameter Definitions in NDPluginAttribute.h and EPICS Record Definitions in NDAttribute.template
+  * - Parameter index variable
+    - asyn interface
+    - Access
+    - Description
+    - drvInfo string
+    - EPICS record name
+    - EPICS record type
+  * - NDPluginAttribute, Reset
+    - asynInt32
+    - r/w
+    - Reset the plugin data. This zeros the array, and resets the value sum and value
+      to zero.
+    - ATTR_RESET
+    - $(P)$(R)Reset
+    - bo
+  * -
+    -
+    - **Time-Series data**
+  * - The time series is implemented by loading an instance of the ::doc:NDPluginTimeSeries
+      plugin for each NDPluginAttribute plugin, and the time series control
+      uses records in NDTimeSeries.template. That documentation should be consulted for
+      an explanation of these records. The prefix and record name macro for the time-series
+      plugin records from NDTimeSeries.template is $(P)$(R)TS:. |br|
+      **NOTE:** The time-series plugin is often used with drivers which sample at a
+      fixed well-defined time interval. This cannot be guaranteed with the statistics
+      plugin, so the averaging time records and time axis waveform record from NDPluginTimeSeries
+      are typically not used, and the statistics data are plotted against time point #,
+      rather than actual time. |br|
+      The time-series waveform records for each statistic are defined in NDAttributeN.template.
+  * - NDPluginTimeSeries, TSTimeSeries
+    - asynFloat64Array
+    - r/o
+    - The time series data arrays of the basic statistics and centroid and sigma statistics
+      described above.
+    - TS_TIME_SERIES
+    - $(P)$(R)TSArrayValue
+    - waveform
+  * -
+    - **Parameter Definitions in NDPluginAttribute.h and EPICS Record Definitions in NDAttributeN.template** |br|
+      **There is one of these records for each attribute in the plugin.**
+  * - NDPluginAttributeAttrName
+    - asynOctet
+    - r/w
+    - The name of the NDAttribute parameter that we want to publish. This can be modified
+      at runtime.
+    - ATTR_ATTRNAME
+    - $(P)$(R)AttrName
+      , $(P)$(R)AttrName_RBV
+    - waveform
+  * - NDPluginAttributeVal
+    - asynFloat64
+    - r/o
+    - Attribute value
+    - ATTR_VAL
+    - $(P)$(R)Value_RBV
+    - ai
+  * - NDPluginAttributeValSum
+    - asynFloat64
+    - r/o
+    - Sum of the attribute value, since the last reset.
+    - ATTR_VAL_SUM
+    - $(P)$(R)ValueSum_RBV
+    - ai
 
 Configuration
 -------------
