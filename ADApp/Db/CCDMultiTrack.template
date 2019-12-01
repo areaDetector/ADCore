@@ -1,0 +1,39 @@
+# Track definition for CCD multi-track defintions./
+# Each track is a rectangular ROI defined by start and end coordinates.
+# Binning may also be applied - usually (but not always) the track is fully-binned.
+# This hardware capability of a CCD is available for certain camera types:
+#   Andor, Princeton Instruments and Photometrics.
+#
+# Peter Heesterman, UKAEA
+# October 2019
+
+include "ADBase.template"
+
+record(waveform, "$(P)$(R)CCDMultiTrackStart")
+{
+    field(DTYP, "asynInt32ArrayOut")
+    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))CCD_MULTI_TRACK_START")
+    info("asyn:READBACK", "1")
+    info("asyn:FIFO", "10")
+    field(FTVL, "LONG")
+    field(NELM, "50")
+}
+record(waveform, "$(P)$(R)CCDMultiTrackEnd")
+{
+    field(DTYP, "asynInt32ArrayOut")
+    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))CCD_MULTI_TRACK_END")
+    info("asyn:READBACK", "1")
+    info("asyn:FIFO", "10")
+    field(FTVL, "LONG")
+    field(NELM, "50")
+}
+record(waveform, "$(P)$(R)CCDMultiTrackBin")
+{
+    field(DTYP, "asynInt32ArrayOut")
+    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))CCD_MULTI_TRACK_BIN")
+    info("asyn:READBACK", "1")
+    info("asyn:FIFO", "10")
+    field(FTVL, "LONG")
+    field(NELM, "50")
+}
+
