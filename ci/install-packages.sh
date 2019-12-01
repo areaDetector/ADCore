@@ -41,9 +41,7 @@ else
   cd external
   wget -nv https://github.com/epics-base/epics-base/archive/R3.15.6.tar.gz
   tar -zxf R3.15.6.tar.gz
-  ls -l
   ln -s epics-base-R3.15.6 epics_base
-  ls -l
   make -sj -C epics_base/
   EPICS_BASE=`pwd`/epics_base/
   cd ..
