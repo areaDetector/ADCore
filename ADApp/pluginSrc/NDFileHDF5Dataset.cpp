@@ -41,6 +41,7 @@ NDFileHDF5Dataset::~NDFileHDF5Dataset()
  * \param[in] multiframe - Is this multiframe?
  * \param[in] extradimensions - The number of extra dimensions.
  * \param[in] extra_dims - The size of extra dimensions.
+ * \param[in] extra_dim_chunking - Array of extra dimension chunking.
  * \param[in] user_chunking - Array of user defined chunking dimensions.
  */
 asynStatus NDFileHDF5Dataset::configureDims(NDArray *pArray, bool multiframe, int extradimensions, int *extra_dims, int *extra_dim_chunking, int *user_chunking)
