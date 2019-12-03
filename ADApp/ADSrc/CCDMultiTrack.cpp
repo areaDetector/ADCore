@@ -43,7 +43,7 @@ void CCDMultiTrack::storeTrackAttributes(NDAttributeList* pAttributeList)
         {
             // Add new attributes listing.
             char Buf[10];
-            snprintf(Buf, 10, "%zd", TrackNum + 1);
+            epicsSnprintf(Buf, 10, "%zd", TrackNum + 1);
             std::string TrackNumString = Buf;
             std::string TrackStartName = ROIString + TrackNumString + "start";
             std::string TrackStartDescription = TrackString + TrackNumString + " start";
