@@ -21,10 +21,15 @@ files respectively, in the configure/ directory of the appropriate release of th
 
 ## __R3-9 (December XXX, 2019)__
 
+### CCDMultiTrack
+  * New CCDMultiTrack class and database to support spectroscopy detectors 
+    that support multi-track readout (Peter Heesterman)
 ### NDPluginStats
   * Fixed an off-by-one bug in the histogram calculation.
     It was incorrectly reporting the number of elements above HistMax and the mid-point element of
     the histogram had 0 counts when it should not.
+### NDFileHDF5
+  * Fixed problem with XML2 library linking warnings on static Windows builds (Peter Heesterman)
 ### docs
   * Replaced all raw HTML tables in .rst files with Sphinx flat-tables.
 
