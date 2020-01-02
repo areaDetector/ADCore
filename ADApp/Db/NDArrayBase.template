@@ -687,7 +687,7 @@ record(longin, "$(P)$(R)UniqueId_RBV")
 {
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))UNIQUE_ID")
-    field(SCAN, "I/O Intr")
+    field(SCAN, "$(SCANRATE=I/O Intr)")
 }
 
 record(ai, "$(P)$(R)TimeStamp_RBV")
@@ -695,7 +695,7 @@ record(ai, "$(P)$(R)TimeStamp_RBV")
     field(DTYP, "asynFloat64")
     field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))TIME_STAMP")
     field(PREC, "3")
-    field(SCAN, "I/O Intr")
+    field(SCAN, "$(SCANRATE=I/O Intr)")
 }
 
 record(longin, "$(P)$(R)EpicsTSSec_RBV")
@@ -726,7 +726,7 @@ record(longin, "$(P)$(R)ArrayCounter_RBV")
 {
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))ARRAY_COUNTER")
-    field(SCAN, "I/O Intr")
+    field(SCAN, "$(SCANRATE=I/O Intr)")
 }
 
 # Updated rate calculation to use a smoothing factor w/ guard against negative values
@@ -877,5 +877,5 @@ record(longin, "$(P)$(R)NumQueuedArrays")
 {
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))NUM_QUEUED_ARRAYS")
-   field(SCAN, "I/O Intr")
+   field(SCAN, "$(SCANRATE=I/O Intr)")
 }

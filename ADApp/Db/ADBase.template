@@ -181,7 +181,7 @@ record(ai, "$(P)$(R)AcquireTime_RBV")
    field(DTYP, "asynFloat64")
    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))ACQ_TIME")
    field(PREC, "3")
-   field(SCAN, "I/O Intr")
+   field(SCAN, "$(SCANRATE=I/O Intr)")
 }
 
 record(ao, "$(P)$(R)AcquirePeriod")
@@ -199,7 +199,7 @@ record(ai, "$(P)$(R)AcquirePeriod_RBV")
    field(DTYP, "asynFloat64")
    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))ACQ_PERIOD")
    field(PREC, "3")
-   field(SCAN, "I/O Intr")
+   field(SCAN, "$(SCANRATE=I/O Intr)")
 }
 
 record(ai, "$(P)$(R)TimeRemaining_RBV")
@@ -370,7 +370,7 @@ record(longin, "$(P)$(R)NumImagesCounter_RBV")
 {
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))NIMAGES_COUNTER")
-   field(SCAN, "I/O Intr")
+   field(SCAN, "$(SCANRATE=I/O Intr)")
 }
 
 ###################################################################
