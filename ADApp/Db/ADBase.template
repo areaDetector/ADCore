@@ -4,6 +4,10 @@
 # Mark Rivers
 # March 9, 2008
 
+#  Using SCANRATE:The ImageJ EPICS_AD_Viewer plugin monitors ArrayCounter_RBV to decide 
+#  when there is a new image to display. That means that it will not display faster than
+#  the SCANRATE you select.
+
 include "NDArrayBase.template"
 
 record(longin, "$(P)$(R)MaxSizeX_RBV")
@@ -370,7 +374,7 @@ record(longin, "$(P)$(R)NumImagesCounter_RBV")
 {
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))NIMAGES_COUNTER")
-   field(SCAN, "I/O Intr")
+   field(SCAN, "$(SCANRATE=I/O Intr)")
 }
 
 ###################################################################
