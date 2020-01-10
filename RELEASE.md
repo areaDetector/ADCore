@@ -21,9 +21,10 @@ files respectively, in the configure/ directory of the appropriate release of th
 
 ### SCANRATE macro
   * A new macro has been added to NDPosPlugin.template, NDPluginBase.template, NDFile.tamplate, NDArrayBase.template and 
-    ADBase.template. This can be used to control the SCAN value of multiple PVs, which were found to be intensive on the 
-    CPU when set to I/O Intr for a detector running at faster than 1 KHz. The performance could be improved by setting 
-    the SCAN value to update less frequently.
+    ADBase.template. This can be used to control the SCAN value of status PVs which update on every frame such as 
+    ArrayCounter_RBV, TimeStamp_RBV, UniqueId_RBV among others. These were found to be intensive on the CPU when set to 
+    I/O Intr for a detector running at faster than 1 KHz. The performance could be improved by setting the SCAN value 
+    to update less frequently.
   * The default value of the macro has been set to I/O Intr so that it will not affect any applications that do not 
     require the SCAN rate throttled. 
   * The ImageJ EPICS_AD_Viewer plugin monitors ArrayCounter_RBV to decide when there is a new image to display. That 
