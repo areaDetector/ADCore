@@ -19,6 +19,17 @@ the EXAMPLE_RELEASE_PATHS.local, EXAMPLE_RELEASE_LIBS.local, and EXAMPLE_RELEASE
 files respectively, in the configure/ directory of the appropriate release of the 
 [top-level areaDetector](https://github.com/areaDetector/areaDetector) repository.
 
+## __R3-9 (January XXX, 2020)__
+
+### CCDMultiTrack
+  * New CCDMultiTrack class and database to support spectroscopy detectors 
+    that support multi-track readout (Peter Heesterman)
+### NDPluginStats
+  * Fixed an off-by-one bug in the histogram calculation.
+    It was incorrectly reporting the number of elements above HistMax and the mid-point element of
+    the histogram had 0 counts when it should not.
+### NDFileHDF5
+  * Fixed problem with XML2 library linking warnings on static Windows builds (Peter Heesterman)
 ### SCANRATE macro
   * A new macro has been added to NDPosPlugin.template, NDPluginBase.template, NDFile.tamplate, NDArrayBase.template and 
     ADBase.template. This can be used to control the SCAN value of status PVs which update on every frame such as 
@@ -31,18 +42,6 @@ files respectively, in the configure/ directory of the appropriate release of th
     means that it will not display faster than the SCANRATE you select.
   * By making the records periodically scanned they will be reading even when the detector is stopped, which is a bit 
     more overhead than SCAN=I/O Intr.
-
-## __R3-9 (December XXX, 2019)__
-
-### CCDMultiTrack
-  * New CCDMultiTrack class and database to support spectroscopy detectors 
-    that support multi-track readout (Peter Heesterman)
-### NDPluginStats
-  * Fixed an off-by-one bug in the histogram calculation.
-    It was incorrectly reporting the number of elements above HistMax and the mid-point element of
-    the histogram had 0 counts when it should not.
-### NDFileHDF5
-  * Fixed problem with XML2 library linking warnings on static Windows builds (Peter Heesterman)
 ### docs
   * Replaced all raw HTML tables in .rst files with Sphinx flat-tables.
 
@@ -61,7 +60,6 @@ Note: This release requires asyn R4-37 because it uses new asynInt64 support.
     * NDFileTIFF
   * NDFileNetCDF cannot write the 64-bit integer data types because the netCDF3 "Classic" data model does not support them.
   * 64-bit integer TIFF files cannot be read by ImageJ, but they can be read by IDL.
-    
   * ntndArrayConverter converts NDInt64 and NDUInt64 to the equivalent pvData "long" and "ulong".
 
 ### asynNDArrayDriver, ADDriver
