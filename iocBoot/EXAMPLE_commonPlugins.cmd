@@ -208,3 +208,7 @@ dbLoadRecords("$(AUTOSAVE)/asApp/Db/save_restoreStatus.db", "P=$(PREFIX)")
 
 # Optional: load alive record (requires ALIVE module)
 #dbLoadRecords("$(ALIVE)/aliveApp/Db/alive.db", "P=$(PREFIX),RHOST=192.168.1.254")
+
+# Set the callback queue size to 5000, up from default of 2000 in base.
+# This can be needed to avoid errors "callbackRequest: cbLow ring buffer full".
+callbackSetQueueSize(5000)
