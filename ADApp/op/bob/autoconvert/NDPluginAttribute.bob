@@ -1,0 +1,460 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<display version="2.0.0">
+  <name>NDPluginAttribute</name>
+  <x>826</x>
+  <y>470</y>
+  <width>775</width>
+  <background_color>
+    <color red="187" green="187" blue="187">
+    </color>
+  </background_color>
+  <grid_visible>false</grid_visible>
+  <grid_step_x>5</grid_step_x>
+  <widget type="rectangle" version="2.0.0">
+    <name>rectangle #6</name>
+    <y>5</y>
+    <width>775</width>
+    <height>25</height>
+    <line_color>
+      <color red="218" green="218" blue="218">
+      </color>
+    </line_color>
+    <background_color>
+      <color red="218" green="218" blue="218">
+      </color>
+    </background_color>
+  </widget>
+  <widget type="embedded" version="2.0.0">
+    <name>composite #9</name>
+    <file>NDPluginBase.bob</file>
+    <x>5</x>
+    <y>40</y>
+    <width>380</width>
+    <height>555</height>
+  </widget>
+  <widget type="rectangle" version="2.0.0">
+    <name>rectangle #11</name>
+    <x>390</x>
+    <y>40</y>
+    <width>380</width>
+    <height>60</height>
+    <line_width>1</line_width>
+    <line_color>
+      <color red="45" green="45" blue="45">
+      </color>
+    </line_color>
+    <background_color>
+      <color red="45" green="45" blue="45">
+      </color>
+    </background_color>
+    <transparent>true</transparent>
+  </widget>
+  <widget type="group" version="2.0.0">
+    <name>composite #14</name>
+    <y>6</y>
+    <width>775</width>
+    <height>25</height>
+    <style>3</style>
+    <transparent>true</transparent>
+    <widget type="label" version="2.0.0">
+      <name>text #17</name>
+      <text>$(P)$(R)</text>
+      <width>775</width>
+      <height>25</height>
+      <font>
+        <font family="Liberation Sans" style="REGULAR" size="16.0">
+        </font>
+      </font>
+      <foreground_color>
+        <color red="77" green="82" blue="164">
+        </color>
+      </foreground_color>
+      <horizontal_alignment>1</horizontal_alignment>
+    </widget>
+  </widget>
+  <widget type="group" version="2.0.0">
+    <name>composite #20</name>
+    <x>445</x>
+    <y>76</y>
+    <width>270</width>
+    <height>21</height>
+    <style>3</style>
+    <transparent>true</transparent>
+    <widget type="action_button" version="3.0.0">
+      <name>related display #23</name>
+      <actions>
+        <action type="open_display">
+          <file>NDPluginAttribute8.opi</file>
+          <macros>
+            <A1>1:</A1>
+            <A2>2:</A2>
+            <A3>3:</A3>
+            <A4>4:</A4>
+            <A5>5:</A5>
+            <A6>6:</A6>
+            <A7>7:</A7>
+            <A8>8:</A8>
+          </macros>
+          <target>tab</target>
+          <description>Attributes 1-8</description>
+        </action>
+        <action type="open_display">
+          <file>NDPluginAttribute8.opi</file>
+          <macros>
+            <A1>9:</A1>
+            <A2>10:</A2>
+            <A3>11:</A3>
+            <A4>12:</A4>
+            <A5>13:</A5>
+            <A6>14:</A6>
+            <A7>15:</A7>
+            <A8>16:</A8>
+          </macros>
+          <target>tab</target>
+          <description>Attributes 9-16</description>
+        </action>
+      </actions>
+      <text>Combined attributes</text>
+      <x>110</x>
+      <width>160</width>
+      <height>20</height>
+      <background_color>
+        <color red="115" green="223" blue="255">
+        </color>
+      </background_color>
+    </widget>
+    <widget type="label" version="2.0.0">
+      <name>text #27</name>
+      <text>Attributes</text>
+      <y>1</y>
+      <font>
+        <font family="Liberation Sans" style="REGULAR" size="16.0">
+        </font>
+      </font>
+      <horizontal_alignment>2</horizontal_alignment>
+    </widget>
+  </widget>
+  <widget type="group" version="2.0.0">
+    <name>composite #30</name>
+    <x>523</x>
+    <y>51</y>
+    <width>115</width>
+    <height>20</height>
+    <style>3</style>
+    <transparent>true</transparent>
+    <widget type="action_button" version="3.0.0">
+      <name>message button #33</name>
+      <actions>
+        <action type="write_pv">
+          <pv_name>$(P)$(R)Reset</pv_name>
+          <value>1</value>
+          <description>Write</description>
+        </action>
+      </actions>
+      <pv_name>$(P)$(R)Reset</pv_name>
+      <text>Reset</text>
+      <x>55</x>
+      <width>60</width>
+      <height>20</height>
+      <background_color>
+        <color red="115" green="223" blue="255">
+        </color>
+      </background_color>
+    </widget>
+    <widget type="label" version="2.0.0">
+      <name>text #36</name>
+      <text>Reset</text>
+      <width>50</width>
+      <font>
+        <font family="Liberation Sans" style="REGULAR" size="16.0">
+        </font>
+      </font>
+      <auto_size>true</auto_size>
+    </widget>
+  </widget>
+  <widget type="group" version="2.0.0">
+    <name>composite #39</name>
+    <x>390</x>
+    <y>105</y>
+    <width>380</width>
+    <height>155</height>
+    <style>3</style>
+    <transparent>true</transparent>
+    <widget type="rectangle" version="2.0.0">
+      <name>rectangle #42</name>
+      <x>120</x>
+      <y>5</y>
+      <width>120</width>
+      <height>21</height>
+      <line_color>
+        <color red="218" green="218" blue="218">
+        </color>
+      </line_color>
+      <background_color>
+        <color red="218" green="218" blue="218">
+        </color>
+      </background_color>
+    </widget>
+    <widget type="rectangle" version="2.0.0">
+      <name>rectangle #45</name>
+      <width>380</width>
+      <height>155</height>
+      <line_width>1</line_width>
+      <line_color>
+        <color red="0" green="0" blue="0">
+        </color>
+      </line_color>
+      <background_color>
+        <color red="0" green="0" blue="0">
+        </color>
+      </background_color>
+      <transparent>true</transparent>
+    </widget>
+    <widget type="label" version="2.0.0">
+      <name>text #48</name>
+      <text>Time Series</text>
+      <x>125</x>
+      <y>5</y>
+      <width>110</width>
+      <font>
+        <font family="Liberation Sans" style="REGULAR" size="16.0">
+        </font>
+      </font>
+      <foreground_color>
+        <color red="10" green="0" blue="184">
+        </color>
+      </foreground_color>
+      <horizontal_alignment>1</horizontal_alignment>
+    </widget>
+    <widget type="label" version="2.0.0">
+      <name>text #51</name>
+      <text>Current point</text>
+      <x>61</x>
+      <y>82</y>
+      <width>130</width>
+      <font>
+        <font family="Liberation Sans" style="REGULAR" size="16.0">
+        </font>
+      </font>
+      <horizontal_alignment>2</horizontal_alignment>
+    </widget>
+    <widget type="textupdate" version="2.0.0">
+      <name>text update #54</name>
+      <pv_name>$(P)$(R)TS:TSCurrentPoint</pv_name>
+      <x>196</x>
+      <y>83</y>
+      <width>90</width>
+      <height>18</height>
+      <font>
+        <font family="Liberation Sans" style="REGULAR" size="16.0">
+        </font>
+      </font>
+      <foreground_color>
+        <color red="10" green="0" blue="184">
+        </color>
+      </foreground_color>
+      <background_color>
+        <color red="187" green="187" blue="187">
+        </color>
+      </background_color>
+      <format>1</format>
+      <show_units>false</show_units>
+      <border_alarm_sensitive>false</border_alarm_sensitive>
+    </widget>
+    <widget type="combo" version="2.0.0">
+      <name>menu #58</name>
+      <pv_name>$(P)$(R)TS:TSRead.SCAN</pv_name>
+      <x>176</x>
+      <y>107</y>
+      <height>20</height>
+      <background_color>
+        <color red="115" green="223" blue="255">
+        </color>
+      </background_color>
+      <border_alarm_sensitive>false</border_alarm_sensitive>
+    </widget>
+    <widget type="action_button" version="3.0.0">
+      <name>message button #61</name>
+      <actions>
+        <action type="write_pv">
+          <pv_name>$(P)$(R)TS:TSRead.PROC</pv_name>
+          <value>1</value>
+          <description>Write</description>
+        </action>
+      </actions>
+      <pv_name>$(P)$(R)TS:TSRead.PROC</pv_name>
+      <text>Read</text>
+      <x>281</x>
+      <y>107</y>
+      <width>70</width>
+      <height>20</height>
+      <background_color>
+        <color red="115" green="223" blue="255">
+        </color>
+      </background_color>
+    </widget>
+    <widget type="label" version="2.0.0">
+      <name>text #64</name>
+      <text>Read rate</text>
+      <x>81</x>
+      <y>107</y>
+      <width>90</width>
+      <font>
+        <font family="Liberation Sans" style="REGULAR" size="16.0">
+        </font>
+      </font>
+      <horizontal_alignment>2</horizontal_alignment>
+    </widget>
+    <widget type="textentry" version="3.0.0">
+      <name>text entry #67</name>
+      <pv_name>$(P)$(R)TS:TSNumPoints</pv_name>
+      <x>196</x>
+      <y>58</y>
+      <width>60</width>
+      <height>19</height>
+      <font>
+        <font family="Liberation Sans" style="REGULAR" size="16.0">
+        </font>
+      </font>
+      <background_color>
+        <color red="115" green="223" blue="255">
+        </color>
+      </background_color>
+      <format>1</format>
+      <show_units>false</show_units>
+      <border_alarm_sensitive>false</border_alarm_sensitive>
+    </widget>
+    <widget type="label" version="2.0.0">
+      <name>text #71</name>
+      <text>Number of points</text>
+      <x>31</x>
+      <y>57</y>
+      <width>160</width>
+      <font>
+        <font family="Liberation Sans" style="REGULAR" size="16.0">
+        </font>
+      </font>
+      <horizontal_alignment>2</horizontal_alignment>
+    </widget>
+    <widget type="action_button" version="3.0.0">
+      <name>message button #74</name>
+      <actions>
+        <action type="write_pv">
+          <pv_name>$(P)$(R)TS:TSAcquire</pv_name>
+          <value>1</value>
+          <description>Write</description>
+        </action>
+      </actions>
+      <pv_name>$(P)$(R)TS:TSAcquire</pv_name>
+      <text>Erase/Start</text>
+      <x>101</x>
+      <y>32</y>
+      <width>90</width>
+      <height>20</height>
+      <background_color>
+        <color red="115" green="223" blue="255">
+        </color>
+      </background_color>
+    </widget>
+    <widget type="action_button" version="3.0.0">
+      <name>message button #77</name>
+      <actions>
+        <action type="write_pv">
+          <pv_name>$(P)$(R)TS:TSAcquire</pv_name>
+          <value>0</value>
+          <description>Write</description>
+        </action>
+      </actions>
+      <pv_name>$(P)$(R)TS:TSAcquire</pv_name>
+      <text>Stop</text>
+      <x>196</x>
+      <y>32</y>
+      <width>60</width>
+      <height>20</height>
+      <background_color>
+        <color red="115" green="223" blue="255">
+        </color>
+      </background_color>
+    </widget>
+    <widget type="textupdate" version="2.0.0">
+      <name>text update #80</name>
+      <pv_name>$(P)$(R)TS:TSAcquiring</pv_name>
+      <x>261</x>
+      <y>33</y>
+      <width>90</width>
+      <height>18</height>
+      <font>
+        <font family="Liberation Sans" style="REGULAR" size="16.0">
+        </font>
+      </font>
+      <foreground_color>
+        <color red="10" green="0" blue="184">
+        </color>
+      </foreground_color>
+      <background_color>
+        <color red="70" green="70" blue="70">
+        </color>
+      </background_color>
+      <format>6</format>
+      <show_units>false</show_units>
+    </widget>
+    <widget type="label" version="2.0.0">
+      <name>text #84</name>
+      <text>Acquire</text>
+      <x>26</x>
+      <y>32</y>
+      <width>70</width>
+      <font>
+        <font family="Liberation Sans" style="REGULAR" size="16.0">
+        </font>
+      </font>
+      <auto_size>true</auto_size>
+    </widget>
+    <widget type="action_button" version="3.0.0">
+      <name>related display #87</name>
+      <actions>
+        <action type="open_display">
+          <file>NDPluginTimeSeries.opi</file>
+          <macros>
+            <R>$(R)TS:</R>
+          </macros>
+          <target>tab</target>
+          <description>Time series control</description>
+        </action>
+      </actions>
+      <text>More</text>
+      <x>281</x>
+      <y>132</y>
+      <width>70</width>
+      <height>20</height>
+      <background_color>
+        <color red="115" green="223" blue="255">
+        </color>
+      </background_color>
+    </widget>
+    <widget type="label" version="2.0.0">
+      <name>text #90</name>
+      <text>AcquireMode</text>
+      <x>61</x>
+      <y>131</y>
+      <width>110</width>
+      <font>
+        <font family="Liberation Sans" style="REGULAR" size="16.0">
+        </font>
+      </font>
+      <auto_size>true</auto_size>
+    </widget>
+    <widget type="combo" version="2.0.0">
+      <name>menu #93</name>
+      <pv_name>$(P)$(R)TS:TSAcquireMode</pv_name>
+      <x>176</x>
+      <y>131</y>
+      <height>20</height>
+      <background_color>
+        <color red="115" green="223" blue="255">
+        </color>
+      </background_color>
+      <border_alarm_sensitive>false</border_alarm_sensitive>
+    </widget>
+  </widget>
+</display>

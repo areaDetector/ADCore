@@ -1,0 +1,1405 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<display version="2.0.0">
+  <name>ADTop</name>
+  <x>280</x>
+  <y>87</y>
+  <width>225</width>
+  <height>765</height>
+  <background_color>
+    <color red="187" green="187" blue="187">
+    </color>
+  </background_color>
+  <grid_visible>false</grid_visible>
+  <grid_step_x>5</grid_step_x>
+  <widget type="label" version="2.0.0">
+    <name>text #6</name>
+    <text>Area Detector</text>
+    <x>12</x>
+    <y>6</y>
+    <width>201</width>
+    <height>31</height>
+    <font>
+      <font family="Liberation Sans" style="REGULAR" size="30.0">
+      </font>
+    </font>
+    <auto_size>true</auto_size>
+  </widget>
+  <widget type="action_button" version="3.0.0">
+    <name>related display #9</name>
+    <actions>
+      <action type="open_display">
+        <file>ADBase.opi</file>
+        <macros>
+          <P>13ANDOR1:</P>
+          <R>cam1:</R>
+        </macros>
+        <target>tab</target>
+        <description>Andor #1 general</description>
+      </action>
+      <action type="open_display">
+        <file>Andor.opi</file>
+        <macros>
+          <P>13ANDOR1:</P>
+          <R>cam1:</R>
+        </macros>
+        <target>tab</target>
+        <description>Andor #1 specific</description>
+      </action>
+      <action type="open_display">
+        <file>ADBase.opi</file>
+        <macros>
+          <P>13ANDOR3:</P>
+          <R>cam1:</R>
+        </macros>
+        <target>tab</target>
+        <description>Andor3 #1 general</description>
+      </action>
+      <action type="open_display">
+        <file>Andor3.opi</file>
+        <macros>
+          <P>13ANDOR3:</P>
+          <R>cam1:</R>
+        </macros>
+        <target>tab</target>
+        <description>Andor3 #1 specific</description>
+      </action>
+      <action type="open_display">
+        <file>Shamrock.opi</file>
+        <macros>
+          <P>13ANDOR1:</P>
+          <R>sham1:</R>
+        </macros>
+        <target>tab</target>
+        <description>Shamrock #1</description>
+      </action>
+    </actions>
+    <text></text>
+    <x>145</x>
+    <y>110</y>
+    <width>64</width>
+    <height>20</height>
+    <background_color>
+      <color red="115" green="223" blue="255">
+      </color>
+    </background_color>
+  </widget>
+  <widget type="label" version="2.0.0">
+    <name>text #16</name>
+    <text>Andor</text>
+    <x>90</x>
+    <y>110</y>
+    <width>50</width>
+    <font>
+      <font family="Liberation Sans" style="REGULAR" size="16.0">
+      </font>
+    </font>
+    <horizontal_alignment>2</horizontal_alignment>
+  </widget>
+  <widget type="action_button" version="3.0.0">
+    <name>related display #19</name>
+    <actions>
+      <action type="open_display">
+        <file>ADBase.opi</file>
+        <macros>
+          <P>13ADSC1:</P>
+          <R>cam1:</R>
+        </macros>
+        <target>tab</target>
+        <description>ADSC general</description>
+      </action>
+      <action type="open_display">
+        <file>adsc.opi</file>
+        <macros>
+          <P>13ADSC1:</P>
+          <R>cam1:</R>
+        </macros>
+        <target>tab</target>
+        <description>ADSC specific</description>
+      </action>
+    </actions>
+    <text></text>
+    <x>145</x>
+    <y>85</y>
+    <width>64</width>
+    <height>20</height>
+    <background_color>
+      <color red="115" green="223" blue="255">
+      </color>
+    </background_color>
+  </widget>
+  <widget type="label" version="2.0.0">
+    <name>text #23</name>
+    <text>ADSC</text>
+    <x>100</x>
+    <y>85</y>
+    <width>40</width>
+    <font>
+      <font family="Liberation Sans" style="REGULAR" size="16.0">
+      </font>
+    </font>
+    <horizontal_alignment>2</horizontal_alignment>
+  </widget>
+  <widget type="action_button" version="3.0.0">
+    <name>related display #26</name>
+    <actions>
+      <action type="open_display">
+        <file>ADCSimDetector.opi</file>
+        <macros>
+          <P>13ADCSIM1:</P>
+          <R>det1:</R>
+        </macros>
+        <target>tab</target>
+        <description>ADC simulator</description>
+      </action>
+    </actions>
+    <text></text>
+    <x>145</x>
+    <y>60</y>
+    <width>64</width>
+    <height>20</height>
+    <background_color>
+      <color red="115" green="223" blue="255">
+      </color>
+    </background_color>
+  </widget>
+  <widget type="label" version="2.0.0">
+    <name>text #29</name>
+    <text>ADC Simulator</text>
+    <x>10</x>
+    <y>60</y>
+    <width>130</width>
+    <font>
+      <font family="Liberation Sans" style="REGULAR" size="16.0">
+      </font>
+    </font>
+    <horizontal_alignment>2</horizontal_alignment>
+  </widget>
+  <widget type="label" version="2.0.0">
+    <name>text #32</name>
+    <text>aravisGigE</text>
+    <x>40</x>
+    <y>135</y>
+    <font>
+      <font family="Liberation Sans" style="REGULAR" size="16.0">
+      </font>
+    </font>
+    <horizontal_alignment>2</horizontal_alignment>
+  </widget>
+  <widget type="action_button" version="3.0.0">
+    <name>related display #35</name>
+    <actions>
+      <action type="open_display">
+        <file>ADBase.opi</file>
+        <macros>
+          <P>13ARV1:</P>
+          <R>cam1:</R>
+        </macros>
+        <target>tab</target>
+        <description>aravisGigE #1 general</description>
+      </action>
+      <action type="open_display">
+        <file>ADBase.opi</file>
+        <macros>
+          <P>13ARV1:</P>
+          <R>cam1:</R>
+        </macros>
+        <target>tab</target>
+        <description>aravisGigE #1 specific</description>
+      </action>
+    </actions>
+    <text></text>
+    <x>145</x>
+    <y>135</y>
+    <width>64</width>
+    <height>20</height>
+    <background_color>
+      <color red="115" green="223" blue="255">
+      </color>
+    </background_color>
+  </widget>
+  <widget type="action_button" version="3.0.0">
+    <name>related display #39</name>
+    <actions>
+      <action type="open_display">
+        <file>ADBase.opi</file>
+        <macros>
+          <P>BIS:</P>
+          <R>cam1:</R>
+        </macros>
+        <target>tab</target>
+        <description>BIS #1 general</description>
+      </action>
+      <action type="open_display">
+        <file>BIS.opi</file>
+        <macros>
+          <P>BIS:</P>
+          <R>cam1:</R>
+        </macros>
+        <target>tab</target>
+        <description>BIS #1 specific</description>
+      </action>
+    </actions>
+    <text></text>
+    <x>145</x>
+    <y>185</y>
+    <width>64</width>
+    <height>20</height>
+    <background_color>
+      <color red="115" green="223" blue="255">
+      </color>
+    </background_color>
+  </widget>
+  <widget type="label" version="2.0.0">
+    <name>text #43</name>
+    <text>BIS</text>
+    <x>110</x>
+    <y>185</y>
+    <width>30</width>
+    <font>
+      <font family="Liberation Sans" style="REGULAR" size="16.0">
+      </font>
+    </font>
+    <horizontal_alignment>2</horizontal_alignment>
+  </widget>
+  <widget type="action_button" version="3.0.0">
+    <name>related display #46</name>
+    <actions>
+      <action type="open_display">
+        <file>ADBase.opi</file>
+        <macros>
+          <P>13FW1:</P>
+          <R>cam1:</R>
+        </macros>
+        <target>tab</target>
+        <description>Firewire #1 general</description>
+      </action>
+      <action type="open_display">
+        <file>firewire.opi</file>
+        <macros>
+          <P>13FW1:</P>
+          <R>cam1:</R>
+        </macros>
+        <target>tab</target>
+        <description>Firewire #1 specific</description>
+      </action>
+    </actions>
+    <text></text>
+    <x>145</x>
+    <y>260</y>
+    <width>64</width>
+    <height>20</height>
+    <background_color>
+      <color red="115" green="223" blue="255">
+      </color>
+    </background_color>
+  </widget>
+  <widget type="label" version="2.0.0">
+    <name>text #50</name>
+    <text>Firewire</text>
+    <x>60</x>
+    <y>260</y>
+    <width>80</width>
+    <font>
+      <font family="Liberation Sans" style="REGULAR" size="16.0">
+      </font>
+    </font>
+    <horizontal_alignment>2</horizontal_alignment>
+  </widget>
+  <widget type="action_button" version="3.0.0">
+    <name>related display #53</name>
+    <actions>
+      <action type="open_display">
+        <file>ADBase.opi</file>
+        <macros>
+          <P>13DEX1:</P>
+          <R>cam1:</R>
+        </macros>
+        <target>tab</target>
+        <description>Dexela #1 general</description>
+      </action>
+      <action type="open_display">
+        <file>Dexela.opi</file>
+        <macros>
+          <P>13DEX1:</P>
+          <R>cam1:</R>
+        </macros>
+        <target>tab</target>
+        <description>Dexela #1 specific</description>
+      </action>
+    </actions>
+    <text></text>
+    <x>145</x>
+    <y>209</y>
+    <width>64</width>
+    <height>20</height>
+    <background_color>
+      <color red="115" green="223" blue="255">
+      </color>
+    </background_color>
+  </widget>
+  <widget type="label" version="2.0.0">
+    <name>text #57</name>
+    <text>Dexela</text>
+    <x>80</x>
+    <y>209</y>
+    <width>60</width>
+    <font>
+      <font family="Liberation Sans" style="REGULAR" size="16.0">
+      </font>
+    </font>
+    <horizontal_alignment>2</horizontal_alignment>
+  </widget>
+  <widget type="action_button" version="3.0.0">
+    <name>related display #60</name>
+    <actions>
+      <action type="open_display">
+        <file>ADBase.opi</file>
+        <macros>
+          <P>13EIG1:</P>
+          <R>cam1:</R>
+        </macros>
+        <target>tab</target>
+        <description>Eiger #1 general</description>
+      </action>
+      <action type="open_display">
+        <file>eigerDetector.opi</file>
+        <macros>
+          <P>13EIG1:</P>
+          <R>cam1:</R>
+        </macros>
+        <target>tab</target>
+        <description>Eiger #1 specific</description>
+      </action>
+    </actions>
+    <text></text>
+    <x>145</x>
+    <y>235</y>
+    <width>64</width>
+    <height>20</height>
+    <background_color>
+      <color red="115" green="223" blue="255">
+      </color>
+    </background_color>
+  </widget>
+  <widget type="label" version="2.0.0">
+    <name>text #64</name>
+    <text>Eiger</text>
+    <x>90</x>
+    <y>235</y>
+    <width>50</width>
+    <font>
+      <font family="Liberation Sans" style="REGULAR" size="16.0">
+      </font>
+    </font>
+    <horizontal_alignment>2</horizontal_alignment>
+  </widget>
+  <widget type="label" version="2.0.0">
+    <name>text #67</name>
+    <text>ADAravis</text>
+    <x>60</x>
+    <y>160</y>
+    <width>80</width>
+    <font>
+      <font family="Liberation Sans" style="REGULAR" size="16.0">
+      </font>
+    </font>
+    <horizontal_alignment>2</horizontal_alignment>
+  </widget>
+  <widget type="action_button" version="3.0.0">
+    <name>related display #70</name>
+    <actions>
+      <action type="open_display">
+        <file>ADAravis.opi</file>
+        <macros>
+          <C>PGR_Blackfly_20E4C</C>
+          <P>13ARV1:</P>
+          <R>cam1:</R>
+        </macros>
+        <target>tab</target>
+        <description>Blackfly 20E4C</description>
+      </action>
+      <action type="open_display">
+        <file>ADAravis.opi</file>
+        <macros>
+          <C>AVT_Manta_G507C</C>
+          <P>13ARV1:</P>
+          <R>cam1:</R>
+        </macros>
+        <target>tab</target>
+        <description>Manta G507C</description>
+      </action>
+      <action type="open_display">
+        <file>ADAravis.opi</file>
+        <macros>
+          <C>PGR_BlackflyS_13Y3M</C>
+          <P>13ARV1:</P>
+          <R>cam1:</R>
+        </macros>
+        <target>tab</target>
+        <description>BlackflyS 13Y3M</description>
+      </action>
+      <action type="open_display">
+        <file>ADAravis.opi</file>
+        <macros>
+          <C>PGR_GS3_U3_23S6M</C>
+          <P>13ARV1:</P>
+          <R>cam1:</R>
+        </macros>
+        <target>tab</target>
+        <description>Grasshopper3 23S6M</description>
+      </action>
+      <action type="open_display">
+        <file>ADAravis.opi</file>
+        <macros>
+          <C>FLIR_ORX_10G_51S5M</C>
+          <P>13ARV1:</P>
+          <R>cam1:</R>
+        </macros>
+        <target>tab</target>
+        <description>Oryx 51S5M</description>
+      </action>
+      <action type="open_display">
+        <file>ADAravis.opi</file>
+        <macros>
+          <C>PGR_BlackflyS_50S5C</C>
+          <P>13ARV1:</P>
+          <R>cam1:</R>
+        </macros>
+        <target>tab</target>
+        <description>BlackflyS 50S5C</description>
+      </action>
+    </actions>
+    <text></text>
+    <x>145</x>
+    <y>160</y>
+    <width>64</width>
+    <height>20</height>
+    <background_color>
+      <color red="115" green="223" blue="255">
+      </color>
+    </background_color>
+  </widget>
+  <widget type="action_button" version="3.0.0">
+    <name>related display #78</name>
+    <actions>
+      <action type="open_display">
+        <file>ADBase.opi</file>
+        <macros>
+          <P>13MAR345_1:</P>
+          <R>cam1:</R>
+        </macros>
+        <target>tab</target>
+        <description>mar345 #1 general</description>
+      </action>
+      <action type="open_display">
+        <file>mar345.opi</file>
+        <macros>
+          <P>13MAR345_1:</P>
+          <R>cam1:</R>
+        </macros>
+        <target>tab</target>
+        <description>mar345 #1 specific</description>
+      </action>
+    </actions>
+    <text></text>
+    <x>145</x>
+    <y>310</y>
+    <width>64</width>
+    <height>20</height>
+    <background_color>
+      <color red="115" green="223" blue="255">
+      </color>
+    </background_color>
+  </widget>
+  <widget type="label" version="2.0.0">
+    <name>text #82</name>
+    <text>Mar345</text>
+    <x>80</x>
+    <y>310</y>
+    <width>60</width>
+    <font>
+      <font family="Liberation Sans" style="REGULAR" size="16.0">
+      </font>
+    </font>
+    <horizontal_alignment>2</horizontal_alignment>
+  </widget>
+  <widget type="action_button" version="3.0.0">
+    <name>related display #85</name>
+    <actions>
+      <action type="open_display">
+        <file>ADBase.opi</file>
+        <macros>
+          <P>13LF1:</P>
+          <R>cam1:</R>
+        </macros>
+        <target>tab</target>
+        <description>LightField #1 general</description>
+      </action>
+      <action type="open_display">
+        <file>LightField.opi</file>
+        <macros>
+          <P>13LF1:</P>
+          <R>cam1:</R>
+        </macros>
+        <target>tab</target>
+        <description>LightField #1 specific</description>
+      </action>
+      <action type="open_display">
+        <file>LightField.opi</file>
+        <macros>
+          <P>13LF2:</P>
+          <R>cam1:</R>
+        </macros>
+        <target>tab</target>
+        <description>LightField #2 specific</description>
+      </action>
+    </actions>
+    <text></text>
+    <x>145</x>
+    <y>285</y>
+    <width>64</width>
+    <height>20</height>
+    <background_color>
+      <color red="115" green="223" blue="255">
+      </color>
+    </background_color>
+  </widget>
+  <widget type="label" version="2.0.0">
+    <name>text #90</name>
+    <text>LightField</text>
+    <x>39</x>
+    <y>285</y>
+    <font>
+      <font family="Liberation Sans" style="REGULAR" size="16.0">
+      </font>
+    </font>
+    <horizontal_alignment>2</horizontal_alignment>
+  </widget>
+  <widget type="label" version="2.0.0">
+    <name>text #93</name>
+    <text>Perkin Elmer</text>
+    <x>20</x>
+    <y>410</y>
+    <width>120</width>
+    <font>
+      <font family="Liberation Sans" style="REGULAR" size="16.0">
+      </font>
+    </font>
+    <horizontal_alignment>2</horizontal_alignment>
+  </widget>
+  <widget type="action_button" version="3.0.0">
+    <name>related display #96</name>
+    <actions>
+      <action type="open_display">
+        <file>ADBase.opi</file>
+        <macros>
+          <P>13PE1:</P>
+          <R>cam1:</R>
+        </macros>
+        <target>tab</target>
+        <description>Perkin Elmer #1 general</description>
+      </action>
+      <action type="open_display">
+        <file>PerkinElmer.opi</file>
+        <macros>
+          <P>13PE1:</P>
+          <R>cam1:</R>
+        </macros>
+        <target>tab</target>
+        <description>Perkin Elmer #1 specific</description>
+      </action>
+    </actions>
+    <text></text>
+    <x>145</x>
+    <y>410</y>
+    <width>64</width>
+    <height>20</height>
+    <background_color>
+      <color red="115" green="223" blue="255">
+      </color>
+    </background_color>
+  </widget>
+  <widget type="label" version="2.0.0">
+    <name>text #100</name>
+    <text>NDStdArrays</text>
+    <x>30</x>
+    <y>385</y>
+    <width>110</width>
+    <font>
+      <font family="Liberation Sans" style="REGULAR" size="16.0">
+      </font>
+    </font>
+    <horizontal_alignment>2</horizontal_alignment>
+  </widget>
+  <widget type="action_button" version="3.0.0">
+    <name>related display #103</name>
+    <actions>
+      <action type="open_display">
+        <file>ADBase.opi</file>
+        <macros>
+          <P>13NDSA1:</P>
+          <R>cam1:</R>
+        </macros>
+        <target>tab</target>
+        <description>NDStdArrays #1 general</description>
+      </action>
+      <action type="open_display">
+        <file>NDDriverStdArrays.opi</file>
+        <macros>
+          <P>13NDSA1:</P>
+          <R>cam1:</R>
+        </macros>
+        <target>tab</target>
+        <description>NDStdArrays #1 specific</description>
+      </action>
+    </actions>
+    <text></text>
+    <x>145</x>
+    <y>385</y>
+    <width>64</width>
+    <height>20</height>
+    <background_color>
+      <color red="115" green="223" blue="255">
+      </color>
+    </background_color>
+  </widget>
+  <widget type="action_button" version="3.0.0">
+    <name>related display #107</name>
+    <actions>
+      <action type="open_display">
+        <file>ADBase.opi</file>
+        <macros>
+          <P>13PS1:</P>
+          <R>cam1:</R>
+        </macros>
+        <target>tab</target>
+        <description>Prosilica #1 general</description>
+      </action>
+      <action type="open_display">
+        <file>prosilica.opi</file>
+        <macros>
+          <P>13PS1:</P>
+          <R>cam1:</R>
+        </macros>
+        <target>tab</target>
+        <description>Prosilica #1 specific</description>
+      </action>
+      <action type="open_display">
+        <file>ADBase.opi</file>
+        <macros>
+          <P>13PS1:</P>
+          <R>cam2:</R>
+        </macros>
+        <target>tab</target>
+        <description>Prosilica #2 general</description>
+      </action>
+      <action type="open_display">
+        <file>prosilica.opi</file>
+        <macros>
+          <P>13PS1:</P>
+          <R>cam2:</R>
+        </macros>
+        <target>tab</target>
+        <description>Prosilica #2 specific</description>
+      </action>
+    </actions>
+    <text></text>
+    <x>145</x>
+    <y>535</y>
+    <width>64</width>
+    <height>20</height>
+    <background_color>
+      <color red="115" green="223" blue="255">
+      </color>
+    </background_color>
+  </widget>
+  <widget type="label" version="2.0.0">
+    <name>text #113</name>
+    <text>Prosilica</text>
+    <x>50</x>
+    <y>535</y>
+    <width>90</width>
+    <font>
+      <font family="Liberation Sans" style="REGULAR" size="16.0">
+      </font>
+    </font>
+    <horizontal_alignment>2</horizontal_alignment>
+  </widget>
+  <widget type="action_button" version="3.0.0">
+    <name>related display #116</name>
+    <actions>
+      <action type="open_display">
+        <file>ADBase.opi</file>
+        <macros>
+          <P>13PIL1:</P>
+          <R>cam1:</R>
+        </macros>
+        <target>tab</target>
+        <description>Pilatus #1 general</description>
+      </action>
+      <action type="open_display">
+        <file>pilatusDetector.opi</file>
+        <macros>
+          <P>13PIL1:</P>
+          <R>cam1:</R>
+        </macros>
+        <target>tab</target>
+        <description>Pilatus #1 specific</description>
+      </action>
+    </actions>
+    <text></text>
+    <x>145</x>
+    <y>460</y>
+    <width>64</width>
+    <height>20</height>
+    <background_color>
+      <color red="115" green="223" blue="255">
+      </color>
+    </background_color>
+  </widget>
+  <widget type="label" version="2.0.0">
+    <name>text #120</name>
+    <text>Pilatus</text>
+    <x>70</x>
+    <y>460</y>
+    <width>70</width>
+    <font>
+      <font family="Liberation Sans" style="REGULAR" size="16.0">
+      </font>
+    </font>
+    <horizontal_alignment>2</horizontal_alignment>
+  </widget>
+  <widget type="action_button" version="3.0.0">
+    <name>related display #123</name>
+    <actions>
+      <action type="open_display">
+        <file>ADBase.opi</file>
+        <macros>
+          <P>13PR1:</P>
+          <R>cam1:</R>
+        </macros>
+        <target>tab</target>
+        <description>Pixirad #1 general</description>
+      </action>
+      <action type="open_display">
+        <file>pixirad.opi</file>
+        <macros>
+          <P>13PR1:</P>
+          <R>cam1:</R>
+        </macros>
+        <target>tab</target>
+        <description>Pixirad #1 specific</description>
+      </action>
+    </actions>
+    <text></text>
+    <x>145</x>
+    <y>485</y>
+    <width>64</width>
+    <height>20</height>
+    <background_color>
+      <color red="115" green="223" blue="255">
+      </color>
+    </background_color>
+  </widget>
+  <widget type="label" version="2.0.0">
+    <name>text #127</name>
+    <text>Pixirad</text>
+    <x>69</x>
+    <y>485</y>
+    <width>70</width>
+    <font>
+      <font family="Liberation Sans" style="REGULAR" size="16.0">
+      </font>
+    </font>
+    <horizontal_alignment>2</horizontal_alignment>
+  </widget>
+  <widget type="action_button" version="3.0.0">
+    <name>related display #130</name>
+    <actions>
+      <action type="open_display">
+        <file>ADBase.opi</file>
+        <macros>
+          <P>13PG1:</P>
+          <R>cam1:</R>
+        </macros>
+        <target>tab</target>
+        <description>Point Grey #1 general</description>
+      </action>
+      <action type="open_display">
+        <file>pointGrey.opi</file>
+        <macros>
+          <P>13PG1:</P>
+          <R>cam1:</R>
+        </macros>
+        <target>tab</target>
+        <description>Point Grey #1 specific</description>
+      </action>
+    </actions>
+    <text></text>
+    <x>145</x>
+    <y>510</y>
+    <width>64</width>
+    <height>20</height>
+    <background_color>
+      <color red="115" green="223" blue="255">
+      </color>
+    </background_color>
+  </widget>
+  <widget type="label" version="2.0.0">
+    <name>text #134</name>
+    <text>Point Grey</text>
+    <x>39</x>
+    <y>510</y>
+    <font>
+      <font family="Liberation Sans" style="REGULAR" size="16.0">
+      </font>
+    </font>
+    <horizontal_alignment>2</horizontal_alignment>
+  </widget>
+  <widget type="action_button" version="3.0.0">
+    <name>related display #137</name>
+    <actions>
+      <action type="open_display">
+        <file>ADBase.opi</file>
+        <macros>
+          <P>13SIM1:</P>
+          <R>cam1:</R>
+        </macros>
+        <target>tab</target>
+        <description>Simulator #1 General</description>
+      </action>
+      <action type="open_display">
+        <file>simDetector.opi</file>
+        <macros>
+          <P>13SIM1:</P>
+          <R>cam1:</R>
+        </macros>
+        <target>tab</target>
+        <description>Simulator #1 Specific</description>
+      </action>
+      <action type="open_display">
+        <file>ADBase.opi</file>
+        <macros>
+          <P>13SIM1:</P>
+          <R>cam2:</R>
+        </macros>
+        <target>tab</target>
+        <description>Simulator #2 General</description>
+      </action>
+      <action type="open_display">
+        <file>simDetector.opi</file>
+        <macros>
+          <P>13SIM1:</P>
+          <R>cam2:</R>
+        </macros>
+        <target>tab</target>
+        <description>Simulator #2 Specific</description>
+      </action>
+    </actions>
+    <text></text>
+    <x>145</x>
+    <y>660</y>
+    <width>64</width>
+    <height>20</height>
+    <background_color>
+      <color red="115" green="223" blue="255">
+      </color>
+    </background_color>
+  </widget>
+  <widget type="label" version="2.0.0">
+    <name>text #143</name>
+    <text>Simulator</text>
+    <x>50</x>
+    <y>660</y>
+    <width>90</width>
+    <font>
+      <font family="Liberation Sans" style="REGULAR" size="16.0">
+      </font>
+    </font>
+    <horizontal_alignment>2</horizontal_alignment>
+  </widget>
+  <widget type="action_button" version="3.0.0">
+    <name>related display #146</name>
+    <actions>
+      <action type="open_display">
+        <file>ADBase.opi</file>
+        <macros>
+          <P>13ROPER1:</P>
+          <R>cam1:</R>
+        </macros>
+        <target>tab</target>
+        <description>Roper #1 general</description>
+      </action>
+      <action type="open_display">
+        <file>Roper.opi</file>
+        <macros>
+          <P>13ROPER1:</P>
+          <R>cam1:</R>
+        </macros>
+        <target>tab</target>
+        <description>Roper #1 specific</description>
+      </action>
+    </actions>
+    <text></text>
+    <x>145</x>
+    <y>635</y>
+    <width>64</width>
+    <height>20</height>
+    <background_color>
+      <color red="115" green="223" blue="255">
+      </color>
+    </background_color>
+  </widget>
+  <widget type="label" version="2.0.0">
+    <name>text #150</name>
+    <text>Roper</text>
+    <x>90</x>
+    <y>635</y>
+    <width>50</width>
+    <font>
+      <font family="Liberation Sans" style="REGULAR" size="16.0">
+      </font>
+    </font>
+    <horizontal_alignment>2</horizontal_alignment>
+  </widget>
+  <widget type="action_button" version="3.0.0">
+    <name>related display #153</name>
+    <actions>
+      <action type="open_display">
+        <file>ADBase.opi</file>
+        <macros>
+          <P>13PSL1:</P>
+          <R>cam1:</R>
+        </macros>
+        <target>tab</target>
+        <description>PSL #1 general</description>
+      </action>
+      <action type="open_display">
+        <file>PSL.opi</file>
+        <macros>
+          <P>13PSL1:</P>
+          <R>cam1:</R>
+        </macros>
+        <target>tab</target>
+        <description>PSL #1 specific</description>
+      </action>
+    </actions>
+    <text></text>
+    <x>145</x>
+    <y>610</y>
+    <width>64</width>
+    <height>20</height>
+    <background_color>
+      <color red="115" green="223" blue="255">
+      </color>
+    </background_color>
+  </widget>
+  <widget type="label" version="2.0.0">
+    <name>text #157</name>
+    <text>PSL</text>
+    <x>109</x>
+    <y>610</y>
+    <width>30</width>
+    <font>
+      <font family="Liberation Sans" style="REGULAR" size="16.0">
+      </font>
+    </font>
+    <horizontal_alignment>2</horizontal_alignment>
+  </widget>
+  <widget type="action_button" version="3.0.0">
+    <name>related display #160</name>
+    <actions>
+      <action type="open_display">
+        <file>ADBase.opi</file>
+        <macros>
+          <P>13PVCAM1:</P>
+          <R>cam1:</R>
+        </macros>
+        <target>tab</target>
+        <description>PVCAM #1 general</description>
+      </action>
+      <action type="open_display">
+        <file>pvCam.opi</file>
+        <macros>
+          <P>13PVCAM1:</P>
+          <R>cam1:</R>
+        </macros>
+        <target>tab</target>
+        <description>PVCAM #1 specific</description>
+      </action>
+    </actions>
+    <text></text>
+    <x>145</x>
+    <y>585</y>
+    <width>64</width>
+    <height>20</height>
+    <background_color>
+      <color red="115" green="223" blue="255">
+      </color>
+    </background_color>
+  </widget>
+  <widget type="label" version="2.0.0">
+    <name>text #164</name>
+    <text>PVCAM</text>
+    <x>90</x>
+    <y>585</y>
+    <width>50</width>
+    <font>
+      <font family="Liberation Sans" style="REGULAR" size="16.0">
+      </font>
+    </font>
+    <horizontal_alignment>2</horizontal_alignment>
+  </widget>
+  <widget type="action_button" version="3.0.0">
+    <name>related display #167</name>
+    <actions>
+      <action type="open_display">
+        <file>ADBase.opi</file>
+        <macros>
+          <P>13PVA1:</P>
+          <R>cam1:</R>
+        </macros>
+        <target>tab</target>
+        <description>PvaDriver #1 general</description>
+      </action>
+      <action type="open_display">
+        <file>ADPvaDriver.opi</file>
+        <macros>
+          <P>13PVA1:</P>
+          <R>cam1:</R>
+        </macros>
+        <target>tab</target>
+        <description>PvaDriver #1 specific</description>
+      </action>
+    </actions>
+    <text></text>
+    <x>145</x>
+    <y>560</y>
+    <width>64</width>
+    <height>20</height>
+    <background_color>
+      <color red="115" green="223" blue="255">
+      </color>
+    </background_color>
+  </widget>
+  <widget type="label" version="2.0.0">
+    <name>text #171</name>
+    <text>PvaDriver</text>
+    <x>50</x>
+    <y>560</y>
+    <width>90</width>
+    <font>
+      <font family="Liberation Sans" style="REGULAR" size="16.0">
+      </font>
+    </font>
+    <horizontal_alignment>2</horizontal_alignment>
+  </widget>
+  <widget type="label" version="2.0.0">
+    <name>text #174</name>
+    <text>Photon II</text>
+    <x>50</x>
+    <y>435</y>
+    <width>90</width>
+    <font>
+      <font family="Liberation Sans" style="REGULAR" size="16.0">
+      </font>
+    </font>
+    <horizontal_alignment>2</horizontal_alignment>
+  </widget>
+  <widget type="action_button" version="3.0.0">
+    <name>related display #177</name>
+    <actions>
+      <action type="open_display">
+        <file>ADBase.opi</file>
+        <macros>
+          <P>13PII_1:</P>
+          <R>cam1:</R>
+        </macros>
+        <target>tab</target>
+        <description>Photon II #1 general</description>
+      </action>
+      <action type="open_display">
+        <file>PhotonII.opi</file>
+        <macros>
+          <P>13PII_1:</P>
+          <R>cam1:</R>
+        </macros>
+        <target>tab</target>
+        <description>Photon II #1 specific</description>
+      </action>
+    </actions>
+    <text></text>
+    <x>145</x>
+    <y>435</y>
+    <width>64</width>
+    <height>20</height>
+    <background_color>
+      <color red="115" green="223" blue="255">
+      </color>
+    </background_color>
+  </widget>
+  <widget type="label" version="2.0.0">
+    <name>text #181</name>
+    <text>URL</text>
+    <x>110</x>
+    <y>710</y>
+    <width>30</width>
+    <font>
+      <font family="Liberation Sans" style="REGULAR" size="16.0">
+      </font>
+    </font>
+    <horizontal_alignment>2</horizontal_alignment>
+  </widget>
+  <widget type="action_button" version="3.0.0">
+    <name>related display #184</name>
+    <actions>
+      <action type="open_display">
+        <file>ADBase.opi</file>
+        <macros>
+          <P>13URL1:</P>
+          <R>cam1:</R>
+        </macros>
+        <target>tab</target>
+        <description>URL #1 general</description>
+      </action>
+      <action type="open_display">
+        <file>URLDriver.opi</file>
+        <macros>
+          <P>13URL1:</P>
+          <R>cam1:</R>
+        </macros>
+        <target>tab</target>
+        <description>URL #1 specific</description>
+      </action>
+    </actions>
+    <text></text>
+    <x>145</x>
+    <y>710</y>
+    <width>64</width>
+    <height>20</height>
+    <background_color>
+      <color red="115" green="223" blue="255">
+      </color>
+    </background_color>
+  </widget>
+  <widget type="label" version="2.0.0">
+    <name>text #188</name>
+    <text>AVT Vimba</text>
+    <x>50</x>
+    <y>735</y>
+    <width>90</width>
+    <font>
+      <font family="Liberation Sans" style="REGULAR" size="16.0">
+      </font>
+    </font>
+    <horizontal_alignment>2</horizontal_alignment>
+  </widget>
+  <widget type="action_button" version="3.0.0">
+    <name>related display #191</name>
+    <actions>
+      <action type="open_display">
+        <file>ADVimba.opi</file>
+        <macros>
+          <C>AVT_Manta_G507C</C>
+          <P>13VMB1:</P>
+          <R>cam1:</R>
+        </macros>
+        <target>tab</target>
+        <description>Manta G507C</description>
+      </action>
+      <action type="open_display">
+        <file>ADVimba.opi</file>
+        <macros>
+          <C>AVT_GC1380CH</C>
+          <P>13VMB1:</P>
+          <R>cam1:</R>
+        </macros>
+        <target>tab</target>
+        <description>GC1380CH</description>
+      </action>
+    </actions>
+    <text></text>
+    <x>145</x>
+    <y>735</y>
+    <width>64</width>
+    <height>20</height>
+    <background_color>
+      <color red="115" green="223" blue="255">
+      </color>
+    </background_color>
+  </widget>
+  <widget type="action_button" version="3.0.0">
+    <name>related display #195</name>
+    <actions>
+      <action type="open_display">
+        <file>ADBase.opi</file>
+        <macros>
+          <P>13MARCCD1:</P>
+          <R>cam1:</R>
+        </macros>
+        <target>tab</target>
+        <description>marCCD #1 general</description>
+      </action>
+      <action type="open_display">
+        <file>marCCD.opi</file>
+        <macros>
+          <P>13MARCCD1:</P>
+          <R>cam1:</R>
+        </macros>
+        <target>tab</target>
+        <description>marCCD #1 specific</description>
+      </action>
+    </actions>
+    <text></text>
+    <x>145</x>
+    <y>335</y>
+    <width>64</width>
+    <height>20</height>
+    <background_color>
+      <color red="115" green="223" blue="255">
+      </color>
+    </background_color>
+  </widget>
+  <widget type="label" version="2.0.0">
+    <name>text #199</name>
+    <text>MarCCD</text>
+    <x>80</x>
+    <y>335</y>
+    <width>60</width>
+    <font>
+      <font family="Liberation Sans" style="REGULAR" size="16.0">
+      </font>
+    </font>
+    <horizontal_alignment>2</horizontal_alignment>
+  </widget>
+  <widget type="action_button" version="3.0.0">
+    <name>related display #202</name>
+    <actions>
+      <action type="open_display">
+        <file>ADBase.opi</file>
+        <macros>
+          <P>MMPAD3x2:</P>
+          <R>cam1:</R>
+        </macros>
+        <target>tab</target>
+        <description>MMPAD #1 general</description>
+      </action>
+      <action type="open_display">
+        <file>mmpadDetector.opi</file>
+        <macros>
+          <P>MMPAD3x2:</P>
+          <R>cam1:</R>
+        </macros>
+        <target>tab</target>
+        <description>MMPAD #1 specific</description>
+      </action>
+    </actions>
+    <text></text>
+    <x>145</x>
+    <y>360</y>
+    <width>64</width>
+    <height>20</height>
+    <background_color>
+      <color red="115" green="223" blue="255">
+      </color>
+    </background_color>
+  </widget>
+  <widget type="label" version="2.0.0">
+    <name>text #206</name>
+    <text>MMPAD</text>
+    <x>90</x>
+    <y>360</y>
+    <width>50</width>
+    <font>
+      <font family="Liberation Sans" style="REGULAR" size="16.0">
+      </font>
+    </font>
+    <horizontal_alignment>2</horizontal_alignment>
+  </widget>
+  <widget type="label" version="2.0.0">
+    <name>text #209</name>
+    <text>Spinnaker</text>
+    <x>50</x>
+    <y>685</y>
+    <width>90</width>
+    <font>
+      <font family="Liberation Sans" style="REGULAR" size="16.0">
+      </font>
+    </font>
+    <horizontal_alignment>2</horizontal_alignment>
+  </widget>
+  <widget type="action_button" version="3.0.0">
+    <name>related display #212</name>
+    <actions>
+      <action type="open_display">
+        <file>ADSpinnaker.opi</file>
+        <macros>
+          <C>PGR_Blackfly_20E4C</C>
+          <P>13SP1:</P>
+          <R>cam1:</R>
+        </macros>
+        <target>tab</target>
+        <description>Blackfly 20E4C</description>
+      </action>
+      <action type="open_display">
+        <file>ADSpinnaker.opi</file>
+        <macros>
+          <C>FLIR_ORX_10G_51S5M</C>
+          <P>13SP1:</P>
+          <R>cam1:</R>
+        </macros>
+        <target>tab</target>
+        <description>Oryx 51S5</description>
+      </action>
+      <action type="open_display">
+        <file>ADSpinnaker.opi</file>
+        <macros>
+          <C>PGR_BlackflyS_13Y3M</C>
+          <P>13SP1:</P>
+          <R>cam1:</R>
+        </macros>
+        <target>tab</target>
+        <description>BlackflyS 13Y3M</description>
+      </action>
+      <action type="open_display">
+        <file>ADSpinnaker.opi</file>
+        <macros>
+          <C>PGR_GS3_U3_23S6M</C>
+          <P>13SP1:</P>
+          <R>cam1:</R>
+        </macros>
+        <target>tab</target>
+        <description>Grasshopper3 U3 23S6M</description>
+      </action>
+      <action type="open_display">
+        <file>ADSpinnaker.opi</file>
+        <macros>
+          <C>PGR_BlackflyS_50S5C</C>
+          <P>13SP1:</P>
+          <R>cam1:</R>
+        </macros>
+        <target>tab</target>
+        <description>BlackflyS 50S5C</description>
+      </action>
+      <action type="open_display">
+        <file>ADSpinnaker.opi</file>
+        <macros>
+          <C>PGR_GS3_PGE_23S6C</C>
+          <P>13SP1:</P>
+          <R>cam1:</R>
+        </macros>
+        <target>tab</target>
+        <description>Grasshopper3 PGE 23S6C</description>
+      </action>
+    </actions>
+    <text></text>
+    <x>145</x>
+    <y>685</y>
+    <width>64</width>
+    <height>20</height>
+    <background_color>
+      <color red="115" green="223" blue="255">
+      </color>
+    </background_color>
+  </widget>
+</display>

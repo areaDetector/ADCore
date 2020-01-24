@@ -1,0 +1,1061 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<display version="2.0.0">
+  <name>NDFFT16</name>
+  <x>559</x>
+  <y>207</y>
+  <width>310</width>
+  <height>225</height>
+  <background_color>
+    <color red="187" green="187" blue="187">
+    </color>
+  </background_color>
+  <grid_visible>false</grid_visible>
+  <grid_step_x>5</grid_step_x>
+  <widget type="rectangle" version="2.0.0">
+    <name>rectangle #6</name>
+    <y>5</y>
+    <width>310</width>
+    <height>25</height>
+    <line_color>
+      <color red="218" green="218" blue="218">
+      </color>
+    </line_color>
+    <background_color>
+      <color red="218" green="218" blue="218">
+      </color>
+    </background_color>
+  </widget>
+  <widget type="label" version="2.0.0">
+    <name>text #9</name>
+    <text>$(P) FFTs</text>
+    <y>6</y>
+    <width>310</width>
+    <height>25</height>
+    <font>
+      <font family="Liberation Sans" style="REGULAR" size="16.0">
+      </font>
+    </font>
+    <foreground_color>
+      <color red="10" green="0" blue="184">
+      </color>
+    </foreground_color>
+    <horizontal_alignment>1</horizontal_alignment>
+  </widget>
+  <widget type="label" version="2.0.0">
+    <name>text #12</name>
+    <text>FFT abs. value</text>
+    <x>28</x>
+    <y>91</y>
+    <width>140</width>
+    <font>
+      <font family="Liberation Sans" style="REGULAR" size="16.0">
+      </font>
+    </font>
+    <horizontal_alignment>2</horizontal_alignment>
+  </widget>
+  <widget type="label" version="2.0.0">
+    <name>text #15</name>
+    <text>FFT real</text>
+    <x>88</x>
+    <y>116</y>
+    <width>80</width>
+    <font>
+      <font family="Liberation Sans" style="REGULAR" size="16.0">
+      </font>
+    </font>
+    <horizontal_alignment>2</horizontal_alignment>
+  </widget>
+  <widget type="label" version="2.0.0">
+    <name>text #18</name>
+    <text>FFT imaginary</text>
+    <x>38</x>
+    <y>141</y>
+    <width>130</width>
+    <font>
+      <font family="Liberation Sans" style="REGULAR" size="16.0">
+      </font>
+    </font>
+    <horizontal_alignment>2</horizontal_alignment>
+  </widget>
+  <widget type="label" version="2.0.0">
+    <name>text #21</name>
+    <text>Combined plots</text>
+    <x>28</x>
+    <y>166</y>
+    <width>140</width>
+    <font>
+      <font family="Liberation Sans" style="REGULAR" size="16.0">
+      </font>
+    </font>
+    <horizontal_alignment>2</horizontal_alignment>
+  </widget>
+  <widget type="label" version="2.0.0">
+    <name>text #24</name>
+    <text>Time series</text>
+    <x>58</x>
+    <y>66</y>
+    <width>110</width>
+    <font>
+      <font family="Liberation Sans" style="REGULAR" size="16.0">
+      </font>
+    </font>
+    <horizontal_alignment>2</horizontal_alignment>
+  </widget>
+  <widget type="label" version="2.0.0">
+    <name>text #27</name>
+    <text>1-D Time Series Plots</text>
+    <x>55</x>
+    <y>41</y>
+    <width>210</width>
+    <font>
+      <font family="Liberation Sans" style="REGULAR" size="16.0">
+      </font>
+    </font>
+    <horizontal_alignment>2</horizontal_alignment>
+  </widget>
+  <widget type="rectangle" version="2.0.0">
+    <name>rectangle #30</name>
+    <x>5</x>
+    <y>35</y>
+    <width>300</width>
+    <height>185</height>
+    <line_width>1</line_width>
+    <line_color>
+      <color red="0" green="0" blue="0">
+      </color>
+    </line_color>
+    <background_color>
+      <color red="0" green="0" blue="0">
+      </color>
+    </background_color>
+    <transparent>true</transparent>
+  </widget>
+  <widget type="label" version="2.0.0">
+    <name>text #33</name>
+    <text>More</text>
+    <x>128</x>
+    <y>190</y>
+    <width>40</width>
+    <font>
+      <font family="Liberation Sans" style="REGULAR" size="16.0">
+      </font>
+    </font>
+    <horizontal_alignment>2</horizontal_alignment>
+  </widget>
+  <widget type="action_button" version="3.0.0">
+    <name>related display #36</name>
+    <actions>
+      <action type="open_display">
+        <file>NDFFTFreqSpectrumPlot.opi</file>
+        <macros>
+          <R>$(R1)</R>
+          <S>FFTAbsValue</S>
+        </macros>
+        <target>tab</target>
+        <description>$(T1)</description>
+      </action>
+      <action type="open_display">
+        <file>NDFFTFreqSpectrumPlot.opi</file>
+        <macros>
+          <R>$(R2)</R>
+          <S>FFTAbsValue</S>
+        </macros>
+        <target>tab</target>
+        <description>$(T2)</description>
+      </action>
+      <action type="open_display">
+        <file>NDFFTFreqSpectrumPlot.opi</file>
+        <macros>
+          <R>$(R3)</R>
+          <S>FFTAbsValue</S>
+        </macros>
+        <target>tab</target>
+        <description>$(T3)</description>
+      </action>
+      <action type="open_display">
+        <file>NDFFTFreqSpectrumPlot.opi</file>
+        <macros>
+          <R>$(R4)</R>
+          <S>FFTAbsValue</S>
+        </macros>
+        <target>tab</target>
+        <description>$(T4)</description>
+      </action>
+      <action type="open_display">
+        <file>NDFFTFreqSpectrumPlot.opi</file>
+        <macros>
+          <R>$(R5)</R>
+          <S>FFTAbsValue</S>
+        </macros>
+        <target>tab</target>
+        <description>$(T5)</description>
+      </action>
+      <action type="open_display">
+        <file>NDFFTFreqSpectrumPlot.opi</file>
+        <macros>
+          <R>$(R6)</R>
+          <S>FFTAbsValue</S>
+        </macros>
+        <target>tab</target>
+        <description>$(T6)</description>
+      </action>
+      <action type="open_display">
+        <file>NDFFTFreqSpectrumPlot.opi</file>
+        <macros>
+          <R>$(R7)</R>
+          <S>FFTAbsValue</S>
+        </macros>
+        <target>tab</target>
+        <description>$(T7)</description>
+      </action>
+      <action type="open_display">
+        <file>NDFFTFreqSpectrumPlot.opi</file>
+        <macros>
+          <R>$(R8)</R>
+          <S>FFTAbsValue</S>
+        </macros>
+        <target>tab</target>
+        <description>$(T8)</description>
+      </action>
+      <action type="open_display">
+        <file>NDFFTFreqSpectrumPlot.opi</file>
+        <macros>
+          <R>$(R9)</R>
+          <S>FFTAbsValue</S>
+        </macros>
+        <target>tab</target>
+        <description>$(T9)</description>
+      </action>
+      <action type="open_display">
+        <file>NDFFTFreqSpectrumPlot.opi</file>
+        <macros>
+          <R>$(R10)</R>
+          <S>FFTAbsValue</S>
+        </macros>
+        <target>tab</target>
+        <description>$(T10)</description>
+      </action>
+      <action type="open_display">
+        <file>NDFFTFreqSpectrumPlot.opi</file>
+        <macros>
+          <R>$(R11)</R>
+          <S>FFTAbsValue</S>
+        </macros>
+        <target>tab</target>
+        <description>$(T11)</description>
+      </action>
+      <action type="open_display">
+        <file>NDFFTFreqSpectrumPlot.opi</file>
+        <macros>
+          <R>$(R12)</R>
+          <S>FFTAbsValue</S>
+        </macros>
+        <target>tab</target>
+        <description>$(T12)</description>
+      </action>
+      <action type="open_display">
+        <file>NDFFTFreqSpectrumPlot.opi</file>
+        <macros>
+          <R>$(R13)</R>
+          <S>FFTAbsValue</S>
+        </macros>
+        <target>tab</target>
+        <description>$(T13)</description>
+      </action>
+      <action type="open_display">
+        <file>NDFFTFreqSpectrumPlot.opi</file>
+        <macros>
+          <R>$(R14)</R>
+          <S>FFTAbsValue</S>
+        </macros>
+        <target>tab</target>
+        <description>$(T14)</description>
+      </action>
+      <action type="open_display">
+        <file>NDFFTFreqSpectrumPlot.opi</file>
+        <macros>
+          <R>$(R15)</R>
+          <S>FFTAbsValue</S>
+        </macros>
+        <target>tab</target>
+        <description>$(T15)</description>
+      </action>
+      <action type="open_display">
+        <file>NDFFTFreqSpectrumPlot.opi</file>
+        <macros>
+          <R>$(R16)</R>
+          <S>FFTAbsValue</S>
+        </macros>
+        <target>tab</target>
+        <description>$(T16)</description>
+      </action>
+    </actions>
+    <text>FFT abs. value</text>
+    <x>171</x>
+    <y>91</y>
+    <width>120</width>
+    <height>20</height>
+    <background_color>
+      <color red="115" green="223" blue="255">
+      </color>
+    </background_color>
+  </widget>
+  <widget type="action_button" version="3.0.0">
+    <name>related display #54</name>
+    <actions>
+      <action type="open_display">
+        <file>NDFFTFreqSpectrumPlot.opi</file>
+        <macros>
+          <R>$(R1)</R>
+          <S>FFTReal</S>
+        </macros>
+        <target>tab</target>
+        <description>$(T1)</description>
+      </action>
+      <action type="open_display">
+        <file>NDFFTFreqSpectrumPlot.opi</file>
+        <macros>
+          <R>$(R2)</R>
+          <S>FFTReal</S>
+        </macros>
+        <target>tab</target>
+        <description>$(T2)</description>
+      </action>
+      <action type="open_display">
+        <file>NDFFTFreqSpectrumPlot.opi</file>
+        <macros>
+          <R>$(R3)</R>
+          <S>FFTReal</S>
+        </macros>
+        <target>tab</target>
+        <description>$(T3)</description>
+      </action>
+      <action type="open_display">
+        <file>NDFFTFreqSpectrumPlot.opi</file>
+        <macros>
+          <R>$(R4)</R>
+          <S>FFTReal</S>
+        </macros>
+        <target>tab</target>
+        <description>$(T4)</description>
+      </action>
+      <action type="open_display">
+        <file>NDFFTFreqSpectrumPlot.opi</file>
+        <macros>
+          <R>$(R5)</R>
+          <S>FFTReal</S>
+        </macros>
+        <target>tab</target>
+        <description>$(T5)</description>
+      </action>
+      <action type="open_display">
+        <file>NDFFTFreqSpectrumPlot.opi</file>
+        <macros>
+          <R>$(R6)</R>
+          <S>FFTReal</S>
+        </macros>
+        <target>tab</target>
+        <description>$(T6)</description>
+      </action>
+      <action type="open_display">
+        <file>NDFFTFreqSpectrumPlot.opi</file>
+        <macros>
+          <R>$(R7)</R>
+          <S>FFTReal</S>
+        </macros>
+        <target>tab</target>
+        <description>$(T7)</description>
+      </action>
+      <action type="open_display">
+        <file>NDFFTFreqSpectrumPlot.opi</file>
+        <macros>
+          <R>$(R8)</R>
+          <S>FFTReal</S>
+        </macros>
+        <target>tab</target>
+        <description>$(T8)</description>
+      </action>
+      <action type="open_display">
+        <file>NDFFTFreqSpectrumPlot.opi</file>
+        <macros>
+          <R>$(R9)</R>
+          <S>FFTReal</S>
+        </macros>
+        <target>tab</target>
+        <description>$(T9)</description>
+      </action>
+      <action type="open_display">
+        <file>NDFFTFreqSpectrumPlot.opi</file>
+        <macros>
+          <R>$(R10)</R>
+          <S>FFTReal</S>
+        </macros>
+        <target>tab</target>
+        <description>$(T10)</description>
+      </action>
+      <action type="open_display">
+        <file>NDFFTFreqSpectrumPlot.opi</file>
+        <macros>
+          <R>$(R11)</R>
+          <S>FFTReal</S>
+        </macros>
+        <target>tab</target>
+        <description>$(T11)</description>
+      </action>
+      <action type="open_display">
+        <file>NDFFTFreqSpectrumPlot.opi</file>
+        <macros>
+          <R>$(R12)</R>
+          <S>FFTReal</S>
+        </macros>
+        <target>tab</target>
+        <description>$(T12)</description>
+      </action>
+      <action type="open_display">
+        <file>NDFFTFreqSpectrumPlot.opi</file>
+        <macros>
+          <R>$(R13)</R>
+          <S>FFTReal</S>
+        </macros>
+        <target>tab</target>
+        <description>$(T13)</description>
+      </action>
+      <action type="open_display">
+        <file>NDFFTFreqSpectrumPlot.opi</file>
+        <macros>
+          <R>$(R14)</R>
+          <S>FFTReal</S>
+        </macros>
+        <target>tab</target>
+        <description>$(T14)</description>
+      </action>
+      <action type="open_display">
+        <file>NDFFTFreqSpectrumPlot.opi</file>
+        <macros>
+          <R>$(R15)</R>
+          <S>FFTReal</S>
+        </macros>
+        <target>tab</target>
+        <description>$(T15)</description>
+      </action>
+      <action type="open_display">
+        <file>NDFFTFreqSpectrumPlot.opi</file>
+        <macros>
+          <R>$(R16)</R>
+          <S>FFTReal</S>
+        </macros>
+        <target>tab</target>
+        <description>$(T16)</description>
+      </action>
+    </actions>
+    <text>FFT real</text>
+    <x>171</x>
+    <y>116</y>
+    <width>120</width>
+    <height>20</height>
+    <background_color>
+      <color red="115" green="223" blue="255">
+      </color>
+    </background_color>
+  </widget>
+  <widget type="action_button" version="3.0.0">
+    <name>related display #72</name>
+    <actions>
+      <action type="open_display">
+        <file>NDFFTFreqSpectrumPlot.opi</file>
+        <macros>
+          <R>$(R1)</R>
+          <S>FFTImaginary</S>
+        </macros>
+        <target>tab</target>
+        <description>$(T1)</description>
+      </action>
+      <action type="open_display">
+        <file>NDFFTFreqSpectrumPlot.opi</file>
+        <macros>
+          <R>$(R2)</R>
+          <S>FFTImaginary</S>
+        </macros>
+        <target>tab</target>
+        <description>$(T2)</description>
+      </action>
+      <action type="open_display">
+        <file>NDFFTFreqSpectrumPlot.opi</file>
+        <macros>
+          <R>$(R3)</R>
+          <S>FFTImaginary</S>
+        </macros>
+        <target>tab</target>
+        <description>$(T3)</description>
+      </action>
+      <action type="open_display">
+        <file>NDFFTFreqSpectrumPlot.opi</file>
+        <macros>
+          <R>$(R4)</R>
+          <S>FFTImaginary</S>
+        </macros>
+        <target>tab</target>
+        <description>$(T4)</description>
+      </action>
+      <action type="open_display">
+        <file>NDFFTFreqSpectrumPlot.opi</file>
+        <macros>
+          <R>$(R5)</R>
+          <S>FFTImaginary</S>
+        </macros>
+        <target>tab</target>
+        <description>$(T5)</description>
+      </action>
+      <action type="open_display">
+        <file>NDFFTFreqSpectrumPlot.opi</file>
+        <macros>
+          <R>$(R6)</R>
+          <S>FFTImaginary</S>
+        </macros>
+        <target>tab</target>
+        <description>$(T6)</description>
+      </action>
+      <action type="open_display">
+        <file>NDFFTFreqSpectrumPlot.opi</file>
+        <macros>
+          <R>$(R7)</R>
+          <S>FFTImaginary</S>
+        </macros>
+        <target>tab</target>
+        <description>$(T7)</description>
+      </action>
+      <action type="open_display">
+        <file>NDFFTFreqSpectrumPlot.opi</file>
+        <macros>
+          <R>$(R8)</R>
+          <S>FFTImaginary</S>
+        </macros>
+        <target>tab</target>
+        <description>$(T8)</description>
+      </action>
+      <action type="open_display">
+        <file>NDFFTFreqSpectrumPlot.opi</file>
+        <macros>
+          <R>$(R9)</R>
+          <S>FFTImaginary</S>
+        </macros>
+        <target>tab</target>
+        <description>$(T9)</description>
+      </action>
+      <action type="open_display">
+        <file>NDFFTFreqSpectrumPlot.opi</file>
+        <macros>
+          <R>$(R10)</R>
+          <S>FFTImaginary</S>
+        </macros>
+        <target>tab</target>
+        <description>$(T10)</description>
+      </action>
+      <action type="open_display">
+        <file>NDFFTFreqSpectrumPlot.opi</file>
+        <macros>
+          <R>$(R11)</R>
+          <S>FFTImaginary</S>
+        </macros>
+        <target>tab</target>
+        <description>$(T11)</description>
+      </action>
+      <action type="open_display">
+        <file>NDFFTFreqSpectrumPlot.opi</file>
+        <macros>
+          <R>$(R12)</R>
+          <S>FFTImaginary</S>
+        </macros>
+        <target>tab</target>
+        <description>$(T12)</description>
+      </action>
+      <action type="open_display">
+        <file>NDFFTFreqSpectrumPlot.opi</file>
+        <macros>
+          <R>$(R13)</R>
+          <S>FFTImaginary</S>
+        </macros>
+        <target>tab</target>
+        <description>$(T13)</description>
+      </action>
+      <action type="open_display">
+        <file>NDFFTFreqSpectrumPlot.opi</file>
+        <macros>
+          <R>$(R14)</R>
+          <S>FFTImaginary</S>
+        </macros>
+        <target>tab</target>
+        <description>$(T14)</description>
+      </action>
+      <action type="open_display">
+        <file>NDFFTFreqSpectrumPlot.opi</file>
+        <macros>
+          <R>$(R15)</R>
+          <S>FFTImaginary</S>
+        </macros>
+        <target>tab</target>
+        <description>$(T15)</description>
+      </action>
+      <action type="open_display">
+        <file>NDFFTFreqSpectrumPlot.opi</file>
+        <macros>
+          <R>$(R16)</R>
+          <S>FFTImaginary</S>
+        </macros>
+        <target>tab</target>
+        <description>$(T16)</description>
+      </action>
+    </actions>
+    <text>FFT imaginary</text>
+    <x>171</x>
+    <y>141</y>
+    <width>120</width>
+    <height>20</height>
+    <background_color>
+      <color red="115" green="223" blue="255">
+      </color>
+    </background_color>
+  </widget>
+  <widget type="action_button" version="3.0.0">
+    <name>related display #90</name>
+    <actions>
+      <action type="open_display">
+        <file>NDFFTPlotAll.opi</file>
+        <macros>
+          <R>$(R1)</R>
+        </macros>
+        <target>tab</target>
+        <description>$(T1)</description>
+      </action>
+      <action type="open_display">
+        <file>NDFFTPlotAll.opi</file>
+        <macros>
+          <R>$(R2)</R>
+        </macros>
+        <target>tab</target>
+        <description>$(T2)</description>
+      </action>
+      <action type="open_display">
+        <file>NDFFTPlotAll.opi</file>
+        <macros>
+          <R>$(R3)</R>
+        </macros>
+        <target>tab</target>
+        <description>$(T3)</description>
+      </action>
+      <action type="open_display">
+        <file>NDFFTPlotAll.opi</file>
+        <macros>
+          <R>$(R4)</R>
+        </macros>
+        <target>tab</target>
+        <description>$(T4)</description>
+      </action>
+      <action type="open_display">
+        <file>NDFFTPlotAll.opi</file>
+        <macros>
+          <R>$(R5)</R>
+        </macros>
+        <target>tab</target>
+        <description>$(T5)</description>
+      </action>
+      <action type="open_display">
+        <file>NDFFTPlotAll.opi</file>
+        <macros>
+          <R>$(R6)</R>
+        </macros>
+        <target>tab</target>
+        <description>$(T6)</description>
+      </action>
+      <action type="open_display">
+        <file>NDFFTPlotAll.opi</file>
+        <macros>
+          <R>$(R7)</R>
+        </macros>
+        <target>tab</target>
+        <description>$(T7)</description>
+      </action>
+      <action type="open_display">
+        <file>NDFFTPlotAll.opi</file>
+        <macros>
+          <R>$(R8)</R>
+        </macros>
+        <target>tab</target>
+        <description>$(T8)</description>
+      </action>
+      <action type="open_display">
+        <file>NDFFTPlotAll.opi</file>
+        <macros>
+          <R>$(R9)</R>
+        </macros>
+        <target>tab</target>
+        <description>$(T9)</description>
+      </action>
+      <action type="open_display">
+        <file>NDFFTPlotAll.opi</file>
+        <macros>
+          <R>$(R10)</R>
+        </macros>
+        <target>tab</target>
+        <description>$(T10)</description>
+      </action>
+      <action type="open_display">
+        <file>NDFFTPlotAll.opi</file>
+        <macros>
+          <R>$(R11)</R>
+        </macros>
+        <target>tab</target>
+        <description>$(T11)</description>
+      </action>
+      <action type="open_display">
+        <file>NDFFTPlotAll.opi</file>
+        <macros>
+          <R>$(R12)</R>
+        </macros>
+        <target>tab</target>
+        <description>$(T12)</description>
+      </action>
+      <action type="open_display">
+        <file>NDFFTPlotAll.opi</file>
+        <macros>
+          <R>$(R13)</R>
+        </macros>
+        <target>tab</target>
+        <description>$(T13)</description>
+      </action>
+      <action type="open_display">
+        <file>NDFFTPlotAll.opi</file>
+        <macros>
+          <R>$(R14)</R>
+        </macros>
+        <target>tab</target>
+        <description>$(T14)</description>
+      </action>
+      <action type="open_display">
+        <file>NDFFTPlotAll.opi</file>
+        <macros>
+          <R>$(R15)</R>
+        </macros>
+        <target>tab</target>
+        <description>$(T15)</description>
+      </action>
+      <action type="open_display">
+        <file>NDFFTPlotAll.opi</file>
+        <macros>
+          <R>$(R16)</R>
+        </macros>
+        <target>tab</target>
+        <description>$(T16)</description>
+      </action>
+    </actions>
+    <text>Combined</text>
+    <x>171</x>
+    <y>166</y>
+    <width>120</width>
+    <height>20</height>
+    <background_color>
+      <color red="115" green="223" blue="255">
+      </color>
+    </background_color>
+  </widget>
+  <widget type="action_button" version="3.0.0">
+    <name>related display #108</name>
+    <actions>
+      <action type="open_display">
+        <file>NDFFTTimeSeriesPlot.opi</file>
+        <macros>
+          <R>$(R1)</R>
+        </macros>
+        <target>tab</target>
+        <description>$(T1)</description>
+      </action>
+      <action type="open_display">
+        <file>NDFFTTimeSeriesPlot.opi</file>
+        <macros>
+          <R>$(R2)</R>
+        </macros>
+        <target>tab</target>
+        <description>$(T2)</description>
+      </action>
+      <action type="open_display">
+        <file>NDFFTTimeSeriesPlot.opi</file>
+        <macros>
+          <R>$(R3)</R>
+        </macros>
+        <target>tab</target>
+        <description>$(T3)</description>
+      </action>
+      <action type="open_display">
+        <file>NDFFTTimeSeriesPlot.opi</file>
+        <macros>
+          <R>$(R4)</R>
+        </macros>
+        <target>tab</target>
+        <description>$(T4)</description>
+      </action>
+      <action type="open_display">
+        <file>NDFFTTimeSeriesPlot.opi</file>
+        <macros>
+          <R>$(R5)</R>
+        </macros>
+        <target>tab</target>
+        <description>$(T5)</description>
+      </action>
+      <action type="open_display">
+        <file>NDFFTTimeSeriesPlot.opi</file>
+        <macros>
+          <R>$(R6)</R>
+        </macros>
+        <target>tab</target>
+        <description>$(T6)</description>
+      </action>
+      <action type="open_display">
+        <file>NDFFTTimeSeriesPlot.opi</file>
+        <macros>
+          <R>$(R7)</R>
+        </macros>
+        <target>tab</target>
+        <description>$(T7)</description>
+      </action>
+      <action type="open_display">
+        <file>NDFFTTimeSeriesPlot.opi</file>
+        <macros>
+          <R>$(R8)</R>
+        </macros>
+        <target>tab</target>
+        <description>$(T8)</description>
+      </action>
+      <action type="open_display">
+        <file>NDFFTTimeSeriesPlot.opi</file>
+        <macros>
+          <R>$(R9)</R>
+        </macros>
+        <target>tab</target>
+        <description>$(T9)</description>
+      </action>
+      <action type="open_display">
+        <file>NDFFTTimeSeriesPlot.opi</file>
+        <macros>
+          <R>$(R10)</R>
+        </macros>
+        <target>tab</target>
+        <description>$(T10)</description>
+      </action>
+      <action type="open_display">
+        <file>NDFFTTimeSeriesPlot.opi</file>
+        <macros>
+          <R>$(R11)</R>
+        </macros>
+        <target>tab</target>
+        <description>$(T11)</description>
+      </action>
+      <action type="open_display">
+        <file>NDFFTTimeSeriesPlot.opi</file>
+        <macros>
+          <R>$(R12)</R>
+        </macros>
+        <target>tab</target>
+        <description>$(T12)</description>
+      </action>
+      <action type="open_display">
+        <file>NDFFTTimeSeriesPlot.opi</file>
+        <macros>
+          <R>$(R13)</R>
+        </macros>
+        <target>tab</target>
+        <description>$(T13)</description>
+      </action>
+      <action type="open_display">
+        <file>NDFFTTimeSeriesPlot.opi</file>
+        <macros>
+          <R>$(R14)</R>
+        </macros>
+        <target>tab</target>
+        <description>$(T14)</description>
+      </action>
+      <action type="open_display">
+        <file>NDFFTTimeSeriesPlot.opi</file>
+        <macros>
+          <R>$(R15)</R>
+        </macros>
+        <target>tab</target>
+        <description>$(T15)</description>
+      </action>
+      <action type="open_display">
+        <file>NDFFTTimeSeriesPlot.opi</file>
+        <macros>
+          <R>$(R16)</R>
+        </macros>
+        <target>tab</target>
+        <description>$(T16)</description>
+      </action>
+    </actions>
+    <text>Time series</text>
+    <x>171</x>
+    <y>66</y>
+    <width>120</width>
+    <height>20</height>
+    <background_color>
+      <color red="115" green="223" blue="255">
+      </color>
+    </background_color>
+  </widget>
+  <widget type="action_button" version="3.0.0">
+    <name>related display #126</name>
+    <actions>
+      <action type="open_display">
+        <file>NDFFT.opi</file>
+        <macros>
+          <R>$(R1)</R>
+          <TITLE>$(T1)</TITLE>
+        </macros>
+        <target>tab</target>
+        <description>$(T1)</description>
+      </action>
+      <action type="open_display">
+        <file>NDFFT.opi</file>
+        <macros>
+          <R>$(R2)</R>
+          <TITLE>$(T2)</TITLE>
+        </macros>
+        <target>tab</target>
+        <description>$(T2)</description>
+      </action>
+      <action type="open_display">
+        <file>NDFFT.opi</file>
+        <macros>
+          <R>$(R3)</R>
+          <TITLE>$(T3)</TITLE>
+        </macros>
+        <target>tab</target>
+        <description>$(T3)</description>
+      </action>
+      <action type="open_display">
+        <file>NDFFT.opi</file>
+        <macros>
+          <R>$(R4)</R>
+          <TITLE>$(T4)</TITLE>
+        </macros>
+        <target>tab</target>
+        <description>$(T4)</description>
+      </action>
+      <action type="open_display">
+        <file>NDFFT.opi</file>
+        <macros>
+          <R>$(R5)</R>
+          <TITLE>$(T5)</TITLE>
+        </macros>
+        <target>tab</target>
+        <description>$(T5)</description>
+      </action>
+      <action type="open_display">
+        <file>NDFFT.opi</file>
+        <macros>
+          <R>$(R6)</R>
+          <TITLE>$(T6)</TITLE>
+        </macros>
+        <target>tab</target>
+        <description>$(T6)</description>
+      </action>
+      <action type="open_display">
+        <file>NDFFT.opi</file>
+        <macros>
+          <R>$(R7)</R>
+          <TITLE>$(T7)</TITLE>
+        </macros>
+        <target>tab</target>
+        <description>$(T7)</description>
+      </action>
+      <action type="open_display">
+        <file>NDFFT.opi</file>
+        <macros>
+          <R>$(R8)</R>
+          <TITLE>$(T8)</TITLE>
+        </macros>
+        <target>tab</target>
+        <description>$(T8)</description>
+      </action>
+      <action type="open_display">
+        <file>NDFFT.opi</file>
+        <macros>
+          <R>$(R9)</R>
+          <TITLE>$(T9)</TITLE>
+        </macros>
+        <target>tab</target>
+        <description>$(T9)</description>
+      </action>
+      <action type="open_display">
+        <file>NDFFT.opi</file>
+        <macros>
+          <R>$(R10)</R>
+          <TITLE>$(T10)</TITLE>
+        </macros>
+        <target>tab</target>
+        <description>$(T10)</description>
+      </action>
+      <action type="open_display">
+        <file>NDFFT.opi</file>
+        <macros>
+          <R>$(R11)</R>
+          <TITLE>$(T11)</TITLE>
+        </macros>
+        <target>tab</target>
+        <description>$(T11)</description>
+      </action>
+      <action type="open_display">
+        <file>NDFFT.opi</file>
+        <macros>
+          <R>$(R12)</R>
+          <TITLE>$(T12)</TITLE>
+        </macros>
+        <target>tab</target>
+        <description>$(T12)</description>
+      </action>
+      <action type="open_display">
+        <file>NDFFT.opi</file>
+        <macros>
+          <R>$(R13)</R>
+          <TITLE>$(T13)</TITLE>
+        </macros>
+        <target>tab</target>
+        <description>$(T13)</description>
+      </action>
+      <action type="open_display">
+        <file>NDFFT.opi</file>
+        <macros>
+          <R>$(R14)</R>
+          <TITLE>$(T14)</TITLE>
+        </macros>
+        <target>tab</target>
+        <description>$(T14)</description>
+      </action>
+      <action type="open_display">
+        <file>lNDFFT.opi</file>
+        <macros>
+          <R>$(R15)</R>
+          <TITLE>$(T15)</TITLE>
+        </macros>
+        <target>tab</target>
+        <description>$(T15)</description>
+      </action>
+      <action type="open_display">
+        <file>NDFFT.opi</file>
+        <macros>
+          <R>$(R16)</R>
+          <TITLE>$(T16)</TITLE>
+        </macros>
+        <target>tab</target>
+        <description>$(T16)</description>
+      </action>
+    </actions>
+    <text>More</text>
+    <x>171</x>
+    <y>191</y>
+    <width>120</width>
+    <height>20</height>
+    <background_color>
+      <color red="115" green="223" blue="255">
+      </color>
+    </background_color>
+  </widget>
+</display>
