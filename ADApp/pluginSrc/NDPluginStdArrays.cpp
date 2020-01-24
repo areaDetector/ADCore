@@ -38,6 +38,7 @@ void NDPluginStdArrays::arrayInterruptCallback(NDArray *pArray, NDArrayPool *pND
     epicsType *pData=NULL;
     NDArray *pOutput=NULL;
     NDArrayInfo_t arrayInfo;
+    size_t numElements = 0;
     static const char* functionName="arrayInterruptCallback";
 
     pasynManager->interruptStart(interruptPvt, &pclientList);
@@ -48,14 +49,21 @@ void NDPluginStdArrays::arrayInterruptCallback(NDArray *pArray, NDArrayPool *pND
             if (!*initialized) {
                 *initialized = 1;
                 pArray->getInfo(&arrayInfo);
-                status = pNDArrayPool->convert(pArray, &pOutput, signedType);
-                if (status) {
-                    asynPrint(pInterrupt->pasynUser, ASYN_TRACE_ERROR,
-                              "%s::arrayInterruptCallback: error allocating array in convert()\n",
-                               driverName);
-                    break;
+                if (pArray->codec.empty()) {
+                    status = pNDArrayPool->convert(pArray, &pOutput, signedType);
+                    if (status) {
+                        asynPrint(pInterrupt->pasynUser, ASYN_TRACE_ERROR,
+                                  "%s::arrayInterruptCallback: error allocating array in convert()\n",
+                                   driverName);
+                        break;
+                    }
+                    pData = (epicsType *)pOutput->pData;
+                    numElements = arrayInfo.nElements;
+                } else {
+                    // Need to handle compressed arrays differently
+                    pData = (epicsType *)pArray->pData;
+                    numElements = (pArray->compressedSize / arrayInfo.bytesPerElement) + 1;
                 }
-                pData = (epicsType *)pOutput->pData;
             }
             if (throttled(pOutput)) {
                 int droppedOutputArrays;
@@ -70,7 +78,7 @@ void NDPluginStdArrays::arrayInterruptCallback(NDArray *pArray, NDArrayPool *pND
                 pInterrupt->pasynUser->timestamp = pArray->epicsTS;
                 pInterrupt->callback(pInterrupt->userPvt,
                                      pInterrupt->pasynUser,
-                                     pData, arrayInfo.nElements);
+                                     pData, numElements);
             }
         }
         pnode = (interruptNode *)ellNext(&pnode->node);
@@ -96,22 +104,30 @@ asynStatus NDPluginStdArrays::readArray(asynUser *pasynUser, epicsType *value, s
             goto done;
         }
         myArray->getInfo(&arrayInfo);
-        if (arrayInfo.nElements > nElements) {
-            /* We have been requested fewer pixels than we have.
-             * Just pass the first nElements. */
-             arrayInfo.nElements = nElements;
+        if (myArray->codec.empty()) {
+            if (arrayInfo.nElements > nElements) {
+                /* We have been requested fewer pixels than we have.
+                 * Just pass the first nElements. */
+                 arrayInfo.nElements = nElements;
+            }
+            status = (asynStatus)this->pNDArrayPool->convert(myArray, &pOutput, outputType);
+            if (status) {
+                asynPrint(pasynUser, ASYN_TRACE_ERROR,
+                          "%s::readArray: error allocating array in convert()\n",
+                           driverName);
+               goto done;
+            }
+            /* Copy the data */
+            *nIn = arrayInfo.nElements;
+            memcpy(value, pOutput->pData, *nIn*sizeof(epicsType));
+            pOutput->release();
+        } else {
+            // This is compressed data
+            size_t numCopy = sizeof(epicsType) * nElements;
+            if (numCopy > myArray->compressedSize) numCopy = myArray->compressedSize;
+            memcpy(value, myArray->pData, numCopy);
         }
-        status = (asynStatus)this->pNDArrayPool->convert(myArray, &pOutput, outputType);
-        if (status) {
-            asynPrint(pasynUser, ASYN_TRACE_ERROR,
-                      "%s::readArray: error allocating array in convert()\n",
-                       driverName);
-           goto done;
-        }
-        /* Copy the data */
-        *nIn = arrayInfo.nElements;
-        memcpy(value, pOutput->pData, *nIn*sizeof(epicsType));
-        pOutput->release();
+         
         /* Set the timestamp */
         pasynUser->timestamp = myArray->epicsTS;
     } else {
@@ -322,7 +338,7 @@ NDPluginStdArrays::NDPluginStdArrays(const char *portName, int queueSize, int bl
                    
                    /* asynFlags is set to 0, because this plugin cannot block and is not multi-device.
                     * It does autoconnect */
-                   0, 1, priority, stackSize, maxThreads)
+                   0, 1, priority, stackSize, maxThreads, true)
 {
     //static const char *functionName = "NDPluginStdArrays";
     
