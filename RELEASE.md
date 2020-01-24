@@ -30,6 +30,9 @@ files respectively, in the configure/ directory of the appropriate release of th
     the histogram had 0 counts when it should not.
 ### NDFileHDF5
   * Fixed problem with XML2 library linking warnings on static Windows builds (Peter Heesterman)
+### NDPluginStdArrays
+  * Changes to support compressed NDArrays. This will really only work properly when the ArrayData waveform record
+    FTVL is CHAR, since compressed data is just a stream of bytes.
 ### SCANRATE macro
   * A new macro has been added to NDPosPlugin.template, NDPluginBase.template, NDFile.tamplate, NDArrayBase.template and 
     ADBase.template. This can be used to control the SCAN value of status PVs which update on every frame such as 
