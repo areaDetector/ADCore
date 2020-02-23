@@ -92,7 +92,9 @@ asynStatus NDFileNetCDF::openFile(const char *fileName, NDFileOpenMode_t openMod
 
     /* Create global attribute for the data type because netCDF does not
      * distinguish signed and unsigned.  Readers can use this to know how to treat
-     * integer data. */
+     * integer data. 
+     * It is also needed for readers to handle NDInt64 and NDUInt64 data, which netCDF does not support.
+     * These are written by casting to double, so readers must cast them from double to the actual datatype. */
     if ((retval = nc_put_att_int(this->ncId, NC_GLOBAL, "dataType", 
                                  NC_INT, 1, (const int*)&pArray->dataType)))
         ERR(retval);
@@ -172,6 +174,8 @@ asynStatus NDFileNetCDF::openFile(const char *fileName, NDFileOpenMode_t openMod
             ncType = NC_FLOAT;
             break;
         case NDFloat64:
+        case NDInt64:  // netCDF does not support int64, but we can cast it to double
+        case NDUInt64: // Readers myst look at the 
             ncType = NC_DOUBLE;
             break;
         default:
@@ -237,6 +241,12 @@ asynStatus NDFileNetCDF::openFile(const char *fileName, NDFileOpenMode_t openMod
             case NDAttrUInt32:
                 dataTypeString = "UInt32";
                 break;
+            case NDAttrInt64:
+                dataTypeString = "Int64";
+                break;
+            case NDAttrUInt64:
+                dataTypeString = "UInt64";
+                break;
             case NDAttrFloat32:
                 dataTypeString = "Float32";
                 break;
@@ -291,6 +301,8 @@ asynStatus NDFileNetCDF::openFile(const char *fileName, NDFileOpenMode_t openMod
                 ncType = NC_FLOAT;
                 break;
             case NDAttrFloat64:
+            case NDAttrInt64:
+            case NDAttrUInt64:
                 ncType = NC_DOUBLE;
                 break;
             case NDAttrString:
@@ -397,6 +409,8 @@ asynStatus NDFileNetCDF::writeFile(NDArray *pArray)
                 ERR(retval);
             break;
         case NDFloat64:
+        case NDInt64:
+        case NDUInt64:
             if ((retval = nc_put_vara_double(this->ncId, this->arrayDataId, start, count, (double *)pArray->pData)))
                 ERR(retval);
             break;
@@ -435,6 +449,16 @@ asynStatus NDFileNetCDF::writeFile(NDArray *pArray)
             case NDAttrFloat32:
                 pAttribute->getValue(attrDataType, &attrVal.f32);
                 if ((retval = nc_put_vara_float(this->ncId, attrId, start, count, (float *)&attrVal.f32)))
+                    ERR(retval);
+                break;
+            case NDAttrInt64:
+                pAttribute->getValue(attrDataType, &attrVal.i64);
+                if ((retval = nc_put_vara_double(this->ncId, attrId, start, count, (double *)&attrVal.i64)))
+                    ERR(retval);
+                break;
+            case NDAttrUInt64:
+                pAttribute->getValue(attrDataType, &attrVal.ui64);
+                if ((retval = nc_put_vara_double(this->ncId, attrId, start, count, (double *)&attrVal.ui64)))
                     ERR(retval);
                 break;
             case NDAttrFloat64:
