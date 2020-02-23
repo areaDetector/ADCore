@@ -19,7 +19,7 @@ the EXAMPLE_RELEASE_PATHS.local, EXAMPLE_RELEASE_LIBS.local, and EXAMPLE_RELEASE
 files respectively, in the configure/ directory of the appropriate release of the 
 [top-level areaDetector](https://github.com/areaDetector/areaDetector) repository.
 
-## __R3-9 (January XXX, 2020)__
+## __R3-9 (February XXX, 2020)__
 
 ### CCDMultiTrack
   * New CCDMultiTrack class and database to support spectroscopy detectors 
@@ -33,6 +33,16 @@ files respectively, in the configure/ directory of the appropriate release of th
 ### NDPluginStdArrays
   * Changes to support compressed NDArrays. This will really only work properly when the ArrayData waveform record
     FTVL is CHAR, since compressed data is just a stream of bytes.
+### NDFileNetCDF
+  * Changes to handle NDArrays and NDAttributes with data types epicsInt64 and epicsUInt64.  The netCDF classic file
+    format does not handle 64-bit integer data.  What is done is to cast the data to float64, so the netCDF library 
+    thinks it is writing float64 data, and marks the netCDF data in in the file as float64.  However the netCDF global
+    attribute "datatype" (enum NDDataType_t) will correctly indicate the actual datatype.
+    File readers will need to cast the data to the actual datatype.
+  * Incremented the global attribute NDNetCDFFileVersion from 3.0 to 3.1 because the order of the NDDataType_t enums
+    changed in ADCore R3-8 to insert NDInt64 and NDUInt64 after NDUInt32.  This changed the enum values of NDFloat32
+    and NDFloat64.  File readers using the value of these enums thus need to know which version of ADCore the file
+    was written with.  This change should have been made in R3-8.
 ### SCANRATE macro
   * A new macro has been added to NDPosPlugin.template, NDPluginBase.template, NDFile.tamplate, NDArrayBase.template and 
     ADBase.template. This can be used to control the SCAN value of status PVs which update on every frame such as 
@@ -47,6 +57,10 @@ files respectively, in the configure/ directory of the appropriate release of th
     more overhead than SCAN=I/O Intr.
 ### docs
   * Replaced all raw HTML tables in .rst files with Sphinx flat-tables.
+### iocBoot
+  * Added command `callbackSetQueueSize(5000)` to avoid `callbackRequest: cbLow ring buffer full` errors.
+### OPI files
+  * Added .bob files for the Phoebus Display Builder.  These are autoconverted from the .adl files.
 
 ## __R3-8 (October 20, 2019)__
 
