@@ -35,10 +35,10 @@ files respectively, in the configure/ directory of the appropriate release of th
     FTVL is CHAR, since compressed data is just a stream of bytes.
 ### NDFileNetCDF
   * Changes to handle NDArrays and NDAttributes with data types epicsInt64 and epicsUInt64.  The netCDF classic file
-    format does not handle 64-bit integer data.  What is done is to cast the data to float64, so the netCDF library 
-    thinks it is writing float64 data, and marks the netCDF data in in the file as float64.  However the netCDF global
-    attribute "datatype" (enum NDDataType_t) will correctly indicate the actual datatype.
-    File readers will need to cast the data to the actual datatype.
+    format does not handle 64-bit integer data.  The workaround is to cast the data to float64, so the netCDF library 
+    thinks it is writing float64 data, and marks the netCDF data in in the file as type `double`.
+    However the netCDF global attribute "datatype" (enum NDDataType_t) will correctly indicate the actual datatype.
+    File readers will need to cast the data to the actual datatype after reading the data with the netCDF library functions.
   * Incremented the global attribute NDNetCDFFileVersion from 3.0 to 3.1 because the order of the NDDataType_t enums
     changed in ADCore R3-8 to insert NDInt64 and NDUInt64 after NDUInt32.  This changed the enum values of NDFloat32
     and NDFloat64.  File readers using the value of these enums thus need to know which version of ADCore the file
