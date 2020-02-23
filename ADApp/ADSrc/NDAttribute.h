@@ -35,10 +35,10 @@ typedef enum
     NDUInt16,   /**< Unsigned 16-bit integer */
     NDInt32,    /**< Signed 32-bit integer */
     NDUInt32,   /**< Unsigned 32-bit integer */
-    NDFloat32,  /**< 32-bit float */
-    NDFloat64   /**< 64-bit float */
     NDInt64,    /**< Signed 64-bit integer */
     NDUInt64,   /**< Unsigned 64-bit integer */
+    NDFloat32,  /**< 32-bit float */
+    NDFloat64   /**< 64-bit float */
 } NDDataType_t;
 
 /** Enumeration of NDAttribute attribute data types */
@@ -50,11 +50,11 @@ typedef enum
     NDAttrUInt16  = NDUInt16,   /**< Unsigned 16-bit integer */
     NDAttrInt32   = NDInt32,    /**< Signed 32-bit integer */
     NDAttrUInt32  = NDUInt32,   /**< Unsigned 32-bit integer */
+    NDAttrInt64   = NDInt64,    /**< Signed 64-bit integer */
+    NDAttrUInt64  = NDUInt64,   /**< Unsigned 64-bit integer */
     NDAttrFloat32 = NDFloat32,  /**< 32-bit float */
     NDAttrFloat64 = NDFloat64,  /**< 64-bit float */
     NDAttrString,               /**< Dynamic length string */
-    NDAttrInt64   = NDInt64,    /**< Signed 64-bit integer */
-    NDAttrUInt64  = NDUInt64,   /**< Unsigned 64-bit integer */
     NDAttrUndefined             /**< Undefined data type */
 } NDAttrDataType_t;
 
