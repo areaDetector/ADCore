@@ -59,6 +59,9 @@ files respectively, in the configure/ directory of the appropriate release of th
   * Replaced all raw HTML tables in .rst files with Sphinx flat-tables.
 ### iocBoot
   * Added command `callbackSetQueueSize(5000)` to avoid `callbackRequest: cbLow ring buffer full` errors.
+### Database files ADBase.template, NDPluginBase.template, and ADPrefixes.template
+  * Fixed syntax errors. They were missing quotes around the macro parameters $(PORT) and $(NELEMENTS).
+    This caused parsing errors if the macros contained special characters like colon (:).
 ### OPI files
   * Added .bob files for the Phoebus Display Builder.  These are autoconverted from the .adl files.
 
