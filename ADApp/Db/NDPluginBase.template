@@ -402,7 +402,7 @@ record(longin, "$(P)$(R)DisorderedArrays_RBV")
 # Set ASYN_TRACEIO_HEX bit by default
 record(asyn,"$(P)$(R)AsynIO")
 {
-    field(PORT, $(PORT))
+    field(PORT, "$(PORT)")
     field(TIB2,"1")
     info("ADType", "ADPlugin")
 }
