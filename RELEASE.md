@@ -24,15 +24,19 @@ files respectively, in the configure/ directory of the appropriate release of th
 ### CCDMultiTrack
   * New CCDMultiTrack class and database to support spectroscopy detectors 
     that support multi-track readout (Peter Heesterman)
+
 ### NDPluginStats
   * Fixed an off-by-one bug in the histogram calculation.
     It was incorrectly reporting the number of elements above HistMax and the mid-point element of
     the histogram had 0 counts when it should not.
+
 ### NDFileHDF5
   * Fixed problem with XML2 library linking warnings on static Windows builds (Peter Heesterman)
+
 ### NDPluginStdArrays
   * Changes to support compressed NDArrays. This will really only work properly when the ArrayData waveform record
     FTVL is CHAR, since compressed data is just a stream of bytes.
+
 ### NDFileNetCDF
   * Changes to handle NDArrays and NDAttributes with data types epicsInt64 and epicsUInt64.  The netCDF classic file
     format does not handle 64-bit integer data.  The workaround is to cast the data to float64, so the netCDF library 
@@ -43,6 +47,7 @@ files respectively, in the configure/ directory of the appropriate release of th
     changed in ADCore R3-8 to insert NDInt64 and NDUInt64 after NDUInt32.  This changed the enum values of NDFloat32
     and NDFloat64.  File readers using the value of these enums thus need to know which version of ADCore the file
     was written with.  This change should have been made in R3-8.
+
 ### SCANRATE macro
   * A new macro has been added to NDPosPlugin.template, NDPluginBase.template, NDFile.tamplate, NDArrayBase.template and 
     ADBase.template. This can be used to control the SCAN value of status PVs which update on every frame such as 
@@ -55,13 +60,17 @@ files respectively, in the configure/ directory of the appropriate release of th
     means that it will not display faster than the SCANRATE you select.
   * By making the records periodically scanned they will be reading even when the detector is stopped, which is a bit 
     more overhead than SCAN=I/O Intr.
+
 ### docs
   * Replaced all raw HTML tables in .rst files with Sphinx flat-tables.
+
 ### iocBoot/EXAMPLE_commonPlugins.cmd
   * Added command `callbackSetQueueSize(5000)` to avoid `callbackRequest: cbLow ring buffer full` errors.
+
 ### Database files ADBase.template, NDPluginBase.template, and ADPrefixes.template
   * Fixed syntax errors. They were missing quotes around the macro parameters $(PORT) and $(NELEMENTS).
     This caused parsing errors if the macros contained special characters like colon (:).
+
 ### OPI files
   * Added .bob files for the Phoebus Display Builder.  These are autoconverted from the .adl files.
 
