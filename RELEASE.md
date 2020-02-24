@@ -19,7 +19,7 @@ the EXAMPLE_RELEASE_PATHS.local, EXAMPLE_RELEASE_LIBS.local, and EXAMPLE_RELEASE
 files respectively, in the configure/ directory of the appropriate release of the 
 [top-level areaDetector](https://github.com/areaDetector/areaDetector) repository.
 
-## __R3-9 (February XXX, 2020)__
+## __R3-9 (February 24, 2020)__
 
 ### CCDMultiTrack
   * New CCDMultiTrack class and database to support spectroscopy detectors 
