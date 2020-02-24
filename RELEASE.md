@@ -57,7 +57,7 @@ files respectively, in the configure/ directory of the appropriate release of th
     more overhead than SCAN=I/O Intr.
 ### docs
   * Replaced all raw HTML tables in .rst files with Sphinx flat-tables.
-### iocBoot
+### iocBoot/EXAMPLE_commonPlugins.cmd
   * Added command `callbackSetQueueSize(5000)` to avoid `callbackRequest: cbLow ring buffer full` errors.
 ### Database files ADBase.template, NDPluginBase.template, and ADPrefixes.template
   * Fixed syntax errors. They were missing quotes around the macro parameters $(PORT) and $(NELEMENTS).
