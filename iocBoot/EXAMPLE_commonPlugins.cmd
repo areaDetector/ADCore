@@ -60,8 +60,9 @@ dbLoadRecords("NDROIStatN.template",  "P=$(PREFIX),R=ROIStat1:7:,PORT=ROISTAT1,A
 dbLoadRecords("NDROIStatN.template",  "P=$(PREFIX),R=ROIStat1:8:,PORT=ROISTAT1,ADDR=7,TIMEOUT=1,NCHANS=$(NCHANS)")
 
 # Create a processing plugin
-NDProcessConfigure("PROC1", $(QSIZE), 0, "$(PORT)", 0, 0, 0)
+NDProcessConfigure("PROC1", $(QSIZE), 0, "$(PORT)", 0, 0, 0, 0, 0, $(MAX_THREADS=5))
 dbLoadRecords("NDProcess.template",   "P=$(PREFIX),R=Proc1:,  PORT=PROC1,ADDR=0,TIMEOUT=1,NDARRAY_PORT=$(PORT)")
+
 # Create a TIFF file plugin to read dark and flatfield images into the processing plugin
 NDFileTIFFConfigure("PROC1TIFF", $(QSIZE), 0, "$(PORT)", 0)
 dbLoadRecords("NDFileTIFF.template",  "P=$(PREFIX),R=Proc1:TIFF:,PORT=PROC1TIFF,ADDR=0,TIMEOUT=1,NDARRAY_PORT=$(PORT)")
