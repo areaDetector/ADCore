@@ -22,70 +22,45 @@ describes this class in detail.
 all of the standard plugin parameters from
 :doc:`NDPluginDriver`. The EPICS database
 ``NDransform.template`` provide access to these parameters, listed in the
-following table. Note that to reduce the width of this table the
-parameter index variable names have been split into 2 lines, but these
-are just a single name, for example ``NDPluginTransformType``.
+following table.
 
-.. raw:: html
+.. |br| raw:: html
 
+    <br>
 
-  <table class="table table-bordered">
-    <tbody>
-      <tr>
-        <td align="center" colspan="7,">
-          <b>Parameter Definitions in NDPluginTransform.h and EPICS Record Definitions in NDTransform.template</b>
-        </td>
-      </tr>
-      <tr>
-        <th>
-          Parameter index variable</th>
-        <th>
-          asyn interface</th>
-        <th>
-          Access</th>
-        <th>
-          Description</th>
-        <th>
-          drvInfo string</th>
-        <th>
-          EPICS record name</th>
-        <th>
-          EPICS record type</th>
-      </tr>
-      <tr>
-        <td>
-          NDPluginTransform<br />
-          Type</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          Type of transform</td>
-        <td>
-          TRANSFORM_TYPE</td>
-        <td>
-          $(P)$(R)Type. Choices are:
-          <ul>
-            <li>None: No transform, the output image is the same as the input image.</li>
-            <li>Rot90: Rotate clockwise 90 degrees.</li>
-            <li>Rot180: Rotate clockwise 180 degrees.</li>
-            <li>Rot270: Rotate clockwise 270 degrees; equivalent to counter-clockwise rotation
-              by 90 degrees.</li>
-            <li>Mirror: Mirror reflection about the central column in the image.</li>
-            <li>Rot90Mirror: Rot90 followed by Mirror. Equivalent to image transpose, swapping
-              rows and columns.</li>
-            <li>Rot180Mirror: Rot180 followed by Mirror. Equivalent to a mirror reflection about
-              the central row in the image.</li>
-            <li>Rot270Mirror: Rot270 followed by Mirror. Equivalent to image transpose followed
-              by mirror reflection about the central column in the image.</li>
-          </ul>
-        </td>
-        <td>
-          mbbo</td>
-      </tr>
-    </tbody>
-  </table>
+.. cssclass:: table-bordered table-striped table-hover
+.. flat-table:: 
+  :header-rows: 2
+  :widths: 5 5 5 70 5 5 5
+
+  * -
+    - 
+    - **Parameter Definitions in NDPluginTransform.h and EPICS Record Definitions in NDTransform.template**
+  * - Parameter index variable
+    - asyn interface
+    - Access
+    - Description
+    - drvInfo string
+    - EPICS record name
+    - EPICS record type
+  * - NDPluginTransformType
+    - asynInt32
+    - r/w
+    - Type of transform. Choices are:|br|
+      **None**: No transform, the output image is the same as the input image. |br|
+      **Rot90**: Rotate clockwise 90 degrees. |br|
+      **Rot180**: Rotate clockwise 180 degrees. |br|
+      **Rot270**: Rotate clockwise 270 degrees; equivalent to counter-clockwise rotation by 90 degrees. |br|
+      **Mirror**: Mirror reflection about the central column in the image. |br|
+      **Rot90Mirror**: Rot90 followed by Mirror. Equivalent to image transpose, swapping
+      rows and columns. |br|
+      **Rot180Mirror**: Rot180 followed by Mirror. Equivalent to a mirror reflection about
+      the central row in the image. |br|
+      **Rot270Mirror**: Rot270 followed by Mirror. Equivalent to image transpose followed
+      by mirror reflection about the central column in the image. |br|
+    - TRANSFORM_TYPE
+    - $(P)$(R)Type
+    - mbbo
 
 
 Configuration
@@ -132,107 +107,48 @@ plugin was thus always dropping frames except when the transformation
 was None in mono and RGB1 mode, and when the transformation was
 Rot180Mirror in mono mode.
 
-.. raw:: html
+.. cssclass:: table-bordered table-striped table-hover
+.. flat-table::
+  :header-rows: 2
 
-  <table class="table table-bordered">
-    <tbody>
-      <tr>
-        <td align="center" colspan="4">
-          <b>Performance (frames/s)</b> </td>
-      </tr>
-      <tr>
-        <th>
-          Dimensions</th>
-        <th>
-          Transformation</th>
-        <th>
-          8-bit Mono</th>
-        <th>
-          8-bit RGB1</th>
-      </tr>
-      <tr>
-        <td>
-          1024 x 1024</td>
-        <td>
-          None</td>
-        <td>
-          680</td>
-        <td>
-          190</td>
-      </tr>
-      <tr>
-        <td>
-          1024 x 1024</td>
-        <td>
-          Rot90</td>
-        <td>
-          115</td>
-        <td>
-          40</td>
-      </tr>
-      <tr>
-        <td>
-          1024 x 1024</td>
-        <td>
-          Rot180</td>
-        <td>
-          145</td>
-        <td>
-          52</td>
-      </tr>
-      <tr>
-        <td>
-          1024 x 1024</td>
-        <td>
-          Rot270</td>
-        <td>
-          105</td>
-        <td>
-          41</td>
-      </tr>
-      <tr>
-        <td>
-          1024 x 1024</td>
-        <td>
-          Mirror</td>
-        <td>
-          152</td>
-        <td>
-          56</td>
-      </tr>
-      <tr>
-        <td>
-          1024 x 1024</td>
-        <td>
-          Rot90Mirror</td>
-        <td>
-          116</td>
-        <td>
-          40</td>
-      </tr>
-      <tr>
-        <td>
-          1024 x 1024</td>
-        <td>
-          Rot180Mirror</td>
-        <td>
-          680</td>
-        <td>
-          75</td>
-      </tr>
-      <tr>
-        <td>
-          1024 x 1024</td>
-        <td>
-          Rot270Mirror</td>
-        <td>
-          111</td>
-        <td>
-          41</td>
-      </tr>
-    </tbody>
-  </table>
-
+  * -
+    - **Performance (frames/s)**
+  * - Dimensions
+    - Transformation
+    - 8-bit Mono
+    - 8-bit RGB1
+  * - 1024 x 1024
+    - None
+    - 680
+    - 190
+  * - 1024 x 1024
+    - Rot90
+    - 115
+    - 40
+  * - 1024 x 1024
+    - Rot180
+    - 145
+    - 52
+  * - 1024 x 1024
+    - Rot270
+    - 105
+    - 41
+  * - 1024 x 1024
+    - Mirror
+    - 152
+    - 56
+  * - 1024 x 1024
+    - Rot90Mirror
+    - 116
+    - 40
+  * - 1024 x 1024
+    - Rot180Mirror
+    - 680
+    - 75
+  * - 1024 x 1024
+    - Rot270Mirror
+    - 111
+    - 41
 
 Note that this performance with ADCore R2-1 and later is dramatically
 improved from R2-0 and earlier. For example, in R2-0 with 1024 x 1024

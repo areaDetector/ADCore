@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<display version="2.0.0">
+  <name>NDOverlay</name>
+  <x>353</x>
+  <y>59</y>
+  <width>390</width>
+  <height>690</height>
+  <background_color>
+    <color red="187" green="187" blue="187">
+    </color>
+  </background_color>
+  <grid_visible>false</grid_visible>
+  <grid_step_x>5</grid_step_x>
+  <widget type="rectangle" version="2.0.0">
+    <name>rectangle #6</name>
+    <y>5</y>
+    <width>390</width>
+    <height>25</height>
+    <line_color>
+      <color red="218" green="218" blue="218">
+      </color>
+    </line_color>
+    <background_color>
+      <color red="218" green="218" blue="218">
+      </color>
+    </background_color>
+  </widget>
+  <widget type="label" version="2.0.0">
+    <name>text #9</name>
+    <text>$(P)$(R)</text>
+    <y>6</y>
+    <width>390</width>
+    <height>25</height>
+    <font>
+      <font family="Liberation Sans" style="REGULAR" size="16.0">
+      </font>
+    </font>
+    <foreground_color>
+      <color red="10" green="0" blue="184">
+      </color>
+    </foreground_color>
+    <horizontal_alignment>1</horizontal_alignment>
+  </widget>
+  <widget type="embedded" version="2.0.0">
+    <name>composite #12</name>
+    <file>NDPluginBase.bob</file>
+    <x>5</x>
+    <y>40</y>
+    <width>380</width>
+    <height>555</height>
+  </widget>
+  <widget type="rectangle" version="2.0.0">
+    <name>rectangle #14</name>
+    <x>5</x>
+    <y>600</y>
+    <width>380</width>
+    <height>85</height>
+    <line_width>1</line_width>
+    <line_color>
+      <color red="0" green="0" blue="0">
+      </color>
+    </line_color>
+    <background_color>
+      <color red="0" green="0" blue="0">
+      </color>
+    </background_color>
+    <transparent>true</transparent>
+  </widget>
+  <widget type="action_button" version="3.0.0">
+    <name>related display #17</name>
+    <actions>
+      <action type="open_display">
+        <file>NDOverlayN.opi</file>
+        <macros>
+          <R>$(R)1:</R>
+        </macros>
+        <target>tab</target>
+        <description>Overlay 1</description>
+      </action>
+      <action type="open_display">
+        <file>NDOverlayN.opi</file>
+        <macros>
+          <R>$(R)2:</R>
+        </macros>
+        <target>tab</target>
+        <description>Overlay 2</description>
+      </action>
+      <action type="open_display">
+        <file>NDOverlayN.opi</file>
+        <macros>
+          <R>$(R)3:</R>
+        </macros>
+        <target>tab</target>
+        <description>Overlay 3</description>
+      </action>
+      <action type="open_display">
+        <file>NDOverlayN.opi</file>
+        <macros>
+          <R>$(R)4:</R>
+        </macros>
+        <target>tab</target>
+        <description>Overlay 4</description>
+      </action>
+      <action type="open_display">
+        <file>NDOverlayN.opi</file>
+        <macros>
+          <R>$(R)5:</R>
+        </macros>
+        <target>tab</target>
+        <description>Overlay 5</description>
+      </action>
+      <action type="open_display">
+        <file>NDOverlayN.opi</file>
+        <macros>
+          <R>$(R)6:</R>
+        </macros>
+        <target>tab</target>
+        <description>Overlay 6</description>
+      </action>
+      <action type="open_display">
+        <file>NDOverlayN.opi</file>
+        <macros>
+          <R>$(R)7:</R>
+        </macros>
+        <target>tab</target>
+        <description>Overlay 7</description>
+      </action>
+      <action type="open_display">
+        <file>NDOverlayN.opi</file>
+        <macros>
+          <R>$(R)8:</R>
+        </macros>
+        <target>tab</target>
+        <description>Overlay 8</description>
+      </action>
+    </actions>
+    <text>Individual Overlays</text>
+    <x>172</x>
+    <y>630</y>
+    <width>160</width>
+    <height>20</height>
+    <background_color>
+      <color red="115" green="223" blue="255">
+      </color>
+    </background_color>
+  </widget>
+  <widget type="label" version="2.0.0">
+    <name>text #27</name>
+    <text>Individual 0-7</text>
+    <x>22</x>
+    <y>630</y>
+    <width>140</width>
+    <font>
+      <font family="Liberation Sans" style="REGULAR" size="16.0">
+      </font>
+    </font>
+    <horizontal_alignment>2</horizontal_alignment>
+  </widget>
+  <widget type="action_button" version="3.0.0">
+    <name>related display #30</name>
+    <actions>
+      <action type="open_display">
+        <file>NDOverlay8.opi</file>
+        <macros>
+          <O1>$(R)1:</O1>
+          <O2>$(R)2:</O2>
+          <O3>$(R)3:</O3>
+          <O4>$(R)4:</O4>
+          <O5>$(R)5:</O5>
+          <O6>$(R)6:</O6>
+          <O7>$(R)7:</O7>
+          <O8>$(R)8:</O8>
+        </macros>
+        <target>tab</target>
+        <description>Overlays 1-8</description>
+      </action>
+      <action type="open_display">
+        <file>NDOverlay8.opi</file>
+        <macros>
+          <O1>$(R)9:</O1>
+          <O2>$(R)10:</O2>
+          <O3>$(R)11:</O3>
+          <O4>$(R)12:</O4>
+          <O5>$(R)13:</O5>
+          <O6>$(R)14:</O6>
+          <O7>$(R)15:</O7>
+          <O8>$(R)16:</O8>
+        </macros>
+        <target>tab</target>
+        <description>Overlays 9-16</description>
+      </action>
+    </actions>
+    <text>Combined Overlays</text>
+    <x>172</x>
+    <y>657</y>
+    <width>160</width>
+    <height>20</height>
+    <background_color>
+      <color red="115" green="223" blue="255">
+      </color>
+    </background_color>
+  </widget>
+  <widget type="label" version="2.0.0">
+    <name>text #34</name>
+    <text>Overlay definitions</text>
+    <x>138</x>
+    <y>605</y>
+    <width>150</width>
+    <font>
+      <font family="Liberation Sans" style="REGULAR" size="16.0">
+      </font>
+    </font>
+    <horizontal_alignment>2</horizontal_alignment>
+  </widget>
+  <widget type="label" version="2.0.0">
+    <name>text #37</name>
+    <text>Combined</text>
+    <x>82</x>
+    <y>658</y>
+    <width>80</width>
+    <font>
+      <font family="Liberation Sans" style="REGULAR" size="16.0">
+      </font>
+    </font>
+    <horizontal_alignment>2</horizontal_alignment>
+  </widget>
+</display>

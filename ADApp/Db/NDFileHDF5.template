@@ -13,6 +13,15 @@
 include "NDFile.template"
 include "NDPluginBase.template"
 
+# Flush data to file
+record(busy, "$(P)$(R)FlushNow")
+{
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))HDF5_SWMRFlushNow")
+    field(ZNAM, "Done")
+    field(ONAM, "Flush")
+}
+
 # We replace some fields in records defined in NDFile.template
 # File data format 
 record(mbbo, "$(P)$(R)FileFormat")
@@ -29,6 +38,26 @@ record(mbbi, "$(P)$(R)FileFormat_RBV")
     field(ZRVL, "0")
     field(ONST, "Undefined")
     field(ONVL, "1")
+}
+
+record(bo, "$(P)$(R)ChunkSizeAuto")
+{
+    field(DTYP, "asynInt32")
+    field(OUT, "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))HDF5_chunkSizeAuto")
+    field(PINI, "YES")
+    field(ZNAM, "No")
+    field(ONAM, "Yes")
+    field(VAL,  "1")
+    info(autosaveFields, "VAL")
+}
+
+record(bi, "$(P)$(R)ChunkSizeAuto_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP, "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))HDF5_chunkSizeAuto")
+    field(SCAN, "I/O Intr")
+    field(ZNAM, "No")
+    field(ONAM, "Yes")
 }
 
 record(longout, "$(P)$(R)NumRowChunks")
@@ -58,6 +87,126 @@ record(longin, "$(P)$(R)NumColChunks_RBV")
 {
     field(DTYP, "asynInt32")
     field(INP, "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))HDF5_nColChunks")
+    field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)ChunkSize2")
+{
+    field(DTYP, "asynInt32")
+    field(OUT, "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))HDF5_chunkSize2")
+    field(PINI, "YES")
+    info(autosaveFields, "VAL")
+}
+
+record(longin, "$(P)$(R)ChunkSize2_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP, "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))HDF5_chunkSize2")
+    field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)ChunkSize3")
+{
+    field(DTYP, "asynInt32")
+    field(OUT, "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))HDF5_chunkSize3")
+    field(PINI, "YES")
+    info(autosaveFields, "VAL")
+}
+
+record(longin, "$(P)$(R)ChunkSize3_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP, "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))HDF5_chunkSize3")
+    field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)ChunkSize4")
+{
+    field(DTYP, "asynInt32")
+    field(OUT, "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))HDF5_chunkSize4")
+    field(PINI, "YES")
+    info(autosaveFields, "VAL")
+}
+
+record(longin, "$(P)$(R)ChunkSize4_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP, "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))HDF5_chunkSize4")
+    field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)ChunkSize5")
+{
+    field(DTYP, "asynInt32")
+    field(OUT, "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))HDF5_chunkSize5")
+    field(PINI, "YES")
+    info(autosaveFields, "VAL")
+}
+
+record(longin, "$(P)$(R)ChunkSize5_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP, "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))HDF5_chunkSize5")
+    field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)ChunkSize6")
+{
+    field(DTYP, "asynInt32")
+    field(OUT, "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))HDF5_chunkSize6")
+    field(PINI, "YES")
+    info(autosaveFields, "VAL")
+}
+
+record(longin, "$(P)$(R)ChunkSize6_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP, "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))HDF5_chunkSize6")
+    field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)ChunkSize7")
+{
+    field(DTYP, "asynInt32")
+    field(OUT, "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))HDF5_chunkSize7")
+    field(PINI, "YES")
+    info(autosaveFields, "VAL")
+}
+
+record(longin, "$(P)$(R)ChunkSize7_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP, "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))HDF5_chunkSize7")
+    field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)ChunkSize8")
+{
+    field(DTYP, "asynInt32")
+    field(OUT, "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))HDF5_chunkSize8")
+    field(PINI, "YES")
+    info(autosaveFields, "VAL")
+}
+
+record(longin, "$(P)$(R)ChunkSize8_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP, "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))HDF5_chunkSize8")
+    field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)ChunkSize9")
+{
+    field(DTYP, "asynInt32")
+    field(OUT, "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))HDF5_chunkSize9")
+    field(PINI, "YES")
+    info(autosaveFields, "VAL")
+}
+
+record(longin, "$(P)$(R)ChunkSize9_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP, "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))HDF5_chunkSize9")
     field(SCAN, "I/O Intr")
 }
 
@@ -446,10 +595,14 @@ record(mbbo, "$(P)$(R)Compression")
     field(TWVL, "2")
     field(THST, "zlib")
     field(THVL, "3")
-    field(FRST, "blosc")
+    field(FRST, "Blosc")
     field(FRVL, "4")
-    field(FVST, "bitshuffle")
+    field(FVST, "BSLZ4")
     field(FVVL, "5")
+    field(SXST, "LZ4")
+    field(SXVL, "6")
+    field(SVST, "JPEG")
+    field(SVVL, "7")
     info(autosaveFields, "VAL")
 }
 
@@ -460,16 +613,20 @@ record(mbbi, "$(P)$(R)Compression_RBV")
     field(SCAN, "I/O Intr")
     field(ZRST, "None")
     field(ZRVL, "0")
-    field(ONST, "nbit")
+    field(ONST, "N-bit")
     field(ONVL, "1")
     field(TWST, "szip")
     field(TWVL, "2")
     field(THST, "zlib")
     field(THVL, "3")
-    field(FRST, "blosc")
+    field(FRST, "Blosc")
     field(FRVL, "4")
-    field(FVST, "bitshuffle")
+    field(FVST, "BSLZ4")
     field(FVVL, "5")
+    field(SXST, "LZ4")
+    field(SXVL, "6")
+    field(SVST, "JPEG")
+    field(SVVL, "7")
 }
 
 record(longout, "$(P)$(R)NumDataBits")
@@ -545,9 +702,9 @@ record(mbbo, "$(P)$(R)BloscShuffle")
     field(PINI, "YES")
     field(ZRST, "None")
     field(ZRVL, "0")
-    field(ONST, "ByteShuffle")
+    field(ONST, "Byte")
     field(ONVL, "1")
-    field(TWST, "BitShuffle")
+    field(TWST, "Bit")
     field(TWVL, "2")
     info(autosaveFields, "VAL")
 }
@@ -559,9 +716,9 @@ record(mbbi, "$(P)$(R)BloscShuffle_RBV")
     field(SCAN, "I/O Intr")
     field(ZRST, "None")
     field(ZRVL, "0")
-    field(ONST, "ByteShuffle")
+    field(ONST, "Byte")
     field(ONVL, "1")
-    field(TWST, "BitShuffle")
+    field(TWST, "Bit")
     field(TWVL, "2")
 }
 
@@ -570,17 +727,17 @@ record(mbbo, "$(P)$(R)BloscCompressor")
     field(DTYP, "asynInt32")
     field(OUT, "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))HDF5_bloscCompressor")
     field(PINI, "YES")
-    field(ZRST, "blosclz")
+    field(ZRST, "BloscLZ")
     field(ZRVL, "0")
-    field(ONST, "lz4")
+    field(ONST, "LZ4")
     field(ONVL, "1")
-    field(TWST, "lz4hc")
+    field(TWST, "LZ4HC")
     field(TWVL, "2")
-    field(THST, "snappy")
+    field(THST, "SNAPPY")
     field(THVL, "3")
-    field(FRST, "zlib")
+    field(FRST, "ZLIB")
     field(FRVL, "4")
-    field(FVST, "zstd")
+    field(FVST, "ZSTD")
     field(FVVL, "5")
     info(autosaveFields, "VAL")
 }
@@ -590,17 +747,17 @@ record(mbbi, "$(P)$(R)BloscCompressor_RBV")
     field(DTYP, "asynInt32")
     field(INP, "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))HDF5_bloscCompressor")
     field(SCAN, "I/O Intr")
-    field(ZRST, "blosclz")
+    field(ZRST, "BloscLZ")
     field(ZRVL, "0")
-    field(ONST, "lz4")
+    field(ONST, "LZ4")
     field(ONVL, "1")
-    field(TWST, "lz4hc")
+    field(TWST, "LZ4HC")
     field(TWVL, "2")
-    field(THST, "snappy")
+    field(THST, "SNAPPY")
     field(THVL, "3")
-    field(FRST, "zlib")
+    field(FRST, "ZLIB")
     field(FRVL, "4")
-    field(FVST, "zstd")
+    field(FVST, "ZSTD")
     field(FVVL, "5")
 }
 
@@ -616,6 +773,24 @@ record(longin, "$(P)$(R)BloscLevel_RBV")
 {
     field(DTYP, "asynInt32")
     field(INP, "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))HDF5_bloscCompressLevel")
+    field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)JPEGQuality")
+{
+    field(DTYP, "asynInt32")
+    field(OUT, "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))HDF5_jpegQuality")
+    field(VAL, "90")
+    field(DRVL, "1")
+    field(DRVH, "100")
+    field(PINI, "YES")
+    info(autosaveFields, "VAL")
+}
+
+record(longin, "$(P)$(R)JPEGQuality_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP, "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))HDF5_jpegQuality")
     field(SCAN, "I/O Intr")
 }
 

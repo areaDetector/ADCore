@@ -11,8 +11,12 @@
 #include "NDPluginFile.h"
 
 /** This version number is an attribute in the netCDF file to allow readers
- * to handle changes in the file contents */
-#define NDNetCDFFileVersion 3.0
+ * to handle changes in the file contents 
+ * All files up through ADCore R3-8 were 3.0
+ * R3-9 changed to 3.1.  This was done because the datatype attribute in the file
+ * which is enum NDDataType_t changed.  NDInt64 and NDUInt64 were added after NDUInt32,
+ * which changed the datatypes of NDFloat32 and NDFloat64 from 6-7 to 8-9.*/
+#define NDNetCDFFileVersion 3.1
 
 /** Writes NDArrays to files in the netCDF file format.
   * netCDF is an open-source, portable, self-describing binary format supported by Unidata at UCAR

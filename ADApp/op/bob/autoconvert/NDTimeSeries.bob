@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<display version="2.0.0">
+  <name>NDTimeSeries</name>
+  <x>930</x>
+  <y>345</y>
+  <width>500</width>
+  <height>355</height>
+  <background_color>
+    <color red="187" green="187" blue="187">
+    </color>
+  </background_color>
+  <grid_visible>false</grid_visible>
+  <grid_step_x>5</grid_step_x>
+  <widget type="xyplot" version="2.0.0">
+    <name>cartesian plot #6</name>
+    <x>10</x>
+    <y>92</y>
+    <width>480</width>
+    <height>230</height>
+    <title>$(P)$(R)$(PLT)</title>
+    <x_axis>
+      <title>Time point</title>
+      <autoscale>true</autoscale>
+      <log_scale>false</log_scale>
+      <minimum>0.0</minimum>
+      <maximum>100.0</maximum>
+      <show_grid>false</show_grid>
+      <title_font>
+        <font name="Default Bold" family="Liberation Sans" style="BOLD" size="14.0">
+        </font>
+      </title_font>
+      <scale_font>
+        <font name="Default" family="Liberation Sans" style="REGULAR" size="14.0">
+        </font>
+      </scale_font>
+      <visible>true</visible>
+    </x_axis>
+    <y_axes>
+      <y_axis>
+        <title>Value</title>
+        <autoscale>true</autoscale>
+        <log_scale>false</log_scale>
+        <minimum>0.0</minimum>
+        <maximum>100.0</maximum>
+        <show_grid>false</show_grid>
+        <title_font>
+          <font name="Default Bold" family="Liberation Sans" style="BOLD" size="14.0">
+          </font>
+        </title_font>
+        <scale_font>
+          <font name="Default" family="Liberation Sans" style="REGULAR" size="14.0">
+          </font>
+        </scale_font>
+        <visible>true</visible>
+      </y_axis>
+    </y_axes>
+    <traces>
+      <trace>
+        <name>$(traces[0].y_pv)</name>
+        <x_pv></x_pv>
+        <y_pv>$(P)$(R)$(PLT)</y_pv>
+        <err_pv></err_pv>
+        <axis>0</axis>
+        <trace_type>1</trace_type>
+        <color>
+          <color red="75" green="110" blue="199">
+          </color>
+        </color>
+        <line_width>1</line_width>
+        <line_style>0</line_style>
+        <point_type>0</point_type>
+        <point_size>10</point_size>
+        <visible>true</visible>
+      </trace>
+    </traces>
+  </widget>
+  <widget type="label" version="2.0.0">
+    <name>text #13</name>
+    <text>Current point</text>
+    <x>255</x>
+    <y>65</y>
+    <width>130</width>
+    <font>
+      <font family="Liberation Sans" style="REGULAR" size="16.0">
+      </font>
+    </font>
+    <horizontal_alignment>2</horizontal_alignment>
+  </widget>
+  <widget type="textupdate" version="2.0.0">
+    <name>text update #16</name>
+    <pv_name>$(P)$(R)TSCurrentPoint</pv_name>
+    <x>390</x>
+    <y>66</y>
+    <width>90</width>
+    <height>18</height>
+    <font>
+      <font family="Liberation Sans" style="REGULAR" size="16.0">
+      </font>
+    </font>
+    <foreground_color>
+      <color red="10" green="0" blue="184">
+      </color>
+    </foreground_color>
+    <background_color>
+      <color red="187" green="187" blue="187">
+      </color>
+    </background_color>
+    <format>1</format>
+    <show_units>false</show_units>
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+  </widget>
+  <widget type="combo" version="2.0.0">
+    <name>menu #20</name>
+    <pv_name>$(P)$(R)TSRead.SCAN</pv_name>
+    <x>105</x>
+    <y>328</y>
+    <width>80</width>
+    <height>18</height>
+    <background_color>
+      <color red="115" green="223" blue="255">
+      </color>
+    </background_color>
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+  </widget>
+  <widget type="action_button" version="3.0.0">
+    <name>message button #23</name>
+    <actions>
+      <action type="write_pv">
+        <pv_name>$(P)$(R)TSControl</pv_name>
+        <value>3</value>
+        <description>Write</description>
+      </action>
+    </actions>
+    <pv_name>$(P)$(R)TSControl</pv_name>
+    <text>Read</text>
+    <x>190</x>
+    <y>327</y>
+    <width>60</width>
+    <height>20</height>
+    <background_color>
+      <color red="115" green="223" blue="255">
+      </color>
+    </background_color>
+  </widget>
+  <widget type="label" version="2.0.0">
+    <name>text #26</name>
+    <text>Read rate</text>
+    <x>10</x>
+    <y>327</y>
+    <width>90</width>
+    <font>
+      <font family="Liberation Sans" style="REGULAR" size="16.0">
+      </font>
+    </font>
+    <auto_size>true</auto_size>
+  </widget>
+  <widget type="action_button" version="3.0.0">
+    <name>message button #29</name>
+    <actions>
+      <action type="write_pv">
+        <pv_name>$(P)$(R)TSControl</pv_name>
+        <value>0</value>
+        <description>Write</description>
+      </action>
+    </actions>
+    <pv_name>$(P)$(R)TSControl</pv_name>
+    <text>Erase/Start</text>
+    <x>10</x>
+    <y>40</y>
+    <width>90</width>
+    <height>20</height>
+    <background_color>
+      <color red="115" green="223" blue="255">
+      </color>
+    </background_color>
+  </widget>
+  <widget type="action_button" version="3.0.0">
+    <name>message button #32</name>
+    <actions>
+      <action type="write_pv">
+        <pv_name>$(P)$(R)TSControl</pv_name>
+        <value>2</value>
+        <description>Write</description>
+      </action>
+    </actions>
+    <pv_name>$(P)$(R)TSControl</pv_name>
+    <text>Stop</text>
+    <x>105</x>
+    <y>40</y>
+    <width>60</width>
+    <height>20</height>
+    <background_color>
+      <color red="115" green="223" blue="255">
+      </color>
+    </background_color>
+  </widget>
+  <widget type="action_button" version="3.0.0">
+    <name>message button #35</name>
+    <actions>
+      <action type="write_pv">
+        <pv_name>$(P)$(R)TSControl</pv_name>
+        <value>1</value>
+        <description>Write</description>
+      </action>
+    </actions>
+    <pv_name>$(P)$(R)TSControl</pv_name>
+    <text>Start</text>
+    <x>170</x>
+    <y>40</y>
+    <width>60</width>
+    <height>20</height>
+    <background_color>
+      <color red="115" green="223" blue="255">
+      </color>
+    </background_color>
+  </widget>
+  <widget type="textupdate" version="2.0.0">
+    <name>text update #38</name>
+    <pv_name>$(P)$(R)TSAcquiring</pv_name>
+    <x>235</x>
+    <y>41</y>
+    <width>90</width>
+    <height>18</height>
+    <font>
+      <font family="Liberation Sans" style="REGULAR" size="16.0">
+      </font>
+    </font>
+    <foreground_color>
+      <color red="10" green="0" blue="184">
+      </color>
+    </foreground_color>
+    <background_color>
+      <color red="70" green="70" blue="70">
+      </color>
+    </background_color>
+    <format>6</format>
+    <show_units>false</show_units>
+  </widget>
+  <widget type="textentry" version="3.0.0">
+    <name>text entry #42</name>
+    <pv_name>$(P)$(R)TSNumPoints</pv_name>
+    <x>175</x>
+    <y>66</y>
+    <width>60</width>
+    <height>19</height>
+    <font>
+      <font family="Liberation Sans" style="REGULAR" size="16.0">
+      </font>
+    </font>
+    <background_color>
+      <color red="115" green="223" blue="255">
+      </color>
+    </background_color>
+    <format>1</format>
+    <show_units>false</show_units>
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+  </widget>
+  <widget type="label" version="2.0.0">
+    <name>text #46</name>
+    <text>Number of points</text>
+    <x>10</x>
+    <y>65</y>
+    <width>160</width>
+    <font>
+      <font family="Liberation Sans" style="REGULAR" size="16.0">
+      </font>
+    </font>
+    <horizontal_alignment>2</horizontal_alignment>
+  </widget>
+  <widget type="rectangle" version="2.0.0">
+    <name>rectangle #49</name>
+    <y>5</y>
+    <width>500</width>
+    <height>25</height>
+    <line_color>
+      <color red="10" green="0" blue="184">
+      </color>
+    </line_color>
+    <background_color>
+      <color red="10" green="0" blue="184">
+      </color>
+    </background_color>
+  </widget>
+  <widget type="label" version="2.0.0">
+    <name>text #52</name>
+    <text>$(P)$(R)$(PLT)</text>
+    <y>5</y>
+    <width>500</width>
+    <height>25</height>
+    <font>
+      <font family="Liberation Sans" style="REGULAR" size="16.0">
+      </font>
+    </font>
+    <foreground_color>
+      <color red="255" green="255" blue="255">
+      </color>
+    </foreground_color>
+    <horizontal_alignment>1</horizontal_alignment>
+  </widget>
+</display>

@@ -14,23 +14,22 @@ format, which is a popular file format for storing images. There is TIFF
 support for almost all languages and programs such as IDL and Matlab.
 
 The TIFF plugin supports all 8 NDArray data types (signed and unsigned
-8, 16, 32 bit integers, 32 and 64 bit floating point. It supports all
+8, 16, 32, 64 bit integers, 32 and 64 bit floating point. It supports all
 color modes (Mono, RGB1, RGB2, and RGB3). Note that many TIFF readers do
-not support 16 or 32 bit integer TIFF files, floating point TIFF files,
+not support 16, 32 or 64 bit integer TIFF files, floating point TIFF files,
 and 16 or 32 bit color files. NDFileTIFF is limited to a single array
 per file, but capture and stream mode are supported by writing multiple
 TIFF files.
 
 Tests were done with IDL, ImageJ, and the Python Imaging Library (PIL)
-to read TIFF files with all 8 data types. IDL can read all 8 types,
+to read TIFF files with all 10 data types. IDL can read all 10 types,
 although it does not support signed 8-bit integers so it treats them as
-unsigned. ImageJ can read all types except NDFloat64. PIL cannot read
-NDInt8, NDUInt32, or NDFloat64.
+unsigned. ImageJ can read all types except NDFloat64, NDInt64, and NDUInt64.
+PIL cannot read NDInt8, NDUInt32, or NDFloat64.
 
-The TIFF plugin writes all NDAttributes attached to the NDArray as TIFF
-ASCII file tags, up to a maximum of 490 tags. These tags start with
-number 65000. For historical reasons first 4 tags do not have labels.
-These are the following NDArray class members converted to ASCII:
+The TIFF plugin writes four NDArray class members as TIFF tags starting
+with tag number 65000. For historical reasons these tags do not have labels.
+They are the following NDArray class members converted to ASCII:
 
 ::
 
@@ -39,10 +38,11 @@ These are the following NDArray class members converted to ASCII:
     -  65002: epicsTS (seconds)
     -  65003: epicsTS (nano-seconds)
 
-Tags starting with 65004 are the NDAttributes in the NDArray converted
-to ASCII with attribute name, followed by a colon and the attribute
-value. This information can be displayed, for example, with the tiffinfo
-program:
+The TIFF plugin also writes all NDAttributes attached to the NDArray as TIFF
+ASCII file tags, up to a maximum of 536 attributes. These tags start with
+number 65010. The NDAttributes are converted to ASCII with attribute name,
+followed by a colon and the attribute value. This information can be displayed,
+for example, with the tiffinfo program:
 
 ::
 

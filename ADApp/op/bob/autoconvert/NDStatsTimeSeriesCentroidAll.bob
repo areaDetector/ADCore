@@ -1,0 +1,1037 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<display version="2.0.0">
+  <name>NDStatsTimeSeriesCentroidAll</name>
+  <x>305</x>
+  <y>202</y>
+  <width>1435</width>
+  <height>780</height>
+  <background_color>
+    <color red="187" green="187" blue="187">
+    </color>
+  </background_color>
+  <grid_visible>false</grid_visible>
+  <grid_step_x>5</grid_step_x>
+  <widget type="rectangle" version="2.0.0">
+    <name>rectangle #6</name>
+    <y>5</y>
+    <width>1435</width>
+    <height>25</height>
+    <line_color>
+      <color red="10" green="0" blue="184">
+      </color>
+    </line_color>
+    <background_color>
+      <color red="10" green="0" blue="184">
+      </color>
+    </background_color>
+  </widget>
+  <widget type="label" version="2.0.0">
+    <name>text #9</name>
+    <text>$(P)$(R)</text>
+    <y>5</y>
+    <width>1435</width>
+    <height>25</height>
+    <font>
+      <font family="Liberation Sans" style="REGULAR" size="16.0">
+      </font>
+    </font>
+    <foreground_color>
+      <color red="255" green="255" blue="255">
+      </color>
+    </foreground_color>
+    <horizontal_alignment>1</horizontal_alignment>
+  </widget>
+  <widget type="group" version="2.0.0">
+    <name>composite #12</name>
+    <x>10</x>
+    <y>40</y>
+    <width>1415</width>
+    <height>610</height>
+    <style>3</style>
+    <transparent>true</transparent>
+    <widget type="xyplot" version="2.0.0">
+      <name>cartesian plot #15</name>
+      <width>350</width>
+      <height>200</height>
+      <title>$(P)$(R)TSCentroidX</title>
+      <x_axis>
+        <title>Time (s)</title>
+        <autoscale>true</autoscale>
+        <log_scale>false</log_scale>
+        <minimum>0.0</minimum>
+        <maximum>100.0</maximum>
+        <show_grid>false</show_grid>
+        <title_font>
+          <font name="Default Bold" family="Liberation Sans" style="BOLD" size="14.0">
+          </font>
+        </title_font>
+        <scale_font>
+          <font name="Default" family="Liberation Sans" style="REGULAR" size="14.0">
+          </font>
+        </scale_font>
+        <visible>true</visible>
+      </x_axis>
+      <y_axes>
+        <y_axis>
+          <title>Value</title>
+          <autoscale>true</autoscale>
+          <log_scale>false</log_scale>
+          <minimum>0.0</minimum>
+          <maximum>100.0</maximum>
+          <show_grid>false</show_grid>
+          <title_font>
+            <font name="Default Bold" family="Liberation Sans" style="BOLD" size="14.0">
+            </font>
+          </title_font>
+          <scale_font>
+            <font name="Default" family="Liberation Sans" style="REGULAR" size="14.0">
+            </font>
+          </scale_font>
+          <visible>true</visible>
+        </y_axis>
+      </y_axes>
+      <traces>
+        <trace>
+          <name>$(traces[0].y_pv)</name>
+          <x_pv>$(P)$(R)TS:TSTimeAxis</x_pv>
+          <y_pv>$(P)$(R)TSCentroidX</y_pv>
+          <err_pv></err_pv>
+          <axis>0</axis>
+          <trace_type>1</trace_type>
+          <color>
+            <color red="75" green="110" blue="199">
+            </color>
+          </color>
+          <line_width>1</line_width>
+          <line_style>0</line_style>
+          <point_type>0</point_type>
+          <point_size>10</point_size>
+          <visible>true</visible>
+        </trace>
+      </traces>
+    </widget>
+    <widget type="xyplot" version="2.0.0">
+      <name>cartesian plot #22</name>
+      <x>355</x>
+      <width>350</width>
+      <height>200</height>
+      <title>$(P)$(R)TSCentroidY</title>
+      <x_axis>
+        <title>Time (s)</title>
+        <autoscale>true</autoscale>
+        <log_scale>false</log_scale>
+        <minimum>0.0</minimum>
+        <maximum>100.0</maximum>
+        <show_grid>false</show_grid>
+        <title_font>
+          <font name="Default Bold" family="Liberation Sans" style="BOLD" size="14.0">
+          </font>
+        </title_font>
+        <scale_font>
+          <font name="Default" family="Liberation Sans" style="REGULAR" size="14.0">
+          </font>
+        </scale_font>
+        <visible>true</visible>
+      </x_axis>
+      <y_axes>
+        <y_axis>
+          <title>Value</title>
+          <autoscale>true</autoscale>
+          <log_scale>false</log_scale>
+          <minimum>0.0</minimum>
+          <maximum>100.0</maximum>
+          <show_grid>false</show_grid>
+          <title_font>
+            <font name="Default Bold" family="Liberation Sans" style="BOLD" size="14.0">
+            </font>
+          </title_font>
+          <scale_font>
+            <font name="Default" family="Liberation Sans" style="REGULAR" size="14.0">
+            </font>
+          </scale_font>
+          <visible>true</visible>
+        </y_axis>
+      </y_axes>
+      <traces>
+        <trace>
+          <name>$(traces[0].y_pv)</name>
+          <x_pv>$(P)$(R)TS:TSTimeAxis</x_pv>
+          <y_pv>$(P)$(R)TSCentroidY</y_pv>
+          <err_pv></err_pv>
+          <axis>0</axis>
+          <trace_type>1</trace_type>
+          <color>
+            <color red="75" green="110" blue="199">
+            </color>
+          </color>
+          <line_width>1</line_width>
+          <line_style>0</line_style>
+          <point_type>0</point_type>
+          <point_size>10</point_size>
+          <visible>true</visible>
+        </trace>
+      </traces>
+    </widget>
+    <widget type="xyplot" version="2.0.0">
+      <name>cartesian plot #29</name>
+      <x>710</x>
+      <width>350</width>
+      <height>200</height>
+      <title>$(P)$(R)TSSigmaX</title>
+      <x_axis>
+        <title>Time (s)</title>
+        <autoscale>true</autoscale>
+        <log_scale>false</log_scale>
+        <minimum>0.0</minimum>
+        <maximum>100.0</maximum>
+        <show_grid>false</show_grid>
+        <title_font>
+          <font name="Default Bold" family="Liberation Sans" style="BOLD" size="14.0">
+          </font>
+        </title_font>
+        <scale_font>
+          <font name="Default" family="Liberation Sans" style="REGULAR" size="14.0">
+          </font>
+        </scale_font>
+        <visible>true</visible>
+      </x_axis>
+      <y_axes>
+        <y_axis>
+          <title>Value</title>
+          <autoscale>true</autoscale>
+          <log_scale>false</log_scale>
+          <minimum>0.0</minimum>
+          <maximum>100.0</maximum>
+          <show_grid>false</show_grid>
+          <title_font>
+            <font name="Default Bold" family="Liberation Sans" style="BOLD" size="14.0">
+            </font>
+          </title_font>
+          <scale_font>
+            <font name="Default" family="Liberation Sans" style="REGULAR" size="14.0">
+            </font>
+          </scale_font>
+          <visible>true</visible>
+        </y_axis>
+      </y_axes>
+      <traces>
+        <trace>
+          <name>$(traces[0].y_pv)</name>
+          <x_pv>$(P)$(R)TS:TSTimeAxis</x_pv>
+          <y_pv>$(P)$(R)TSSigmaX</y_pv>
+          <err_pv></err_pv>
+          <axis>0</axis>
+          <trace_type>1</trace_type>
+          <color>
+            <color red="75" green="110" blue="199">
+            </color>
+          </color>
+          <line_width>1</line_width>
+          <line_style>0</line_style>
+          <point_type>0</point_type>
+          <point_size>10</point_size>
+          <visible>true</visible>
+        </trace>
+      </traces>
+    </widget>
+    <widget type="xyplot" version="2.0.0">
+      <name>cartesian plot #36</name>
+      <x>1065</x>
+      <width>350</width>
+      <height>200</height>
+      <title>$(P)$(R)TSSigmaY</title>
+      <x_axis>
+        <title>Time (s)</title>
+        <autoscale>true</autoscale>
+        <log_scale>false</log_scale>
+        <minimum>0.0</minimum>
+        <maximum>100.0</maximum>
+        <show_grid>false</show_grid>
+        <title_font>
+          <font name="Default Bold" family="Liberation Sans" style="BOLD" size="14.0">
+          </font>
+        </title_font>
+        <scale_font>
+          <font name="Default" family="Liberation Sans" style="REGULAR" size="14.0">
+          </font>
+        </scale_font>
+        <visible>true</visible>
+      </x_axis>
+      <y_axes>
+        <y_axis>
+          <title>Value</title>
+          <autoscale>true</autoscale>
+          <log_scale>false</log_scale>
+          <minimum>0.0</minimum>
+          <maximum>100.0</maximum>
+          <show_grid>false</show_grid>
+          <title_font>
+            <font name="Default Bold" family="Liberation Sans" style="BOLD" size="14.0">
+            </font>
+          </title_font>
+          <scale_font>
+            <font name="Default" family="Liberation Sans" style="REGULAR" size="14.0">
+            </font>
+          </scale_font>
+          <visible>true</visible>
+        </y_axis>
+      </y_axes>
+      <traces>
+        <trace>
+          <name>$(traces[0].y_pv)</name>
+          <x_pv>$(P)$(R)TS:TSTimeAxis</x_pv>
+          <y_pv>$(P)$(R)TSSigmaY</y_pv>
+          <err_pv></err_pv>
+          <axis>0</axis>
+          <trace_type>1</trace_type>
+          <color>
+            <color red="75" green="110" blue="199">
+            </color>
+          </color>
+          <line_width>1</line_width>
+          <line_style>0</line_style>
+          <point_type>0</point_type>
+          <point_size>10</point_size>
+          <visible>true</visible>
+        </trace>
+      </traces>
+    </widget>
+    <widget type="xyplot" version="2.0.0">
+      <name>cartesian plot #43</name>
+      <y>410</y>
+      <width>350</width>
+      <height>200</height>
+      <title>$(P)$(R)TSCentroidTotal</title>
+      <x_axis>
+        <title>Time (s)</title>
+        <autoscale>true</autoscale>
+        <log_scale>false</log_scale>
+        <minimum>0.0</minimum>
+        <maximum>100.0</maximum>
+        <show_grid>false</show_grid>
+        <title_font>
+          <font name="Default Bold" family="Liberation Sans" style="BOLD" size="14.0">
+          </font>
+        </title_font>
+        <scale_font>
+          <font name="Default" family="Liberation Sans" style="REGULAR" size="14.0">
+          </font>
+        </scale_font>
+        <visible>true</visible>
+      </x_axis>
+      <y_axes>
+        <y_axis>
+          <title>Value</title>
+          <autoscale>true</autoscale>
+          <log_scale>false</log_scale>
+          <minimum>0.0</minimum>
+          <maximum>100.0</maximum>
+          <show_grid>false</show_grid>
+          <title_font>
+            <font name="Default Bold" family="Liberation Sans" style="BOLD" size="14.0">
+            </font>
+          </title_font>
+          <scale_font>
+            <font name="Default" family="Liberation Sans" style="REGULAR" size="14.0">
+            </font>
+          </scale_font>
+          <visible>true</visible>
+        </y_axis>
+      </y_axes>
+      <traces>
+        <trace>
+          <name>$(traces[0].y_pv)</name>
+          <x_pv>$(P)$(R)TS:TSTimeAxis</x_pv>
+          <y_pv>$(P)$(R)TSCentroidTotal</y_pv>
+          <err_pv></err_pv>
+          <axis>0</axis>
+          <trace_type>1</trace_type>
+          <color>
+            <color red="75" green="110" blue="199">
+            </color>
+          </color>
+          <line_width>1</line_width>
+          <line_style>0</line_style>
+          <point_type>0</point_type>
+          <point_size>10</point_size>
+          <visible>true</visible>
+        </trace>
+      </traces>
+    </widget>
+    <widget type="xyplot" version="2.0.0">
+      <name>cartesian plot #50</name>
+      <x>355</x>
+      <y>410</y>
+      <width>350</width>
+      <height>200</height>
+      <title>$(P)$(R)TSSigmaXY</title>
+      <x_axis>
+        <title>Time (s)</title>
+        <autoscale>true</autoscale>
+        <log_scale>false</log_scale>
+        <minimum>0.0</minimum>
+        <maximum>100.0</maximum>
+        <show_grid>false</show_grid>
+        <title_font>
+          <font name="Default Bold" family="Liberation Sans" style="BOLD" size="14.0">
+          </font>
+        </title_font>
+        <scale_font>
+          <font name="Default" family="Liberation Sans" style="REGULAR" size="14.0">
+          </font>
+        </scale_font>
+        <visible>true</visible>
+      </x_axis>
+      <y_axes>
+        <y_axis>
+          <title>Value</title>
+          <autoscale>true</autoscale>
+          <log_scale>false</log_scale>
+          <minimum>0.0</minimum>
+          <maximum>100.0</maximum>
+          <show_grid>false</show_grid>
+          <title_font>
+            <font name="Default Bold" family="Liberation Sans" style="BOLD" size="14.0">
+            </font>
+          </title_font>
+          <scale_font>
+            <font name="Default" family="Liberation Sans" style="REGULAR" size="14.0">
+            </font>
+          </scale_font>
+          <visible>true</visible>
+        </y_axis>
+      </y_axes>
+      <traces>
+        <trace>
+          <name>$(traces[0].y_pv)</name>
+          <x_pv>$(P)$(R)TS:TSTimeAxis</x_pv>
+          <y_pv>$(P)$(R)TSSigmaXY</y_pv>
+          <err_pv></err_pv>
+          <axis>0</axis>
+          <trace_type>1</trace_type>
+          <color>
+            <color red="75" green="110" blue="199">
+            </color>
+          </color>
+          <line_width>1</line_width>
+          <line_style>0</line_style>
+          <point_type>0</point_type>
+          <point_size>10</point_size>
+          <visible>true</visible>
+        </trace>
+      </traces>
+    </widget>
+    <widget type="xyplot" version="2.0.0">
+      <name>cartesian plot #57</name>
+      <y>205</y>
+      <width>350</width>
+      <height>200</height>
+      <title>$(P)$(R)TSSkewX</title>
+      <x_axis>
+        <title>Time (s)</title>
+        <autoscale>true</autoscale>
+        <log_scale>false</log_scale>
+        <minimum>0.0</minimum>
+        <maximum>100.0</maximum>
+        <show_grid>false</show_grid>
+        <title_font>
+          <font name="Default Bold" family="Liberation Sans" style="BOLD" size="14.0">
+          </font>
+        </title_font>
+        <scale_font>
+          <font name="Default" family="Liberation Sans" style="REGULAR" size="14.0">
+          </font>
+        </scale_font>
+        <visible>true</visible>
+      </x_axis>
+      <y_axes>
+        <y_axis>
+          <title>Value</title>
+          <autoscale>true</autoscale>
+          <log_scale>false</log_scale>
+          <minimum>0.0</minimum>
+          <maximum>100.0</maximum>
+          <show_grid>false</show_grid>
+          <title_font>
+            <font name="Default Bold" family="Liberation Sans" style="BOLD" size="14.0">
+            </font>
+          </title_font>
+          <scale_font>
+            <font name="Default" family="Liberation Sans" style="REGULAR" size="14.0">
+            </font>
+          </scale_font>
+          <visible>true</visible>
+        </y_axis>
+      </y_axes>
+      <traces>
+        <trace>
+          <name>$(traces[0].y_pv)</name>
+          <x_pv>$(P)$(R)TS:TSTimeAxis</x_pv>
+          <y_pv>$(P)$(R)TSSkewX</y_pv>
+          <err_pv></err_pv>
+          <axis>0</axis>
+          <trace_type>1</trace_type>
+          <color>
+            <color red="75" green="110" blue="199">
+            </color>
+          </color>
+          <line_width>1</line_width>
+          <line_style>0</line_style>
+          <point_type>0</point_type>
+          <point_size>10</point_size>
+          <visible>true</visible>
+        </trace>
+      </traces>
+    </widget>
+    <widget type="xyplot" version="2.0.0">
+      <name>cartesian plot #64</name>
+      <x>355</x>
+      <y>205</y>
+      <width>350</width>
+      <height>200</height>
+      <title>$(P)$(R)TSSkewY</title>
+      <x_axis>
+        <title>Time (s)</title>
+        <autoscale>true</autoscale>
+        <log_scale>false</log_scale>
+        <minimum>0.0</minimum>
+        <maximum>100.0</maximum>
+        <show_grid>false</show_grid>
+        <title_font>
+          <font name="Default Bold" family="Liberation Sans" style="BOLD" size="14.0">
+          </font>
+        </title_font>
+        <scale_font>
+          <font name="Default" family="Liberation Sans" style="REGULAR" size="14.0">
+          </font>
+        </scale_font>
+        <visible>true</visible>
+      </x_axis>
+      <y_axes>
+        <y_axis>
+          <title>Value</title>
+          <autoscale>true</autoscale>
+          <log_scale>false</log_scale>
+          <minimum>0.0</minimum>
+          <maximum>100.0</maximum>
+          <show_grid>false</show_grid>
+          <title_font>
+            <font name="Default Bold" family="Liberation Sans" style="BOLD" size="14.0">
+            </font>
+          </title_font>
+          <scale_font>
+            <font name="Default" family="Liberation Sans" style="REGULAR" size="14.0">
+            </font>
+          </scale_font>
+          <visible>true</visible>
+        </y_axis>
+      </y_axes>
+      <traces>
+        <trace>
+          <name>$(traces[0].y_pv)</name>
+          <x_pv>$(P)$(R)TS:TSTimeAxis</x_pv>
+          <y_pv>$(P)$(R)TSSkewY</y_pv>
+          <err_pv></err_pv>
+          <axis>0</axis>
+          <trace_type>1</trace_type>
+          <color>
+            <color red="75" green="110" blue="199">
+            </color>
+          </color>
+          <line_width>1</line_width>
+          <line_style>0</line_style>
+          <point_type>0</point_type>
+          <point_size>10</point_size>
+          <visible>true</visible>
+        </trace>
+      </traces>
+    </widget>
+    <widget type="xyplot" version="2.0.0">
+      <name>cartesian plot #71</name>
+      <x>710</x>
+      <y>205</y>
+      <width>350</width>
+      <height>200</height>
+      <title>$(P)$(R)TSKurtosisX</title>
+      <x_axis>
+        <title>Time (s)</title>
+        <autoscale>true</autoscale>
+        <log_scale>false</log_scale>
+        <minimum>0.0</minimum>
+        <maximum>100.0</maximum>
+        <show_grid>false</show_grid>
+        <title_font>
+          <font name="Default Bold" family="Liberation Sans" style="BOLD" size="14.0">
+          </font>
+        </title_font>
+        <scale_font>
+          <font name="Default" family="Liberation Sans" style="REGULAR" size="14.0">
+          </font>
+        </scale_font>
+        <visible>true</visible>
+      </x_axis>
+      <y_axes>
+        <y_axis>
+          <title>Value</title>
+          <autoscale>true</autoscale>
+          <log_scale>false</log_scale>
+          <minimum>0.0</minimum>
+          <maximum>100.0</maximum>
+          <show_grid>false</show_grid>
+          <title_font>
+            <font name="Default Bold" family="Liberation Sans" style="BOLD" size="14.0">
+            </font>
+          </title_font>
+          <scale_font>
+            <font name="Default" family="Liberation Sans" style="REGULAR" size="14.0">
+            </font>
+          </scale_font>
+          <visible>true</visible>
+        </y_axis>
+      </y_axes>
+      <traces>
+        <trace>
+          <name>$(traces[0].y_pv)</name>
+          <x_pv>$(P)$(R)TS:TSTimeAxis</x_pv>
+          <y_pv>$(P)$(R)TSKurtosisX</y_pv>
+          <err_pv></err_pv>
+          <axis>0</axis>
+          <trace_type>1</trace_type>
+          <color>
+            <color red="75" green="110" blue="199">
+            </color>
+          </color>
+          <line_width>1</line_width>
+          <line_style>0</line_style>
+          <point_type>0</point_type>
+          <point_size>10</point_size>
+          <visible>true</visible>
+        </trace>
+      </traces>
+    </widget>
+    <widget type="xyplot" version="2.0.0">
+      <name>cartesian plot #78</name>
+      <x>1065</x>
+      <y>205</y>
+      <width>350</width>
+      <height>200</height>
+      <title>$(P)$(R)TSKurtosisY</title>
+      <x_axis>
+        <title>Time (s)</title>
+        <autoscale>true</autoscale>
+        <log_scale>false</log_scale>
+        <minimum>0.0</minimum>
+        <maximum>100.0</maximum>
+        <show_grid>false</show_grid>
+        <title_font>
+          <font name="Default Bold" family="Liberation Sans" style="BOLD" size="14.0">
+          </font>
+        </title_font>
+        <scale_font>
+          <font name="Default" family="Liberation Sans" style="REGULAR" size="14.0">
+          </font>
+        </scale_font>
+        <visible>true</visible>
+      </x_axis>
+      <y_axes>
+        <y_axis>
+          <title>Value</title>
+          <autoscale>true</autoscale>
+          <log_scale>false</log_scale>
+          <minimum>0.0</minimum>
+          <maximum>100.0</maximum>
+          <show_grid>false</show_grid>
+          <title_font>
+            <font name="Default Bold" family="Liberation Sans" style="BOLD" size="14.0">
+            </font>
+          </title_font>
+          <scale_font>
+            <font name="Default" family="Liberation Sans" style="REGULAR" size="14.0">
+            </font>
+          </scale_font>
+          <visible>true</visible>
+        </y_axis>
+      </y_axes>
+      <traces>
+        <trace>
+          <name>$(traces[0].y_pv)</name>
+          <x_pv>$(P)$(R)TS:TSTimeAxis</x_pv>
+          <y_pv>$(P)$(R)TSKurtosisY</y_pv>
+          <err_pv></err_pv>
+          <axis>0</axis>
+          <trace_type>1</trace_type>
+          <color>
+            <color red="75" green="110" blue="199">
+            </color>
+          </color>
+          <line_width>1</line_width>
+          <line_style>0</line_style>
+          <point_type>0</point_type>
+          <point_size>10</point_size>
+          <visible>true</visible>
+        </trace>
+      </traces>
+    </widget>
+    <widget type="xyplot" version="2.0.0">
+      <name>cartesian plot #85</name>
+      <x>710</x>
+      <y>410</y>
+      <width>350</width>
+      <height>200</height>
+      <title>$(P)$(R)TSEccentricity</title>
+      <x_axis>
+        <title>Time (s)</title>
+        <autoscale>true</autoscale>
+        <log_scale>false</log_scale>
+        <minimum>0.0</minimum>
+        <maximum>100.0</maximum>
+        <show_grid>false</show_grid>
+        <title_font>
+          <font name="Default Bold" family="Liberation Sans" style="BOLD" size="14.0">
+          </font>
+        </title_font>
+        <scale_font>
+          <font name="Default" family="Liberation Sans" style="REGULAR" size="14.0">
+          </font>
+        </scale_font>
+        <visible>true</visible>
+      </x_axis>
+      <y_axes>
+        <y_axis>
+          <title>Value</title>
+          <autoscale>true</autoscale>
+          <log_scale>false</log_scale>
+          <minimum>0.0</minimum>
+          <maximum>100.0</maximum>
+          <show_grid>false</show_grid>
+          <title_font>
+            <font name="Default Bold" family="Liberation Sans" style="BOLD" size="14.0">
+            </font>
+          </title_font>
+          <scale_font>
+            <font name="Default" family="Liberation Sans" style="REGULAR" size="14.0">
+            </font>
+          </scale_font>
+          <visible>true</visible>
+        </y_axis>
+      </y_axes>
+      <traces>
+        <trace>
+          <name>$(traces[0].y_pv)</name>
+          <x_pv>$(P)$(R)TS:TSTimeAxis</x_pv>
+          <y_pv>$(P)$(R)TSEccentricity</y_pv>
+          <err_pv></err_pv>
+          <axis>0</axis>
+          <trace_type>1</trace_type>
+          <color>
+            <color red="75" green="110" blue="199">
+            </color>
+          </color>
+          <line_width>1</line_width>
+          <line_style>0</line_style>
+          <point_type>0</point_type>
+          <point_size>10</point_size>
+          <visible>true</visible>
+        </trace>
+      </traces>
+    </widget>
+    <widget type="xyplot" version="2.0.0">
+      <name>cartesian plot #92</name>
+      <x>1065</x>
+      <y>410</y>
+      <width>350</width>
+      <height>200</height>
+      <title>$(P)$(R)TSOrientation</title>
+      <x_axis>
+        <title>Time (s)</title>
+        <autoscale>true</autoscale>
+        <log_scale>false</log_scale>
+        <minimum>0.0</minimum>
+        <maximum>100.0</maximum>
+        <show_grid>false</show_grid>
+        <title_font>
+          <font name="Default Bold" family="Liberation Sans" style="BOLD" size="14.0">
+          </font>
+        </title_font>
+        <scale_font>
+          <font name="Default" family="Liberation Sans" style="REGULAR" size="14.0">
+          </font>
+        </scale_font>
+        <visible>true</visible>
+      </x_axis>
+      <y_axes>
+        <y_axis>
+          <title>Value</title>
+          <autoscale>true</autoscale>
+          <log_scale>false</log_scale>
+          <minimum>0.0</minimum>
+          <maximum>100.0</maximum>
+          <show_grid>false</show_grid>
+          <title_font>
+            <font name="Default Bold" family="Liberation Sans" style="BOLD" size="14.0">
+            </font>
+          </title_font>
+          <scale_font>
+            <font name="Default" family="Liberation Sans" style="REGULAR" size="14.0">
+            </font>
+          </scale_font>
+          <visible>true</visible>
+        </y_axis>
+      </y_axes>
+      <traces>
+        <trace>
+          <name>$(traces[0].y_pv)</name>
+          <x_pv>$(P)$(R)TS:TSTimeAxis</x_pv>
+          <y_pv>$(P)$(R)TSOrientation</y_pv>
+          <err_pv></err_pv>
+          <axis>0</axis>
+          <trace_type>1</trace_type>
+          <color>
+            <color red="75" green="110" blue="199">
+            </color>
+          </color>
+          <line_width>1</line_width>
+          <line_style>0</line_style>
+          <point_type>0</point_type>
+          <point_size>10</point_size>
+          <visible>true</visible>
+        </trace>
+      </traces>
+    </widget>
+  </widget>
+  <widget type="group" version="2.0.0">
+    <name>composite #99</name>
+    <x>20</x>
+    <y>655</y>
+    <width>325</width>
+    <height>120</height>
+    <style>3</style>
+    <transparent>true</transparent>
+    <widget type="label" version="2.0.0">
+      <name>text #102</name>
+      <text>Current point</text>
+      <x>35</x>
+      <y>50</y>
+      <width>130</width>
+      <font>
+        <font family="Liberation Sans" style="REGULAR" size="16.0">
+        </font>
+      </font>
+      <horizontal_alignment>2</horizontal_alignment>
+    </widget>
+    <widget type="textupdate" version="2.0.0">
+      <name>text update #105</name>
+      <pv_name>$(P)$(R)TS:TSCurrentPoint</pv_name>
+      <x>170</x>
+      <y>51</y>
+      <width>90</width>
+      <height>18</height>
+      <font>
+        <font family="Liberation Sans" style="REGULAR" size="16.0">
+        </font>
+      </font>
+      <foreground_color>
+        <color red="10" green="0" blue="184">
+        </color>
+      </foreground_color>
+      <background_color>
+        <color red="187" green="187" blue="187">
+        </color>
+      </background_color>
+      <format>1</format>
+      <show_units>false</show_units>
+      <border_alarm_sensitive>false</border_alarm_sensitive>
+    </widget>
+    <widget type="combo" version="2.0.0">
+      <name>menu #109</name>
+      <pv_name>$(P)$(R)TS:TSRead.SCAN</pv_name>
+      <x>150</x>
+      <y>75</y>
+      <height>20</height>
+      <background_color>
+        <color red="115" green="223" blue="255">
+        </color>
+      </background_color>
+      <border_alarm_sensitive>false</border_alarm_sensitive>
+    </widget>
+    <widget type="action_button" version="3.0.0">
+      <name>message button #112</name>
+      <actions>
+        <action type="write_pv">
+          <pv_name>$(P)$(R)TS:TSRead.PROC</pv_name>
+          <value>1</value>
+          <description>Write</description>
+        </action>
+      </actions>
+      <pv_name>$(P)$(R)TS:TSRead.PROC</pv_name>
+      <text>Read</text>
+      <x>255</x>
+      <y>75</y>
+      <width>70</width>
+      <height>20</height>
+      <background_color>
+        <color red="115" green="223" blue="255">
+        </color>
+      </background_color>
+    </widget>
+    <widget type="label" version="2.0.0">
+      <name>text #115</name>
+      <text>Read rate</text>
+      <x>55</x>
+      <y>75</y>
+      <width>90</width>
+      <font>
+        <font family="Liberation Sans" style="REGULAR" size="16.0">
+        </font>
+      </font>
+      <horizontal_alignment>2</horizontal_alignment>
+    </widget>
+    <widget type="textentry" version="3.0.0">
+      <name>text entry #118</name>
+      <pv_name>$(P)$(R)TS:TSNumPoints</pv_name>
+      <x>170</x>
+      <y>26</y>
+      <width>60</width>
+      <height>19</height>
+      <font>
+        <font family="Liberation Sans" style="REGULAR" size="16.0">
+        </font>
+      </font>
+      <background_color>
+        <color red="115" green="223" blue="255">
+        </color>
+      </background_color>
+      <format>1</format>
+      <show_units>false</show_units>
+      <border_alarm_sensitive>false</border_alarm_sensitive>
+    </widget>
+    <widget type="label" version="2.0.0">
+      <name>text #122</name>
+      <text>Number of points</text>
+      <x>5</x>
+      <y>25</y>
+      <width>160</width>
+      <font>
+        <font family="Liberation Sans" style="REGULAR" size="16.0">
+        </font>
+      </font>
+      <horizontal_alignment>2</horizontal_alignment>
+    </widget>
+    <widget type="action_button" version="3.0.0">
+      <name>message button #125</name>
+      <actions>
+        <action type="write_pv">
+          <pv_name>$(P)$(R)TS:TSAcquire</pv_name>
+          <value>1</value>
+          <description>Write</description>
+        </action>
+      </actions>
+      <pv_name>$(P)$(R)TS:TSAcquire</pv_name>
+      <text>Erase/Start</text>
+      <x>75</x>
+      <width>90</width>
+      <height>20</height>
+      <background_color>
+        <color red="115" green="223" blue="255">
+        </color>
+      </background_color>
+    </widget>
+    <widget type="action_button" version="3.0.0">
+      <name>message button #128</name>
+      <actions>
+        <action type="write_pv">
+          <pv_name>$(P)$(R)TS:TSAcquire</pv_name>
+          <value>2</value>
+          <description>Write</description>
+        </action>
+      </actions>
+      <pv_name>$(P)$(R)TS:TSAcquire</pv_name>
+      <text>Stop</text>
+      <x>170</x>
+      <width>60</width>
+      <height>20</height>
+      <background_color>
+        <color red="115" green="223" blue="255">
+        </color>
+      </background_color>
+    </widget>
+    <widget type="textupdate" version="2.0.0">
+      <name>text update #131</name>
+      <pv_name>$(P)$(R)TS:TSAcquiring</pv_name>
+      <x>235</x>
+      <y>1</y>
+      <width>90</width>
+      <height>18</height>
+      <font>
+        <font family="Liberation Sans" style="REGULAR" size="16.0">
+        </font>
+      </font>
+      <foreground_color>
+        <color red="10" green="0" blue="184">
+        </color>
+      </foreground_color>
+      <background_color>
+        <color red="70" green="70" blue="70">
+        </color>
+      </background_color>
+      <format>6</format>
+      <show_units>false</show_units>
+    </widget>
+    <widget type="label" version="2.0.0">
+      <name>text #135</name>
+      <text>Acquire</text>
+      <width>70</width>
+      <font>
+        <font family="Liberation Sans" style="REGULAR" size="16.0">
+        </font>
+      </font>
+      <auto_size>true</auto_size>
+    </widget>
+    <widget type="action_button" version="3.0.0">
+      <name>related display #138</name>
+      <actions>
+        <action type="open_display">
+          <file>NDPluginTimeSeries.opi</file>
+          <macros>
+            <R>$(R)TS:</R>
+          </macros>
+          <target>tab</target>
+          <description>Time series control</description>
+        </action>
+      </actions>
+      <text>More</text>
+      <x>255</x>
+      <y>100</y>
+      <width>70</width>
+      <height>20</height>
+      <background_color>
+        <color red="115" green="223" blue="255">
+        </color>
+      </background_color>
+    </widget>
+    <widget type="label" version="2.0.0">
+      <name>text #141</name>
+      <text>AcquireMode</text>
+      <x>35</x>
+      <y>99</y>
+      <width>110</width>
+      <font>
+        <font family="Liberation Sans" style="REGULAR" size="16.0">
+        </font>
+      </font>
+      <auto_size>true</auto_size>
+    </widget>
+    <widget type="combo" version="2.0.0">
+      <name>menu #144</name>
+      <pv_name>$(P)$(R)TS:TSAcquireMode</pv_name>
+      <x>150</x>
+      <y>99</y>
+      <height>20</height>
+      <background_color>
+        <color red="115" green="223" blue="255">
+        </color>
+      </background_color>
+      <border_alarm_sensitive>false</border_alarm_sensitive>
+    </widget>
+  </widget>
+</display>

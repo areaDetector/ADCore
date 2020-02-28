@@ -211,111 +211,6 @@ $(pv_value)</tooltip>
         <path>ADBase.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
-          <P>BIS:</P>
-          <R>cam1:</R>
-        </macros>
-        <mode>1</mode>
-        <description>BIS #1 general</description>
-      </action>
-      <action type="OPEN_DISPLAY">
-        <path>BIS.opi</path>
-        <macros>
-          <include_parent_macros>true</include_parent_macros>
-          <P>BIS:</P>
-          <R>cam1:</R>
-        </macros>
-        <mode>1</mode>
-        <description>BIS #1 specific</description>
-      </action>
-    </actions>
-    <actions_from_pv>false</actions_from_pv>
-    <alarm_pulsing>false</alarm_pulsing>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <background_color>
-      <color red="115" green="223" blue="255" />
-    </background_color>
-    <border_alarm_sensitive>false</border_alarm_sensitive>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
-    <border_style>6</border_style>
-    <border_width>1</border_width>
-    <enabled>true</enabled>
-    <font>
-      <opifont.name fontName="Sans" height="10" style="0" pixels="false">Default</opifont.name>
-    </font>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <foreground_color>
-      <color red="0" green="0" blue="0" />
-    </foreground_color>
-    <height>20</height>
-    <label></label>
-    <name>Menu Button</name>
-    <pv_name></pv_name>
-    <pv_value />
-    <rules />
-    <scale_options>
-      <width_scalable>true</width_scalable>
-      <height_scalable>true</height_scalable>
-      <keep_wh_ratio>false</keep_wh_ratio>
-    </scale_options>
-    <scripts />
-    <show_down_arrow>false</show_down_arrow>
-    <tooltip>$(pv_name)
-$(pv_value)</tooltip>
-    <transparent>false</transparent>
-    <visible>true</visible>
-    <widget_type>Menu Button</widget_type>
-    <width>64</width>
-    <x>145</x>
-    <y>160</y>
-  </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
-    <actions hook="false" hook_all="false" />
-    <auto_size>false</auto_size>
-    <background_color>
-      <color red="255" green="255" blue="255" />
-    </background_color>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
-    <border_style>0</border_style>
-    <border_width>1</border_width>
-    <enabled>true</enabled>
-    <font>
-      <fontdata fontName="Sans" height="11" style="0" pixels="false" />
-    </font>
-    <foreground_color>
-      <color red="0" green="0" blue="0" />
-    </foreground_color>
-    <height>20</height>
-    <horizontal_alignment>2</horizontal_alignment>
-    <name>Label</name>
-    <rules />
-    <scale_options>
-      <width_scalable>true</width_scalable>
-      <height_scalable>true</height_scalable>
-      <keep_wh_ratio>false</keep_wh_ratio>
-    </scale_options>
-    <scripts />
-    <show_scrollbar>false</show_scrollbar>
-    <text>BIS</text>
-    <tooltip></tooltip>
-    <transparent>true</transparent>
-    <vertical_alignment>1</vertical_alignment>
-    <visible>true</visible>
-    <widget_type>Label</widget_type>
-    <width>30</width>
-    <wrap_words>false</wrap_words>
-    <x>110</x>
-    <y>160</y>
-  </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.MenuButton" version="1.0.0">
-    <actions hook="false" hook_all="false">
-      <action type="OPEN_DISPLAY">
-        <path>ADBase.opi</path>
-        <macros>
-          <include_parent_macros>true</include_parent_macros>
           <P>13ADSC1:</P>
           <R>cam1:</R>
         </macros>
@@ -511,6 +406,216 @@ $(pv_value)</tooltip>
     <x>10</x>
     <y>60</y>
   </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
+    <actions hook="false" hook_all="false" />
+    <auto_size>false</auto_size>
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <border_style>0</border_style>
+    <border_width>1</border_width>
+    <enabled>true</enabled>
+    <font>
+      <fontdata fontName="Sans" height="11" style="0" pixels="false" />
+    </font>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <height>20</height>
+    <horizontal_alignment>2</horizontal_alignment>
+    <name>Label</name>
+    <rules />
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>false</keep_wh_ratio>
+    </scale_options>
+    <scripts />
+    <show_scrollbar>false</show_scrollbar>
+    <text>aravisGigE</text>
+    <tooltip></tooltip>
+    <transparent>true</transparent>
+    <vertical_alignment>1</vertical_alignment>
+    <visible>true</visible>
+    <widget_type>Label</widget_type>
+    <width>100</width>
+    <wrap_words>false</wrap_words>
+    <x>40</x>
+    <y>135</y>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.MenuButton" version="1.0.0">
+    <actions hook="false" hook_all="false">
+      <action type="OPEN_DISPLAY">
+        <path>ADBase.opi</path>
+        <macros>
+          <include_parent_macros>true</include_parent_macros>
+          <P>13ARV1:</P>
+          <R>cam1:</R>
+        </macros>
+        <mode>1</mode>
+        <description>aravisGigE #1 general</description>
+      </action>
+      <action type="OPEN_DISPLAY">
+        <path>ADBase.opi</path>
+        <macros>
+          <include_parent_macros>true</include_parent_macros>
+          <P>13ARV1:</P>
+          <R>cam1:</R>
+        </macros>
+        <mode>1</mode>
+        <description>aravisGigE #1 specific</description>
+      </action>
+    </actions>
+    <actions_from_pv>false</actions_from_pv>
+    <alarm_pulsing>false</alarm_pulsing>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <background_color>
+      <color red="115" green="223" blue="255" />
+    </background_color>
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <border_style>6</border_style>
+    <border_width>1</border_width>
+    <enabled>true</enabled>
+    <font>
+      <opifont.name fontName="Sans" height="10" style="0" pixels="false">Default</opifont.name>
+    </font>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <height>20</height>
+    <label></label>
+    <name>Menu Button</name>
+    <pv_name></pv_name>
+    <pv_value />
+    <rules />
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>false</keep_wh_ratio>
+    </scale_options>
+    <scripts />
+    <show_down_arrow>false</show_down_arrow>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <transparent>false</transparent>
+    <visible>true</visible>
+    <widget_type>Menu Button</widget_type>
+    <width>64</width>
+    <x>145</x>
+    <y>135</y>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.MenuButton" version="1.0.0">
+    <actions hook="false" hook_all="false">
+      <action type="OPEN_DISPLAY">
+        <path>ADBase.opi</path>
+        <macros>
+          <include_parent_macros>true</include_parent_macros>
+          <P>BIS:</P>
+          <R>cam1:</R>
+        </macros>
+        <mode>1</mode>
+        <description>BIS #1 general</description>
+      </action>
+      <action type="OPEN_DISPLAY">
+        <path>BIS.opi</path>
+        <macros>
+          <include_parent_macros>true</include_parent_macros>
+          <P>BIS:</P>
+          <R>cam1:</R>
+        </macros>
+        <mode>1</mode>
+        <description>BIS #1 specific</description>
+      </action>
+    </actions>
+    <actions_from_pv>false</actions_from_pv>
+    <alarm_pulsing>false</alarm_pulsing>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <background_color>
+      <color red="115" green="223" blue="255" />
+    </background_color>
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <border_style>6</border_style>
+    <border_width>1</border_width>
+    <enabled>true</enabled>
+    <font>
+      <opifont.name fontName="Sans" height="10" style="0" pixels="false">Default</opifont.name>
+    </font>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <height>20</height>
+    <label></label>
+    <name>Menu Button</name>
+    <pv_name></pv_name>
+    <pv_value />
+    <rules />
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>false</keep_wh_ratio>
+    </scale_options>
+    <scripts />
+    <show_down_arrow>false</show_down_arrow>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <transparent>false</transparent>
+    <visible>true</visible>
+    <widget_type>Menu Button</widget_type>
+    <width>64</width>
+    <x>145</x>
+    <y>185</y>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
+    <actions hook="false" hook_all="false" />
+    <auto_size>false</auto_size>
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <border_style>0</border_style>
+    <border_width>1</border_width>
+    <enabled>true</enabled>
+    <font>
+      <fontdata fontName="Sans" height="11" style="0" pixels="false" />
+    </font>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <height>20</height>
+    <horizontal_alignment>2</horizontal_alignment>
+    <name>Label</name>
+    <rules />
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>false</keep_wh_ratio>
+    </scale_options>
+    <scripts />
+    <show_scrollbar>false</show_scrollbar>
+    <text>BIS</text>
+    <tooltip></tooltip>
+    <transparent>true</transparent>
+    <vertical_alignment>1</vertical_alignment>
+    <visible>true</visible>
+    <widget_type>Label</widget_type>
+    <width>30</width>
+    <wrap_words>false</wrap_words>
+    <x>110</x>
+    <y>185</y>
+  </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.MenuButton" version="1.0.0">
     <actions hook="false" hook_all="false">
       <action type="OPEN_DISPLAY">
@@ -574,7 +679,7 @@ $(pv_value)</tooltip>
     <widget_type>Menu Button</widget_type>
     <width>64</width>
     <x>145</x>
-    <y>235</y>
+    <y>260</y>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
     <actions hook="false" hook_all="false" />
@@ -614,7 +719,7 @@ $(pv_value)</tooltip>
     <width>80</width>
     <wrap_words>false</wrap_words>
     <x>60</x>
-    <y>235</y>
+    <y>260</y>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.MenuButton" version="1.0.0">
     <actions hook="false" hook_all="false">
@@ -679,7 +784,7 @@ $(pv_value)</tooltip>
     <widget_type>Menu Button</widget_type>
     <width>64</width>
     <x>145</x>
-    <y>184</y>
+    <y>209</y>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
     <actions hook="false" hook_all="false" />
@@ -719,7 +824,7 @@ $(pv_value)</tooltip>
     <width>60</width>
     <wrap_words>false</wrap_words>
     <x>80</x>
-    <y>184</y>
+    <y>209</y>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.MenuButton" version="1.0.0">
     <actions hook="false" hook_all="false">
@@ -784,7 +889,7 @@ $(pv_value)</tooltip>
     <widget_type>Menu Button</widget_type>
     <width>64</width>
     <x>145</x>
-    <y>210</y>
+    <y>235</y>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
     <actions hook="false" hook_all="false" />
@@ -824,7 +929,158 @@ $(pv_value)</tooltip>
     <width>50</width>
     <wrap_words>false</wrap_words>
     <x>90</x>
-    <y>210</y>
+    <y>235</y>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
+    <actions hook="false" hook_all="false" />
+    <auto_size>false</auto_size>
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <border_style>0</border_style>
+    <border_width>1</border_width>
+    <enabled>true</enabled>
+    <font>
+      <fontdata fontName="Sans" height="11" style="0" pixels="false" />
+    </font>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <height>20</height>
+    <horizontal_alignment>2</horizontal_alignment>
+    <name>Label</name>
+    <rules />
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>false</keep_wh_ratio>
+    </scale_options>
+    <scripts />
+    <show_scrollbar>false</show_scrollbar>
+    <text>ADAravis</text>
+    <tooltip></tooltip>
+    <transparent>true</transparent>
+    <vertical_alignment>1</vertical_alignment>
+    <visible>true</visible>
+    <widget_type>Label</widget_type>
+    <width>80</width>
+    <wrap_words>false</wrap_words>
+    <x>60</x>
+    <y>160</y>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.MenuButton" version="1.0.0">
+    <actions hook="false" hook_all="false">
+      <action type="OPEN_DISPLAY">
+        <path>ADAravis.opi</path>
+        <macros>
+          <include_parent_macros>true</include_parent_macros>
+          <P>13ARV1:</P>
+          <R>cam1:</R>
+          <C>PGR_Blackfly_20E4C</C>
+        </macros>
+        <mode>1</mode>
+        <description>Blackfly 20E4C</description>
+      </action>
+      <action type="OPEN_DISPLAY">
+        <path>ADAravis.opi</path>
+        <macros>
+          <include_parent_macros>true</include_parent_macros>
+          <P>13ARV1:</P>
+          <R>cam1:</R>
+          <C>AVT_Manta_G507C</C>
+        </macros>
+        <mode>1</mode>
+        <description>Manta G507C</description>
+      </action>
+      <action type="OPEN_DISPLAY">
+        <path>ADAravis.opi</path>
+        <macros>
+          <include_parent_macros>true</include_parent_macros>
+          <P>13ARV1:</P>
+          <R>cam1:</R>
+          <C>PGR_BlackflyS_13Y3M</C>
+        </macros>
+        <mode>1</mode>
+        <description>BlackflyS 13Y3M</description>
+      </action>
+      <action type="OPEN_DISPLAY">
+        <path>ADAravis.opi</path>
+        <macros>
+          <include_parent_macros>true</include_parent_macros>
+          <P>13ARV1:</P>
+          <R>cam1:</R>
+          <C>PGR_GS3_U3_23S6M</C>
+        </macros>
+        <mode>1</mode>
+        <description>Grasshopper3 23S6M</description>
+      </action>
+      <action type="OPEN_DISPLAY">
+        <path>ADAravis.opi</path>
+        <macros>
+          <include_parent_macros>true</include_parent_macros>
+          <P>13ARV1:</P>
+          <R>cam1:</R>
+          <C>FLIR_ORX_10G_51S5M</C>
+        </macros>
+        <mode>1</mode>
+        <description>Oryx 51S5M</description>
+      </action>
+      <action type="OPEN_DISPLAY">
+        <path>ADAravis.opi</path>
+        <macros>
+          <include_parent_macros>true</include_parent_macros>
+          <P>13ARV1:</P>
+          <R>cam1:</R>
+          <C>PGR_BlackflyS_50S5C</C>
+        </macros>
+        <mode>1</mode>
+        <description>BlackflyS 50S5C</description>
+      </action>
+    </actions>
+    <actions_from_pv>false</actions_from_pv>
+    <alarm_pulsing>false</alarm_pulsing>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <background_color>
+      <color red="115" green="223" blue="255" />
+    </background_color>
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <border_style>6</border_style>
+    <border_width>1</border_width>
+    <enabled>true</enabled>
+    <font>
+      <opifont.name fontName="Sans" height="10" style="0" pixels="false">Default</opifont.name>
+    </font>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <height>20</height>
+    <label></label>
+    <name>Menu Button</name>
+    <pv_name></pv_name>
+    <pv_value />
+    <rules />
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>false</keep_wh_ratio>
+    </scale_options>
+    <scripts />
+    <show_down_arrow>false</show_down_arrow>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <transparent>false</transparent>
+    <visible>true</visible>
+    <widget_type>Menu Button</widget_type>
+    <width>64</width>
+    <x>145</x>
+    <y>160</y>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.MenuButton" version="1.0.0">
     <actions hook="false" hook_all="false">
@@ -1045,216 +1301,6 @@ $(pv_value)</tooltip>
     <wrap_words>false</wrap_words>
     <x>39</x>
     <y>285</y>
-  </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
-    <actions hook="false" hook_all="false" />
-    <auto_size>false</auto_size>
-    <background_color>
-      <color red="255" green="255" blue="255" />
-    </background_color>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
-    <border_style>0</border_style>
-    <border_width>1</border_width>
-    <enabled>true</enabled>
-    <font>
-      <fontdata fontName="Sans" height="11" style="0" pixels="false" />
-    </font>
-    <foreground_color>
-      <color red="0" green="0" blue="0" />
-    </foreground_color>
-    <height>20</height>
-    <horizontal_alignment>2</horizontal_alignment>
-    <name>Label</name>
-    <rules />
-    <scale_options>
-      <width_scalable>true</width_scalable>
-      <height_scalable>true</height_scalable>
-      <keep_wh_ratio>false</keep_wh_ratio>
-    </scale_options>
-    <scripts />
-    <show_scrollbar>false</show_scrollbar>
-    <text>aravisGigE</text>
-    <tooltip></tooltip>
-    <transparent>true</transparent>
-    <vertical_alignment>1</vertical_alignment>
-    <visible>true</visible>
-    <widget_type>Label</widget_type>
-    <width>100</width>
-    <wrap_words>false</wrap_words>
-    <x>40</x>
-    <y>135</y>
-  </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.MenuButton" version="1.0.0">
-    <actions hook="false" hook_all="false">
-      <action type="OPEN_DISPLAY">
-        <path>ADBase.opi</path>
-        <macros>
-          <include_parent_macros>true</include_parent_macros>
-          <P>13ARV1:</P>
-          <R>cam1:</R>
-        </macros>
-        <mode>1</mode>
-        <description>aravisGigE #1 general</description>
-      </action>
-      <action type="OPEN_DISPLAY">
-        <path>ADBase.opi</path>
-        <macros>
-          <include_parent_macros>true</include_parent_macros>
-          <P>13ARV1:</P>
-          <R>cam1:</R>
-        </macros>
-        <mode>1</mode>
-        <description>aravisGigE #1 specific</description>
-      </action>
-    </actions>
-    <actions_from_pv>false</actions_from_pv>
-    <alarm_pulsing>false</alarm_pulsing>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <background_color>
-      <color red="115" green="223" blue="255" />
-    </background_color>
-    <border_alarm_sensitive>false</border_alarm_sensitive>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
-    <border_style>6</border_style>
-    <border_width>1</border_width>
-    <enabled>true</enabled>
-    <font>
-      <opifont.name fontName="Sans" height="10" style="0" pixels="false">Default</opifont.name>
-    </font>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <foreground_color>
-      <color red="0" green="0" blue="0" />
-    </foreground_color>
-    <height>20</height>
-    <label></label>
-    <name>Menu Button</name>
-    <pv_name></pv_name>
-    <pv_value />
-    <rules />
-    <scale_options>
-      <width_scalable>true</width_scalable>
-      <height_scalable>true</height_scalable>
-      <keep_wh_ratio>false</keep_wh_ratio>
-    </scale_options>
-    <scripts />
-    <show_down_arrow>false</show_down_arrow>
-    <tooltip>$(pv_name)
-$(pv_value)</tooltip>
-    <transparent>false</transparent>
-    <visible>true</visible>
-    <widget_type>Menu Button</widget_type>
-    <width>64</width>
-    <x>145</x>
-    <y>135</y>
-  </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
-    <actions hook="false" hook_all="false" />
-    <auto_size>false</auto_size>
-    <background_color>
-      <color red="255" green="255" blue="255" />
-    </background_color>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
-    <border_style>0</border_style>
-    <border_width>1</border_width>
-    <enabled>true</enabled>
-    <font>
-      <fontdata fontName="Sans" height="11" style="0" pixels="false" />
-    </font>
-    <foreground_color>
-      <color red="0" green="0" blue="0" />
-    </foreground_color>
-    <height>20</height>
-    <horizontal_alignment>2</horizontal_alignment>
-    <name>Label</name>
-    <rules />
-    <scale_options>
-      <width_scalable>true</width_scalable>
-      <height_scalable>true</height_scalable>
-      <keep_wh_ratio>false</keep_wh_ratio>
-    </scale_options>
-    <scripts />
-    <show_scrollbar>false</show_scrollbar>
-    <text>GenICam</text>
-    <tooltip></tooltip>
-    <transparent>true</transparent>
-    <vertical_alignment>1</vertical_alignment>
-    <visible>true</visible>
-    <widget_type>Label</widget_type>
-    <width>70</width>
-    <wrap_words>false</wrap_words>
-    <x>70</x>
-    <y>260</y>
-  </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.MenuButton" version="1.0.0">
-    <actions hook="false" hook_all="false">
-      <action type="OPEN_DISPLAY">
-        <path>ADBase.opi</path>
-        <macros>
-          <include_parent_macros>true</include_parent_macros>
-          <P>13ARV1:</P>
-          <R>cam1:</R>
-        </macros>
-        <mode>1</mode>
-        <description>aravisGigE #1 general</description>
-      </action>
-      <action type="OPEN_DISPLAY">
-        <path>ADBase.opi</path>
-        <macros>
-          <include_parent_macros>true</include_parent_macros>
-          <P>13ARV1:</P>
-          <R>cam1:</R>
-        </macros>
-        <mode>1</mode>
-        <description>aravisGigE #1 specific</description>
-      </action>
-    </actions>
-    <actions_from_pv>false</actions_from_pv>
-    <alarm_pulsing>false</alarm_pulsing>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <background_color>
-      <color red="115" green="223" blue="255" />
-    </background_color>
-    <border_alarm_sensitive>false</border_alarm_sensitive>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
-    <border_style>6</border_style>
-    <border_width>1</border_width>
-    <enabled>true</enabled>
-    <font>
-      <opifont.name fontName="Sans" height="10" style="0" pixels="false">Default</opifont.name>
-    </font>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <foreground_color>
-      <color red="0" green="0" blue="0" />
-    </foreground_color>
-    <height>20</height>
-    <label></label>
-    <name>Menu Button</name>
-    <pv_name></pv_name>
-    <pv_value />
-    <rules />
-    <scale_options>
-      <width_scalable>true</width_scalable>
-      <height_scalable>true</height_scalable>
-      <keep_wh_ratio>false</keep_wh_ratio>
-    </scale_options>
-    <scripts />
-    <show_down_arrow>false</show_down_arrow>
-    <tooltip>$(pv_name)
-$(pv_value)</tooltip>
-    <transparent>false</transparent>
-    <visible>true</visible>
-    <widget_type>Menu Button</widget_type>
-    <width>64</width>
-    <x>145</x>
-    <y>260</y>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
     <actions hook="false" hook_all="false" />
@@ -2690,7 +2736,7 @@ $(pv_value)</tooltip>
     </scale_options>
     <scripts />
     <show_scrollbar>false</show_scrollbar>
-    <text>Spinnaker</text>
+    <text>AVT Vimba</text>
     <tooltip></tooltip>
     <transparent>true</transparent>
     <vertical_alignment>1</vertical_alignment>
@@ -2699,29 +2745,42 @@ $(pv_value)</tooltip>
     <width>90</width>
     <wrap_words>false</wrap_words>
     <x>50</x>
-    <y>685</y>
+    <y>735</y>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.MenuButton" version="1.0.0">
     <actions hook="false" hook_all="false">
       <action type="OPEN_DISPLAY">
-        <path>ADBase.opi</path>
+        <path>ADVimba.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
-          <P>13SP1:</P>
+          <P>13VMB1:</P>
           <R>cam1:</R>
+          <C>AVT_Manta_G507C</C>
         </macros>
         <mode>1</mode>
-        <description>Spinnaker #1 general</description>
+        <description>Manta G507C</description>
       </action>
       <action type="OPEN_DISPLAY">
-        <path>ADSpinnaker.opi</path>
+        <path>ADVimba.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
-          <P>13SP1:</P>
+          <P>13VMB1:</P>
           <R>cam1:</R>
+          <C>AVT_GC1380CH</C>
         </macros>
         <mode>1</mode>
-        <description>Spinnaker #1 specific</description>
+        <description>GC1380CH</description>
+      </action>
+      <action type="OPEN_DISPLAY">
+        <path>ADVimba.opi</path>
+        <macros>
+          <include_parent_macros>true</include_parent_macros>
+          <P>13VMB1:</P>
+          <R>cam1:</R>
+          <C>AVT_Manta_G146C</C>
+        </macros>
+        <mode>1</mode>
+        <description>Manta G146C</description>
       </action>
     </actions>
     <actions_from_pv>false</actions_from_pv>
@@ -2762,103 +2821,6 @@ $(pv_value)</tooltip>
     <transparent>false</transparent>
     <visible>true</visible>
     <widget_type>Menu Button</widget_type>
-    <width>64</width>
-    <x>145</x>
-    <y>685</y>
-  </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
-    <actions hook="false" hook_all="false" />
-    <auto_size>false</auto_size>
-    <background_color>
-      <color red="255" green="255" blue="255" />
-    </background_color>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
-    <border_style>0</border_style>
-    <border_width>1</border_width>
-    <enabled>true</enabled>
-    <font>
-      <fontdata fontName="Sans" height="11" style="0" pixels="false" />
-    </font>
-    <foreground_color>
-      <color red="0" green="0" blue="0" />
-    </foreground_color>
-    <height>20</height>
-    <horizontal_alignment>2</horizontal_alignment>
-    <name>Label</name>
-    <rules />
-    <scale_options>
-      <width_scalable>true</width_scalable>
-      <height_scalable>true</height_scalable>
-      <keep_wh_ratio>false</keep_wh_ratio>
-    </scale_options>
-    <scripts />
-    <show_scrollbar>false</show_scrollbar>
-    <text>AVT Vimba</text>
-    <tooltip></tooltip>
-    <transparent>true</transparent>
-    <vertical_alignment>1</vertical_alignment>
-    <visible>true</visible>
-    <widget_type>Label</widget_type>
-    <width>90</width>
-    <wrap_words>false</wrap_words>
-    <x>50</x>
-    <y>735</y>
-  </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
-    <actions hook="false" hook_all="false">
-      <action type="OPEN_DISPLAY">
-        <path>GenICam.opi</path>
-        <macros>
-          <include_parent_macros>true</include_parent_macros>
-          <P>13VMB1:</P>
-          <R>cam1:</R>
-          <C>AVT_Manta_G507C</C>
-        </macros>
-        <mode>1</mode>
-        <description>Manta G507C</description>
-      </action>
-    </actions>
-    <alarm_pulsing>false</alarm_pulsing>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <background_color>
-      <color red="115" green="223" blue="255" />
-    </background_color>
-    <border_alarm_sensitive>false</border_alarm_sensitive>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
-    <border_style>0</border_style>
-    <border_width>1</border_width>
-    <enabled>true</enabled>
-    <font>
-      <opifont.name fontName="Sans" height="10" style="0" pixels="false">Default</opifont.name>
-    </font>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <foreground_color>
-      <color red="0" green="0" blue="0" />
-    </foreground_color>
-    <height>20</height>
-    <image></image>
-    <name>Action Button</name>
-    <push_action_index>0</push_action_index>
-    <pv_name></pv_name>
-    <pv_value />
-    <rules />
-    <scale_options>
-      <width_scalable>true</width_scalable>
-      <height_scalable>true</height_scalable>
-      <keep_wh_ratio>false</keep_wh_ratio>
-    </scale_options>
-    <scripts />
-    <style>0</style>
-    <text></text>
-    <toggle_button>false</toggle_button>
-    <tooltip>$(pv_name)
-$(pv_value)</tooltip>
-    <visible>true</visible>
-    <widget_type>Action Button</widget_type>
     <width>64</width>
     <x>145</x>
     <y>735</y>
@@ -3072,5 +3034,156 @@ $(pv_value)</tooltip>
     <wrap_words>false</wrap_words>
     <x>90</x>
     <y>360</y>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
+    <actions hook="false" hook_all="false" />
+    <auto_size>false</auto_size>
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <border_style>0</border_style>
+    <border_width>1</border_width>
+    <enabled>true</enabled>
+    <font>
+      <fontdata fontName="Sans" height="11" style="0" pixels="false" />
+    </font>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <height>20</height>
+    <horizontal_alignment>2</horizontal_alignment>
+    <name>Label</name>
+    <rules />
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>false</keep_wh_ratio>
+    </scale_options>
+    <scripts />
+    <show_scrollbar>false</show_scrollbar>
+    <text>Spinnaker</text>
+    <tooltip></tooltip>
+    <transparent>true</transparent>
+    <vertical_alignment>1</vertical_alignment>
+    <visible>true</visible>
+    <widget_type>Label</widget_type>
+    <width>90</width>
+    <wrap_words>false</wrap_words>
+    <x>50</x>
+    <y>685</y>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.MenuButton" version="1.0.0">
+    <actions hook="false" hook_all="false">
+      <action type="OPEN_DISPLAY">
+        <path>ADSpinnaker.opi</path>
+        <macros>
+          <include_parent_macros>true</include_parent_macros>
+          <P>13SP1:</P>
+          <R>cam1:</R>
+          <C>PGR_Blackfly_20E4C</C>
+        </macros>
+        <mode>1</mode>
+        <description>Blackfly 20E4C</description>
+      </action>
+      <action type="OPEN_DISPLAY">
+        <path>ADSpinnaker.opi</path>
+        <macros>
+          <include_parent_macros>true</include_parent_macros>
+          <P>13SP1:</P>
+          <R>cam1:</R>
+          <C>FLIR_ORX_10G_51S5M</C>
+        </macros>
+        <mode>1</mode>
+        <description>Oryx 51S5</description>
+      </action>
+      <action type="OPEN_DISPLAY">
+        <path>ADSpinnaker.opi</path>
+        <macros>
+          <include_parent_macros>true</include_parent_macros>
+          <P>13SP1:</P>
+          <R>cam1:</R>
+          <C>PGR_BlackflyS_13Y3M</C>
+        </macros>
+        <mode>1</mode>
+        <description>BlackflyS 13Y3M</description>
+      </action>
+      <action type="OPEN_DISPLAY">
+        <path>ADSpinnaker.opi</path>
+        <macros>
+          <include_parent_macros>true</include_parent_macros>
+          <P>13SP1:</P>
+          <R>cam1:</R>
+          <C>PGR_GS3_U3_23S6M</C>
+        </macros>
+        <mode>1</mode>
+        <description>Grasshopper3 U3 23S6M</description>
+      </action>
+      <action type="OPEN_DISPLAY">
+        <path>ADSpinnaker.opi</path>
+        <macros>
+          <include_parent_macros>true</include_parent_macros>
+          <P>13SP1:</P>
+          <R>cam1:</R>
+          <C>PGR_BlackflyS_50S5C</C>
+        </macros>
+        <mode>1</mode>
+        <description>BlackflyS 50S5C</description>
+      </action>
+      <action type="OPEN_DISPLAY">
+        <path>ADSpinnaker.opi</path>
+        <macros>
+          <include_parent_macros>true</include_parent_macros>
+          <P>13SP1:</P>
+          <R>cam1:</R>
+          <C>PGR_GS3_PGE_23S6C</C>
+        </macros>
+        <mode>1</mode>
+        <description>Grasshopper3 PGE 23S6C</description>
+      </action>
+    </actions>
+    <actions_from_pv>false</actions_from_pv>
+    <alarm_pulsing>false</alarm_pulsing>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <background_color>
+      <color red="115" green="223" blue="255" />
+    </background_color>
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <border_style>6</border_style>
+    <border_width>1</border_width>
+    <enabled>true</enabled>
+    <font>
+      <opifont.name fontName="Sans" height="10" style="0" pixels="false">Default</opifont.name>
+    </font>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <height>20</height>
+    <label></label>
+    <name>Menu Button</name>
+    <pv_name></pv_name>
+    <pv_value />
+    <rules />
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>false</keep_wh_ratio>
+    </scale_options>
+    <scripts />
+    <show_down_arrow>false</show_down_arrow>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <transparent>false</transparent>
+    <visible>true</visible>
+    <widget_type>Menu Button</widget_type>
+    <width>64</width>
+    <x>145</x>
+    <y>685</y>
   </widget>
 </display>

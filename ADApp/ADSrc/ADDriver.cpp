@@ -63,11 +63,16 @@ void ADDriver::setShutter(int open)
   * should set the value of the parameter in the parameter library. */
 asynStatus ADDriver::writeInt32(asynUser *pasynUser, epicsInt32 value)
 {
-    int function = pasynUser->reason;
+    int function;
+    int addr;
+    const char *paramName;
     asynStatus status = asynSuccess;
     const char *functionName = "writeInt32";
 
-    status = setIntegerParam(function, value);
+    status = parseAsynUser(pasynUser, &function, &addr, &paramName); 
+    if (status != asynSuccess) return status;
+
+    status = setIntegerParam(addr, function, value);
 
     if (function == ADShutterControl) {
         setShutter(value);
@@ -81,16 +86,16 @@ asynStatus ADDriver::writeInt32(asynUser *pasynUser, epicsInt32 value)
 
     if (status)
         asynPrint(pasynUser, ASYN_TRACE_ERROR,
-              "%s:%s: error, status=%d function=%d, value=%d\n",
-              driverName, functionName, status, function, value);
+              "%s:%s: error, status=%d function=%d, paramName=%s, value=%d\n",
+              driverName, functionName, status, function, paramName, value);
     else
         asynPrint(pasynUser, ASYN_TRACEIO_DRIVER,
-              "%s:%s: function=%d, value=%d\n",
-              driverName, functionName, function, value);
+              "%s:%s: function=%d, paramName=%s, value=%d\n",
+              driverName, functionName, function, paramName, value);
     return status;
 }
 
-
+
 /** All of the arguments are simply passed to the constructor for the asynNDArrayDriver base class, 
   * except numParams.  As of R3-0 numParams is no longer used in asynNDArrayDriver but we have left 
   * it in here to avoid needing to change all drivers yet. In R5-0 we expect to remove maxBuffers and
@@ -110,11 +115,6 @@ ADDriver::ADDriver(const char *portName, int maxAddr, int numParams, int maxBuff
 {
     //char *functionName = "ADDriver";
 
-    createParam(ADManufacturerString,        asynParamOctet, &ADManufacturer);
-    createParam(ADModelString,               asynParamOctet, &ADModel);
-    createParam(ADSerialNumberString,        asynParamOctet, &ADSerialNumber);
-    createParam(ADSDKVersionString,          asynParamOctet, &ADSDKVersion);
-    createParam(ADFirmwareVersionString,     asynParamOctet, &ADFirmwareVersion);
     createParam(ADGainString,                asynParamFloat64, &ADGain);
     createParam(ADBinXString,                asynParamInt32, &ADBinX);
     createParam(ADBinYString,                asynParamInt32, &ADBinY);
@@ -137,7 +137,6 @@ ADDriver::ADDriver(const char *portName, int maxAddr, int numParams, int maxBuff
     createParam(ADTimeRemainingString,       asynParamFloat64, &ADTimeRemaining);
     createParam(ADStatusString,              asynParamInt32, &ADStatus);
     createParam(ADTriggerModeString,         asynParamInt32, &ADTriggerMode);
-    createParam(ADAcquireString,             asynParamInt32, &ADAcquire);
     createParam(ADShutterControlString,      asynParamInt32, &ADShutterControl);
     createParam(ADShutterControlEPICSString, asynParamInt32, &ADShutterControlEPICS);
     createParam(ADShutterStatusString,       asynParamInt32, &ADShutterStatus);

@@ -557,6 +557,12 @@ void NDPluginTransform::transformImage(NDArray *inArray, NDArray *outArray, NDAr
     case NDUInt32:
       transformNDArray<epicsUInt32>(inArray, outArray, transformType, colorMode, arrayInfo);
       break;
+    case NDInt64:
+      transformNDArray<epicsInt64>(inArray, outArray, transformType, colorMode, arrayInfo);
+      break;
+    case NDUInt64:
+      transformNDArray<epicsUInt64>(inArray, outArray, transformType, colorMode, arrayInfo);
+      break;
     case NDFloat32:
       transformNDArray<epicsFloat32>(inArray, outArray, transformType, colorMode, arrayInfo);
       break;

@@ -1,6 +1,6 @@
 
 file {
-	name="/home/epics/devel/areaDetector-3-4-0/ADCore/ADApp/op/adl/ADTop.adl"
+	name="/home/epics/devel/areaDetector-3-8/ADCore/ADApp/op/adl/ADTop.adl"
 	version=030109
 }
 display {
@@ -150,39 +150,6 @@ text {
 "related display" {
 	object {
 		x=145
-		y=160
-		width=64
-		height=20
-	}
-	display[0] {
-		label="BIS #1 general"
-		name="ADBase.adl"
-		args="P=BIS:, R=cam1: "
-	}
-	display[1] {
-		label="BIS #1 specific"
-		name="BIS.adl"
-		args="P=BIS:, R=cam1:"
-	}
-	clr=14
-	bclr=51
-}
-text {
-	object {
-		x=110
-		y=160
-		width=30
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="BIS"
-	align="horiz. right"
-}
-"related display" {
-	object {
-		x=145
 		y=85
 		width=64
 		height=20
@@ -241,10 +208,76 @@ text {
 	textix="ADC Simulator"
 	align="horiz. right"
 }
+text {
+	object {
+		x=40
+		y=135
+		width=100
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="aravisGigE"
+	align="horiz. right"
+}
 "related display" {
 	object {
 		x=145
-		y=235
+		y=135
+		width=64
+		height=20
+	}
+	display[0] {
+		label="aravisGigE #1 general"
+		name="ADBase.adl"
+		args="P=13ARV1:, R=cam1: "
+	}
+	display[1] {
+		label="aravisGigE #1 specific"
+		name="ADBase.adl"
+		args="P=13ARV1:, R=cam1:"
+	}
+	clr=14
+	bclr=51
+}
+"related display" {
+	object {
+		x=145
+		y=185
+		width=64
+		height=20
+	}
+	display[0] {
+		label="BIS #1 general"
+		name="ADBase.adl"
+		args="P=BIS:, R=cam1: "
+	}
+	display[1] {
+		label="BIS #1 specific"
+		name="BIS.adl"
+		args="P=BIS:, R=cam1:"
+	}
+	clr=14
+	bclr=51
+}
+text {
+	object {
+		x=110
+		y=185
+		width=30
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="BIS"
+	align="horiz. right"
+}
+"related display" {
+	object {
+		x=145
+		y=260
 		width=64
 		height=20
 	}
@@ -264,7 +297,7 @@ text {
 text {
 	object {
 		x=60
-		y=235
+		y=260
 		width=80
 		height=20
 	}
@@ -277,7 +310,7 @@ text {
 "related display" {
 	object {
 		x=145
-		y=184
+		y=209
 		width=64
 		height=20
 	}
@@ -297,7 +330,7 @@ text {
 text {
 	object {
 		x=80
-		y=184
+		y=209
 		width=60
 		height=20
 	}
@@ -310,7 +343,7 @@ text {
 "related display" {
 	object {
 		x=145
-		y=210
+		y=235
 		width=64
 		height=20
 	}
@@ -330,7 +363,7 @@ text {
 text {
 	object {
 		x=90
-		y=210
+		y=235
 		width=50
 		height=20
 	}
@@ -339,6 +372,59 @@ text {
 	}
 	textix="Eiger"
 	align="horiz. right"
+}
+text {
+	object {
+		x=60
+		y=160
+		width=80
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="ADAravis"
+	align="horiz. right"
+}
+"related display" {
+	object {
+		x=145
+		y=160
+		width=64
+		height=20
+	}
+	display[0] {
+		label="Blackfly 20E4C"
+		name="ADAravis.adl"
+		args="P=13ARV1:, R=cam1:, C=PGR_Blackfly_20E4C"
+	}
+	display[1] {
+		label="Manta G507C"
+		name="ADAravis.adl"
+		args="P=13ARV1:, R=cam1:, C=AVT_Manta_G507C"
+	}
+	display[2] {
+		label="BlackflyS 13Y3M"
+		name="ADAravis.adl"
+		args="P=13ARV1:, R=cam1:, C=PGR_BlackflyS_13Y3M"
+	}
+	display[3] {
+		label="Grasshopper3 23S6M"
+		name="ADAravis.adl"
+		args="P=13ARV1:, R=cam1:, C=PGR_GS3_U3_23S6M"
+	}
+	display[4] {
+		label="Oryx 51S5M"
+		name="ADAravis.adl"
+		args="P=13ARV1:, R=cam1:, C=FLIR_ORX_10G_51S5M"
+	}
+	display[5] {
+		label="BlackflyS 50S5C"
+		name="ADAravis.adl"
+		args="P=13ARV1:, R=cam1:, C=PGR_BlackflyS_50S5C"
+	}
+	clr=14
+	bclr=51
 }
 "related display" {
 	object {
@@ -410,72 +496,6 @@ text {
 	}
 	textix="LightField"
 	align="horiz. right"
-}
-text {
-	object {
-		x=40
-		y=135
-		width=100
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="aravisGigE"
-	align="horiz. right"
-}
-"related display" {
-	object {
-		x=145
-		y=135
-		width=64
-		height=20
-	}
-	display[0] {
-		label="aravisGigE #1 general"
-		name="ADBase.adl"
-		args="P=13ARV1:, R=cam1: "
-	}
-	display[1] {
-		label="aravisGigE #1 specific"
-		name="ADBase.adl"
-		args="P=13ARV1:, R=cam1:"
-	}
-	clr=14
-	bclr=51
-}
-text {
-	object {
-		x=70
-		y=260
-		width=70
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="GenICam"
-	align="horiz. right"
-}
-"related display" {
-	object {
-		x=145
-		y=260
-		width=64
-		height=20
-	}
-	display[0] {
-		label="aravisGigE #1 general"
-		name="ADBase.adl"
-		args="P=13ARV1:, R=cam1: "
-	}
-	display[1] {
-		label="aravisGigE #1 specific"
-		name="ADBase.adl"
-		args="P=13ARV1:, R=cam1:"
-	}
-	clr=14
-	bclr=51
 }
 text {
 	object {
@@ -929,39 +949,6 @@ text {
 text {
 	object {
 		x=50
-		y=685
-		width=90
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Spinnaker"
-	align="horiz. right"
-}
-"related display" {
-	object {
-		x=145
-		y=685
-		width=64
-		height=20
-	}
-	display[0] {
-		label="Spinnaker #1 general"
-		name="ADBase.adl"
-		args="P=13SP1:, R=cam1: "
-	}
-	display[1] {
-		label="Spinnaker #1 specific"
-		name="ADSpinnaker.adl"
-		args="P=13SP1:, R=cam1:"
-	}
-	clr=14
-	bclr=51
-}
-text {
-	object {
-		x=50
 		y=735
 		width=90
 		height=20
@@ -981,8 +968,18 @@ text {
 	}
 	display[0] {
 		label="Manta G507C"
-		name="GenICam.adl"
+		name="ADVimba.adl"
 		args="P=13VMB1:, R=cam1:, C=AVT_Manta_G507C "
+	}
+	display[1] {
+		label="GC1380CH"
+		name="ADVimba.adl"
+		args="P=13VMB1:, R=cam1:, C=AVT_GC1380CH "
+	}
+	display[2] {
+		label="Manta G146C"
+		name="ADVimba.adl"
+		args="P=13VMB1:, R=cam1:, C=AVT_Manta_G146C "
 	}
 	clr=14
 	bclr=51
@@ -1052,4 +1049,57 @@ text {
 	}
 	textix="MMPAD"
 	align="horiz. right"
+}
+text {
+	object {
+		x=50
+		y=685
+		width=90
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Spinnaker"
+	align="horiz. right"
+}
+"related display" {
+	object {
+		x=145
+		y=685
+		width=64
+		height=20
+	}
+	display[0] {
+		label="Blackfly 20E4C"
+		name="ADSpinnaker.adl"
+		args="P=13SP1:, R=cam1:, C=PGR_Blackfly_20E4C"
+	}
+	display[1] {
+		label="Oryx 51S5"
+		name="ADSpinnaker.adl"
+		args="P=13SP1:, R=cam1:, C=FLIR_ORX_10G_51S5M"
+	}
+	display[2] {
+		label="BlackflyS 13Y3M"
+		name="ADSpinnaker.adl"
+		args="P=13SP1:, R=cam1:, C=PGR_BlackflyS_13Y3M"
+	}
+	display[3] {
+		label="Grasshopper3 U3 23S6M"
+		name="ADSpinnaker.adl"
+		args="P=13SP1:, R=cam1:, C=PGR_GS3_U3_23S6M"
+	}
+	display[4] {
+		label="BlackflyS 50S5C"
+		name="ADSpinnaker.adl"
+		args="P=13SP1:, R=cam1:, C=PGR_BlackflyS_50S5C"
+	}
+	display[5] {
+		label="Grasshopper3 PGE 23S6C"
+		name="ADSpinnaker.adl"
+		args="P=13SP1:, R=cam1:, C=PGR_GS3_PGE_23S6C"
+	}
+	clr=14
+	bclr=51
 }

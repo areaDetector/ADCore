@@ -51,1368 +51,470 @@ following table. Note that to reduce the width of this table the
 parameter index variable names have been split into 2 lines, but these
 are just a single name, for example ``NDPluginStatsComputeStatistics``.
 
-.. raw:: html
+.. |br| raw:: html
 
-  <table class="table table-bordered">
-    <tbody>
-      <tr>
-        <td align="center" colspan="7,">
-          <b>Parameter Definitions in NDPluginStats.h and EPICS Record Definitions in NDStats.template</b>
-        </td>
-      </tr>
-      <tr>
-        <th>
-          Parameter index variable
-        </th>
-        <th>
-          asyn interface
-        </th>
-        <th>
-          Access
-        </th>
-        <th>
-          Description
-        </th>
-        <th>
-          drvInfo string
-        </th>
-        <th>
-          EPICS record name
-        </th>
-        <th>
-          EPICS record type
-        </th>
-      </tr>
-      <tr>
-        <td align="center" colspan="7,">
-          <b>Basic statistics</b>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginStats<br />
-          ComputeStatistics
-        </td>
-        <td>
-          asynInt32
-        </td>
-        <td>
-          r/w
-        </td>
-        <td>
-          Flag to control whether to compute statistics for this array (0=No, 1=Yes). Not
-          computing statistics reduces CPU load. Basic statistics computations are quite fast,
-          since they involve mostly double precision addition, with 1 multiply to compute
-          sigma, per array element.
-        </td>
-        <td>
-          COMPUTE_STATISTICS
-        </td>
-        <td>
-          $(P)$(R)ComputeStatistics<br />
-          $(P)$(R)ComputeStatistics_RBV
-        </td>
-        <td>
-          bo<br />
-          bi
-        </td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginStats<br />
-          BgdWidth
-        </td>
-        <td>
-          asynInt32
-        </td>
-        <td>
-          r/w
-        </td>
-        <td>
-          Width of the background in pixels to use when computing net counts. 0=no background
-          subtraction, so the net counts is the same as the total counts.
-        </td>
-        <td>
-          BGD_WIDTH
-        </td>
-        <td>
-          $(P)$(R)BgdWidth<br />
-          $(P)$(R)BgdWidth_RBV
-        </td>
-        <td>
-          longout<br />
-          longin
-        </td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginStats<br />
-          MinValue
-        </td>
-        <td>
-          asynFloat64
-        </td>
-        <td>
-          r/o
-        </td>
-        <td>
-          Minimum value in any element in the array
-        </td>
-        <td>
-          MIN_VALUE
-        </td>
-        <td>
-          $(P)$(R)MinValue_RBV
-        </td>
-        <td>
-          ai
-        </td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginStats<br />
-          MinX
-        </td>
-        <td>
-          asynFloat64
-        </td>
-        <td>
-          r/o
-        </td>
-        <td>
-          X pixel location of minimum value in the array. This is only valid for 2-D monochromatic
-          arrays.
-        </td>
-        <td>
-          MIN_X
-        </td>
-        <td>
-          $(P)$(R)MinX_RBV
-        </td>
-        <td>
-          ai
-        </td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginStats<br />
-          MinY
-        </td>
-        <td>
-          asynFloat64
-        </td>
-        <td>
-          r/o
-        </td>
-        <td>
-          Y pixel location of minimum value in the array. This is only valid for 2-D monochromatic
-          arrays.
-        </td>
-        <td>
-          MIN_Y
-        </td>
-        <td>
-          $(P)$(R)MinY_RBV
-        </td>
-        <td>
-          ai
-        </td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginStats<br />
-          MaxValue
-        </td>
-        <td>
-          asynFloat64
-        </td>
-        <td>
-          r/o
-        </td>
-        <td>
-          Maximum value in any element in the array
-        </td>
-        <td>
-          MAX_VALUE
-        </td>
-        <td>
-          $(P)$(R)MaxValue_RBV
-        </td>
-        <td>
-          ai
-        </td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginStats<br />
-          MaxX
-        </td>
-        <td>
-          asynFloat64
-        </td>
-        <td>
-          r/o
-        </td>
-        <td>
-          X pixel location of maximum value in the array. This is only valid for 2-D monochromatic
-          arrays.
-        </td>
-        <td>
-          MAX_X
-        </td>
-        <td>
-          $(P)$(R)MaxX_RBV
-        </td>
-        <td>
-          ai
-        </td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginStats<br />
-          MaxY
-        </td>
-        <td>
-          asynFloat64
-        </td>
-        <td>
-          r/o
-        </td>
-        <td>
-          Y pixel location of maximum value in the array. This is only valid for 2-D monochromatic
-          arrays.
-        </td>
-        <td>
-          MAX_Y
-        </td>
-        <td>
-          $(P)$(R)MaxY_RBV
-        </td>
-        <td>
-          ai
-        </td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginStats<br />
-          MeanValue
-        </td>
-        <td>
-          asynFloat64
-        </td>
-        <td>
-          r/o
-        </td>
-        <td>
-          Mean value in the array
-        </td>
-        <td>
-          MEAN_VALUE
-        </td>
-        <td>
-          $(P)$(R)MeanValue_RBV
-        </td>
-        <td>
-          ai
-        </td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginStats<br />
-          Total
-        </td>
-        <td>
-          asynFloat64
-        </td>
-        <td>
-          r/o
-        </td>
-        <td>
-          Sum (total) of all elements in the array. This is available as an ai record. The
-          total counts are also available as epicsInt32 values in an mca record via callbacks
-          to the drvFastSweep driver. The mca record is very useful for on-the-fly data acquisition
-          of the total counts in the detector or in an ROI.
-        </td>
-        <td>
-          TOTAL
-        </td>
-        <td>
-          $(P)$(R)Total_RBV<br />
-          $(P)$(R)TotalArray
-        </td>
-        <td>
-          ai<br />
-          mca
-        </td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginStats<br />
-          Net
-        </td>
-        <td>
-          asynFloat64
-        </td>
-        <td>
-          r/o
-        </td>
-        <td>
-          Net (background subtracted) total of all elements in the array. The background is
-          calculated by determining the average counts per array element in a border around
-          the array of width NDPluginStatsBgdWidth. This average background counts per element
-          is then subtracted from all elements inside the array. If NDPluginStatsBgdWidth
-          is &le; 0 then no background is computed. The net counts is available as an ai record.
-          The net counts is also available as epicsInt32 values in an mca record via callbacks
-          to the drvFastSweep driver. The mca record is very useful for on-the-fly data acquisition
-          of the net counts in the detector or in an ROI.
-        </td>
-        <td>
-          NET
-        </td>
-        <td>
-          $(P)$(R)Net_RBV<br />
-          $(P)$(R)NetArray
-        </td>
-        <td>
-          ai<br />
-          mca
-        </td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginStats<br />
-          SigmaValue
-        </td>
-        <td>
-          asynFloat64
-        </td>
-        <td>
-          r/o
-        </td>
-        <td>
-          Sigma (standard deviation) of all elements in the array
-        </td>
-        <td>
-          SIGMA_VALUE
-        </td>
-        <td>
-          $(P)$(R)Sigma_RBV
-        </td>
-        <td>
-          ai
-        </td>
-      </tr>
-      <tr>
-        <td align="center" colspan="7,">
-          <b>Centroid statistics</b>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginStats<br />
-          ComputeCentroid
-        </td>
-        <td>
-          asynInt32
-        </td>
-        <td>
-          r/w
-        </td>
-        <td>
-          Flag to control whether to compute the centroid statistics (0=No, 1=Yes). The centroids
-          are computed from the average row and column profiles above the centroid threshold.
-          These calculations are also quite fast, since they just involve addition operations
-          for each array element.
-        </td>
-        <td>
-          COMPUTE_CENTROID
-        </td>
-        <td>
-          $(P)$(R)ComputeCentroid<br />
-          $(P)$(R)ComputeCentroid_RBV
-        </td>
-        <td>
-          bo<br />
-          bi
-        </td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginStats<br />
-          CentroidThreshold
-        </td>
-        <td>
-          asynFloat64
-        </td>
-        <td>
-          r/w
-        </td>
-        <td>
-          Threshold used when computing the centroid statistics. All array elements less than
-          this value are set to 0 for computing the centroid statistics. It is important to
-          set this value to ignore the "background" when computing the position and size of
-          a "beam" image, for example.
-        </td>
-        <td>
-          CENTROID_THRESHOLD
-        </td>
-        <td>
-          $(P)$(R)CentroidThreshold<br />
-          $(P)$(R)CentroidThreshold_RBV
-        </td>
-        <td>
-          ao<br />
-          ai
-        </td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginStats<br />
-          CentroidTotal
-        </td>
-        <td>
-          asynFloat64
-        </td>
-        <td>
-          r/o
-        </td>
-        <td>
-          Total mass, sum of all elements above the threshold.
-        </td>
-        <td>
-          CENTROID_TOTAL
-        </td>
-        <td>
-          $(P)$(R)CentroidTotal_RBV
-        </td>
-        <td>
-          ai
-        </td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginStats<br />
-          CentroidX
-        </td>
-        <td>
-          asynFloat64
-        </td>
-        <td>
-          r/o
-        </td>
-        <td>
-          X centroid of the array above the centroid threshold.
-        </td>
-        <td>
-          CENTROIDX_VALUE
-        </td>
-        <td>
-          $(P)$(R)CentroidX_RBV
-        </td>
-        <td>
-          ai
-        </td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginStats<br />
-          CentroidY
-        </td>
-        <td>
-          asynFloat64
-        </td>
-        <td>
-          r/o
-        </td>
-        <td>
-          Y centroid of the array above the centroid threshold.
-        </td>
-        <td>
-          CENTROIDY_VALUE
-        </td>
-        <td>
-          $(P)$(R)CentroidY_RBV
-        </td>
-        <td>
-          ai
-        </td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginStats<br />
-          SigmaX
-        </td>
-        <td>
-          asynFloat64
-        </td>
-        <td>
-          r/o
-        </td>
-        <td>
-          Sigma X (width) of the distribution above the centroid threshold.
-        </td>
-        <td>
-          SIGMAX_VALUE
-        </td>
-        <td>
-          $(P)$(R)SigmaX_RBV
-        </td>
-        <td>
-          ai
-        </td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginStats<br />
-          SigmaY
-        </td>
-        <td>
-          asynFloat64
-        </td>
-        <td>
-          r/o
-        </td>
-        <td>
-          Sigma Y (height) of the distribution above the centroid threshold.
-        </td>
-        <td>
-          SIGMAY_VALUE
-        </td>
-        <td>
-          $(P)$(R)SigmaY_RBV
-        </td>
-        <td>
-          ai
-        </td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginStats<br />
-          SigmaXY
-        </td>
-        <td>
-          asynFloat64
-        </td>
-        <td>
-          r/o
-        </td>
-        <td>
-          This is the normalized value of sigmaXY, i.e. sigmaXY/(sigmaX * sigmaY). This is
-          often called the correlation coefficient, r. It is zero if the X and Y profiles
-          are not correlated, meaning that the distribution is not tilted with respect to
-          the X and Y axes.
-        </td>
-        <td>
-          SIGMAXY_VALUE
-        </td>
-        <td>
-          $(P)$(R)SigmaXY_RBV
-        </td>
-        <td>
-          ai
-        </td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginStats<br />
-          SkewX
-        </td>
-        <td>
-          asynFloat64
-        </td>
-        <td>
-          r/o
-        </td>
-        <td>
-          Skewness X (symmetry) of the distribution above the centroid threshold, in relation
-          to the center of mass.
-          <ul>
-            <li>== 0, symmetric distribution </li>
-            <li>< 0, distribution assymetric to the left </li>
-            <li>> 0, distribution assymetric to the right </li>
-          </ul>
-        </td>
-        <td>
-          SKEWX_VALUE
-        </td>
-        <td>
-          $(P)$(R)SkewX_RBV
-        </td>
-        <td>
-          ai
-        </td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginStats<br />
-          SkewY
-        </td>
-        <td>
-          asynFloat64
-        </td>
-        <td>
-          r/o
-        </td>
-        <td>
-          Skewness Y (symmetry) of the distribution above the centroid threshold, in relation
-          to the center of mass.
-          <ul>
-            <li>== 0, symmetric distribution </li>
-            <li>< 0, distribution assymetric to the top </li>
-            <li>> 0, distribution assymetric to the bottom </li>
-          </ul>
-        </td>
-        <td>
-          SKEWY_VALUE
-        </td>
-        <td>
-          $(P)$(R)SkewY_RBV
-        </td>
-        <td>
-          ai
-        </td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginStats<br />
-          KurtosisX
-        </td>
-        <td>
-          asynFloat64
-        </td>
-        <td>
-          r/o
-        </td>
-        <td>
-          Excess Kurtosis X (flatness) of the distribution above the centroid threshold.
-          <ul>
-            <li>== 0, Gaussian (normal) distribution </li>
-            <li>< 0, distribution flatter than normal </li>
-            <li>> 0, distribution more peaky than normal </li>
-          </ul>
-        </td>
-        <td>
-          KURTOSISX_VALUE
-        </td>
-        <td>
-          $(P)$(R)KurtosisX_RBV
-        </td>
-        <td>
-          ai
-        </td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginStats<br />
-          KurtosisY
-        </td>
-        <td>
-          asynFloat64
-        </td>
-        <td>
-          r/o
-        </td>
-        <td>
-          Excess Kurtosis Y (flatness) of the distribution above the centroid threshold.
-          <ul>
-            <li>== 0, Gaussian (normal) distribution </li>
-            <li>< 0, distribution flatter than normal </li>
-            <li>> 0, distribution more peaky than normal </li>
-          </ul>
-        </td>
-        <td>
-          KURTOSISY_VALUE
-        </td>
-        <td>
-          $(P)$(R)KurtosisY_RBV
-        </td>
-        <td>
-          ai
-        </td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginStats<br />
-          Eccentricity
-        </td>
-        <td>
-          asynFloat64
-        </td>
-        <td>
-          r/o
-        </td>
-        <td>
-          Eccentricity, can take values from 0 to 1. 0 means a perfectly round object and
-          1 mean a line shaped object.
-        </td>
-        <td>
-          ECCENTRICITY_VALUE
-        </td>
-        <td>
-          $(P)$(R)Eccentricity_RBV
-        </td>
-        <td>
-          ai
-        </td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginStats<br />
-          Orientation
-        </td>
-        <td>
-          asynFloat64
-        </td>
-        <td>
-          r/o
-        </td>
-        <td>
-          Orientation of the object, orientation of the "long" direction with respect to horizontal
-          (x axis).
-        </td>
-        <td>
-          ORIENTATION_VALUE
-        </td>
-        <td>
-          $(P)$(R)Orientation_RBV
-        </td>
-        <td>
-          ai
-        </td>
-      </tr>
-      <tr>
-        <td align="center" colspan="7,">
-          <b>Time-Series data</b><br />
-        </td>
-      </tr>
-      <tr>
-        <td colspan="7,">
-          The time series is implemented by loading an instance of the <a href="NDPluginTimeSeries.html">
-            NDPluginTimeSeries</a> for each NDPluginStats plugin, and the time series control
-          uses records in NDTimeSeries.template. That documentation should be consulted for
-          an explanation of these records. The prefix and record name macro for the time-series
-          plugin records from NDTimeSeries.template is $(P)$(R)TS:.<br />
-          <b>NOTE:</b> The time-series plugin is often used with drivers which sample at a
-          fixed well-defined time interval. This cannot be guaranteed with the statistics
-          plugin, so the averaging time records and time axis waveform record from NDPluginTimeSeries
-          are typically not used, and the statistics data are plotted against time point #,
-          rather than actual time.
-          <br />
-          The time-series waveform records for each statistic are defined in NDStats.template.
-        </td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginTimeSeries<br />
-          TSTimeSeries
-        </td>
-        <td>
-          asynFloat64Array
-        </td>
-        <td>
-          r/o
-        </td>
-        <td>
-          The time series data arrays of the basic statistics and centroid and sigma statistics
-          described above.
-        </td>
-        <td>
-          TS_TIME_SERIES
-        </td>
-        <td>
-          $(P)$(R)XXX, where XXX is:<br />
-          <ul>
-            <li>TSMinValue</li>
-            <li>TSMinX</li>
-            <li>TSMinY</li>
-            <li>TSMaxValue</li>
-            <li>TSMaxX</li>
-            <li>TSMaxY</li>
-            <li>TSMeanValue</li>
-            <li>TSSigma</li>
-            <li>TSTotal</li>
-            <li>TSNet</li>
-            <li>TSCentroidX</li>
-            <li>TSCentroidY</li>
-            <li>TSSigmaX</li>
-            <li>TSSigmaY</li>
-            <li>TSSigmaXY</li>
-            <li>TSSkewX</li>
-            <li>TSSkewY</li>
-            <li>TSKurtosisX</li>
-            <li>TSKurtosisY</li>
-            <li>TSEccenticity</li>
-            <li>TSOrientation</li>
-            <li>TSTimestamp</li>
-          </ul>
-        </td>
-        <td>
-          waveform
-        </td>
-      </tr>
-      <tr>
-        <td align="center" colspan="7,">
-          <b>X and Y Profiles</b>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginStats<br />
-          ComputeProfiles
-        </td>
-        <td>
-          asynInt32
-        </td>
-        <td>
-          r/w
-        </td>
-        <td>
-          Flag to control whether to compute the profiles for this array (0=No, 1=Yes).
-        </td>
-        <td>
-          COMPUTE_PROFILES
-        </td>
-        <td>
-          $(P)$(R)ComputeProfiles<br />
-          $(P)$(R)ComputeProfiles_RBV
-        </td>
-        <td>
-          bo<br />
-          bi
-        </td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginStats<br />
-          ProfileSizeX
-        </td>
-        <td>
-          asynInt32
-        </td>
-        <td>
-          r/w
-        </td>
-        <td>
-          Number of array elements in the X profiles.
-        </td>
-        <td>
-          PROFILE_SIZE_X
-        </td>
-        <td>
-          $(P)$(R)ProfileSizeX_RBV
-        </td>
-        <td>
-          longin
-        </td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginStats<br />
-          ProfileSizeY
-        </td>
-        <td>
-          asynInt32
-        </td>
-        <td>
-          r/w
-        </td>
-        <td>
-          Number of array elements in the Y profiles.
-        </td>
-        <td>
-          PROFILE_SIZE_Y
-        </td>
-        <td>
-          $(P)$(R)ProfileSizeY_RBV
-        </td>
-        <td>
-          longin
-        </td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginStats<br />
-          CursorX
-        </td>
-        <td>
-          asynInt32
-        </td>
-        <td>
-          r/w
-        </td>
-        <td>
-          X position of a user-defined cursor for profiles.
-        </td>
-        <td>
-          CURSOR_X
-        </td>
-        <td>
-          $(P)$(R)CursorX<br />
-          $(P)$(R)CursorX_RBV
-        </td>
-        <td>
-          longout<br />
-          longin
-        </td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginStats<br />
-          CursorY
-        </td>
-        <td>
-          asynInt32
-        </td>
-        <td>
-          r/w
-        </td>
-        <td>
-          Y position of a user-defined cursor for profiles.
-        </td>
-        <td>
-          CURSOR_Y
-        </td>
-        <td>
-          $(P)$(R)CursorY<br />
-          $(P)$(R)CursorY_RBV
-        </td>
-        <td>
-          longout<br />
-          longin
-        </td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginStats<br />
-          ProfileAverageX
-        </td>
-        <td>
-          asynFloat64Array
-        </td>
-        <td>
-          r/o
-        </td>
-        <td>
-          Profile of the average row in the array, i.e. the sum of all rows in the array divided
-          by the number of rows.
-        </td>
-        <td>
-          PROFILE_AVERAGE_X
-        </td>
-        <td>
-          $(P)$(R)ProfileAverageX_RBV
-        </td>
-        <td>
-          waveform
-        </td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginStats<br />
-          ProfileAverageY
-        </td>
-        <td>
-          asynFloat64Array
-        </td>
-        <td>
-          r/o
-        </td>
-        <td>
-          Profile of the average column in the array, i.e. the sum of all columns in the array
-          divided by the number of columns.
-        </td>
-        <td>
-          PROFILE_AVERAGE_Y
-        </td>
-        <td>
-          $(P)$(R)ProfileAverageY_RBV
-        </td>
-        <td>
-          waveform
-        </td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginStats<br />
-          ProfileThresholdX
-        </td>
-        <td>
-          asynFloat64Array
-        </td>
-        <td>
-          r/o
-        </td>
-        <td>
-          Same as ProfileAverageX except that all array elements less than CentroidThreshold
-          are set to zero when computing the average.
-        </td>
-        <td>
-          PROFILE_THRESHOLD_X
-        </td>
-        <td>
-          $(P)$(R)ProfileThresholdX_RBV
-        </td>
-        <td>
-          waveform
-        </td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginStats<br />
-          ProfileThresholdY
-        </td>
-        <td>
-          asynFloat64Array
-        </td>
-        <td>
-          r/o
-        </td>
-        <td>
-          Same as ProfileAverageY except that all array elements less than CentroidThreshold
-          are set to zero when computing the average.
-        </td>
-        <td>
-          PROFILE_THRESHOLD_Y
-        </td>
-        <td>
-          $(P)$(R)ProfileThresholdY_RBV
-        </td>
-        <td>
-          waveform
-        </td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginStats<br />
-          ProfileCentroidX
-        </td>
-        <td>
-          asynFloat64Array
-        </td>
-        <td>
-          r/o
-        </td>
-        <td>
-          X profile through the array in the row defined by CentroidY.
-        </td>
-        <td>
-          PROFILE_CENTROID_X
-        </td>
-        <td>
-          $(P)$(R)ProfileCentroidX_RBV
-        </td>
-        <td>
-          waveform
-        </td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginStats<br />
-          ProfileCentroidY
-        </td>
-        <td>
-          asynFloat64Array
-        </td>
-        <td>
-          r/o
-        </td>
-        <td>
-          Y profile through the array in the column defined by CentroidX.
-        </td>
-        <td>
-          PROFILE_CENTROID_Y
-        </td>
-        <td>
-          $(P)$(R)ProfileCentroidY_RBV
-        </td>
-        <td>
-          waveform
-        </td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginStats<br />
-          ProfileCursorX
-        </td>
-        <td>
-          asynFloat64Array
-        </td>
-        <td>
-          r/o
-        </td>
-        <td>
-          X profile through the array in the row defined by CursorY.
-        </td>
-        <td>
-          PROFILE_CURSOR_X
-        </td>
-        <td>
-          $(P)$(R)ProfileCursorX_RBV
-        </td>
-        <td>
-          waveform
-        </td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginStats<br />
-          ProfileCursorY
-        </td>
-        <td>
-          asynFloat64Array
-        </td>
-        <td>
-          r/o
-        </td>
-        <td>
-          Y profile through the array in the row defined by CursorX.
-        </td>
-        <td>
-          PROFILE_CURSOR_Y
-        </td>
-        <td>
-          $(P)$(R)ProfileCursorY_RBV
-        </td>
-        <td>
-          waveform
-        </td>
-      </tr>
-      <tr>
-        <td align="center" colspan="7,">
-          <b>Array histogram</b>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginStats<br />
-          ComputeHistogram
-        </td>
-        <td>
-          asynInt32
-        </td>
-        <td>
-          r/w
-        </td>
-        <td>
-          Flag to control whether to compute the histogram for this array (0=No, 1=Yes). Not
-          computing the histogram reduces CPU load.
-        </td>
-        <td>
-          COMPUTE_HISTOGRAM
-        </td>
-        <td>
-          $(P)$(R)ComputeHistogram<br />
-          $(P)$(R)ComputeHistogram_RBV
-        </td>
-        <td>
-          bo<br />
-          bi
-        </td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginStats<br />
-          HistSize
-        </td>
-        <td>
-          asynInt32
-        </td>
-        <td>
-          r/w
-        </td>
-        <td>
-          Number of elements (bins) in the histogram
-        </td>
-        <td>
-          HIST_SIZE
-        </td>
-        <td>
-          $(P)$(R)HistSize<br />
-          $(P)$(R)HistSize_RBV
-        </td>
-        <td>
-          longout<br />
-          longin
-        </td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginStats<br />
-          HistMin
-        </td>
-        <td>
-          asynFloat64
-        </td>
-        <td>
-          r/w
-        </td>
-        <td>
-          Minimum value for the histogram. All values less than this will be counted in HistBelow.
-        </td>
-        <td>
-          HIST_MIN
-        </td>
-        <td>
-          $(P)$(R)HistMin<br />
-          $(P)$(R)HistMin_RBV
-        </td>
-        <td>
-          ao<br />
-          ai
-        </td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginStats<br />
-          HistMax
-        </td>
-        <td>
-          asynFloat64
-        </td>
-        <td>
-          r/w
-        </td>
-        <td>
-          Maximum value for the histogram. All values greater than this will be counted in
-          HistAbove.
-        </td>
-        <td>
-          HIST_MAX
-        </td>
-        <td>
-          $(P)$(R)HistMax<br />
-          $(P)$(R)HistMax_RBV
-        </td>
-        <td>
-          ao<br />
-          ai
-        </td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginStats<br />
-          HistBelow
-        </td>
-        <td>
-          asynInt32
-        </td>
-        <td>
-          r/o
-        </td>
-        <td>
-          Count of all values less than HistMin.
-        </td>
-        <td>
-          HIST_BELOW
-        </td>
-        <td>
-          $(P)$(R)HistBelow_RBV
-        </td>
-        <td>
-          longin
-        </td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginStats<br />
-          HistAbove
-        </td>
-        <td>
-          asynInt32
-        </td>
-        <td>
-          r/o
-        </td>
-        <td>
-          Count of all values greater than HistMax.
-        </td>
-        <td>
-          HIST_ABOVE
-        </td>
-        <td>
-          $(P)$(R)HistAbove_RBV
-        </td>
-        <td>
-          longin
-        </td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginStats<br />
-          HistEntropy
-        </td>
-        <td>
-          asynFloat64
-        </td>
-        <td>
-          r/o
-        </td>
-        <td>
-          Entropy of the image. This is a measure of the sharpness of the histogram, and is
-          often a useful figure of merit for determining sharpness of focus, etc. It is defined
-          as -SUM(BIN[i]*log(BIN[i]), where the sum is over the number of bins in the histogram
-          and BIN[i] is the number of elements in bin i.
-        </td>
-        <td>
-          HIST_ENTROPY
-        </td>
-        <td>
-          $(P)$(R)HistEntropy_RBV
-        </td>
-        <td>
-          ai
-        </td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginStats<br />
-          HistArray
-        </td>
-        <td>
-          asynFloat64Array
-        </td>
-        <td>
-          r/o
-        </td>
-        <td>
-          Histogram array, i.e. counts in each histogram bin.
-        </td>
-        <td>
-          HIST_ARRAY
-        </td>
-        <td>
-          $(P)$(R)Histogram_RBV
-        </td>
-        <td>
-          waveform
-        </td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginStats<br />
-          HistXArray
-        </td>
-        <td>
-          asynFloat64Array
-        </td>
-        <td>
-          r/o
-        </td>
-        <td>
-          Histogram X-axis array, i.e. minimum intensity in each histogram bin.
-        </td>
-        <td>
-          HIST_X_ARRAY
-        </td>
-        <td>
-          $(P)$(R)HistogramX_RBV
-        </td>
-        <td>
-          waveform
-        </td>
-      </tr>
-    </tbody>
-  </table>
+    <br>
+
+.. cssclass:: table-bordered table-striped table-hover
+.. flat-table::
+  :header-rows: 2
+  :widths: 5 5 5 70 5 5 5
+
+  * -
+    -
+    - Parameter Definitions in NDPluginStats.h and EPICS Record Definitions in NDStats.template
+  * - Parameter index variable
+    - asyn interface
+    - Access
+    - Description
+    - drvInfo string
+    - EPICS record name
+    - EPICS record type
+  * -
+    -
+    - **Basic statistics**
+  * - NDPluginStats |br| ComputeStatistics
+    - asynInt32
+    - r/w
+    - Flag to control whether to compute statistics for this array (0=No, 1=Yes). Not
+      computing statistics reduces CPU load. Basic statistics computations are quite fast,
+      since they involve mostly double precision addition, with 1 multiply to compute
+      sigma, per array element.
+    - COMPUTE_STATISTICS
+    - $(P)$(R)ComputeStatistics, $(P)$(R)ComputeStatistics_RBV
+    - bo, bi
+  * - NDPluginStats |br| BgdWidth
+    - asynInt32
+    - r/w
+    - Width of the background in pixels to use when computing net counts. 0=no background
+      subtraction, so the net counts is the same as the total counts.
+    - BGD_WIDTH
+    - $(P)$(R)BgdWidth, $(P)$(R)BgdWidth_RBV
+    - longout, longin
+  * - NDPluginStats |br| MinValue
+    - asynFloat64
+    - r/o
+    - Minimum value in any element in the array
+    - MIN_VALUE
+    - $(P)$(R)MinValue_RBV
+    - ai
+  * - NDPluginStats |br| MinX
+    - asynFloat64
+    - r/o
+    - X pixel location of minimum value in the array. This is only valid for 2-D monochromatic
+      arrays.
+    - MIN_X
+    - $(P)$(R)MinX_RBV
+    - ai
+  * - NDPluginStats |br| MinY
+    - asynFloat64
+    - r/o
+    - Y pixel location of minimum value in the array. This is only valid for 2-D monochromatic
+      arrays.
+    - MIN_Y
+    - $(P)$(R)MinY_RBV
+    - ai
+  * - NDPluginStats |br| MaxValue
+    - asynFloat64
+    - r/o
+    - Maximum value in any element in the array
+    - MAX_VALUE
+    - $(P)$(R)MaxValue_RBV
+    - ai
+  * - NDPluginStats |br| MaxX
+    - asynFloat64
+    - r/o
+    - X pixel location of maximum value in the array. This is only valid for 2-D monochromatic
+      arrays.
+    - MAX_X
+    - $(P)$(R)MaxX_RBV
+    - ai
+  * - NDPluginStats |br| MaxY
+    - asynFloat64
+    - r/o
+    - Y pixel location of maximum value in the array. This is only valid for 2-D monochromatic
+      arrays.
+    - MAX_Y
+    - $(P)$(R)MaxY_RBV
+    - ai
+  * - NDPluginStats |br| MeanValue
+    - asynFloat64
+    - r/o
+    - Mean value in the array
+    - MEAN_VALUE
+    - $(P)$(R)MeanValue_RBV
+    - ai
+  * - NDPluginStats |br| Total
+    - asynFloat64
+    - r/o
+    - Sum (total) of all elements in the array. This is available as an ai record. The
+      total counts are also available as epicsInt32 values in an mca record via callbacks
+      to the drvFastSweep driver. The mca record is very useful for on-the-fly data acquisition
+      of the total counts in the detector or in an ROI.
+    - TOTAL
+    - $(P)$(R)Total_RBV, $(P)$(R)TotalArray
+    - ai, mca
+  * - NDPluginStats |br| Net
+    - asynFloat64
+    - r/o
+    - Net (background subtracted) total of all elements in the array. The background is
+      calculated by determining the average counts per array element in a border around
+      the array of width NDPluginStatsBgdWidth. This average background counts per element
+      is then subtracted from all elements inside the array. If NDPluginStatsBgdWidth
+      is &le; 0 then no background is computed. The net counts is available as an ai record.
+      The net counts is also available as epicsInt32 values in an mca record via callbacks
+      to the drvFastSweep driver. The mca record is very useful for on-the-fly data acquisition
+      of the net counts in the detector or in an ROI.
+    - NET
+    - $(P)$(R)Net_RBV, $(P)$(R)NetArray
+    - ai, mca
+  * - NDPluginStats |br| SigmaValue
+    - asynFloat64
+    - r/o
+    - Sigma (standard deviation) of all elements in the array
+    - SIGMA_VALUE
+    - $(P)$(R)Sigma_RBV
+    - ai
+  * -
+    -
+    - **Centroid statistics**
+  * - NDPluginStats |br| ComputeCentroid
+    - asynInt32
+    - r/w
+    - Flag to control whether to compute the centroid statistics (0=No, 1=Yes). The centroids
+      are computed from the average row and column profiles above the centroid threshold.
+      These calculations are also quite fast, since they just involve addition operations
+      for each array element.
+    - COMPUTE_CENTROID
+    - $(P)$(R)ComputeCentroid, $(P)$(R)ComputeCentroid_RBV
+    - bo, bi
+  * - NDPluginStats |br| CentroidThreshold
+    - asynFloat64
+    - r/w
+    - Threshold used when computing the centroid statistics. All array elements less than
+      this value are set to 0 for computing the centroid statistics. It is important to
+      set this value to ignore the "background" when computing the position and size of
+      a "beam" image, for example.
+    - CENTROID_THRESHOLD
+    - $(P)$(R)CentroidThreshold, $(P)$(R)CentroidThreshold_RBV
+    - ao, ai
+  * - NDPluginStats |br| CentroidTotal
+    - asynFloat64
+    - r/o
+    - Total mass, sum of all elements above the threshold.
+    - CENTROID_TOTAL
+    - $(P)$(R)CentroidTotal_RBV
+    - ai
+  * - NDPluginStats |br| CentroidX
+    - asynFloat64
+    - r/o
+    - X centroid of the array above the centroid threshold.
+    - CENTROIDX_VALUE
+    - $(P)$(R)CentroidX_RBV
+    - ai
+  * - NDPluginStats |br| CentroidY
+    - asynFloat64
+    - r/o
+    - Y centroid of the array above the centroid threshold.
+    - CENTROIDY_VALUE
+    - $(P)$(R)CentroidY_RBV
+    - ai
+  * - NDPluginStats |br| SigmaX
+    - asynFloat64
+    - r/o
+    - Sigma X (width) of the distribution above the centroid threshold.
+    - SIGMAX_VALUE
+    - $(P)$(R)SigmaX_RBV
+    - ai
+  * - NDPluginStats |br| SigmaY
+    - asynFloat64
+    - r/o
+    - Sigma Y (height) of the distribution above the centroid threshold.
+    - SIGMAY_VALUE
+    - $(P)$(R)SigmaY_RBV
+    - ai
+  * - NDPluginStats |br| SigmaXY
+    - asynFloat64
+    - r/o
+    - This is the normalized value of sigmaXY, i.e. sigmaXY/(sigmaX * sigmaY). This is
+      often called the correlation coefficient, r. It is zero if the X and Y profiles
+      are not correlated, meaning that the distribution is not tilted with respect to
+      the X and Y axes.
+    - SIGMAXY_VALUE
+    - $(P)$(R)SigmaXY_RBV
+    - ai
+  * - NDPluginStats |br| SkewX
+    - asynFloat64
+    - r/o
+    - Skewness X (symmetry) of the distribution above the centroid threshold, in relation
+      to the center of mass. |br|
+      == 0, symmetric distribution |br|
+      < 0, distribution assymetric to the left |br|
+      > 0, distribution assymetric to the right
+    - SKEWX_VALUE
+    - $(P)$(R)SkewX_RBV
+    - ai
+  * - NDPluginStats |br| SkewY
+    - asynFloat64
+    - r/o
+    - Skewness Y (symmetry) of the distribution above the centroid threshold, in relation
+      to the center of mass. |br|
+      == 0, symmetric distribution |br|
+      < 0, distribution assymetric to the top |br|
+      > 0, distribution assymetric to the bottom
+    - SKEWY_VALUE
+    - $(P)$(R)SkewY_RBV
+    - ai
+  * - NDPluginStats |br| KurtosisX
+    - asynFloat64
+    - r/o
+    - Excess Kurtosis X (flatness) of the distribution above the centroid threshold |br|
+      == 0, Gaussian (normal) distribution |br|
+      < 0, distribution flatter than normal |br|
+      > 0, distribution more peaky than normal
+    - KURTOSISX_VALUE
+    - $(P)$(R)KurtosisX_RBV
+    - ai
+  * - NDPluginStats |br| KurtosisY
+    - asynFloat64
+    - r/o
+    - Excess Kurtosis Y (flatness) of the distribution above the centroid threshold. |br|
+      == 0, Gaussian (normal) distribution |br|
+      < 0, distribution flatter than normal |br|
+      > 0, distribution more peaky than normal
+    - KURTOSISY_VALUE
+    - $(P)$(R)KurtosisY_RBV
+    - ai
+  * - NDPluginStats |br| Eccentricity
+    - asynFloat64
+    - r/o
+    - Eccentricity, can take values from 0 to 1. 0 means a perfectly round object and
+      1 mean a line shaped object.
+    - ECCENTRICITY_VALUE
+    - $(P)$(R)Eccentricity_RBV
+    - ai
+  * - NDPluginStats |br| Orientation
+    - asynFloat64
+    - r/o
+    - Orientation of the object, orientation of the "long" direction with respect to horizontal
+      (x axis).
+    - ORIENTATION_VALUE
+    - $(P)$(R)Orientation_RBV
+    - ai
+  * -
+    -
+    - **Time-Series data**
+  * - The time series is implemented by loading an instance of the :doc:`NDPluginTimeSeries`
+      plugin for each NDPluginStats plugin, and the time series control
+      uses records in NDTimeSeries.template. That documentation should be consulted for
+      an explanation of these records. The prefix and record name macro for the time-series
+      plugin records from NDTimeSeries.template is $(P)$(R)TS:. |br|
+      **NOTE:** The time-series plugin is often used with drivers which sample at a
+      fixed well-defined time interval. This cannot be guaranteed with the statistics
+      plugin, so the averaging time records and time axis waveform record from NDPluginTimeSeries
+      are typically not used, and the statistics data are plotted against time point #,
+      rather than actual time. |br|
+      The time-series waveform records for each statistic are defined in NDStats.template.
+  * - NDPluginTimeSeries, TSTimeSeries
+    - asynFloat64Array
+    - r/o
+    - The time series data arrays of the basic statistics and centroid and sigma statistics
+      described above.
+    - TS_TIME_SERIES
+    - $(P)$(R)XXX, where XXX is: |br|
+      TSMinValue |br|
+      TSMinX |br|
+      TSMinY |br|
+      TSMaxValue |br|
+      TSMaxX |br|
+      TSMaxY |br|
+      TSMeanValue |br|
+      TSSigma |br|
+      TSTotal |br|
+      TSNet |br|
+      TSCentroidX |br|
+      TSCentroidY |br|
+      TSSigmaX |br|
+      TSSigmaY |br|
+      TSSigmaXY |br|
+      TSSkewX |br|
+      TSSkewY |br|
+      TSKurtosisX |br|
+      TSKurtosisY |br|
+      TSEccenticity |br|
+      TSOrientation |br|
+      TSTimestamp |br|
+    - waveform
+  * -
+    -
+    - **X and Y Profiles**
+  * - NDPluginStats |br| ComputeProfiles
+    - asynInt32
+    - r/w
+    - Flag to control whether to compute the profiles for this array (0=No, 1=Yes).
+    - COMPUTE_PROFILES
+    - $(P)$(R)ComputeProfiles, $(P)$(R)ComputeProfiles_RBV
+    - bo, bi
+  * - NDPluginStats |br| ProfileSizeX
+    - asynInt32
+    - r/w
+    - Number of array elements in the X profiles.
+    - PROFILE_SIZE_X
+    - $(P)$(R)ProfileSizeX_RBV
+    - longin
+  * - NDPluginStats |br| ProfileSizeY
+    - asynInt32
+    - r/w
+    - Number of array elements in the Y profiles.
+    - PROFILE_SIZE_Y
+    - $(P)$(R)ProfileSizeY_RBV
+    - longin
+  * - NDPluginStats |br| CursorX
+    - asynInt32
+    - r/w
+    - X position of a user-defined cursor for profiles.
+    - CURSOR_X
+    - $(P)$(R)CursorX, $(P)$(R)CursorX_RBV
+    - longout, longin
+  * - NDPluginStats |br| CursorY
+    - asynInt32
+    - r/w
+    - Y position of a user-defined cursor for profiles.
+    - CURSOR_Y
+    - $(P)$(R)CursorY, $(P)$(R)CursorY_RBV
+    - longout, longin
+  * - NDPluginStats |br| ProfileAverageX
+    - asynFloat64Array
+    - r/o
+    - Profile of the average row in the array, i.e. the sum of all rows in the array divided
+      by the number of rows.
+    - PROFILE_AVERAGE_X
+    - $(P)$(R)ProfileAverageX_RBV
+    - waveform
+  * - NDPluginStats |br| ProfileAverageY
+    - asynFloat64Array
+    - r/o
+    - Profile of the average column in the array, i.e. the sum of all columns in the array
+      divided by the number of columns.
+    - PROFILE_AVERAGE_Y
+    - $(P)$(R)ProfileAverageY_RBV
+    - waveform
+  * - NDPluginStats |br| ProfileThresholdX
+    - asynFloat64Array
+    - r/o
+    - Same as ProfileAverageX except that all array elements less than CentroidThreshold
+      are set to zero when computing the average.
+    - PROFILE_THRESHOLD_X
+    - $(P)$(R)ProfileThresholdX_RBV
+    - waveform
+  * - NDPluginStats |br| ProfileThresholdY
+    - asynFloat64Array
+    - r/o
+    - Same as ProfileAverageY except that all array elements less than CentroidThreshold
+      are set to zero when computing the average.
+    - PROFILE_THRESHOLD_Y
+    - $(P)$(R)ProfileThresholdY_RBV
+    - waveform
+  * - NDPluginStats |br| ProfileCentroidX
+    - asynFloat64Array
+    - r/o
+    - X profile through the array in the row defined by CentroidY.
+    - PROFILE_CENTROID_X
+    - $(P)$(R)ProfileCentroidX_RBV
+    - waveform
+  * - NDPluginStats |br| ProfileCentroidY
+    - asynFloat64Array
+    - r/o
+    - Y profile through the array in the column defined by CentroidX.
+    - PROFILE_CENTROID_Y
+    - $(P)$(R)ProfileCentroidY_RBV
+    - waveform
+  * - NDPluginStats |br| ProfileCursorX
+    - asynFloat64Array
+    - r/o
+    - X profile through the array in the row defined by CursorY.
+    - PROFILE_CURSOR_X
+    - $(P)$(R)ProfileCursorX_RBV
+    - waveform
+  * - NDPluginStats |br| ProfileCursorY
+    - asynFloat64Array
+    - r/o
+    - Y profile through the array in the row defined by CursorX.
+    - PROFILE_CURSOR_Y
+    - $(P)$(R)ProfileCursorY_RBV
+    - waveform
+  * -
+    -
+    - **Array histogram**
+  * - NDPluginStats |br| ComputeHistogram
+    - asynInt32
+    - r/w
+    - Flag to control whether to compute the histogram for this array (0=No, 1=Yes). Not
+      computing the histogram reduces CPU load.
+    - COMPUTE_HISTOGRAM
+    - $(P)$(R)ComputeHistogram, $(P)$(R)ComputeHistogram_RBV
+    - bo, bi
+  * - NDPluginStats |br| HistSize
+    - asynInt32
+    - r/w
+    - Number of elements (bins) in the histogram
+    - HIST_SIZE
+    - $(P)$(R)HistSize, $(P)$(R)HistSize_RBV
+    - longout, longin
+  * - NDPluginStats |br| HistMin
+    - asynFloat64
+    - r/w
+    - Minimum value for the histogram. All values less than this will be counted in HistBelow.
+    - HIST_MIN
+    - $(P)$(R)HistMin, $(P)$(R)HistMin_RBV
+    - ao, ai
+  * - NDPluginStats |br| HistMax
+    - asynFloat64
+    - r/w
+    - Maximum value for the histogram. All values greater than this will be counted in
+      HistAbove.
+    - HIST_MAX
+    - $(P)$(R)HistMax, $(P)$(R)HistMax_RBV
+    - ao, ai
+  * - NDPluginStats |br| HistBelow
+    - asynInt32
+    - r/o
+    - Count of all values less than HistMin.
+    - HIST_BELOW
+    - $(P)$(R)HistBelow_RBV
+    - longin
+  * - NDPluginStats |br| HistAbove
+    - asynInt32
+    - r/o
+    - Count of all values greater than HistMax.
+    - HIST_ABOVE
+    - $(P)$(R)HistAbove_RBV
+    - longin
+  * - NDPluginStats |br| HistEntropy
+    - asynFloat64
+    - r/o
+    - Entropy of the image. This is a measure of the sharpness of the histogram, and is
+      often a useful figure of merit for determining sharpness of focus, etc. It is defined
+      as -SUM(BIN[i]*log(BIN[i]), where the sum is over the number of bins in the histogram
+      and BIN[i] is the number of elements in bin i.
+    - HIST_ENTROPY
+    - $(P)$(R)HistEntropy_RBV
+    - ai
+  * - NDPluginStats |br| HistArray
+    - asynFloat64Array
+    - r/o
+    - Histogram array, i.e. counts in each histogram bin.
+    - HIST_ARRAY
+    - $(P)$(R)Histogram_RBV
+    - waveform
+  * - NDPluginStats |br| HistXArray
+    - asynFloat64Array
+    - r/o
+    - Histogram X-axis array, i.e. minimum intensity in each histogram bin.
+    - HIST_X_ARRAY
+    - $(P)$(R)HistogramX_RBV
+    - waveform
+
 
 
 If the values of CentroidThreshold, CursorX, or CursorY are changed then

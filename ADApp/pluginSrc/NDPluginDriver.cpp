@@ -195,7 +195,7 @@ NDPluginDriver::~NDPluginDriver()
   * This method takes care of some bookkeeping for callbacks, updating parameters
   * from data in the class and in the NDArray.  It does asynInt32Array callbacks
   * for the dimensions array if the dimensions of the NDArray data have changed. */
-    void NDPluginDriver::beginProcessCallbacks(NDArray *pArray)
+void NDPluginDriver::beginProcessCallbacks(NDArray *pArray)
 {
     int arrayCounter;
     int i, dimsChanged;
@@ -683,18 +683,19 @@ void NDPluginDriver::sortingTask()
   * \param[in] value Value to write. */
 asynStatus NDPluginDriver::writeInt32(asynUser *pasynUser, epicsInt32 value)
 {
-    int function = pasynUser->reason;
-    int addr=0;
+    int function;
+    int addr;
+    const char *paramName;
     asynStatus status = asynSuccess;
     static const char* functionName = "writeInt32";
+
+    status = parseAsynUser(pasynUser, &function, &addr, &paramName); 
+    if (status != asynSuccess) goto done;
 
     /* If this parameter belongs to a base class call its method */
     if (function < FIRST_NDPLUGIN_PARAM) {
         return asynNDArrayDriver::writeInt32(pasynUser, value);
     }
-
-    status = getAddress(pasynUser, &addr);
-    if (status != asynSuccess) goto done;
 
     /* Set the parameter in the parameter library. */
     status = (asynStatus) setIntegerParam(addr, function, value);
@@ -759,12 +760,12 @@ asynStatus NDPluginDriver::writeInt32(asynUser *pasynUser, epicsInt32 value)
 
     if (status)
         asynPrint(pasynUser, ASYN_TRACE_ERROR,
-              "%s::%s ERROR, status=%d, function=%d, value=%d, connectedToArrayPort_=%d\n",
-              driverName, functionName, status, function, value, this->connectedToArrayPort_);
+              "%s::%s ERROR, status=%d, function=%d, paramName=%s, value=%d, connectedToArrayPort_=%d\n",
+              driverName, functionName, status, function, paramName, value, this->connectedToArrayPort_);
     else
         asynPrint(pasynUser, ASYN_TRACEIO_DRIVER,
-              "%s::%s function=%d, value=%d, connectedToArrayPort_=%d\n",
-              driverName, functionName, function, value, connectedToArrayPort_);
+              "%s::%s function=%d, paramName=%s, value=%d, connectedToArrayPort_=%d\n",
+              driverName, functionName, function, paramName, value, connectedToArrayPort_);
     return status;
 }
 
@@ -775,11 +776,12 @@ asynStatus NDPluginDriver::writeInt32(asynUser *pasynUser, epicsInt32 value)
   * \param[in] value Value to write. */
 asynStatus NDPluginDriver::writeFloat64(asynUser *pasynUser, epicsFloat64 value)
 {
+    int function;
     int addr;
+    const char *paramName;
     asynStatus status = asynSuccess;
-    int function = pasynUser->reason;
 
-    status = getAddress(pasynUser, &addr);
+    status = parseAsynUser(pasynUser, &function, &addr, &paramName); 
     if (status != asynSuccess) goto done;
 
     /* Set the parameter in the parameter library. */
@@ -810,12 +812,14 @@ done:
 asynStatus NDPluginDriver::writeOctet(asynUser *pasynUser, const char *value,
                                     size_t nChars, size_t *nActual)
 {
-    int addr=0;
-    int function = pasynUser->reason;
+    int function;
+    int addr;
+    const char *paramName;
     asynStatus status = asynSuccess;
     static const char *functionName = "writeOctet";
 
-    status = getAddress(pasynUser, &addr); if (status != asynSuccess) return(status);
+    status = parseAsynUser(pasynUser, &function, &addr, &paramName); 
+
     /* Set the parameter in the parameter library. */
     status = (asynStatus)setStringParam(addr, function, (char *)value);
 
@@ -834,12 +838,12 @@ asynStatus NDPluginDriver::writeOctet(asynUser *pasynUser, const char *value,
 
     if (status)
         epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize,
-                  "%s::%s: status=%d, function=%d, value=%s",
-                  driverName, functionName, status, function, value);
+                  "%s::%s: status=%d, function=%d, paramName=%s, value=%s",
+                  driverName, functionName, status, function, paramName, value);
     else
         asynPrint(pasynUser, ASYN_TRACEIO_DRIVER,
-              "%s::%s: function=%d, value=%s\n",
-              driverName, functionName, function, value);
+              "%s::%s: function=%d, paramName=%s, value=%s\n",
+              driverName, functionName, function, paramName, value);
     *nActual = nChars;
     return status;
 }
@@ -853,13 +857,16 @@ asynStatus NDPluginDriver::writeOctet(asynUser *pasynUser, const char *value,
 asynStatus NDPluginDriver::readInt32Array(asynUser *pasynUser, epicsInt32 *value,
                                          size_t nElements, size_t *nIn)
 {
-    int function = pasynUser->reason;
-    int addr=0;
+    int function;
+    int addr;
+    const char *paramName;
     size_t ncopy;
     asynStatus status = asynSuccess;
     static const char *functionName = "readInt32Array";
 
-    status = getAddress(pasynUser, &addr); if (status != asynSuccess) return(status);
+    status = parseAsynUser(pasynUser, &function, &addr, &paramName); 
+    if (status != asynSuccess) return(status);
+
     if (function == NDDimensions) {
             ncopy = ND_ARRAY_MAX_DIMS;
             if (nElements < ncopy) ncopy = nElements;
@@ -872,8 +879,8 @@ asynStatus NDPluginDriver::readInt32Array(asynUser *pasynUser, epicsInt32 *value
     }
     if (status)
         epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize,
-                  "%s::%s: status=%d, function=%d",
-                  driverName, functionName, status, function);
+                  "%s::%s: status=%d, function=%d, paramName=%s",
+                  driverName, functionName, status, function, paramName);
     else
         asynPrint(pasynUser, ASYN_TRACEIO_DRIVER,
               "%s::%s: function=%d\n",

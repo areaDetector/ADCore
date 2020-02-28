@@ -39,74 +39,37 @@ NDFileNeXus uses 2 additional parameters to define the location of an
 XML file that is read to determine the contents of the NeXus files
 written by this plugin. These are described in the following table.
 
-.. raw:: html
+.. cssclass:: table-bordered table-striped table-hover
+.. flat-table::
+  :header-rows: 2
+  :widths: 5 5 5 70 5 5 5
 
-  <table class="table table-bordered">
-    <tbody>
-      <tr>
-        <td align="center" colspan="7,">
-          <b>Parameter Definitions in NDFileNexus.h and EPICS Record Definitions in NDFileNexus.template</b>
-        </td>
-      </tr>
-      <tr>
-        <th>
-          Parameter index variable</th>
-        <th>
-          asyn interface</th>
-        <th>
-          Access</th>
-        <th>
-          Description</th>
-        <th>
-          drvInfo string</th>
-        <th>
-          EPICS record name</th>
-        <th>
-          EPICS record type</th>
-      </tr>
-      <tr>
-        <td align="center" colspan="7,">
-          <b>Location of XML file to configure NeXus file contents</b></td>
-      </tr>
-      <tr>
-        <td>
-          NDFileNexusTemplatePath</td>
-        <td>
-          asynOctet</td>
-        <td>
-          r/w</td>
-        <td>
-          Path to XML template file</td>
-        <td>
-          TEMPLATE_FILE_PATH</td>
-        <td>
-          $(P)$(R)TemplateFilePath<br />
-          $(P)$(R)TemplateFilePath_RBV</td>
-        <td>
-          waveform<br />
-          waveform</td>
-      </tr>
-      <tr>
-        <td>
-          NDFileNexusTemplateFile</td>
-        <td>
-          asynOctet</td>
-        <td>
-          r/w</td>
-        <td>
-          Name of XML template file</td>
-        <td>
-          TEMPLATE_FILE_NAME</td>
-        <td>
-          $(P)$(R)TemplateFileName<br />
-          $(P)$(R)TemplateFileName_RBV</td>
-        <td>
-          waveform<br />
-          waveform</td>
-      </tr>
-    </tbody>
-  </table>
-
+  * -
+    - Parameter Definitions in NDFileNexus.h and EPICS Record Definitions in NDFileNexus.template
+  * - Parameter index variable
+    - asyn interface
+    - Access
+    - Description
+    - drvInfo string
+    - EPICS record name
+    - EPICS record type
+  * -
+    -
+    - **Location of XML file to configure NeXus file contents**
+  * - NDFileNexusTemplatePath
+    - asynOctet
+    - r/w
+    - Path to XML template file
+    - TEMPLATE_FILE_PATH
+    - $(P)$(R)TemplateFilePath, $(P)$(R)TemplateFilePath_RBV
+    - waveform, waveform
+  * - NDFileNexusTemplateFile
+    - asynOctet
+    - r/w
+    - Name of XML template file
+    - TEMPLATE_FILE_NAME
+    - $(P)$(R)TemplateFileName, $(P)$(R)TemplateFileName_RBV
+    - waveform, waveform
 
 There is currently no documentation on the contents of the XML template
 file. However, there are example XML template files in the
@@ -120,13 +83,6 @@ the syntax in a NeXus template XML file. For example, the command
 
    xmllint --noout --schematron ./template.sch iocSimDetector/NexusTemplate.xml
 
-The prebuilt Linux libraries libhdf5.a and libNeXus.a are built with
-HDF5 1.6.9. When they are built with the latest version, 1.8.2, they
-require GLIBC version 2.7 or higher, i.e. /lib/libc-2.7.so or higher.
-Since users may want to install areaDetector on older Linux systems
-(which predate Fedora Core 8 for example), it was decided to use this
-older version of HDF5. Future releases of areaDetector may use HDF5
-1.8.2 or later, and hence not work with older Linux systems.
 
 Screen Shots
 ------------

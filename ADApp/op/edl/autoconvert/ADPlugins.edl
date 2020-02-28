@@ -449,31 +449,39 @@ botShadowColor rgb 17920 17920 17920
 font "helvetica-medium-r-12.0"
 icon
 buttonLabel "Other #2"
-numPvs 8
-numDsps 4
+numPvs 12
+numDsps 6
 displayFileName {
   0 NDStdArrays.edl
   1 scan_more.edl
   2 yySseq.edl
   3 ioc_stats_soft.edl
+  4 ADCompVision.edl
+  5 NDPluginEdge.edl
 }
 menuLabel {
   0 Image #2
   1 Scan #1
   2 Acquire Sequence
   3 devIocStats
+  4 Open CV #1
+  5 Edge #1
 }
 symbols {
   0 "P=$(P),R=image2:"
   1 "P=$(P),S=scan1,N=1"
   2 "P=$(P),S=AcquireSequence"
   3 "ioc=$(P)"
+  4 "P=$(P),R=CV1:"
+  5 "P=$(P),R=Edge1:"
 }
 replaceSymbols {
   0 1
   1 1
   2 1
   3 1
+  4 1
+  5 1
 }
 endObjectProperties
 

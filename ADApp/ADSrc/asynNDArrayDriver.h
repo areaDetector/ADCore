@@ -42,6 +42,19 @@ typedef enum {
 #define NDADCoreVersionString   "ADCORE_VERSION"    /**< (asynOctet,    r/o) Version of ADCore */
 #define NDDriverVersionString   "DRIVER_VERSION"    /**< (asynOctet,    r/o) Version of this driver or plugin */
 
+/* These parameters were previously in ADDriver.h.
+ * We moved them here so they can be used by other types of drivers
+ * For consistency the #define and parameter names should begin with ND rather than AD but that would break
+ * backwards compatibility. */
+#define ADManufacturerString        "MANUFACTURER"          /**< (asynOctet,    r/o) Detector manufacturer name */
+#define ADModelString               "MODEL"                 /**< (asynOctet,    r/o) Detector model name */
+#define ADSerialNumberString        "SERIAL_NUMBER"         /**< (asynOctet,    r/o) Detector serial number */
+#define ADSDKVersionString          "SDK_VERSION"           /**< (asynOctet,    r/o) Vendor SDK version */
+#define ADFirmwareVersionString     "FIRMWARE_VERSION"      /**< (asynOctet,    r/o) Detector firmware version */
+#define ADAcquireString             "ACQUIRE"               /**< (asynInt32,    r/w) Start(1) or Stop(0) acquisition */
+#define ADAcquireBusyString         "ACQUIRE_BUSY"          /**< (asynInt32,    r/w) 0 when acquire done including plugins */
+#define ADWaitForPluginsString      "WAIT_FOR_PLUGINS"      /**< (asynInt32,    r/w) Wait for plugins before AcquireBusy goes to 0 */
+
 /* Parameters defining characteristics of the array data from the detector.
  * NDArraySizeX and NDArraySizeY are the actual dimensions of the array data,
  * including effects of the region definition and binning */
@@ -128,6 +141,8 @@ public:
     virtual asynStatus readGenericPointer(asynUser *pasynUser, void *genericPointer);
     virtual asynStatus writeGenericPointer(asynUser *pasynUser, void *genericPointer);
     virtual asynStatus writeInt32(asynUser *pasynUser, epicsInt32 value);
+    virtual asynStatus setIntegerParam(int index, int value);
+    virtual asynStatus setIntegerParam(int list, int index, int value);
     virtual asynStatus readInt32(asynUser *pasynUser, epicsInt32 *value);
     virtual asynStatus readFloat64(asynUser *pasynUser, epicsFloat64 *value);
     virtual void report(FILE *fp, int details);
@@ -143,6 +158,7 @@ public:
 
     asynStatus incrementQueuedArrayCount();
     asynStatus decrementQueuedArrayCount();
+    int getQueuedArrayCount();
     void updateQueuedArrayCount();
     
     class NDArrayPool *pNDArrayPool;     /**< An NDArrayPool pointer that is initialized to pNDArrayPoolPvt_ in the constructor.
@@ -153,6 +169,14 @@ protected:
     #define FIRST_NDARRAY_PARAM NDPortNameSelf
     int NDADCoreVersion;
     int NDDriverVersion;
+    int ADManufacturer;
+    int ADModel;
+    int ADSerialNumber;
+    int ADSDKVersion;
+    int ADFirmwareVersion;
+    int ADAcquire;
+    int ADAcquireBusy;
+    int ADWaitForPlugins;
     int NDArraySizeX;
     int NDArraySizeY;
     int NDArraySizeZ;

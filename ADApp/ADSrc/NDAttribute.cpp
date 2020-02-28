@@ -211,6 +211,12 @@ int NDAttribute::setValue(const void *pValue)
     case NDAttrUInt32:
       this->value_.ui32 = *(epicsUInt32 *)pValue;
       break;
+    case NDAttrInt64:
+      this->value_.i64 = *(epicsInt64*)pValue;
+      break;
+    case NDAttrUInt64:
+      this->value_.ui64 = *(epicsUInt64 *)pValue;
+      break;
     case NDAttrFloat32:
       this->value_.f32 = *(epicsFloat32 *)pValue;
       break;
@@ -265,6 +271,12 @@ int NDAttribute::getValueInfo(NDAttrDataType_t *pDataType, size_t *pSize)
     case NDAttrUInt32:
       *pSize = sizeof(this->value_.ui32);
       break;
+    case NDAttrInt64:
+      *pSize = sizeof(this->value_.i64);
+      break;
+    case NDAttrUInt64:
+      *pSize = sizeof(this->value_.ui64);
+      break;
     case NDAttrFloat32:
       *pSize = sizeof(this->value_.f32);
       break;
@@ -307,6 +319,12 @@ int NDAttribute::getValueT(void *pValueIn, size_t dataSize)
       break;
     case NDAttrUInt32:
       *pValue = (epicsType) this->value_.ui32;
+      break;
+    case NDAttrInt64:
+      *pValue = (epicsType) this->value_.i64;
+      break;
+    case NDAttrUInt64:
+      *pValue = (epicsType) this->value_.ui64;
       break;
     case NDAttrFloat32:
       *pValue = (epicsType) this->value_.f32;
@@ -355,6 +373,10 @@ int NDAttribute::getValue(NDAttrDataType_t dataType, void *pValue, size_t dataSi
       return getValueT<epicsInt32>(pValue, dataSize);
     case NDAttrUInt32:
       return getValueT<epicsUInt32>(pValue, dataSize);
+    case NDAttrInt64:
+      return getValueT<epicsInt64>(pValue, dataSize);
+    case NDAttrUInt64:
+      return getValueT<epicsUInt64>(pValue, dataSize);
     case NDAttrFloat32:
       return getValueT<epicsFloat32>(pValue, dataSize);
     case NDAttrFloat64:
@@ -427,6 +449,14 @@ int NDAttribute::report(FILE *fp, int details)
     case NDAttrUInt32:
       fprintf(fp, "  dataType=NDAttrUInt32\n"); 
       fprintf(fp, "  value=%d\n", this->value_.ui32);
+      break;
+    case NDAttrInt64:
+      fprintf(fp, "  dataType=NDAttrInt64\n"); 
+      fprintf(fp, "  value=%lld\n", this->value_.i64);
+      break;
+    case NDAttrUInt64:
+      fprintf(fp, "  dataType=NDAttrUInt64\n"); 
+      fprintf(fp, "  value=%llu\n", this->value_.ui64);
       break;
     case NDAttrFloat32:
       fprintf(fp, "  dataType=NDAttrFloat32\n"); 

@@ -48,8 +48,8 @@ asynStatus NDPluginStats::doComputeHistogramT(NDArray *pArray, NDStats_t *pStats
 
     pArray->getInfo(&arrayInfo);
     nElements = arrayInfo.nElements;
-    scale = pStats->histSize / (pStats->histMax - pStats->histMin);
-
+    scale = (pStats->histSize - 1) / (pStats->histMax - pStats->histMin);
+ 
     pStats->histBelow = 0;
     pStats->histAbove = 0;
     for (i=0; i<nElements; i++) {
@@ -97,6 +97,12 @@ asynStatus NDPluginStats::doComputeHistogram(NDArray *pArray, NDStats_t *pStats)
             break;
         case NDUInt32:
             status = doComputeHistogramT<epicsUInt32>(pArray, pStats);
+            break;
+        case NDInt64:
+            status = doComputeHistogramT<epicsInt64>(pArray, pStats);
+            break;
+        case NDUInt64:
+            status = doComputeHistogramT<epicsUInt64>(pArray, pStats);
             break;
         case NDFloat32:
             status = doComputeHistogramT<epicsFloat32>(pArray, pStats);
@@ -170,6 +176,12 @@ int NDPluginStats::doComputeStatistics(NDArray *pArray, NDStats_t *pStats)
             break;
         case NDUInt32:
             doComputeStatisticsT<epicsUInt32>(pArray, pStats);
+            break;
+        case NDInt64:
+            doComputeStatisticsT<epicsInt64>(pArray, pStats);
+            break;
+        case NDUInt64:
+            doComputeStatisticsT<epicsUInt64>(pArray, pStats);
             break;
         case NDFloat32:
             doComputeStatisticsT<epicsFloat32>(pArray, pStats);
@@ -306,6 +318,12 @@ asynStatus NDPluginStats::doComputeCentroid(NDArray *pArray, NDStats_t *pStats)
         case NDUInt32:
             status = doComputeCentroidT<epicsUInt32>(pArray, pStats);
             break;
+        case NDInt64:
+            status = doComputeCentroidT<epicsInt64>(pArray, pStats);
+            break;
+        case NDUInt64:
+            status = doComputeCentroidT<epicsUInt64>(pArray, pStats);
+            break;
         case NDFloat32:
             status = doComputeCentroidT<epicsFloat32>(pArray, pStats);
             break;
@@ -381,6 +399,12 @@ asynStatus NDPluginStats::doComputeProfiles(NDArray *pArray, NDStats_t *pStats)
             break;
         case NDUInt32:
             status = doComputeProfilesT<epicsUInt32>(pArray, pStats);
+            break;
+        case NDInt64:
+            status = doComputeProfilesT<epicsInt64>(pArray, pStats);
+            break;
+        case NDUInt64:
+            status = doComputeProfilesT<epicsUInt64>(pArray, pStats);
             break;
         case NDFloat32:
             status = doComputeProfilesT<epicsFloat32>(pArray, pStats);
@@ -662,15 +686,7 @@ asynStatus NDPluginStats::writeInt32(asynUser *pasynUser, epicsInt32 value)
     /* Set the parameter in the parameter library. */
     status = (asynStatus) setIntegerParam(function, value);
 
-    if (function == NDPluginStatsCursorX) {
-        if (pPrevInputArray_) {
-            processCallbacks(pPrevInputArray_);
-        }
-    } else if (function == NDPluginStatsCursorY) {
-        if (pPrevInputArray_) {
-            processCallbacks(pPrevInputArray_);
-        }
-    } else if (function == NDPluginStatsHistSize) {
+    if (function == NDPluginStatsHistSize) {
           status = computeHistX();
     } else {
         /* If this parameter belongs to a base class call its method */
@@ -701,19 +717,13 @@ asynStatus  NDPluginStats::writeFloat64(asynUser *pasynUser, epicsFloat64 value)
 {
     int function = pasynUser->reason;
     asynStatus status = asynSuccess;
-    int computeCentroid;
     static const char *functionName = "writeFloat64";
 
     /* Set the parameter and readback in the parameter library.  This may be overwritten when we read back the
      * status at the end, but that's OK */
     status = setDoubleParam(function, value);
 
-    if (function == NDPluginStatsCentroidThreshold) {
-        getIntegerParam(NDPluginStatsComputeCentroid, &computeCentroid);
-        if (computeCentroid && pPrevInputArray_) {
-            processCallbacks(pPrevInputArray_);
-        }
-    } else if ((function == NDPluginStatsHistMin)  ||
+    if ((function == NDPluginStatsHistMin)  ||
                (function == NDPluginStatsHistMax)) {
         status = computeHistX();
     } else {

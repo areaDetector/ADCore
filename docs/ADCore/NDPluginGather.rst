@@ -45,77 +45,47 @@ the width of this table the parameter index variable names have been
 split into 2 lines, but these are just a single name, for example
 ``NDPluginGatherSortMode``.
 
-.. raw:: html
+.. |br| raw:: html
 
-  <table class="table table-bordered">
-    <tbody>
-      <tr>
-        <td align="center" colspan="7,">
-          <b>Parameter Definitions in NDPluginDriver.h and NDPluginGather.h and EPICS Record
-            Definitions in NDGather.template and NDGatherN.template</b> </td>
-      </tr>
-      <tr>
-        <th>
-          Parameter index variable</th>
-        <th>
-          asyn interface</th>
-        <th>
-          Access</th>
-        <th>
-          Description</th>
-        <th>
-          drvInfo string</th>
-        <th>
-          EPICS record name</th>
-        <th>
-          EPICS record type</th>
-      </tr>
-      <tr>
-        <td>
-          NDPluginDriver<br />
-          ArrayPort</td>
-        <td>
-          asynOctet</td>
-        <td>
-          r/w</td>
-        <td>
-          asyn port name for NDArray driver that will make callbacks to this plugin. This
-          port can be changed at run time, connecting the plugin to a different NDArray driver.
-          There can be more than one such input port. The maximum is number is specified in
-          the NDGatherConfigure command in the startup script. </td>
-        <td>
-          NDARRAY_PORT</td>
-        <td>
-          $(P)$(R)NDArrayPort_[N]<br />
-          (P)$(R)NDArrayPort_[N]_RBV</td>
-        <td>
-          stringout<br />
-          stringin</td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginDriver<br />
-          ArrayAddr</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          asyn port address for NDArray driver that will make callbacks to this plugin. This
-          address can be changed at run time, connecting the plugin to a different address
-          in the NDArray driver. There can be more than one such input port. The maximum is
-          number is specified in the NDGatherConfigure command in the startup script.</td>
-        <td>
-          NDARRAY_ADDR</td>
-        <td>
-          $(P)$(R)NDArrayAddress_[N]<br />
-          $(P)$(R)NDArrayAddress_[N]_RBV</td>
-        <td>
-          longout<br />
-          longin</td>
-      </tr>
-    </tbody>
-  </table>
+    <br>
+
+.. cssclass:: table-bordered table-striped table-hover
+.. flat-table::
+  :header-rows: 2
+  :widths: 5 5 5 70 5 5 5
+
+  * - 
+    - Parameter Definitions in NDPluginDriver.h and EPICS Record
+      Definitions in NDPluginBase.template and NDGatherN.template
+  * - Parameter index variable
+    - asyn interface
+    - Access
+    - Description
+    - drvInfo string
+    - EPICS record name
+    - EPICS record type
+  * - NDPluginDriver |br|
+      ArrayPort
+    - asynOctet
+    - r/w
+    - asyn port name for NDArray driver that will make callbacks to this plugin. This
+      port can be changed at run time, connecting the plugin to a different NDArray driver.
+      There can be more than one such input port. The maximum is number is specified in
+      the NDGatherConfigure command in the startup script.
+    - NDARRAY_PORT
+    - $(P)$(R)NDArrayPort_[N], (P)$(R)NDArrayPort_[N]_RBV
+    - stringout, stringin
+  * - NDPluginDriver |br|
+      ArrayAddr
+    - asynInt32
+    - r/w
+    - asyn port address for NDArray driver that will make callbacks to this plugin. This
+      address can be changed at run time, connecting the plugin to a different address
+      in the NDArray driver. There can be more than one such input port. The maximum is
+      number is specified in the NDGatherConfigure command in the startup script.
+    - NDARRAY_ADDR
+    - $(P)$(R)NDArrayAddress_[N], $(P)$(R)NDArrayAddress_[N]_RBV
+    - longout, longin
 
 Configuration
 -------------

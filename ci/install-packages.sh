@@ -39,9 +39,9 @@ if [[ $USE_EPICS_DEV == "YES" ]]; then
   EPICS_BASE=/usr/lib/epics
 else
   cd external
-  wget -nv https://epics.anl.gov/download/base/base-3.15.5.tar.gz
-  tar -zxf base-3.15.5.tar.gz
-  ln -s base-3.15.5 epics_base
+  wget -nv https://github.com/epics-base/epics-base/archive/R3.15.6.tar.gz
+  tar -zxf R3.15.6.tar.gz
+  ln -s epics-base-R3.15.6 epics_base
   make -sj -C epics_base/
   EPICS_BASE=`pwd`/epics_base/
   cd ..
@@ -49,7 +49,7 @@ fi
 
 # Set these flags appropriately
 echo "EPICS_BASE = "     $EPICS_BASE         >  configure/RELEASE.local
-echo "ASYN=`pwd`/external/asyn-R4-32"        >> configure/RELEASE.local
+echo "ASYN=`pwd`/external/asyn"              >> configure/RELEASE.local
 echo "ADSUPPORT=`pwd`/external/ADSupport"    >> configure/RELEASE.local
 echo "WITH_BOOST     ="  $WITH_BOOST         >> configure/CONFIG_SITE.linux-x86_64.Common
 echo "BOOST_EXTERNAL ="  $BOOST_EXTERNAL     >> configure/CONFIG_SITE.linux-x86_64.Common
@@ -87,6 +87,7 @@ sudo apt-get update -qq
 # The following are only installed if WITH_XXX=YES and XXX_EXTERNAL=YES
 if [[ $WITH_BOOST == "YES" && $BOOST_EXTERNAL == "YES" ]]; then
   sudo apt-get install libboost-test-dev
+  sudo apt-get install libboost-system-dev
 fi
 
 if [[ $WITH_HDF5 == "YES" && $HDF5_EXTERNAL == "YES" ]]; then
@@ -101,6 +102,7 @@ if [[ $XML2_EXTERNAL == "YES" ]]; then
   sudo apt-get install libxml2-dev
 fi
 
+sudo apt-get install valgrind
 # TO DO: Install ZLIB, SZIP, JPEG, NEXUS, NETCDF if we want to use package versions
 
 # Installing latest version of code coverage tool lcov (because the ubuntu package is very old)
@@ -111,12 +113,11 @@ gem install coveralls-lcov
 
 cd external
 
-# Install asyn
-wget -nv https://github.com/epics-modules/asyn/archive/R4-32.tar.gz
-tar -zxf R4-32.tar.gz
-echo "EPICS_BASE="$EPICS_BASE > asyn-R4-32/configure/RELEASE
-#echo "EPICS_LIBCOM_ONLY=YES" >> asyn-R4-32/configure/CONFIG_SITE
-make -sj -C asyn-R4-32/
+# Install asyn.  Use master branch on github
+git clone https://github.com/epics-modules/asyn
+echo "EPICS_BASE="$EPICS_BASE > asyn/configure/RELEASE
+#echo "EPICS_LIBCOM_ONLY=YES" >> asyn/configure/CONFIG_SITE
+make -sj -C asyn/
 
 # Install ADSupport
 git clone https://github.com/areaDetector/ADSupport.git

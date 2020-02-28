@@ -31,6 +31,14 @@ attribute array. Also the colorMode attribute must not be changed while
 capture or streaming is in progress, because that would change the
 structure of the NDArray data.
 
+The netCDF classic file format does not handle 64-bit integer data, so cannot
+actually store NDArrays with types NDInt64 or NDUInt64, or NDAttributes of type
+NDAttrInt64 or NDAttrUInt64. This plugin works around this restriction by casting the data to float64,
+so the netCDF library thinks it is writing float64 (double) data, and marks the netCDF data in in the file as double.
+However the netCDF global attribute "datatype" (enum NDDataType_t) will correctly indicate the actual datatype.
+File readers will need to cast the data to the actual datatype after reading the data with the netCDF
+library functions.
+
 The `NDFileNetCDF class
 documentation <../areaDetectorDoxygenHTML/class_n_d_file_net_c_d_f.html>`__
 describes this class in detail.
@@ -177,10 +185,10 @@ this output:
    type.
 
 There is an IDL function,
-`read_nd_netcdf <http://cars.uchicago.edu/software/idl/detector_routines.html#read_nd_netcdf>`__
+`read_nd_netcdf <https://cars.uchicago.edu/software/idl/detector_routines.html#read_nd_netcdf>`__
 that can be used to read the netCDF files created by this plugin. This
 routine is contained in the `CARS IDL detector
-package <http://cars.uchicago.edu/software/idl/detectors.html#read_nd_netcdf>`__.
+package <https://github.com/CARS-UChicago/IDL_Detectors/blob/master/read_nd_netcdf.pro>`__.
 This function is also contained in the areaDetector distribution in the
 Viewers/IDL directory.
 

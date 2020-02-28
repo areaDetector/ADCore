@@ -15,6 +15,7 @@ include $(TOP)/configure/CONFIG
 DB += NDArrayBase.template
 DB += ADBase.template
 DB += ADPrefixes.template
+DB += CCDMultiTrack.template
 
 # Plugins
 DB += NDAttribute.template

@@ -100,7 +100,8 @@ its constructor is
 
 .. code:: cpp
 
-    NDPluginAttrPlot(const char * portName, int n_attributes,         int cache_size, int n_data_blocks, const char * NDArrayPort, int NDArrayAddr,         int queueSize, int blockingCallbacks, int priority, int stackSize)
+    NDPluginAttrPlot(const char * portName, int n_attributes, int cache_size, int n_data_blocks, 
+                     const char * NDArrayPort, int NDArrayAddr, int queueSize, int blockingCallbacks, int priority, int stackSize)
 
 
 Parameters ``NDArrayPort``, ``NDArrayAddr``, ``portName``,
@@ -154,151 +155,55 @@ class documentation describes this class in detail.
 NDPluginAttrPlot defines the following parameters. It also implements
 all of the standard plugin parameters from NDPluginDriver.
 
-.. raw:: html
+.. cssclass:: table-bordered table-striped table-hover
+.. flat-table::
+  :header-rows: 2
+  :widths: 5 5 5 70 5 5
 
-  <table class="table table-bordered">
-    <tbody>
-      <tr>
-        <td align="center" colspan="6,">
-          <b>Parameter Definitions in <code>NDPluginAttrPlot.h</code> and EPICS Record Definitions in <code>NDAttrPlot.template</code></b>
-        </td>
-      </tr>
-      <tr>
-        <th>
-          drvInfo string</th>
-        <th>
-          asyn interface</th>
-        <th>
-          Access</th>
-        <th>
-          Description</th>
-        <th>
-          EPICS record name</th>
-        <th>
-          EPICS record type</th>
-      </tr>
-      <tr>
-        <td>
-          AP_Reset</td>
-        <td>
-          asynInt32</td>
-        <td>
-          w</td>
-        <td>
-          Write to this record forces reinitialization of the plugin on the next callback.</td>
-        <td>
-          $(P)$(R)Reset</td>
-        <td>
-          ao</td>
-      </tr>
-      <tr>
-        <td>
-          AP_NPts</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r</td>
-        <td>
-          Number of saved cached points.</td>
-        <td>
-          $(P)$(R)NPts</td>
-        <td>
-          ai</td>
-      </tr>
-      <tr>
-        <td align="center" colspan="6,">
-          <b>Parameter Definitions in <code>NDPluginAttrPlot.h</code> and EPICS Record Definitions in <code>NDAttrPlotAttr.template</code></b></td>
-      </tr>
-      <tr>
-        <th>
-          drvInfo string</th>
-        <th>
-          asyn interface</th>
-        <th>
-          Access</th>
-        <th>
-          Description</th>
-        <th>
-          EPICS record name</th>
-        <th>
-          EPICS record type</th>
-      </tr>
-      <tr>
-        <td>
-          AP_Attribute</td>
-        <td>
-          asynOctetRead</td>
-        <td>
-          r</td>
-        <td>
-          Attribute name.</td>
-        <td>
-          $(P)$(R)Attr$(ATTR_IND)</td>
-        <td>
-          stringin</td>
-      </tr>
-      <tr>
-        <td align="center" colspan="6,">
-          <b>Parameter Definitions in <code>NDPluginAttrPlot.h</code> and EPICS Record Definitions in <code>NDAttrPlotData.template</code></b></td>
-      </tr>
-      <tr>
-        <th>
-          drvInfo string</th>
-        <th>
-          asyn interface</th>
-        <th>
-          Access</th>
-        <th>
-          Description</th>
-        <th>
-          EPICS record name</th>
-        <th>
-          EPICS record type</th>
-      </tr>
-      <tr>
-        <td>
-          AP_Data</td>
-        <td>
-          asynFloat64ArrayIn</td>
-        <td>
-          r</td>
-        <td>
-          Exposed data for $(DATA_ADDR).</td>
-        <td>
-          $(P)$(R)$(AXIS):Data$(DATA_IND)</td>
-        <td>
-          waveform</td>
-      </tr>
-      <tr>
-        <td>
-          AP_DataSelect</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          Index of selected attribute for $(DATA_ADDR).</td>
-        <td>
-          $(P)$(R)$(AXIS):DataSelect$(DATA_IND)</br>$(P)$(R)$(AXIS):DataSelect$(DATA_IND)_RBV</td>
-        <td>
-          ao</br>ai</td>
-      </tr>
-      <tr>
-        <td>
-          AP_DataLabel</td>
-        <td>
-          asynOctetRead</td>
-        <td>
-          r</td>
-        <td>
-          Attribute name for $(DATA_ADDR).</td>
-        <td>
-          $(P)$(R)$(AXIS):DataLabel$(DATA_IND)</td>
-        <td>
-          stringin</td>
-      </tr>
-    </tbody>
-  </table>
+  * -
+    - **Parameter Definitions in `NDPluginAttrPlot.h` and EPICS Record Definitions in `NDAttrPlot.template`**
+  * - drvInfo string
+    - asyn interface
+    - Access
+    - Description
+    - EPICS record name
+    - EPICS record type
+  * - AP_Reset
+    - asynInt32
+    - w
+    - Write to this record forces reinitialization of the plugin on the next callback.
+    - $(P)$(R)Reset
+    - ao
+  * - AP_NPts
+    - asynInt32
+    - r
+    - Number of saved cached points.
+    - $(P)$(R)NPts
+    - ai
+  * - AP_Attribute
+    - asynOctetRead
+    - r
+    - Attribute name.
+    - $(P)$(R)Attr$(ATTR_IND)
+    - stringin
+  * - AP_Data
+    - asynFloat64ArrayIn
+    - r
+    - Exposed data for $(DATA_ADDR).
+    - $(P)$(R)$(AXIS):Data$(DATA_IND)
+    - waveform
+  * - AP_DataSelect
+    - asynInt32
+    - r/w
+    - Index of selected attribute for $(DATA_ADDR).
+    - $(P)$(R)$(AXIS):DataSelect$(DATA_IND), $(P)$(R)$(AXIS):DataSelect$(DATA_IND)_RBV
+    - ao, ai
+  * - AP_DataLabel
+    - asynOctetRead
+    - r
+    - Attribute name for $(DATA_ADDR).
+    - $(P)$(R)$(AXIS):DataLabel$(DATA_IND)
+    - stringin
 
 If the array data contains more than 16K bytes then in order for EPICS
 clients to the environment variable ``EPICS_CA_MAX_ARRAY_BYTES`` on both the

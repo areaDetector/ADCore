@@ -3,6 +3,7 @@
 #% macro, PORT, Asyn Port name
 #% macro, ADDR, Asyn Port address
 #% macro, TIMEOUT, Asyn timeout
+#% macro, SCANRATE, Chosen Scan Rate for cpu intensive PVs
 
 # This associates the template with an edm screen
 # % gui, $(PORT), edmtab, NDPosPlugin.edl, P=$(P),R=$(R)
@@ -89,7 +90,7 @@ record(longin, "$(P)$(R)Qty_RBV")
 {
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),0)NDPos_CurrentQty")
-    field(SCAN, "I/O Intr")
+    field(SCAN, "$(SCANRATE=I/O Intr)")
 }
 
 record(longin, "$(P)$(R)Index_RBV")
@@ -103,7 +104,7 @@ record(stringin, "$(P)$(R)Position_RBV")
 {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(PORT),0)NDPos_CurrentPos")
-    field(SCAN, "I/O Intr")
+    field(SCAN, "$(SCANRATE=I/O Intr)")
 }
 
 record(longout, "$(P)$(R)Missing")
@@ -138,7 +139,7 @@ record(longin, "$(P)$(R)ExpectedID_RBV")
 {
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),0)NDPos_ExpectedID")
-    field(SCAN, "I/O Intr")
+    field(SCAN, "$(SCANRATE=I/O Intr)")
 }
 
 record(stringout, "$(P)$(R)IDName")

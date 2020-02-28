@@ -47,9 +47,9 @@ static const int TIFFTAG_UNIQUEID        = 65001;
 static const int TIFFTAG_EPICSTSSEC      = 65002;
 static const int TIFFTAG_EPICSTSNSEC     = 65003;
 static const int TIFFTAG_FIRST_ATTRIBUTE = 65010;
-static const int TIFFTAG_LAST_ATTRIBUTE  = 65500;
+static const int TIFFTAG_LAST_ATTRIBUTE  = 65535;
 
-#define NUM_CUSTOM_TIFF_TAGS (4 + TIFFTAG_LAST_ATTRIBUTE - TIFFTAG_FIRST_ATTRIBUTE - 1)
+#define NUM_CUSTOM_TIFF_TAGS (4 + TIFFTAG_LAST_ATTRIBUTE - TIFFTAG_FIRST_ATTRIBUTE + 1)
 
 static TIFFFieldInfo tiffFieldInfo[NUM_CUSTOM_TIFF_TAGS] = {
     {TIFFTAG_NDTIMESTAMP, 1, 1, TIFF_DOUBLE,FIELD_CUSTOM, 1, 0, (char *)"NDTimeStamp"},
@@ -93,7 +93,7 @@ asynStatus NDFileTIFF::openFile(const char *fileName, NDFileOpenMode_t openMode,
     int i;
     TIFFFieldInfo fieldInfo = {0, 1, 1, TIFF_ASCII, FIELD_CUSTOM, 1, 0, tagName};
 
-    for (i=TIFFTAG_FIRST_ATTRIBUTE; i<TIFFTAG_LAST_ATTRIBUTE; i++) {
+    for (i=TIFFTAG_FIRST_ATTRIBUTE; i<=TIFFTAG_LAST_ATTRIBUTE; i++) {
         sprintf(tagName, "Attribute_%d", i-TIFFTAG_FIRST_ATTRIBUTE+1);
         fieldInfo.field_tag = i;
         tiffFieldInfo[4+i-TIFFTAG_FIRST_ATTRIBUTE] = fieldInfo;
@@ -166,6 +166,14 @@ asynStatus NDFileTIFF::openFile(const char *fileName, NDFileOpenMode_t openMode,
         case NDUInt32:
             sampleFormat = SAMPLEFORMAT_UINT;
             bitsPerSample = 32;
+            break;
+        case NDInt64:
+            sampleFormat = SAMPLEFORMAT_INT;
+            bitsPerSample = 64;
+            break;
+        case NDUInt64:
+            sampleFormat = SAMPLEFORMAT_UINT;
+            bitsPerSample = 64;
             break;
         case NDFloat32:
             sampleFormat = SAMPLEFORMAT_IEEEFP;
@@ -299,9 +307,11 @@ asynStatus NDFileTIFF::openFile(const char *fileName, NDFileOpenMode_t openMode,
             case NDAttrInt16:
             case NDAttrUInt16:
             case NDAttrInt32:
-            case NDAttrUInt32: {
-                pAttribute->getValue(attrDataType, &value.i32);
-                epicsSnprintf(tagString, sizeof(tagString)-1, "%s:%d", attributeName, value.i32);
+            case NDAttrUInt32:
+            case NDAttrInt64:
+            case NDAttrUInt64: {
+                pAttribute->getValue(attrDataType, &value.i64);
+                epicsSnprintf(tagString, sizeof(tagString)-1, "%s:%lld", attributeName, value.i64);
                 break;
             }
             case NDAttrFloat32: {
@@ -337,7 +347,7 @@ asynStatus NDFileTIFF::openFile(const char *fileName, NDFileOpenMode_t openMode,
             TIFFSetField(this->tiff, tagId, tagString);
             ++count;
             ++tagId;
-            if ((tagId == TIFFTAG_LAST_ATTRIBUTE) || (count > numAttributes_)) {
+            if ((tagId > TIFFTAG_LAST_ATTRIBUTE) || (count > numAttributes_)) {
                 asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
                     "%s:%s error, Too many tags/attributes for file. tagId: %d, count: %d\n",
                     driverName, functionName, tagId, count);
@@ -461,6 +471,8 @@ asynStatus NDFileTIFF::readFile(NDArray **pArray)
     else if ((bitsPerSample == 16) && (sampleFormat == SAMPLEFORMAT_UINT))    dataType = NDUInt16;
     else if ((bitsPerSample == 32) && (sampleFormat == SAMPLEFORMAT_INT))     dataType = NDInt32;
     else if ((bitsPerSample == 32) && (sampleFormat == SAMPLEFORMAT_UINT))    dataType = NDUInt32;
+    else if ((bitsPerSample == 64) && (sampleFormat == SAMPLEFORMAT_INT))     dataType = NDInt64;
+    else if ((bitsPerSample == 64) && (sampleFormat == SAMPLEFORMAT_UINT))    dataType = NDUInt64;
     else if ((bitsPerSample == 32) && (sampleFormat == SAMPLEFORMAT_IEEEFP))  dataType = NDFloat32;
     else if ((bitsPerSample == 64) && (sampleFormat == SAMPLEFORMAT_IEEEFP))  dataType = NDFloat64;
     else {
@@ -543,7 +555,7 @@ asynStatus NDFileTIFF::readFile(NDArray **pArray)
     fieldStat = TIFFGetField(this->tiff, TIFFTAG_EPICSTSNSEC, &tempLong);
     if (fieldStat == 1) pImage->epicsTS.nsec = tempLong;
     
-    for (int i=TIFFTAG_FIRST_ATTRIBUTE; i<TIFFTAG_LAST_ATTRIBUTE; i++) {
+    for (int i=TIFFTAG_FIRST_ATTRIBUTE; i<=TIFFTAG_LAST_ATTRIBUTE; i++) {
         fieldStat = TIFFGetField(this->tiff, i, &tempString);
         if (fieldStat == 1) {
             std::string ts = tempString;
@@ -579,7 +591,7 @@ asynStatus NDFileTIFF::closeFile()
     return asynSuccess;
 }
 
-
+
 /** Constructor for NDFileTIFF; all parameters are simply passed to NDPluginFile::NDPluginFile.
   * \param[in] portName The name of the asyn port driver to be created.
   * \param[in] queueSize The number of NDArrays that the input queue for this plugin can hold when 
@@ -622,6 +634,10 @@ extern "C" int NDFileTIFFConfigure(const char *portName, int queueSize, int bloc
                                    const char *NDArrayPort, int NDArrayAddr,
                                    int priority, int stackSize)
 {
+    // Stack size must be a minimum of 40000 on vxWorks because of automatic variables in NDFileTIFF::openFile()
+    #ifdef vxWorks
+        if (stackSize < 40000) stackSize = 40000;
+    #endif
     NDFileTIFF *pPlugin = new NDFileTIFF(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr,
                                          priority, stackSize);
     return pPlugin->start();

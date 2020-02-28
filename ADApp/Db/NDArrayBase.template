@@ -41,6 +41,116 @@ record(stringin, "$(P)$(R)PortName_RBV")
 }
 
 ###################################################################
+#  These records contain basic information about the detector     # 
+###################################################################
+
+record(stringin, "$(P)$(R)Manufacturer_RBV")
+{
+   field(DTYP, "asynOctetRead")
+   field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))MANUFACTURER")
+   field(VAL,  "Unknown")
+   field(SCAN, "I/O Intr")
+}
+
+record(stringin, "$(P)$(R)Model_RBV")
+{
+   field(DTYP, "asynOctetRead")
+   field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))MODEL")
+   field(VAL,  "Unknown")
+   field(SCAN, "I/O Intr")
+}
+
+record(stringin, "$(P)$(R)SerialNumber_RBV")
+{
+   field(DTYP, "asynOctetRead")
+   field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))SERIAL_NUMBER")
+   field(VAL,  "Unknown")
+   field(SCAN, "I/O Intr")
+}
+
+record(stringin, "$(P)$(R)SDKVersion_RBV")
+{
+   field(DTYP, "asynOctetRead")
+   field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))SDK_VERSION")
+   field(VAL,  "Unknown")
+   field(SCAN, "I/O Intr")
+}
+
+record(stringin, "$(P)$(R)FirmwareVersion_RBV")
+{
+   field(DTYP, "asynOctetRead")
+   field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))FIRMWARE_VERSION")
+   field(VAL,  "Unknown")
+   field(SCAN, "I/O Intr")
+}
+
+###################################################################
+#  These records control acquisition start and stop               #
+###################################################################
+
+record(bo, "$(P)$(R)Acquire") {
+   field(DTYP, "asynInt32")
+   field(OUT, "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))ACQUIRE")
+   field(ZNAM, "Done")
+   field(ONAM, "Acquire")
+   field(VAL,  "0")
+   field(FLNK, "$(P)$(R)SetAcquireBusy")
+   info(asyn:READBACK, "1")
+}
+
+record(bi, "$(P)$(R)Acquire_RBV") {
+   field(DTYP, "asynInt32")
+   field(INP, "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))ACQUIRE")
+   field(ZNAM, "Done")
+   field(ZSV,  "NO_ALARM")
+   field(ONAM, "Acquiring")
+   field(OSV,  "MINOR")
+   field(SCAN, "I/O Intr")
+}
+
+record(calcout, "$(P)$(R)SetAcquireBusy")
+{
+    field(INPA, "$(P)$(R)Acquire NPP")
+    field(CALC, "A")
+    field(OOPT, "Transition To Non-zero")
+    field(OUT,  "$(P)$(R)AcquireBusy PP")
+}
+
+record(busy, "$(P)$(R)AcquireBusy") {
+   field(ZNAM, "Done")
+   field(ZSV,  "NO_ALARM")
+   field(ONAM, "Acquiring")
+   field(OSV,  "MINOR")
+   field(VAL,  "0")
+}
+
+record(bi, "$(P)$(R)AcquireBusyCB") {
+   field(DTYP, "asynInt32")
+   field(INP, "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))ACQUIRE_BUSY")
+   field(ZNAM, "Done")
+   field(ZSV,  "NO_ALARM")
+   field(ONAM, "Acquiring")
+   field(OSV,  "MINOR")
+   field(SCAN, "I/O Intr")
+}
+
+record(calcout, "$(P)$(R)ClearAcquireBusy") {
+    field(INPA, "$(P)$(R)AcquireBusyCB CP")
+    field(CALC, "A")
+    field(OOPT, "Transition To Zero")
+    field(OUT,  "$(P)$(R)AcquireBusy PP")
+}
+
+record(bo, "$(P)$(R)WaitForPlugins") {
+   field(PINI, "YES")
+   field(DTYP, "asynInt32")
+   field(OUT, "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))WAIT_FOR_PLUGINS")
+   field(ZNAM, "No")
+   field(ONAM, "Yes")
+   field(VAL,  "0")
+}
+
+###################################################################
 #  These records are the array size and data type                 #
 ###################################################################
 # The number of dimensions
@@ -479,10 +589,14 @@ record(mbbo, "$(P)$(R)DataType")
    field(FRVL, "4")
    field(FVST, "UInt32")
    field(FVVL, "5")
-   field(SXST, "Float32")
+   field(SXST, "Int64")
    field(SXVL, "6")
-   field(SVST, "Float64")
+   field(SVST, "UInt64")
    field(SVVL, "7")
+   field(EIST, "Float32")
+   field(EIVL, "8")
+   field(NIST, "Float64")
+   field(NIVL, "9")
    field(VAL,  "$(DATATYPE=0)")
    info(autosaveFields, "VAL")
 }
@@ -503,10 +617,14 @@ record(mbbi, "$(P)$(R)DataType_RBV")
    field(FRVL, "4")
    field(FVST, "UInt32")
    field(FVVL, "5")
-   field(SXST, "Float32")
+   field(SXST, "Int64")
    field(SXVL, "6")
-   field(SVST, "Float64")
+   field(SVST, "UInt64")
    field(SVVL, "7")
+   field(EIST, "Float32")
+   field(EIVL, "8")
+   field(NIST, "Float64")
+   field(NIVL, "9")
    field(SCAN, "I/O Intr")
 }
 
@@ -569,7 +687,7 @@ record(longin, "$(P)$(R)UniqueId_RBV")
 {
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))UNIQUE_ID")
-    field(SCAN, "I/O Intr")
+    field(SCAN, "$(SCANRATE=I/O Intr)")
 }
 
 record(ai, "$(P)$(R)TimeStamp_RBV")
@@ -577,7 +695,7 @@ record(ai, "$(P)$(R)TimeStamp_RBV")
     field(DTYP, "asynFloat64")
     field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))TIME_STAMP")
     field(PREC, "3")
-    field(SCAN, "I/O Intr")
+    field(SCAN, "$(SCANRATE=I/O Intr)")
 }
 
 record(longin, "$(P)$(R)EpicsTSSec_RBV")
@@ -608,7 +726,7 @@ record(longin, "$(P)$(R)ArrayCounter_RBV")
 {
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))ARRAY_COUNTER")
-    field(SCAN, "I/O Intr")
+    field(SCAN, "$(SCANRATE=I/O Intr)")
 }
 
 # Updated rate calculation to use a smoothing factor w/ guard against negative values
@@ -759,5 +877,5 @@ record(longin, "$(P)$(R)NumQueuedArrays")
 {
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))NUM_QUEUED_ARRAYS")
-   field(SCAN, "I/O Intr")
+   field(SCAN, "$(SCANRATE=I/O Intr)")
 }

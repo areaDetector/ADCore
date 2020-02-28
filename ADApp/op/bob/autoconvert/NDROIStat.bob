@@ -1,0 +1,516 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<display version="2.0.0">
+  <name>NDROIStat</name>
+  <x>626</x>
+  <y>114</y>
+  <width>775</width>
+  <background_color>
+    <color red="187" green="187" blue="187">
+    </color>
+  </background_color>
+  <grid_visible>false</grid_visible>
+  <grid_step_x>5</grid_step_x>
+  <widget type="rectangle" version="2.0.0">
+    <name>rectangle #6</name>
+    <y>5</y>
+    <width>775</width>
+    <height>25</height>
+    <line_color>
+      <color red="218" green="218" blue="218">
+      </color>
+    </line_color>
+    <background_color>
+      <color red="218" green="218" blue="218">
+      </color>
+    </background_color>
+  </widget>
+  <widget type="label" version="2.0.0">
+    <name>text #9</name>
+    <text>$(P)$(R)</text>
+    <y>6</y>
+    <width>775</width>
+    <height>25</height>
+    <font>
+      <font family="Liberation Sans" style="REGULAR" size="16.0">
+      </font>
+    </font>
+    <foreground_color>
+      <color red="10" green="0" blue="184">
+      </color>
+    </foreground_color>
+    <horizontal_alignment>1</horizontal_alignment>
+  </widget>
+  <widget type="embedded" version="2.0.0">
+    <name>composite #12</name>
+    <file>NDPluginBase.bob</file>
+    <x>5</x>
+    <y>40</y>
+    <width>380</width>
+    <height>555</height>
+  </widget>
+  <widget type="action_button" version="3.0.0">
+    <name>message button #14</name>
+    <actions>
+      <action type="write_pv">
+        <pv_name>$(P)$(R)ResetAll</pv_name>
+        <value>1</value>
+        <description>Write</description>
+      </action>
+    </actions>
+    <pv_name>$(P)$(R)ResetAll</pv_name>
+    <text>Reset All</text>
+    <x>530</x>
+    <y>265</y>
+    <height>20</height>
+    <background_color>
+      <color red="115" green="223" blue="255">
+      </color>
+    </background_color>
+  </widget>
+  <widget type="rectangle" version="2.0.0">
+    <name>rectangle #17</name>
+    <x>520</x>
+    <y>135</y>
+    <width>120</width>
+    <height>21</height>
+    <line_color>
+      <color red="218" green="218" blue="218">
+      </color>
+    </line_color>
+    <background_color>
+      <color red="218" green="218" blue="218">
+      </color>
+    </background_color>
+  </widget>
+  <widget type="rectangle" version="2.0.0">
+    <name>rectangle #20</name>
+    <x>390</x>
+    <y>130</y>
+    <width>380</width>
+    <height>130</height>
+    <line_width>1</line_width>
+    <line_color>
+      <color red="0" green="0" blue="0">
+      </color>
+    </line_color>
+    <background_color>
+      <color red="0" green="0" blue="0">
+      </color>
+    </background_color>
+    <transparent>true</transparent>
+  </widget>
+  <widget type="label" version="2.0.0">
+    <name>text #23</name>
+    <text>Time Series</text>
+    <x>525</x>
+    <y>135</y>
+    <width>110</width>
+    <font>
+      <font family="Liberation Sans" style="REGULAR" size="16.0">
+      </font>
+    </font>
+    <foreground_color>
+      <color red="10" green="0" blue="184">
+      </color>
+    </foreground_color>
+    <horizontal_alignment>1</horizontal_alignment>
+  </widget>
+  <widget type="label" version="2.0.0">
+    <name>text #26</name>
+    <text>Current point</text>
+    <x>461</x>
+    <y>212</y>
+    <width>130</width>
+    <font>
+      <font family="Liberation Sans" style="REGULAR" size="16.0">
+      </font>
+    </font>
+    <horizontal_alignment>2</horizontal_alignment>
+  </widget>
+  <widget type="textupdate" version="2.0.0">
+    <name>text update #29</name>
+    <pv_name>$(P)$(R)TSCurrentPoint</pv_name>
+    <x>596</x>
+    <y>213</y>
+    <width>90</width>
+    <height>18</height>
+    <font>
+      <font family="Liberation Sans" style="REGULAR" size="16.0">
+      </font>
+    </font>
+    <foreground_color>
+      <color red="10" green="0" blue="184">
+      </color>
+    </foreground_color>
+    <background_color>
+      <color red="187" green="187" blue="187">
+      </color>
+    </background_color>
+    <format>1</format>
+    <show_units>false</show_units>
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+  </widget>
+  <widget type="combo" version="2.0.0">
+    <name>menu #33</name>
+    <pv_name>$(P)$(R)TSRead.SCAN</pv_name>
+    <x>596</x>
+    <y>238</y>
+    <width>80</width>
+    <height>18</height>
+    <background_color>
+      <color red="115" green="223" blue="255">
+      </color>
+    </background_color>
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+  </widget>
+  <widget type="action_button" version="3.0.0">
+    <name>message button #36</name>
+    <actions>
+      <action type="write_pv">
+        <pv_name>$(P)$(R)TSControl</pv_name>
+        <value>3</value>
+        <description>Write</description>
+      </action>
+    </actions>
+    <pv_name>$(P)$(R)TSControl</pv_name>
+    <text>Read</text>
+    <x>681</x>
+    <y>237</y>
+    <width>60</width>
+    <height>20</height>
+    <background_color>
+      <color red="115" green="223" blue="255">
+      </color>
+    </background_color>
+  </widget>
+  <widget type="label" version="2.0.0">
+    <name>text #39</name>
+    <text>Read rate</text>
+    <x>501</x>
+    <y>237</y>
+    <width>90</width>
+    <font>
+      <font family="Liberation Sans" style="REGULAR" size="16.0">
+      </font>
+    </font>
+    <auto_size>true</auto_size>
+  </widget>
+  <widget type="action_button" version="3.0.0">
+    <name>message button #42</name>
+    <actions>
+      <action type="write_pv">
+        <pv_name>$(P)$(R)TSControl</pv_name>
+        <value>0</value>
+        <description>Write</description>
+      </action>
+    </actions>
+    <pv_name>$(P)$(R)TSControl</pv_name>
+    <text>Erase/Start</text>
+    <x>423</x>
+    <y>162</y>
+    <width>90</width>
+    <height>20</height>
+    <background_color>
+      <color red="115" green="223" blue="255">
+      </color>
+    </background_color>
+  </widget>
+  <widget type="action_button" version="3.0.0">
+    <name>message button #45</name>
+    <actions>
+      <action type="write_pv">
+        <pv_name>$(P)$(R)TSControl</pv_name>
+        <value>2</value>
+        <description>Write</description>
+      </action>
+    </actions>
+    <pv_name>$(P)$(R)TSControl</pv_name>
+    <text>Stop</text>
+    <x>518</x>
+    <y>162</y>
+    <width>60</width>
+    <height>20</height>
+    <background_color>
+      <color red="115" green="223" blue="255">
+      </color>
+    </background_color>
+  </widget>
+  <widget type="action_button" version="3.0.0">
+    <name>message button #48</name>
+    <actions>
+      <action type="write_pv">
+        <pv_name>$(P)$(R)TSControl</pv_name>
+        <value>1</value>
+        <description>Write</description>
+      </action>
+    </actions>
+    <pv_name>$(P)$(R)TSControl</pv_name>
+    <text>Start</text>
+    <x>583</x>
+    <y>162</y>
+    <width>60</width>
+    <height>20</height>
+    <background_color>
+      <color red="115" green="223" blue="255">
+      </color>
+    </background_color>
+  </widget>
+  <widget type="textupdate" version="2.0.0">
+    <name>text update #51</name>
+    <pv_name>$(P)$(R)TSAcquiring</pv_name>
+    <x>648</x>
+    <y>163</y>
+    <width>90</width>
+    <height>18</height>
+    <font>
+      <font family="Liberation Sans" style="REGULAR" size="16.0">
+      </font>
+    </font>
+    <foreground_color>
+      <color red="10" green="0" blue="184">
+      </color>
+    </foreground_color>
+    <background_color>
+      <color red="70" green="70" blue="70">
+      </color>
+    </background_color>
+    <format>6</format>
+    <show_units>false</show_units>
+  </widget>
+  <widget type="textentry" version="3.0.0">
+    <name>text entry #55</name>
+    <pv_name>$(P)$(R)TSNumPoints</pv_name>
+    <x>596</x>
+    <y>188</y>
+    <width>60</width>
+    <height>19</height>
+    <font>
+      <font family="Liberation Sans" style="REGULAR" size="16.0">
+      </font>
+    </font>
+    <background_color>
+      <color red="115" green="223" blue="255">
+      </color>
+    </background_color>
+    <format>1</format>
+    <show_units>false</show_units>
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+  </widget>
+  <widget type="label" version="2.0.0">
+    <name>text #59</name>
+    <text>Number of points</text>
+    <x>431</x>
+    <y>187</y>
+    <width>160</width>
+    <font>
+      <font family="Liberation Sans" style="REGULAR" size="16.0">
+      </font>
+    </font>
+    <horizontal_alignment>2</horizontal_alignment>
+  </widget>
+  <widget type="rectangle" version="2.0.0">
+    <name>rectangle #62</name>
+    <x>390</x>
+    <y>40</y>
+    <width>380</width>
+    <height>85</height>
+    <line_width>1</line_width>
+    <line_color>
+      <color red="0" green="0" blue="0">
+      </color>
+    </line_color>
+    <background_color>
+      <color red="0" green="0" blue="0">
+      </color>
+    </background_color>
+    <transparent>true</transparent>
+  </widget>
+  <widget type="action_button" version="3.0.0">
+    <name>related display #65</name>
+    <actions>
+      <action type="open_display">
+        <file>NDROIStatN.opi</file>
+        <macros>
+          <ROI>1:</ROI>
+        </macros>
+        <target>tab</target>
+        <description>ROI 0</description>
+      </action>
+      <action type="open_display">
+        <file>NDROIStatN.opi</file>
+        <macros>
+          <ROI>2:</ROI>
+        </macros>
+        <target>tab</target>
+        <description>ROI 1</description>
+      </action>
+      <action type="open_display">
+        <file>NDROIStatN.opi</file>
+        <macros>
+          <ROI>3:</ROI>
+        </macros>
+        <target>tab</target>
+        <description>ROI 2</description>
+      </action>
+      <action type="open_display">
+        <file>NDROIStatN.opi</file>
+        <macros>
+          <ROI>4:</ROI>
+        </macros>
+        <target>tab</target>
+        <description>ROI 3</description>
+      </action>
+      <action type="open_display">
+        <file>NDROIStatN.opi</file>
+        <macros>
+          <ROI>5:</ROI>
+        </macros>
+        <target>tab</target>
+        <description>ROI 4</description>
+      </action>
+      <action type="open_display">
+        <file>NDROIStatN.opi</file>
+        <macros>
+          <ROI>6:</ROI>
+        </macros>
+        <target>tab</target>
+        <description>ROI 5</description>
+      </action>
+      <action type="open_display">
+        <file>NDROIStatN.opi</file>
+        <macros>
+          <ROI>7:</ROI>
+        </macros>
+        <target>tab</target>
+        <description>ROI 6</description>
+      </action>
+      <action type="open_display">
+        <file>NDROIStatN.opi</file>
+        <macros>
+          <ROI>8:</ROI>
+        </macros>
+        <target>tab</target>
+        <description>ROI 7</description>
+      </action>
+    </actions>
+    <text>Individual ROIs</text>
+    <x>557</x>
+    <y>70</y>
+    <width>130</width>
+    <height>20</height>
+    <background_color>
+      <color red="115" green="223" blue="255">
+      </color>
+    </background_color>
+  </widget>
+  <widget type="label" version="2.0.0">
+    <name>text #75</name>
+    <text>Individual 0-7</text>
+    <x>407</x>
+    <y>70</y>
+    <width>140</width>
+    <font>
+      <font family="Liberation Sans" style="REGULAR" size="16.0">
+      </font>
+    </font>
+    <horizontal_alignment>2</horizontal_alignment>
+  </widget>
+  <widget type="action_button" version="3.0.0">
+    <name>related display #78</name>
+    <actions>
+      <action type="open_display">
+        <file>NDROIStat8.opi</file>
+        <macros>
+          <ROI1>1:</ROI1>
+          <ROI2>2:</ROI2>
+          <ROI3>3:</ROI3>
+          <ROI4>4:</ROI4>
+          <ROI5>5:</ROI5>
+          <ROI6>6:</ROI6>
+          <ROI7>7:</ROI7>
+          <ROI8>8:</ROI8>
+        </macros>
+        <target>tab</target>
+        <description>ROIS 1-8</description>
+      </action>
+      <action type="open_display">
+        <file>NDROIStat8.opi</file>
+        <macros>
+          <ROI1>9:</ROI1>
+          <ROI2>10:</ROI2>
+          <ROI3>11:</ROI3>
+          <ROI4>12:</ROI4>
+          <ROI5>13:</ROI5>
+          <ROI6>14:</ROI6>
+          <ROI7>15:</ROI7>
+          <ROI8>16:</ROI8>
+        </macros>
+        <target>tab</target>
+        <description>ROIS 9-16</description>
+      </action>
+      <action type="open_display">
+        <file>NDROIStat8.opi</file>
+        <macros>
+          <ROI1>17:</ROI1>
+          <ROI2>18:</ROI2>
+          <ROI3>19:</ROI3>
+          <ROI4>20:</ROI4>
+          <ROI5>21:</ROI5>
+          <ROI6>22:</ROI6>
+          <ROI7>23:</ROI7>
+          <ROI8>24:</ROI8>
+        </macros>
+        <target>tab</target>
+        <description>ROIS 17-24</description>
+      </action>
+      <action type="open_display">
+        <file>NDROIStat8.opi</file>
+        <macros>
+          <ROI1>25:</ROI1>
+          <ROI2>26:</ROI2>
+          <ROI3>27:</ROI3>
+          <ROI4>28:</ROI4>
+          <ROI5>29:</ROI5>
+          <ROI6>30:</ROI6>
+          <ROI7>31:</ROI7>
+          <ROI8>32:</ROI8>
+        </macros>
+        <target>tab</target>
+        <description>ROIS 25-32</description>
+      </action>
+    </actions>
+    <text>Combined ROIs</text>
+    <x>557</x>
+    <y>97</y>
+    <width>130</width>
+    <height>20</height>
+    <background_color>
+      <color red="115" green="223" blue="255">
+      </color>
+    </background_color>
+  </widget>
+  <widget type="label" version="2.0.0">
+    <name>text #84</name>
+    <text>ROI definitions</text>
+    <x>523</x>
+    <y>45</y>
+    <width>150</width>
+    <font>
+      <font family="Liberation Sans" style="REGULAR" size="16.0">
+      </font>
+    </font>
+    <horizontal_alignment>2</horizontal_alignment>
+  </widget>
+  <widget type="label" version="2.0.0">
+    <name>text #87</name>
+    <text>Combined</text>
+    <x>467</x>
+    <y>98</y>
+    <width>80</width>
+    <font>
+      <font family="Liberation Sans" style="REGULAR" size="16.0">
+      </font>
+    </font>
+    <horizontal_alignment>2</horizontal_alignment>
+  </widget>
+</display>

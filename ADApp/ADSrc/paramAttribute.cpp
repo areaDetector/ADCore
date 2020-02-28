@@ -85,6 +85,10 @@ paramAttribute::paramAttribute(const char *pName, const char *pDescription, cons
         this->paramType=paramAttrTypeInt;
         this->setDataType(NDAttrInt32);
     }
+    else if (!strcmp(dataType, "INT64")) {
+        this->paramType=paramAttrTypeInt64;
+        this->setDataType(NDAttrInt64);
+    }
     else if (!strcmp(dataType, "DOUBLE")) {
         this->paramType=paramAttrTypeDouble;
         this->setDataType(NDAttrFloat64);
@@ -124,6 +128,7 @@ int paramAttribute::updateValue()
     int status = asynSuccess;
     std::string stringValue = "";
     epicsInt32 i32Value=0;
+    epicsInt64 i64Value=0;
     epicsFloat64 f64Value=0.;
     static const char *functionName = "updateValue";
     
@@ -132,6 +137,11 @@ int paramAttribute::updateValue()
             status = this->pDriver->getIntegerParam(this->paramAddr, this->paramId, 
                                                  &i32Value);
             this->setValue(&i32Value);
+            break;
+        case paramAttrTypeInt64:
+            status = this->pDriver->getInteger64Param(this->paramAddr, this->paramId, 
+                                                 &i64Value);
+            this->setValue(&i64Value);
             break;
         case paramAttrTypeDouble:
             status = this->pDriver->getDoubleParam(this->paramAddr, this->paramId,

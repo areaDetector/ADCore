@@ -173,7 +173,7 @@ void NDPluginTimeSeries::createAxisArray()
 
 /**
  * Templated function to append to time series on different NDArray data types.
- * \param[in] NDArray The pointer to the NDArray object
+ * \param[in] pArray The pointer to the NDArray object
  * \return asynStatus
  */
 template <typename epicsType>
@@ -226,7 +226,7 @@ asynStatus NDPluginTimeSeries::doAddToTimeSeriesT(NDArray *pArray)
      
 /**
  * Call the templated doAddToTimeSeries so we can cast correctly. 
- * \param[in] NDArray The pointer to the NDArray object
+ * \param[in] pArray The pointer to the NDArray object
  * \return asynStatus
  */
 asynStatus NDPluginTimeSeries::addToTimeSeries(NDArray *pArray)
@@ -251,6 +251,12 @@ asynStatus NDPluginTimeSeries::addToTimeSeries(NDArray *pArray)
     break;
   case NDUInt32:
     status = doAddToTimeSeriesT<epicsUInt32>(pArray);
+    break;
+  case NDInt64:
+    status = doAddToTimeSeriesT<epicsInt64>(pArray);
+    break;
+  case NDUInt64:
+    status = doAddToTimeSeriesT<epicsUInt64>(pArray);
     break;
   case NDFloat32:
     status = doAddToTimeSeriesT<epicsFloat32>(pArray);
@@ -326,6 +332,12 @@ asynStatus NDPluginTimeSeries::doTimeSeriesCallbacks()
     break;
   case NDUInt32:
     doTimeSeriesCallbacksT<epicsUInt32>();
+    break;
+  case NDInt64:
+    doTimeSeriesCallbacksT<epicsInt64>();
+    break;
+  case NDUInt64:
+    doTimeSeriesCallbacksT<epicsUInt64>();
     break;
   case NDFloat32:
     doTimeSeriesCallbacksT<epicsFloat32>();

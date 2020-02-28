@@ -54,19 +54,6 @@ ifeq ($(WITH_TIFF),YES)
   endif
 endif
 
-ifeq ($(WITH_JPEG),YES)
-  ifeq ($(JPEG_EXTERNAL),NO)
-    LIB_LIBS += jpeg
-  else
-    ifdef JPEG_LIB
-      jpeg_DIR     = $(JPEG_LIB)
-      LIB_LIBS     += jpeg
-    else
-      LIB_SYS_LIBS += jpeg
-    endif
-  endif
-endif
-
 ifeq ($(XML2_EXTERNAL),NO)
   LIB_LIBS += xml2
 else
@@ -163,6 +150,19 @@ ifeq ($(WITH_ZLIB),YES)
       LIB_LIBS     += z
     else
       LIB_SYS_LIBS += z
+    endif
+  endif
+endif
+
+ifeq ($(WITH_JPEG),YES)
+  ifeq ($(JPEG_EXTERNAL),NO)
+    LIB_LIBS += jpeg
+  else
+    ifdef JPEG_LIB
+      jpeg_DIR     = $(JPEG_LIB)
+      LIB_LIBS     += jpeg
+    else
+      LIB_SYS_LIBS += jpeg
     endif
   endif
 endif

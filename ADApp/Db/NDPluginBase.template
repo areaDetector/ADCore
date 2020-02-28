@@ -258,7 +258,7 @@ record(longin, "$(P)$(R)QueueFree")
     field(LSV,  "MINOR")
     field(LOLO, "0")
     field(HYST, "1")
-    field(SCAN, "I/O Intr")
+    field(SCAN, "$(SCANRATE=I/O Intr)")
 }
 
 # Display the fill level on the plugins input queue
@@ -361,7 +361,7 @@ record(longin, "$(P)$(R)SortFree") {
 record(calcout, "$(P)$(R)SortFreeLow") {
     field(CALC, "A*0.25")
     field(INPA, "$(P)$(R)SortSize")
-    field(OUT,  "$(P)$(R)SortFree_RBV.LOW")
+    field(OUT,  "$(P)$(R)SortFree.LOW")
 }
 
 record(longout, "$(P)$(R)DroppedOutputArrays")
@@ -402,7 +402,7 @@ record(longin, "$(P)$(R)DisorderedArrays_RBV")
 # Set ASYN_TRACEIO_HEX bit by default
 record(asyn,"$(P)$(R)AsynIO")
 {
-    field(PORT, $(PORT))
+    field(PORT, "$(PORT)")
     field(TIB2,"1")
     info("ADType", "ADPlugin")
 }

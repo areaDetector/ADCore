@@ -64,6 +64,10 @@ asynStatus NDFileMagick::openFile(const char *fileName, NDFileOpenMode_t openMod
         case NDUInt32:
             this->storageType = IntegerPixel;
             break;
+        case NDInt64:
+        case NDUInt64:
+            this->storageType = LongPixel;
+            break;
         case NDFloat32:
             this->storageType = FloatPixel;
             break;
@@ -179,7 +183,7 @@ asynStatus NDFileMagick::closeFile()
     return asynSuccess;
 }
 
-
+
 /** Constructor for NDFileMagick; all parameters are simply passed to NDPluginFile::NDPluginFile.
   * \param[in] portName The name of the asyn port driver to be created.
   * \param[in] queueSize The number of NDArrays that the input queue for this plugin can hold when 

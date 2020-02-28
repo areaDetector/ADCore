@@ -265,7 +265,8 @@ void NDPluginFFT::createAxisArrays(fftPvt_t *pPvt)
 
 /**
  * Templated function to copy the data from the NDArray into double arrays with padding.
- * \param[in] NDArray The pointer to the NDArray object
+ * \param[in] pArray The pointer to the NDArray object
+ * \param[in] pPvt Private pointer for FFT plugin 
  */
 template <typename epicsType>
 void NDPluginFFT::convertToDoubleT(NDArray *pArray, fftPvt_t *pPvt)
@@ -358,6 +359,12 @@ void NDPluginFFT::processCallbacks(NDArray *pArray)
     break;
   case NDUInt32:
     convertToDoubleT<epicsUInt32>(pArray, pPvt);
+    break;
+  case NDInt64:
+    convertToDoubleT<epicsInt64>(pArray, pPvt);
+    break;
+  case NDUInt64:
+    convertToDoubleT<epicsUInt64>(pArray, pPvt);
     break;
   case NDFloat32:
     convertToDoubleT<epicsFloat32>(pArray, pPvt);

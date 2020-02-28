@@ -25,31 +25,27 @@ to append the ROI statistic data to the output NDArray.
     for these simple statistics on 1-D and 2-D arrays.
 
 
-Several database template files are provided:
+Three database template files are provided:
 
-+-----------------------------------+-----------------------------------+
-| Template File Name                | Description                       |
-+===================================+===================================+
-| ``NDROIStat.template``            | This needs to be instantiated     |
-|                                   | once for each instance of the     |
-|                                   | plugin. It provides records that  |
-|                                   | apply to the whole plugin or to   |
-|                                   | all ROIs.                         |
-+-----------------------------------+-----------------------------------+
-| ``NDROIStatN.template``           | This needs to be instantiated     |
-|                                   | once for each ROI in the plugin   |
-|                                   | (the number must equal the number |
-|                                   | of ROIs specified in the IOC      |
-|                                   | shell function). The template     |
-|                                   | provides records that apply to    |
-|                                   | each ROI.                         |
-+-----------------------------------+-----------------------------------+
-| ``NDROIStat8.template``           | This is provided as a             |
-|                                   | convenience. It instantiates 8    |
-|                                   | ROIs by including                 |
-|                                   | ``NDROIStat.template`` once and   |
-|                                   | ``NDROIStatN.template`` 8 times.  |
-+-----------------------------------+-----------------------------------+
+.. cssclass:: table-bordered table-striped table-hover
+.. flat-table::
+  :header-rows: 1
+  :widths: 20 80
+
+  * - Template File Name
+    - Description  
+  * - ``NDROIStat.template``
+    - This needs to be instantiated once for each instance of the plugin.
+      It provides records that
+      It provides records that apply to the entire plugin or to all ROIs.
+  * - ``NDROIStatN.template``
+    - This needs to be instantiated once for each ROI in the plugin
+      (the number must equal the number of ROIs specified in the IOC shell function). 
+      The template provides records that apply to each ROI.
+  * - ``NDROIStat8.template`` 
+    - This is provided as a convenience. 
+      It instantiates 8 ROIs by including ``NDROIStat.template`` once 
+      and ``NDROIStatN.template`` 8 times.
 
 `NDPluginROIStat` inherits from `NDPluginDriver`.
 
@@ -59,482 +55,231 @@ of the standard plugin parameters from
 listed above provide access to these parameters, listed in the following
 tables.
 
-.. raw:: html
+.. |br| raw:: html
 
-  <table class="table table-bordered">
-    <tbody>
-      <tr>
-        <td align="center" colspan="7">
-          <b>Parameter Definitions in NDPluginROIStat.h and EPICS Record Definitions in NDROIStat.template</b>
-        </td>
-      </tr>
-      <tr>
-        <th>
-          Parameter index variable</th>
-        <th>
-          asyn interface</th>
-        <th>
-          Access</th>
-        <th>
-          Description</th>
-        <th>
-          drvInfo string</th>
-        <th>
-          EPICS record name</th>
-        <th>
-          EPICS record type</th>
-      </tr>
-      <tr>
-        <td>
-          NDPluginROIStatResetAll</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          Reset the statistics data for all the configured ROIs.</td>
-        <td>
-          ROISTAT_RESETALL</td>
-        <td>
-          $(P)$(R)ResetAll </td>
-        <td>
-          bo </td>
-      </tr>
-      <tr>
-        <td align="center" colspan="7">
-          <b>Time-Series data</b></td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginROIStat<br />
-          TSControl</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          Controls time-series data collection. The enum choices are:
-          <ul>
-            <li>Erase/Start: Clears all time-series arrays, sets ROISTAT_TS_CURRENT_POINT=0, and
-              starts time-series data collection.</li>
-            <li>Start: Starts time-series data collection without clearing arrays or modifying
-              ROISTAT_TS_CURRENT_POINT. Used to restart collection after a Stop operation.</li>
-            <li>Stop: Stops times-series data collection. Performs callbacks on all time-series
-              waveform records.</li>
-            <li>Read: Performs callbacks on all time-series waveform records, updating the values.</li>
-          </ul>
-        </td>
-        <td>
-          ROISTAT_TS_CONTROL</td>
-        <td>
-          $(P)$(R)TSControl</td>
-        <td>
-          mbbo</td>
-      </tr>
-      <tr>
-        <td>
-          N.A.</td>
-        <td>
-          N.A.</td>
-        <td>
-          r/w</td>
-        <td>
-          Sends the "Read" command to the TSControl record above. This record can be periodically
-          processed to update the time-series waveform records. It is scan disabled if TSAcquiring=Done,
-          so that updates are only performed when time-series acquisition is in progress.
-        </td>
-        <td>
-          N.A.</td>
-        <td>
-          $(P)$(R)TSRead</td>
-        <td>
-          longout</td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginROIStat<br />
-          TSNumPoints</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          Controls the number of time-series points to collect. There is no maximum value,
-          the time-series arrays in the plugin are freed and reallocated each time this value
-          is changed. However, the size of the waveform records is fixed when the IOC is started,
-          so NELM in those records must be large enough for the largest time-series needed.
-        </td>
-        <td>
-          ROISTAT_TS_NUM_POINTS</td>
-        <td>
-          $(P)$(R)TSNumPoints</td>
-        <td>
-          longout</td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginROIStat<br />
-          TSCurrentPoint</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/o</td>
-        <td>
-          The current time-series point. If TSCurrentPoint reaches TSNumPoints then time-series
-          acquisition is automatically stopped, and callbacks are done on all time-series
-          waveform records, updating the values. This means that even if TSRead has SCAN=Passive
-          that the waveform records will update when time-series acquisition is complete.
-        </td>
-        <td>
-          ROISTAT_TS_CURRENT_POINT</td>
-        <td>
-          $(P)$(R)TSCurrentPoint</td>
-        <td>
-          longin</td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginROIStat<br />
-          TSAcquiring</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/o</td>
-        <td>
-          Indicates status of time-series data acquisition. Values are 0=Done and 1=Acquiring.
-        </td>
-        <td>
-          ROISTAT_TS_ACQUIRING</td>
-        <td>
-          $(P)$(R)TSAcquiring</td>
-        <td>
-          bi</td>
-      </tr>
-    </tbody>
-  </table>
-  <table border="1" cellpadding="2" cellspacing="2" style="text-align: left">
-    <tbody>
-      <tr>
-        <td align="center" colspan="7">
-          <b>ROI Specific Parameters.
-            <br />
-            Parameter Definitions in NDPluginROIStat.h and EPICS Record Definitions in NDROIStatN.template</b>
-        </td>
-      </tr>
-      <tr>
-        <th>
-          Parameter index variable</th>
-        <th>
-          asyn interface</th>
-        <th>
-          Access</th>
-        <th>
-          Description</th>
-        <th>
-          drvInfo string</th>
-        <th>
-          EPICS record name</th>
-        <th>
-          EPICS record type</th>
-      </tr>
-      <tr>
-        <td>
-          NDPluginROIStatName</td>
-        <td>
-          asynOctet</td>
-        <td>
-          r/w</td>
-        <td>
-          The name of the plugin.</td>
-        <td>
-          ROISTAT_NAME</td>
-        <td>
-          $(P)$(R)Name<br />
-          $(P)$(R)Name_RBV</td>
-        <td>
-          stringout</td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginROIStatUse</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          Set this to 1 to use this ROI, which will mean the statistics will be calculated
-          for this ROI.</td>
-        <td>
-          ROISTAT_USE</td>
-        <td>
-          $(P)$(R)Use<br />
-          $(P)$(R)Use_RBV</td>
-        <td>
-          bo<br />
-          bi </td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginROIStatReset</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          Reset the statistics data for this ROI.</td>
-        <td>
-          ROISTAT_RESET</td>
-        <td>
-          $(P)$(R)Reset </td>
-        <td>
-          bo </td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginROIStatBgdWidth</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          The background width for the net counts calculation. The average background counts
-          in a border of this width around the ROI are computed. The border begins at the
-          outer edge of the defined ROI and progresses inward by the BgdWidth.</td>
-        <td>
-          ROISTAT_BGD_WIDTH</td>
-        <td>
-          $(P)$(R)BgdWidth<br />
-          $(P)$(R)BgdWidth_RBV </td>
-        <td>
-          longout
-          <br />
-          longin </td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginROIStatDim0Min</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          Start element in the X dimension.</td>
-        <td>
-          ROISTAT_DIM0_MIN</td>
-        <td>
-          $(P)$(R)MinX<br />
-          $(P)$(R)MinX_RBV </td>
-        <td>
-          longout<br />
-          longin </td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginROIStatDim0Size</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          The ROI size in the X dimension.</td>
-        <td>
-          ROISTAT_DIM0_SIZE</td>
-        <td>
-          $(P)$(R)SizeX<br />
-          $(P)$(R)SizeX_RBV </td>
-        <td>
-          longout<br />
-          longin </td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginROIStatDim0MaxSize</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/o</td>
-        <td>
-          Max size of the ROI in the X dimension.</td>
-        <td>
-          ROISTAT_DIM0_MAX_SIZE</td>
-        <td>
-          $(P)$(R)MaxSizeX<br />
-          $(P)$(R)MaxSizeX_RBV </td>
-        <td>
-          longin </td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginROIStatDim1Min</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          Start element in the Y dimension.</td>
-        <td>
-          ROISTAT_DIM1_MIN</td>
-        <td>
-          $(P)$(R)MinY<br />
-          $(P)$(R)MinY_RBV </td>
-        <td>
-          longout<br />
-          longin </td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginROIStatDim1Size</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          The ROI size in the Y dimension.</td>
-        <td>
-          ROISTAT_DIM1_SIZE</td>
-        <td>
-          $(P)$(R)SizeY<br />
-          $(P)$(R)SizeY_RBV </td>
-        <td>
-          longout<br />
-          longin </td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginROIStatDim1MaxSize</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/o</td>
-        <td>
-          Max size of the ROI in the Y dimension.</td>
-        <td>
-          ROISTAT_DIM1_MAX_SIZE</td>
-        <td>
-          $(P)$(R)MaxSizeY<br />
-          $(P)$(R)MaxSizeY_RBV </td>
-        <td>
-          longin </td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginROIStatMinValue</td>
-        <td>
-          asynFloat64</td>
-        <td>
-          r/o</td>
-        <td>
-          Minimum count value in the ROI.</td>
-        <td>
-          ROISTAT_MIN_VALUE</td>
-        <td>
-          $(P)$(R)MinValue_RBV </td>
-        <td>
-          ai </td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginROIStatMaxValue</td>
-        <td>
-          asynFloat64</td>
-        <td>
-          r/o</td>
-        <td>
-          Maximum count value in the ROI.</td>
-        <td>
-          ROISTAT_MAX_VALUE</td>
-        <td>
-          $(P)$(R)MaxValue_RBV </td>
-        <td>
-          ai </td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginROIStatMeanValue</td>
-        <td>
-          asynFloat64</td>
-        <td>
-          r/o</td>
-        <td>
-          Mean counts value in the ROI.</td>
-        <td>
-          ROISTAT_MEAN_VALUE</td>
-        <td>
-          $(P)$(R)MeanValue_RBV </td>
-        <td>
-          ai </td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginROIStatTotal</td>
-        <td>
-          asynFloat64</td>
-        <td>
-          r/o</td>
-        <td>
-          Total counts in the ROI.</td>
-        <td>
-          ROISTAT_TOTAL</td>
-        <td>
-          $(P)$(R)Total_RBV </td>
-        <td>
-          ai </td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginROIStatNet</td>
-        <td>
-          asynFloat64</td>
-        <td>
-          r/o</td>
-        <td>
-          Net (background subtracted) counts in the ROI.</td>
-        <td>
-          ROISTAT_NET</td>
-        <td>
-          $(P)$(R)Net_RBV </td>
-        <td>
-          ai </td>
-      </tr>
-      <tr>
-        <td align="center" colspan="7">
-          <b>Time-Series data</b></td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginROIStat<br />
-          TSXXX</td>
-        <td>
-          asynFloat64Array</td>
-        <td>
-          r/o</td>
-        <td>
-          The time series data arrays. XXX is one of the following, corresponding to each
-          of the basic statistics and centroid and sigma statistics described above:
-          <ul>
-            <li>MinValue</li>
-            <li>MaxValue</li>
-            <li>MeanValue</li>
-            <li>Total</li>
-            <li>Net</li>
-          </ul>
-        </td>
-        <td>
-          <ul>
-            <li>ROISTAT_TS_MIN_VALUE</li>
-            <li>ROISTAT_TS_MAX_VALUE</li>
-            <li>ROISTAT_TS_MEAN_VALUE</li>
-            <li>ROISTAT_TS_TOTAL</li>
-            <li>ROISTAT_TS_NET</li>
-          </ul>
-        </td>
-        <td>
-          $(P)$(R)TSXXX</td>
-        <td>
-          waveform</td>
-      </tr>
-    </tbody>
-  </table>
+    <br>
+
+.. cssclass:: table-bordered table-striped table-hover
+.. flat-table::
+  :header-rows: 2
+  :widths: 5 5 5 70 5 5 5
+
+  * -
+    - Parameter Definitions in NDPluginROIStat.h and EPICS Record Definitions in NDROIStat.template
+  * - Parameter index variable
+    - asyn interface
+    - Access
+    - Description
+    - drvInfo string
+    - EPICS record name
+    - EPICS record type
+  * - NDPluginROIStatResetAll
+    - asynInt32
+    - r/w
+    - Reset the statistics data for all the configured ROIs.
+    - ROISTAT_RESETALL
+    - $(P)$(R)ResetAll
+    - bo
+  * -
+    -
+    - **Time-Series data**
+  * - NDPluginROIStat, TSControl
+    - asynInt32
+    - r/w
+    - Controls time-series data collection. The enum choices are: |br|
+      **Erase/Start**: Clears all time-series arrays, sets ROISTAT_TS_CURRENT_POINT=0, and
+      starts time-series data collection. |br|
+      **Start**: Starts time-series data collection without clearing arrays or modifying
+      ROISTAT_TS_CURRENT_POINT. Used to restart collection after a Stop operation. |br|
+      **Stop**: Stops times-series data collection. Performs callbacks on all time-series
+      waveform records. |br|
+      **Read**: Performs callbacks on all time-series waveform records, updating the values.
+    - ROISTAT_TS_CONTROL
+    - $(P)$(R)TSControl
+    - mbbo
+  * - N.A.
+    - N.A.
+    - r/w
+    - Sends the "Read" command to the TSControl record above. This record can be periodically
+      processed to update the time-series waveform records. It is scan disabled if TSAcquiring=Done,
+      so that updates are only performed when time-series acquisition is in progress.
+    - N.A.
+    - $(P)$(R)TSRead
+    - longout
+  * - NDPluginROIStat, TSNumPoints
+    - asynInt32
+    - r/w
+    - Controls the number of time-series points to collect. There is no maximum value,
+      the time-series arrays in the plugin are freed and reallocated each time this value
+      is changed. However, the size of the waveform records is fixed when the IOC is started,
+      so NELM in those records must be large enough for the largest time-series needed.
+    - ROISTAT_TS_NUM_POINTS
+    - $(P)$(R)TSNumPoints
+    - longout
+  * - NDPluginROIStat, TSCurrentPoint
+    - asynInt32
+    - r/o
+    - The current time-series point. If TSCurrentPoint reaches TSNumPoints then time-series
+      acquisition is automatically stopped, and callbacks are done on all time-series
+      waveform records, updating the values. This means that even if TSRead has SCAN=Passive
+      that the waveform records will update when time-series acquisition is complete.
+    - ROISTAT_TS_CURRENT_POINT
+    - $(P)$(R)TSCurrentPoint
+    - longin
+  * - NDPluginROIStat, TSAcquiring
+    - asynInt32
+    - r/o
+    - Indicates status of time-series data acquisition. Values are 0=Done and 1=Acquiring.
+    - ROISTAT_TS_ACQUIRING
+    - $(P)$(R)TSAcquiring
+    - bi
+
+.. cssclass:: table-bordered table-striped table-hover
+.. flat-table::
+  :header-rows: 3
+  :widths: 5 5 5 70 5 5 5
+
+  * -
+    -
+    - ROI Specific Parameters
+  * -
+    - Parameter Definitions in NDPluginROIStat.h and EPICS Record Definitions in NDROIStatN.template
+  * - Parameter index variable
+    - asyn interface
+    - Access
+    - Description
+    - drvInfo string
+    - EPICS record name
+    - EPICS record type
+  * - NDPluginROIStatName
+    - asynOctet
+    - r/w
+    - The name of the plugin.
+    - ROISTAT_NAME
+    - $(P)$(R)Name, $(P)$(R)Name_RBV
+    - stringout
+  * - NDPluginROIStatUse
+    - asynInt32
+    - r/w
+    - Set this to 1 to use this ROI, which will mean the statistics will be calculated
+      for this ROI.
+    - ROISTAT_USE
+    - $(P)$(R)Use, $(P)$(R)Use_RBV
+    - bo, bi
+  * - NDPluginROIStatReset
+    - asynInt32
+    - r/w
+    - Reset the statistics data for this ROI.
+    - ROISTAT_RESET
+    - $(P)$(R)Reset
+    - bo
+  * - NDPluginROIStatBgdWidth
+    - asynInt32
+    - r/w
+    - The background width for the net counts calculation. The average background counts
+      in a border of this width around the ROI are computed. The border begins at the
+      outer edge of the defined ROI and progresses inward by the BgdWidth.
+    - ROISTAT_BGD_WIDTH
+    - $(P)$(R)BgdWidth, $(P)$(R)BgdWidth_RBV
+    - longout
+      , longin
+  * - NDPluginROIStatDim0Min
+    - asynInt32
+    - r/w
+    - Start element in the X dimension.
+    - ROISTAT_DIM0_MIN
+    - $(P)$(R)MinX, $(P)$(R)MinX_RBV
+    - longout, longin
+  * - NDPluginROIStatDim0Size
+    - asynInt32
+    - r/w
+    - The ROI size in the X dimension.
+    - ROISTAT_DIM0_SIZE
+    - $(P)$(R)SizeX, $(P)$(R)SizeX_RBV
+    - longout, longin
+  * - NDPluginROIStatDim0MaxSize
+    - asynInt32
+    - r/o
+    - Max size of the ROI in the X dimension.
+    - ROISTAT_DIM0_MAX_SIZE
+    - $(P)$(R)MaxSizeX, $(P)$(R)MaxSizeX_RBV
+    - longin
+  * - NDPluginROIStatDim1Min
+    - asynInt32
+    - r/w
+    - Start element in the Y dimension.
+    - ROISTAT_DIM1_MIN
+    - $(P)$(R)MinY, $(P)$(R)MinY_RBV
+    - longout, longin
+  * - NDPluginROIStatDim1Size
+    - asynInt32
+    - r/w
+    - The ROI size in the Y dimension.
+    - ROISTAT_DIM1_SIZE
+    - $(P)$(R)SizeY, $(P)$(R)SizeY_RBV
+    - longout, longin
+  * - NDPluginROIStatDim1MaxSize
+    - asynInt32
+    - r/o
+    - Max size of the ROI in the Y dimension.
+    - ROISTAT_DIM1_MAX_SIZE
+    - $(P)$(R)MaxSizeY, $(P)$(R)MaxSizeY_RBV
+    - longin
+  * - NDPluginROIStatMinValue
+    - asynFloat64
+    - r/o
+    - Minimum count value in the ROI.
+    - ROISTAT_MIN_VALUE
+    - $(P)$(R)MinValue_RBV
+    - ai
+  * - NDPluginROIStatMaxValue
+    - asynFloat64
+    - r/o
+    - Maximum count value in the ROI.
+    - ROISTAT_MAX_VALUE
+    - $(P)$(R)MaxValue_RBV
+    - ai
+  * - NDPluginROIStatMeanValue
+    - asynFloat64
+    - r/o
+    - Mean counts value in the ROI.
+    - ROISTAT_MEAN_VALUE
+    - $(P)$(R)MeanValue_RBV
+    - ai
+  * - NDPluginROIStatTotal
+    - asynFloat64
+    - r/o
+    - Total counts in the ROI.
+    - ROISTAT_TOTAL
+    - $(P)$(R)Total_RBV
+    - ai
+  * - NDPluginROIStatNet
+    - asynFloat64
+    - r/o
+    - Net (background subtracted) counts in the ROI.
+    - ROISTAT_NET
+    - $(P)$(R)Net_RBV
+    - ai
+  * -
+    -
+    - **Time-Series data**
+  * - NDPluginROIStat, TSXXX
+    - asynFloat64Array
+    - r/o
+    - The time series data arrays. XXX is one of the following, corresponding to each
+      of the basic statistics and centroid and sigma statistics described above: |br|
+      MinValue |br|
+      MaxValue |br|
+      MeanValue |br|
+      Total |br|
+      Net |br|
+    - ROISTAT_TS_MIN_VALUE |br|
+      ROISTAT_TS_MAX_VALUE |br|
+      ROISTAT_TS_MEAN_VALUE |br|
+      ROISTAT_TS_TOTAL |br|
+      ROISTAT_TS_NET |br|
+    - $(P)$(R)TSXXX
+    - waveform
 
 
 Configuration

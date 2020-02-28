@@ -16,6 +16,8 @@ ifeq ($(GNU),NO)
   NDArray_CXXFLAGS_solaris += -features=tmplrefstatic
 endif
 
+USR_CFLAGS += -DUSE_TYPED_RSET
+
 DBD += ADSupport.dbd
 
 INC += ADCoreVersion.h
@@ -28,6 +30,7 @@ INC += paramAttribute.h
 INC += functAttribute.h
 INC += asynNDArrayDriver.h
 INC += ADDriver.h
+INC += CCDMultiTrack.h
 
 LIBRARY_IOC = ADBase
 LIB_SRCS += NDAttribute.cpp
@@ -37,6 +40,8 @@ LIB_SRCS += NDArray.cpp
 LIB_SRCS += asynNDArrayDriver.cpp
 LIB_SRCS += ADDriver.cpp
 LIB_SRCS += paramAttribute.cpp
+LIB_SRCS += CCDMultiTrack.cpp
+
 ifeq ($(EPICS_LIBCOM_ONLY),YES)
   USR_CXXFLAGS += -DEPICS_LIBCOM_ONLY
 else

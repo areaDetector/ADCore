@@ -4,52 +4,11 @@
 # Mark Rivers
 # March 9, 2008
 
+#  Using SCANRATE:The ImageJ EPICS_AD_Viewer plugin monitors ArrayCounter_RBV to decide 
+#  when there is a new image to display. That means that it will not display faster than
+#  the SCANRATE you select.
+
 include "NDArrayBase.template"
-
-###################################################################
-#  These records control basic information                        #
-#  about the detector                                             # 
-###################################################################
-
-record(stringin, "$(P)$(R)Manufacturer_RBV")
-{
-   field(DTYP, "asynOctetRead")
-   field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))MANUFACTURER")
-   field(VAL,  "Unknown")
-   field(SCAN, "I/O Intr")
-}
-
-record(stringin, "$(P)$(R)Model_RBV")
-{
-   field(DTYP, "asynOctetRead")
-   field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))MODEL")
-   field(VAL,  "Unknown")
-   field(SCAN, "I/O Intr")
-}
-
-record(stringin, "$(P)$(R)SerialNumber_RBV")
-{
-   field(DTYP, "asynOctetRead")
-   field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))SERIAL_NUMBER")
-   field(VAL,  "Unknown")
-   field(SCAN, "I/O Intr")
-}
-
-record(stringin, "$(P)$(R)SDKVersion_RBV")
-{
-   field(DTYP, "asynOctetRead")
-   field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))SDK_VERSION")
-   field(VAL,  "Unknown")
-   field(SCAN, "I/O Intr")
-}
-
-record(stringin, "$(P)$(R)FirmwareVersion_RBV")
-{
-   field(DTYP, "asynOctetRead")
-   field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))FIRMWARE_VERSION")
-   field(VAL,  "Unknown")
-   field(SCAN, "I/O Intr")
-}
 
 record(longin, "$(P)$(R)MaxSizeX_RBV")
 {
@@ -415,64 +374,7 @@ record(longin, "$(P)$(R)NumImagesCounter_RBV")
 {
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))NIMAGES_COUNTER")
-   field(SCAN, "I/O Intr")
-}
-
-###################################################################
-#  These records control  acquisition start and                   # 
-#  and stop                                                       #
-###################################################################
-
-record(bo, "$(P)$(R)Acquire") {
-   field(DTYP, "asynInt32")
-   field(OUT, "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))ACQUIRE")
-   field(ZNAM, "Done")
-   field(ONAM, "Acquire")
-   field(VAL,  "0")
-   field(FLNK, "$(P)$(R)SetAcquireBusy")
-   info(asyn:READBACK, "1")
-}
-
-record(bi, "$(P)$(R)Acquire_RBV") {
-   field(DTYP, "asynInt32")
-   field(INP, "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))ACQUIRE")
-   field(ZNAM, "Done")
-   field(ZSV,  "NO_ALARM")
-   field(ONAM, "Acquiring")
-   field(OSV,  "MINOR")
-   field(SCAN, "I/O Intr")
-}
-
-record(calcout, "$(P)$(R)SetAcquireBusy")
-{
-    field(INPA, "$(P)$(R)Acquire NPP")
-    field(CALC, "A")
-    field(OOPT, "Transition To Non-zero")
-    field(OUT,  "$(P)$(R)AcquireBusy PP")
-}
-
-record(busy, "$(P)$(R)AcquireBusy") {
-   field(ZNAM, "Done")
-   field(ZSV,  "NO_ALARM")
-   field(ONAM, "Acquiring")
-   field(OSV,  "MINOR")
-   field(VAL,  "0")
-}
-
-record(calcout, "$(P)$(R)ClearAcquireBusy")
-{
-    field(INPA, "$(P)$(R)WaitForPlugins CP")
-    field(INPB, "$(P)$(R)Acquire_RBV CP")
-    field(INPC, "$(P)$(R)NumQueuedArrays CP")
-    field(CALC, "A ? B || (C > 0) : B")
-    field(OOPT, "Transition To Zero")
-    field(OUT,  "$(P)$(R)AcquireBusy PP")
-}
-
-record(bo, "$(P)$(R)WaitForPlugins") {
-   field(ZNAM, "No")
-   field(ONAM, "Yes")
-   field(VAL,  "0")
+   field(SCAN, "$(SCANRATE=I/O Intr)")
 }
 
 ###################################################################
@@ -755,7 +657,7 @@ record(ai, "$(P)$(R)TemperatureActual")
 # Set ASYN_TRACEIO_HEX bit by default
 record(asyn,"$(P)$(R)AsynIO")
 {
-    field(PORT, $(PORT))
+    field(PORT, "$(PORT)")
     field(TIB2,"1")
     info("ADType", "ADDriver")
 }

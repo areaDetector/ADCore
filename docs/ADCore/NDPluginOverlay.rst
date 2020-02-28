@@ -55,561 +55,255 @@ to reduce the width of this table the parameter index variable names
 have been split into 2 lines, but these are just a single name, for
 example ``NDPluginOverlayName``.
 
-.. raw:: html
+.. |br| raw:: html
 
-  <table class="table table-bordered">
-    <tbody>
-      <tr>
-        <td align="center" colspan="7,">
-          <b>Parameter Definitions in NDPluginOverlay.h and EPICS Record Definitions in NDOverlayN.template</b>
-        </td>
-      </tr>
-      <tr>
-        <th>
-          Parameter index variable</th>
-        <th>
-          asyn interface</th>
-        <th>
-          Access</th>
-        <th>
-          Description</th>
-        <th>
-          drvInfo string</th>
-        <th>
-          EPICS record name</th>
-        <th>
-          EPICS record type</th>
-      </tr>
-      <tr>
-        <td>
-          NDPluginOverlay<br />
-          Name</td>
-        <td>
-          asynOctet</td>
-        <td>
-          r/w</td>
-        <td>
-          Name for this overlay.</td>
-        <td>
-          NAME</td>
-        <td>
-          $(P)$(R)Name<br />
-          $(P)$(R)Name_RBV</td>
-        <td>
-          stringout<br />
-          stringin</td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginOverlay<br />
-          Use</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          Flag indicating whether to use (enable) this overlay. 0=No, 1=Yes.</td>
-        <td>
-          USE</td>
-        <td>
-          $(P)$(R)Use<br />
-          $(P)$(R)Use_RBV</td>
-        <td>
-          bo<br />
-          bi</td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginOverlay<br />
-          OverlayPositionX</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          The X position of this overlay. This is the left edge of the overlay. This will
-          automatically update if CenterX is changed.</td>
-        <td>
-          OVERLAY_POSITION_X</td>
-        <td>
-          $(P)$(R)PositionX<br />
-          $(P)$(R)PositionX_RBV</td>
-        <td>
-          longout<br />
-          longin</td>
-      </tr>
-      <tr>
-        <td>
-          N.A.</td>
-        <td>
-          N.A.</td>
-        <td>
-          r/w</td>
-        <td>
-          Link to fetch the desired X position of this overlay. The .DOL field of this record
-          can be set to another record which will then change PositionX whenever the other
-          record updates. The link <i>must</i> have the "CP" attribute, so that this record
-          processes whenever the record it is linked to changes. For example, the link could
-          be set to "13PS1:Stats1:CentroidX_RBV CP NMS" to fetch its position from the X centroid
-          calculated by an NDPluginStats plugin, or to "13PS1:ROI1:MinX_RBV CP MS" to fetch
-          its position from the X position of an ROI. If this link field is blank or points
-          to a non-existent record then the X position of the overlay can be manually controlled.
-          Note that this linking is done entirely in the EPICS database, and not in the plugin
-          code.</td>
-        <td>
-          N.A.</td>
-        <td>
-          $(P)$(R)PositionXLink</td>
-        <td>
-          longout</td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginOverlay<br />
-          OverlayPositionY</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          The Y position of this overlay. This is the top edge of the overlay. This will automatically
-          update if CenterY is changed.</td>
-        <td>
-          OVERLAY_POSITION_Y</td>
-        <td>
-          $(P)$(R)PositionY<br />
-          $(P)$(R)PositionY_RBV</td>
-        <td>
-          longout<br />
-          longin</td>
-      </tr>
-      <tr>
-        <td>
-          N.A.</td>
-        <td>
-          N.A.</td>
-        <td>
-          r/w</td>
-        <td>
-          Link to fetch the desired Y position of this overlay. See the notes for PositionXLink
-          above.</td>
-        <td>
-          N.A.</td>
-        <td>
-          $(P)$(R)PositionYLink</td>
-        <td>
-          longout</td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginOverlay<br />
-          OverlayCenterX</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          The X position of the center of this overlay. Sometimes it is more convenient to
-          specify the center of the overlay rather than the left edge. This will automatically
-          update if CenterX or SizeX is changed.</td>
-        <td>
-          OVERLAY_CENTER_X</td>
-        <td>
-          $(P)$(R)CenterX<br />
-          $(P)$(R)CenterX_RBV</td>
-        <td>
-          longout<br />
-          longin</td>
-      </tr>
-      <tr>
-        <td>
-          N.A.</td>
-        <td>
-          N.A.</td>
-        <td>
-          r/w</td>
-        <td>
-          Link to fetch the desired X center of this overlay. See the notes for PositionXLink
-          above.</td>
-        <td>
-          N.A.</td>
-        <td>
-          $(P)$(R)CenterXLink</td>
-        <td>
-          longout</td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginOverlay<br />
-          OverlayCenterY</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          The Y position of the center of this overlay. Sometimes it is more convenient to
-          specify the center of the overlay rather than the top edge. This will automatically
-          update if CenterY or SizeY is changed.</td>
-        <td>
-          OVERLAY_CENTER_Y</td>
-        <td>
-          $(P)$(R)CenterY<br />
-          $(P)$(R)CenterY_RBV</td>
-        <td>
-          longout<br />
-          longin</td>
-      </tr>
-      <tr>
-        <td>
-          N.A.</td>
-        <td>
-          N.A.</td>
-        <td>
-          r/w</td>
-        <td>
-          Link to fetch the desired Y center of this overlay. See the notes for PositionXLink
-          above.</td>
-        <td>
-          N.A.</td>
-        <td>
-          $(P)$(R)CenterYLink</td>
-        <td>
-          longout</td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginOverlay<br />
-          OverlaySizeX</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          The X size of this overlay. This does not apply to Text overlay shapes.</td>
-        <td>
-          OVERLAY_SIZE_X</td>
-        <td>
-          $(P)$(R)SizeX<br />
-          $(P)$(R)SizeX_RBV</td>
-        <td>
-          longout<br />
-          longin</td>
-      </tr>
-      <tr>
-        <td>
-          N.A.</td>
-        <td>
-          N.A.</td>
-        <td>
-          r/w</td>
-        <td>
-          Link to fetch the desired X size of this overlay. See the notes for PositionXLink
-          above.</td>
-        <td>
-          N.A.</td>
-        <td>
-          $(P)$(R)SizeXLink</td>
-        <td>
-          longout</td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginOverlay<br />
-          OverlaySizeY</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          The Y size of this overlay. This does not apply to Text overlay shapes.</td>
-        <td>
-          OVERLAY_SIZE_Y</td>
-        <td>
-          $(P)$(R)SizeY<br />
-          $(P)$(R)SizeY_RBV</td>
-        <td>
-          longout<br />
-          longin</td>
-      </tr>
-      <tr>
-        <td>
-          N.A.</td>
-        <td>
-          N.A.</td>
-        <td>
-          r/w</td>
-        <td>
-          Link to fetch the desired Y size of this overlay. See the notes for PositionXLink
-          above.</td>
-        <td>
-          N.A.</td>
-        <td>
-          $(P)$(R)SizeYLink</td>
-        <td>
-          longout</td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginOverlay<br />
-          OverlayWidthX</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          The X line width of this overlay. For the cross overlay this will increase the width
-          of the line on both sides at the same time, to maintain the central point of the
-          cross. For the rectangle and ellipse overlays the line thickness will grow inwards
-          to the center. For cross overlay shapes the widths &gt;1 are restricted to even
-          numbers; odd widths &gt;1 are decreased by 1.</td>
-        <td>
-          OVERLAY_WIDTH_X</td>
-        <td>
-          $(P)$(R)WidthX<br />
-          $(P)$(R)WidthX_RBV</td>
-        <td>
-          longout<br />
-          longin</td>
-      </tr>
-      <tr>
-        <td>
-          N.A.</td>
-        <td>
-          N.A.</td>
-        <td>
-          r/w</td>
-        <td>
-          Link to fetch the desired X line width of this overlay. See the notes for PositionXLink
-          above.</td>
-        <td>
-          N.A.</td>
-        <td>
-          $(P)$(R)WidthXLink</td>
-        <td>
-          longout</td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginOverlay<br />
-          OverlayWidthY</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          The Y line width of this overlay. This behaves in the same way as the OverlayWidthX.
-        </td>
-        <td>
-          OVERLAY_WIDTH_Y</td>
-        <td>
-          $(P)$(R)WidthY<br />
-          $(P)$(R)WidthY_RBV</td>
-        <td>
-          longout<br />
-          longin</td>
-      </tr>
-      <tr>
-        <td>
-          N.A.</td>
-        <td>
-          N.A.</td>
-        <td>
-          r/w</td>
-        <td>
-          Link to fetch the desired Y line width of this overlay. See the notes for PositionXLink
-          above.</td>
-        <td>
-          N.A.</td>
-        <td>
-          $(P)$(R)WidthYLink</td>
-        <td>
-          longout</td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginOverlay<br />
-          Shape</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          The shape of this overlay. Choices are:
-          <ul>
-            <li>0="Cross"</li>
-            <li>1="Rectangle"</li>
-            <li>2="Text"</li>
-            <li>3="Ellipse"</li>
-          </ul>
-          Other shapes may be added in the future. </td>
-        <td>
-          OVERLAY_SHAPE</td>
-        <td>
-          $(P)$(R)Shape<br />
-          $(P)$(R)Shape_RBV</td>
-        <td>
-          mbbo<br />
-          mbbi</td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginOverlay<br />
-          DrawMode</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          The operation to use when drawing this overlay. Choices are:
-          <ul>
-            <li>0="Set"</li>
-            <li>1="XOR"</li>
-          </ul>
-          In Set mode the Red, Green, and Blue values (Green for mono images) are written
-          directly into the pixel values. In XOR mode the value in the pixel is XOR'ed with
-          the Red, Green, and Blue values. XOR operation typically results in an overlay that
-          has better visibility no matter what the values of the surrounding pixels, while
-          Set mode with Green=255, for example, will show up well on dark areas of the image,
-          but will be hard to see in bright areas of the image. Note that XOR is not supported
-          for NDFloat32 or NDFloat64 data types directly, but they are cast to int if XOR
-          is selected for arrays with those data types.</td>
-        <td>
-          OVERLAY_DRAW_MODE</td>
-        <td>
-          $(P)$(R)DrawMode<br />
-          $(P)$(R)DrawMode_RBV</td>
-        <td>
-          mbbo<br />
-          mbbi</td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginOverlay<br />
-          Red</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          The red value to use when drawing the overlay. This is only used for color images.
-        </td>
-        <td>
-          OVERLAY_RED</td>
-        <td>
-          $(P)$(R)Red<br />
-          $(P)$(R)Red_RBV</td>
-        <td>
-          longout<br />
-          longin</td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginOverlay<br />
-          Green</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          The green value to use when drawing the overlay. This is the value that is used
-          for monochrome images as well.</td>
-        <td>
-          OVERLAY_GREEN</td>
-        <td>
-          $(P)$(R)Green<br />
-          $(P)$(R)Green_RBV</td>
-        <td>
-          longout<br />
-          longin</td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginOverlay<br />
-          Blue</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          The blue value to use when drawing the overlay. This is only used for color images.
-        </td>
-        <td>
-          OVERLAY_BLUE</td>
-        <td>
-          $(P)$(R)Blue<br />
-          $(P)$(R)Blue_RBV</td>
-        <td>
-          longout<br />
-          longin</td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginOverlay<br />
-          DisplayText</td>
-        <td>
-          asynOctet</td>
-        <td>
-          r/w</td>
-        <td>
-          The text string to write for this overlay if Shape="Text". </td>
-        <td>
-          OVERLAY_DISPLAY_TEXT</td>
-        <td>
-          $(P)$(R)DisplayText<br />
-          $(P)$(R)DisplayText_RBV</td>
-        <td>
-          waveform<br />
-          waveform</td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginOverlay<br />
-          TimeStampFormat</td>
-        <td>
-          asynOctet</td>
-        <td>
-          r/w</td>
-        <td>
-          The format string to use when outputting the EPICS time stamp (epicsTS) field of
-          the NDArray in the text overlay. Default="%Y-%m-%d %H:%M:%S.%03f". Any of the components
-          of the format can be omitted to suppress the display of that field. </td>
-        <td>
-          OVERLAY_TIMESTAMP_FORMAT</td>
-        <td>
-          $(P)$(R)TimeStampFormat<br />
-          $(P)$(R)TimeStampFormat_RBV</td>
-        <td>
-          stringout<br />
-          stringin</td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginOverlay<br />
-          Font</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          The font to use for the text display. Choices are:
-          <ul>
-            <li>0="6x13"</li>
-            <li>1="6x13 Bold"</li>
-            <li>2="9x15"</li>
-            <li>3="9x15 Bold"</li>
-          </ul>
-        </td>
-        <td>
-          OVERLAY_FONT</td>
-        <td>
-          $(P)$(R)Font<br />
-          $(P)$(R)Font_RBV</td>
-        <td>
-          mbbo<br />
-          mbbi</td>
-      </tr>
-    </tbody>
-  </table>
+    <br>
+
+.. cssclass:: table-bordered table-striped table-hover
+.. flat-table::
+  :header-rows: 2
+  :widths: 5 5 5 70 5 5 5
+
+  * -
+    -
+    - **Parameter Definitions in NDPluginOverlay.h and EPICS Record Definitions in NDOverlayN.template**
+  * - Parameter index variable
+    - asyn interface
+    - Access
+    - Description
+    - drvInfo string
+    - EPICS record name
+    - EPICS record type
+  * - NDPluginOverlay, Name
+    - asynOctet
+    - r/w
+    - Name for this overlay.
+    - NAME
+    - $(P)$(R)Name, $(P)$(R)Name_RBV
+    - stringout, stringin
+  * - NDPluginOverlay, Use
+    - asynInt32
+    - r/w
+    - Flag indicating whether to use (enable) this overlay. 0=No, 1=Yes.
+    - USE
+    - $(P)$(R)Use, $(P)$(R)Use_RBV
+    - bo, bi
+  * - NDPluginOverlay, OverlayPositionX
+    - asynInt32
+    - r/w
+    - The X position of this overlay. This is the left edge of the overlay. This will
+      automatically update if CenterX is changed.
+    - OVERLAY_POSITION_X
+    - $(P)$(R)PositionX, $(P)$(R)PositionX_RBV
+    - longout, longin
+  * - N.A.
+    - N.A.
+    - r/w
+    - Link to fetch the desired X position of this overlay. The .DOL field of this record
+      can be set to another record which will then change PositionX whenever the other
+      record updates. The link *must* have the "CP" attribute, so that this record
+      processes whenever the record it is linked to changes. For example, the link could
+      be set to "13PS1:Stats1:CentroidX_RBV CP NMS" to fetch its position from the X centroid
+      calculated by an NDPluginStats plugin, or to "13PS1:ROI1:MinX_RBV CP MS" to fetch
+      its position from the X position of an ROI. If this link field is blank or points
+      to a non-existent record then the X position of the overlay can be manually controlled.
+      Note that this linking is done entirely in the EPICS database, and not in the plugin
+      code.
+    - N.A.
+    - $(P)$(R)PositionXLink
+    - longout
+  * - NDPluginOverlay, OverlayPositionY
+    - asynInt32
+    - r/w
+    - The Y position of this overlay. This is the top edge of the overlay. This will automatically
+      update if CenterY is changed.
+    - OVERLAY_POSITION_Y
+    - $(P)$(R)PositionY, $(P)$(R)PositionY_RBV
+    - longout, longin
+  * - N.A.
+    - N.A.
+    - r/w
+    - Link to fetch the desired Y position of this overlay. See the notes for PositionXLink
+      above.
+    - N.A.
+    - $(P)$(R)PositionYLink
+    - longout
+  * - NDPluginOverlay, OverlayCenterX
+    - asynInt32
+    - r/w
+    - The X position of the center of this overlay. Sometimes it is more convenient to
+      specify the center of the overlay rather than the left edge. This will automatically
+      update if CenterX or SizeX is changed.
+    - OVERLAY_CENTER_X
+    - $(P)$(R)CenterX, $(P)$(R)CenterX_RBV
+    - longout, longin
+  * - N.A.
+    - N.A.
+    - r/w
+    - Link to fetch the desired X center of this overlay. See the notes for PositionXLink
+      above.
+    - N.A.
+    - $(P)$(R)CenterXLink
+    - longout
+  * - NDPluginOverlay, OverlayCenterY
+    - asynInt32
+    - r/w
+    - The Y position of the center of this overlay. Sometimes it is more convenient to
+      specify the center of the overlay rather than the top edge. This will automatically
+      update if CenterY or SizeY is changed.
+    - OVERLAY_CENTER_Y
+    - $(P)$(R)CenterY, $(P)$(R)CenterY_RBV
+    - longout, longin
+  * - N.A.
+    - N.A.
+    - r/w
+    - Link to fetch the desired Y center of this overlay. See the notes for PositionXLink
+      above.
+    - N.A.
+    - $(P)$(R)CenterYLink
+    - longout
+  * - NDPluginOverlay, OverlaySizeX
+    - asynInt32
+    - r/w
+    - The X size of this overlay. This does not apply to Text overlay shapes.
+    - OVERLAY_SIZE_X
+    - $(P)$(R)SizeX, $(P)$(R)SizeX_RBV
+    - longout, longin
+  * - N.A.
+    - N.A.
+    - r/w
+    - Link to fetch the desired X size of this overlay. See the notes for PositionXLink
+      above.
+    - N.A.
+    - $(P)$(R)SizeXLink
+    - longout
+  * - NDPluginOverlay, OverlaySizeY
+    - asynInt32
+    - r/w
+    - The Y size of this overlay. This does not apply to Text overlay shapes.
+    - OVERLAY_SIZE_Y
+    - $(P)$(R)SizeY, $(P)$(R)SizeY_RBV
+    - longout, longin
+  * - N.A.
+    - N.A.
+    - r/w
+    - Link to fetch the desired Y size of this overlay. See the notes for PositionXLink
+      above.
+    - N.A.
+    - $(P)$(R)SizeYLink
+    - longout
+  * - NDPluginOverlay, OverlayWidthX
+    - asynInt32
+    - r/w
+    - The X line width of this overlay. For the cross overlay this will increase the width
+      of the line on both sides at the same time, to maintain the central point of the
+      cross. For the rectangle and ellipse overlays the line thickness will grow inwards
+      to the center. For cross overlay shapes the widths &gt;1 are restricted to even
+      numbers; odd widths &gt;1 are decreased by 1.
+    - OVERLAY_WIDTH_X
+    - $(P)$(R)WidthX, $(P)$(R)WidthX_RBV
+    - longout, longin
+  * - N.A.
+    - N.A.
+    - r/w
+    - Link to fetch the desired X line width of this overlay. See the notes for PositionXLink
+      above.
+    - N.A.
+    - $(P)$(R)WidthXLink
+    - longout
+  * - NDPluginOverlay, OverlayWidthY
+    - asynInt32
+    - r/w
+    - The Y line width of this overlay. This behaves in the same way as the OverlayWidthX.
+    - OVERLAY_WIDTH_Y
+    - $(P)$(R)WidthY, $(P)$(R)WidthY_RBV
+    - longout, longin
+  * - N.A.
+    - N.A.
+    - r/w
+    - Link to fetch the desired Y line width of this overlay. See the notes for PositionXLink
+      above.
+    - N.A.
+    - $(P)$(R)WidthYLink
+    - longout
+  * - NDPluginOverlay, Shape
+    - asynInt32
+    - r/w
+    - The shape of this overlay. Choices are: |br|
+      0="Cross" |br|
+      1="Rectangle" |br|
+      2="Text" |br|
+      3="Ellipse" |br|
+      Other shapes may be added in the future.
+    - OVERLAY_SHAPE
+    - $(P)$(R)Shape, $(P)$(R)Shape_RBV
+    - mbbo, mbbi
+  * - NDPluginOverlay, DrawMode
+    - asynInt32
+    - r/w
+    - The operation to use when drawing this overlay. Choices are: |br|
+      0="Set" |br|
+      1="XOR" |br|
+      In Set mode the Red, Green, and Blue values (Green for mono images) are written
+      directly into the pixel values. In XOR mode the value in the pixel is XOR'ed with
+      the Red, Green, and Blue values. XOR operation typically results in an overlay that
+      has better visibility no matter what the values of the surrounding pixels, while
+      Set mode with Green=255, for example, will show up well on dark areas of the image,
+      but will be hard to see in bright areas of the image. Note that XOR is not supported
+      for NDFloat32 or NDFloat64 data types directly, but they are cast to int if XOR
+      is selected for arrays with those data types.
+    - OVERLAY_DRAW_MODE
+    - $(P)$(R)DrawMode, $(P)$(R)DrawMode_RBV
+    - mbbo, mbbi
+  * - NDPluginOverlay, Red
+    - asynInt32
+    - r/w
+    - The red value to use when drawing the overlay. This is only used for color images.
+    - OVERLAY_RED
+    - $(P)$(R)Red, $(P)$(R)Red_RBV
+    - longout, longin
+  * - NDPluginOverlay, Green
+    - asynInt32
+    - r/w
+    - The green value to use when drawing the overlay. This is the value that is used
+      for monochrome images as well.
+    - OVERLAY_GREEN
+    - $(P)$(R)Green, $(P)$(R)Green_RBV
+    - longout, longin
+  * - NDPluginOverlay, Blue
+    - asynInt32
+    - r/w
+    - The blue value to use when drawing the overlay. This is only used for color images.
+    - OVERLAY_BLUE
+    - $(P)$(R)Blue, $(P)$(R)Blue_RBV
+    - longout, longin
+  * - NDPluginOverlay, DisplayText
+    - asynOctet
+    - r/w
+    - The text string to write for this overlay if Shape="Text".
+    - OVERLAY_DISPLAY_TEXT
+    - $(P)$(R)DisplayText, $(P)$(R)DisplayText_RBV
+    - waveform, waveform
+  * - NDPluginOverlay, TimeStampFormat
+    - asynOctet
+    - r/w
+    - The format string to use when outputting the EPICS time stamp (epicsTS) field of
+      the NDArray in the text overlay. Default="%Y-%m-%d %H:%M:%S.%03f". Any of the components
+      of the format can be omitted to suppress the display of that field.
+    - OVERLAY_TIMESTAMP_FORMAT
+    - $(P)$(R)TimeStampFormat, $(P)$(R)TimeStampFormat_RBV
+    - stringout, stringin
+  * - NDPluginOverlay, Font
+    - asynInt32
+    - r/w
+    - The font to use for the text display. Choices are: |br|
+      0="6x13" |br|
+      1="6x13 Bold" |br|
+      2="9x15" |br|
+      3="9x15 Bold" |br|
+    - OVERLAY_FONT
+    - $(P)$(R)Font, $(P)$(R)Font_RBV
+    - mbbo, mbbi
 
 Display limits for Position and Size fields
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
