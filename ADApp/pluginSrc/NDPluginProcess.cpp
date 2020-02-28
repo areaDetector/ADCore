@@ -471,7 +471,7 @@ static const iocshArg * const initArgs[] = {&initArg0,
                                             &initArg8,
                                             &initArg9};
 
-static const iocshFuncDef initFuncDef = {"NDProcessConfigure",9,initArgs};
+static const iocshFuncDef initFuncDef = {"NDProcessConfigure",10,initArgs};
 
 static void initCallFunc(const iocshArgBuf *args)
 {
