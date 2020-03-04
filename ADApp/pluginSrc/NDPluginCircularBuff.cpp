@@ -147,7 +147,7 @@ void NDPluginCircularBuff::processCallbacks(NDArray *pArray)
       if (pArrayCpy){
 
         // Have we detected a trigger event yet?
-        if (!triggered){
+        if (!triggered) {
           // No trigger so add the NDArray to the pre-trigger ring
           pOldArray_ = preBuffer_->addToEnd(pArrayCpy);
           // If we overwrote an existing array in the ring, release it here
@@ -158,7 +158,8 @@ void NDPluginCircularBuff::processCallbacks(NDArray *pArray)
           // Set the size
           setIntegerParam(NDCircBuffCurrentImage,  preBuffer_->size());
           if (preBuffer_->size() == preCount){
-            setStringParam(NDCircBuffStatus, "Buffer Wrapping");
+            setStringParam(NDCircBuffStatus,
+                preCount ? "Buffer Wrapping" : "Dropping frames");
           }
         } else {
           // Trigger detected
@@ -194,7 +195,8 @@ void NDPluginCircularBuff::processCallbacks(NDArray *pArray)
             setIntegerParam(NDCircBuffSoftTrigger, 0);
             setIntegerParam(NDCircBuffTriggered, 0);
             setIntegerParam(NDCircBuffPostCount, 0);
-            setStringParam(NDCircBuffStatus, "Buffer filling");
+            setStringParam(NDCircBuffStatus,
+                preCount ? "Buffer filling" : "Dropping frames");
           } else {
             setIntegerParam(NDCircBuffTriggered, 0);
             setIntegerParam(NDCircBuffControl, 0);
@@ -232,7 +234,7 @@ asynStatus NDPluginCircularBuff::writeInt32(asynUser *pasynUser, epicsInt32 valu
 {
     int function = pasynUser->reason;
     asynStatus status = asynSuccess;
-    int preCount;
+    int scopeControl, preCount;
     static const char *functionName = "writeInt32";
 
     if (function == NDCircBuffControl){
@@ -255,7 +257,8 @@ asynStatus NDPluginCircularBuff::writeInt32(asynUser *pasynUser, epicsInt32 valu
           setIntegerParam(NDCircBuffTriggered, 0);
           setIntegerParam(NDCircBuffPostCount, 0);
           setIntegerParam(NDCircBuffActualTriggerCount, 0);
-          setStringParam(NDCircBuffStatus, "Buffer filling");
+          setStringParam(NDCircBuffStatus,
+              preCount ? "Buffer filling" : "Dropping frames");
         } else {
           // Control is turned off, before we have finished
           // Set the trigger value off, reset counter
@@ -283,9 +286,14 @@ asynStatus NDPluginCircularBuff::writeInt32(asynUser *pasynUser, epicsInt32 valu
         }
 
     }  else if (function == NDCircBuffPreTrigger){
-        // Check the value of pretrigger does not exceed max buffers
-        if (value > (maxBuffers_ - 1)){
+        getIntegerParam(NDCircBuffControl, &scopeControl);
+        if (scopeControl) {
+          setStringParam(NDCircBuffStatus, "Stop acquisition to set pre-count");
+        } else if (value > (maxBuffers_ - 1)){
+          // The value of pretrigger should not exceed max buffers
           setStringParam(NDCircBuffStatus, "Pre-count too high");
+        } else if (value < 0) {
+          setStringParam(NDCircBuffStatus, "Invalid pre-count value");
         } else {
           // Set the parameter in the parameter library.
           status = (asynStatus) setIntegerParam(function, value);
