@@ -123,7 +123,7 @@ Note: This release requires asyn R4-36 because it uses new features of asynPortD
 ### asynNDArrayDriver, ADDriver, NDPluginDriver
   * Changed to use the new method asynPortDriver::parseAsynUser()
   * Use the asyn addr value in the writeXXX and readXXX methods. Previously they were not using it.
-### docs/ADCore/*.rst
+### docs/ADCore/\*.rst
   * Began conversion of raw HTML tables to Sphinx list-table or flat-table.
 ### ntndArrayConverter
   * Fixed bugs that could cause a crash when attributes were added to the NDArrays.
