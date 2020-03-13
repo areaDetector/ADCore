@@ -218,8 +218,6 @@ NDFileMagick::NDFileMagick(const char *portName, int queueSize, int blockingCall
     createParam(NDFileMagickQualityString,       asynParamInt32, &NDFileMagickQuality);
     createParam(NDFileMagickCompressTypeString,  asynParamInt32, &NDFileMagickCompressType);
     createParam(NDFileMagickBitDepthString,      asynParamInt32, &NDFileMagickBitDepth);
-    
-    InitializeMagick(NULL);
 }
 
 /* Configuration routine.  Called directly, or from the iocsh  */
@@ -228,6 +226,7 @@ extern "C" int NDFileMagickConfigure(const char *portName, int queueSize, int bl
                                    const char *NDArrayPort, int NDArrayAddr,
                                    int priority, int stackSize)
 {
+    InitializeMagick(NULL);
     NDFileMagick *pPlugin = new NDFileMagick(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr,
                                              priority, stackSize);
     return pPlugin->start();
