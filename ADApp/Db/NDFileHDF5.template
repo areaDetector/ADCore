@@ -17,7 +17,7 @@ include "NDPluginBase.template"
 record(busy, "$(P)$(R)FlushNow")
 {
     field(DTYP, "asynInt32")
-    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))HDF5_SWMRFlushNow")
+    field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))HDF5_SWMRFlushNow")
     field(ZNAM, "Done")
     field(ONAM, "Flush")
 }
