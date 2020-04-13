@@ -1067,6 +1067,10 @@ hid_t NDFileHDF5::createDataset(hid_t group, hdf5::Dataset *dset)
   }
   else if(dset->data_source().is_src_constant()) {
       retcode = this->writeHdfConstDataset(group,  dset);
+      if (retcode != -1) {
+          // Store the dataset into the constant dataset map
+          this->constDsetMap[dset->get_full_name()] = retcode;
+      }
   }
   else {
     retcode = -1;
@@ -1699,8 +1703,8 @@ asynStatus NDFileHDF5::closeFile()
     H5Dclose(it_dset->second->getHandle());
   }
   std::map<std::string, hid_t>::iterator it_hid;
-  // Iterate over the stored attribute data sets and close them
-  for (it_hid = this->attDataMap.begin(); it_hid != this->attDataMap.end(); ++it_hid){
+  // Iterate over the stored constant data sets and close them
+  for (it_hid = this->constDsetMap.begin(); it_hid != this->constDsetMap.end(); ++it_hid){
     H5Dclose(it_hid->second);
   }
 
@@ -1746,7 +1750,7 @@ asynStatus NDFileHDF5::closeFile()
     delete it_dset->second;
   }
   detDataMap.clear();
-  attDataMap.clear();
+  constDsetMap.clear();
   defDsetName = "";
 
   epicsTimeGetCurrent(&now);
