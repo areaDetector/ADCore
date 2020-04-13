@@ -5,7 +5,7 @@ ADDriver inherits from asynNDArrayDriver. This is the class from which
 area detector drivers are directly derived. It provides parameters and
 methods that are specific to area detectors, while asynNDArrayDriver is
 a general NDArray driver. The `ADDriver class
-documentation <../areaDetectorDoxygenHTML/class_a_d_driver.html>`__\ describes
+documentation <../areaDetectorDoxygenHTML/class_a_d_driver.html>`__ describes
 this class in detail.
 
 The file `ADDriver.h <../areaDetectorDoxygenHTML/_a_d_driver_8h.html>`__
