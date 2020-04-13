@@ -122,7 +122,7 @@ class epicsShareClass NDFileHDF5 : public NDPluginFile
     hsize_t getVirtualDim(int index);
 
     std::map<std::string, NDFileHDF5Dataset *> detDataMap;  // Map of handles to detector datasets, indexed by name
-    std::map<std::string, hid_t>               attDataMap;  // Map of handles to attribute datasets, indexed by name
+    std::map<std::string, hid_t>               constDsetMap;  // Map of handles to constant datasets, indexed by name
     std::string                                defDsetName; // Name of the default data set
     std::string                                ndDsetName;  // Name of NDAttribute that specifies the destination data set
     std::map<std::string, hdf5::Element *>     onOpenMap;   // Map of handles to elements with onOpen ndattributes, indexed by fullname
