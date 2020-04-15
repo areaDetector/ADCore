@@ -869,7 +869,6 @@ hid_t NDFileHDF5::writeH5dsetStr(hid_t element, const std::string &name, const s
     return -1;
   }
 
-  //H5Dclose (hdfdset);
   H5Tclose(hdfdatatype);
   H5Sclose(hdfdataspace);
 
@@ -956,7 +955,6 @@ hid_t NDFileHDF5::writeH5dsetInt32(hid_t element, const std::string &name, const
       return -1;
     }
   }
-  //H5Dclose (hdfdset);
   H5Sclose(hdfdataspace);
   H5Tclose(hdfdatatype);
   return hdfdset;
@@ -1043,7 +1041,6 @@ hid_t NDFileHDF5::writeH5dsetFloat64(hid_t element, const std::string &name, con
       return -1;
     }
   }
-  //H5Dclose (hdfdset);
   H5Sclose(hdfdataspace);
   H5Tclose(hdfdatatype);
   return hdfdset;
