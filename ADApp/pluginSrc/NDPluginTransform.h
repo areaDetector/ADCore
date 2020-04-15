@@ -1,9 +1,6 @@
 #ifndef NDPluginTransform_H
 #define NDPluginTransform_H
 
-#include <epicsTypes.h>
-#include <asynStandardInterfaces.h>
-
 #include "NDPluginDriver.h"
 
 /** Map parameter enums to strings that will be used to set up EPICS databases

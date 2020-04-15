@@ -17,9 +17,9 @@
 #include <iocsh.h>
 
 #include <asynDriver.h>
+#include "NDPluginDriver.h"
 
 #include <epicsExport.h>
-#include "NDPluginDriver.h"
 #include "NDPluginGather.h"
 
 static const char *driverName="NDPluginGather";

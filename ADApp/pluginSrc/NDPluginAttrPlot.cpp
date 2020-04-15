@@ -8,6 +8,8 @@
 #include <epicsMath.h>
 #include <epicsThread.h>
 
+#include "NDPluginDriver.h"
+
 #include <epicsExport.h>
 #include "NDPluginAttrPlot.h"
 #include "CircularBuffer.h"

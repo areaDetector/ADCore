@@ -8,13 +8,13 @@
 #include <ntndArrayConverter.h>
 
 #include <asynDriver.h>
+#include "NDPluginDriver.h"
 
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
 
 #include <epicsExport.h>
-#include "NDPluginDriver.h"
 #include "NDPluginPva.h"
 
 static const char *driverName="NDPluginPva";

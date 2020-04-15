@@ -34,6 +34,7 @@
 #include <osiSock.h>
 
 #include <asynDriver.h>
+#include "NDPluginFile.h"
 
 #include <epicsExport.h>
 #include "NDFileHDF5.h"

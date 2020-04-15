@@ -21,9 +21,9 @@
 #include <iocsh.h>
 
 #include <asynDriver.h>
+#include "NDPluginDriver.h"
 
 #include <epicsExport.h>
-#include "NDPluginDriver.h"
 #include "colorMaps.h"
 #include "NDPluginColorConvert.h"
 

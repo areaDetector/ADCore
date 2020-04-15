@@ -22,9 +22,9 @@
 #include <iocsh.h>
 
 #include <asynDriver.h>
+#include "NDPluginDriver.h"
 
 #include <epicsExport.h>
-#include "NDPluginDriver.h"
 #include "NDPluginOverlayTextFont.h"
 #include "NDPluginOverlay.h"
 

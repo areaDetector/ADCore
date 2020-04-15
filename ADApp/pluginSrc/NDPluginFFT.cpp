@@ -22,9 +22,9 @@
 #include <asynDriver.h>
 
 #include <NDArray.h>
+#include "NDPluginDriver.h"
 
 #include <epicsExport.h>
-
 #include "NDPluginFFT.h"
 #include "fft.h"
 

@@ -24,9 +24,9 @@
 #include <iocsh.h>
 
 #include <asynDriver.h>
+#include "NDPluginDriver.h"
 
 #include <epicsExport.h>
-#include "NDPluginDriver.h"
 #include "NDPluginTransform.h"
 
 /* Enums to describe the types of transformations */

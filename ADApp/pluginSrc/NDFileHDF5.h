@@ -9,9 +9,7 @@
 
 #include <list>
 #include <hdf5.h>
-#include <asynDriver.h>
-#include <NDPluginFile.h>
-#include <NDArray.h>
+#include "NDPluginFile.h"
 #include "NDFileHDF5Layout.h"
 #include "NDFileHDF5Dataset.h"
 #include "NDFileHDF5LayoutXML.h"

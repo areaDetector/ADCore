@@ -18,9 +18,9 @@
 #include <iocsh.h>
 
 #include <asynDriver.h>
+#include "NDPluginFile.h"
 
 #include <epicsExport.h>
-#include "NDPluginFile.h"
 #include "NDFileNetCDF.h"
 
 #define MAX_ATTRIBUTE_STRING_SIZE 256

@@ -31,10 +31,9 @@
 #include <iocsh.h>
 
 #include <asynDriver.h>
+#include "NDPluginFile.h"
 
 #include <epicsExport.h>
-#include "NDPluginFile.h"
-#include "tiffio.h"
 #include "NDFileTIFF.h"
 
 #define STRING_BUFFER_SIZE 2048

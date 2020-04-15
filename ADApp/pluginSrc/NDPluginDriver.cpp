@@ -21,6 +21,7 @@
 #include <cantProceed.h>
 
 #include <asynDriver.h>
+#include "asynNDArrayDriver.h"
 
 #include <epicsExport.h>
 #include "NDPluginDriver.h"

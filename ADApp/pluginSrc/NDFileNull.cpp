@@ -18,6 +18,7 @@
 #include <iocsh.h>
 
 #include <asynDriver.h>
+#include "NDPluginFile.h"
 
 #include <epicsExport.h>
 #include "NDFileNull.h"

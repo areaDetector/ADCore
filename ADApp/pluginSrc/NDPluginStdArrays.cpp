@@ -21,9 +21,9 @@
 #include <iocsh.h>
 
 #include <asynDriver.h>
+#include "NDPluginDriver.h"
 
 #include <epicsExport.h>
-#include "NDPluginDriver.h"
 #include "NDPluginStdArrays.h"
 
 static const char *driverName="NDPluginStdArrays";

@@ -22,9 +22,9 @@
 #include <asynDriver.h>
 
 #include <NDArray.h>
+#include "NDPluginDriver.h"
 
 #include <epicsExport.h>
-
 #include "NDPluginTimeSeries.h"
 
 #define DEFAULT_NUM_TSPOINTS 2048

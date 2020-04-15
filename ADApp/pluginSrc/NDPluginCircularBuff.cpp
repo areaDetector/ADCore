@@ -22,9 +22,9 @@
 #include <postfix.h>
 
 #include <asynDriver.h>
+#include "NDPluginDriver.h"
 
 #include <epicsExport.h>
-#include "NDArray.h"
 #include "NDPluginCircularBuff.h"
 
 static const char *driverName="NDPluginCircularBuff";
