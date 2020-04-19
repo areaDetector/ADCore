@@ -32,7 +32,6 @@
         <xs:restriction base="xs:string">
           <xs:enumeration value="OnFileOpen" />
           <xs:enumeration value="OnFileClose" />
-          <xs:enumeration value="OnFileWrite" />
         </xs:restriction>
       </xs:simpleType>
     </xs:attribute>
@@ -52,6 +51,15 @@
     <xs:attribute name="value" type="xs:string" use="optional" default="" />
     <xs:attribute name="ndattribute" type="xs:string" use="optional" default="" />
     <xs:attribute name="det_default" type="xs:boolean" use="optional" default="false" />
+    <xs:attribute name="when" use="optional">
+      <xs:simpleType>
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="OnFileOpen" />
+          <xs:enumeration value="OnFileClose" />
+          <xs:enumeration value="OnFileWrite" />
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
   </xs:complexType>
 
   <!-- The hardlink element -->
