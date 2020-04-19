@@ -19,6 +19,26 @@ the EXAMPLE_RELEASE_PATHS.local, EXAMPLE_RELEASE_LIBS.local, and EXAMPLE_RELEASE
 files respectively, in the configure/ directory of the appropriate release of the 
 [top-level areaDetector](https://github.com/areaDetector/areaDetector) repository.
 
+## __R3-10 (April XXX, 2020)__
+
+### NDFileHDF
+  * Fixed a problem that constant datasets were not closed before closing the file.
+    This produced warning messages, and probably minor memory leaks.
+
+### NDPluginCicularBuff
+  * Added extra checks when pre-count is set
+    - A negative value resulted in a segfault.
+    - Changing it while acquiring doesn't make sense, as it is used
+      to allocate the ring buffer when starting an acquisition
+
+### docs/ADCore/NDFileHDF5.rst, XML_schema/hdf5
+  * Fixed the XML schema and the documentation for the use of the "when" attribute in HDF5 layout XML files.
+    Previously it stated that "when" could only be used for HDF5 attributes, not datasets.
+    This is incorrect, it can also be used for datasets.  It also incorectly stated that the allowed
+    values were "OnFileOpen", "OnFileClose", and "OnFileWrite".  "OnFileWrite" is a valid
+    value for HDF5 datasets, but it is not an allowed value for HDF5 attributes.
+
+
 ## __R3-9 (February 24, 2020)__
 
 ### CCDMultiTrack
