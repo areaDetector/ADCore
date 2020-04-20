@@ -2,12 +2,23 @@
 #define NDPluginDriver_H
 
 #include <set>
+
+#ifdef epicsExportSharedSymbols
+#   define epicsExportSharedSymbols_NDPluginDriverH
+#   undef epicsExportSharedSymbols
+#endif
+
 #include <epicsTypes.h>
 #include <epicsMessageQueue.h>
 #include <epicsThread.h>
 #include <epicsTime.h>
 
 #include "asynNDArrayDriver.h"
+
+#ifdef epicsExportSharedSymbols_NDPluginDriverH
+#   define epicsExportSharedSymbols
+#   include <shareLib.h>
+#endif
 
 class Throttler;
 

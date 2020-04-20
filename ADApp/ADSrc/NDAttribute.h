@@ -14,11 +14,21 @@
 #include <stdio.h>
 #include <string.h>
 
+#ifdef epicsExportSharedSymbols
+#   define epicsExportSharedSymbols_NDAttributeH
+#   undef epicsExportSharedSymbols
+#endif
+
 #include <ellLib.h>
 #include <epicsTypes.h>
 
 /* asynDriver.h is needed only to define epicsInt64 on 3.14 */
 #include <asynDriver.h>
+
+#ifdef epicsExportSharedSymbols_NDAttributeH
+#   define epicsExportSharedSymbols
+#   include <shareLib.h>
+#endif
 
 /** Success return code  */
 #define ND_SUCCESS 0

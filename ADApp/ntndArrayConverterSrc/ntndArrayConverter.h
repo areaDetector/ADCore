@@ -1,5 +1,18 @@
+#ifndef ntndArrayConverter_H
+#define ntndArrayConverter_H
+
+#ifdef epicsExportSharedSymbols
+#   define epicsExportSharedSymbols_ntndArrayConverterH
+#   undef epicsExportSharedSymbols
+#endif
+
 #include <NDArray.h>
 #include <pv/ntndarray.h>
+
+#ifdef epicsExportSharedSymbols_ntndArrayConverterH
+#   define epicsExportSharedSymbols
+#   include <shareLib.h>
+#endif
 
 typedef struct NTNDArrayInfo
 {
@@ -63,3 +76,5 @@ private:
 };
 
 typedef std::tr1::shared_ptr<NTNDArrayConverter> NTNDArrayConverterPtr;
+
+#endif

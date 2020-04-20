@@ -13,9 +13,20 @@
 #define NDArray_H
 
 #include <set>
+#include <stdio.h>
+
+#ifdef epicsExportSharedSymbols
+#   define epicsExportSharedSymbols_NDArrayH
+#   undef epicsExportSharedSymbols
+#endif
+
 #include <epicsMutex.h>
 #include <epicsTime.h>
-#include <stdio.h>
+
+#ifdef epicsExportSharedSymbols_NDArrayH
+#   define epicsExportSharedSymbols
+#   include <shareLib.h>
+#endif
 
 #include "NDAttribute.h"
 #include "NDAttributeList.h"
