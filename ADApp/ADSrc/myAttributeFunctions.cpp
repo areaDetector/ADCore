@@ -2,8 +2,8 @@
 #include <string.h>
 #include <stdlib.h>
 #include <registryFunction.h>
-#include <epicsExport.h>
 #include <epicsTime.h>
+#include <epicsExport.h>
 #include "functAttribute.h"
 
 // These functions demonstrate using user-defined attribute functions
