@@ -25,8 +25,6 @@
 #include <asynDriver.h>
 
 #include <epicsExport.h>
-
-#include "NDArray.h"
 #include "NDPluginROIStat.h"
 
 #define MAX(A,B) (A)>(B)?(A):(B)
