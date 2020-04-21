@@ -28,7 +28,9 @@ INC += Codec.h
 INC += PVAttribute.h
 INC += paramAttribute.h
 INC += functAttribute.h
+INC += asynNDArrayDriverParamSet.h
 INC += asynNDArrayDriver.h
+INC += ADDriverParamSet.h
 INC += ADDriver.h
 INC += CCDMultiTrack.h
 
