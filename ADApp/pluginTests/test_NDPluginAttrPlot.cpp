@@ -129,6 +129,7 @@ struct AttrPlotPluginTestFixture
     static const int cache_size = 10;
     static const int n_attributes = 3;
     static const int n_selected = 2;
+    asynNDArrayDriverParamSet* paramSet;
     AttrPlotPluginWrapper* attrPlot;
     NDArrayPool * arrPool;
     std::string dummy_port;
@@ -143,7 +144,8 @@ struct AttrPlotPluginTestFixture
         uniqueAsynPortName(port);
         uniqueAsynPortName(dummy_port);
 
-        asynNDArrayDriver *dummy_driver = new asynNDArrayDriver(dummy_port.c_str(), 1, 0, 0, asynGenericPointerMask, asynGenericPointerMask, 0, 0, 0, 0);
+        paramSet = new asynNDArrayDriverParamSet();
+        asynNDArrayDriver *dummy_driver = new asynNDArrayDriver(paramSet, dummy_port.c_str(), 1, 0, 0, asynGenericPointerMask, asynGenericPointerMask, 0, 0, 0, 0);
         arrPool = dummy_driver->pNDArrayPool;
 
         // This is the plugin under test
@@ -161,6 +163,7 @@ struct AttrPlotPluginTestFixture
     {
         delete attrPlot;
         delete arrPool;
+        delete paramSet;
     }
 
 };
