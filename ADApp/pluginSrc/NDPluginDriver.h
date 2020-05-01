@@ -52,7 +52,7 @@ class sortedListElement {
                                                                          *to execute plugin code */
 #define NDPluginDriverMaxByteRateString         "MAX_BYTE_RATE"         /**< (asynFloat64,  r/w) Limit on byte rate output of plugin */
 /** Class from which actual plugin drivers are derived; derived from asynNDArrayDriver */
-class epicsShareClass NDPluginDriver : public asynNDArrayDriver, public epicsThreadRunable {
+class epicsShareClass NDPluginDriver : public asynNDArrayDriverParamSet, public asynNDArrayDriver, public epicsThreadRunable {
 public:
     NDPluginDriver(const char *portName, int queueSize, int blockingCallbacks,
                    const char *NDArrayPort, int NDArrayAddr, int maxAddr,

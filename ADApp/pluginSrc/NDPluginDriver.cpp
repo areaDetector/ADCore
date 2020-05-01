@@ -92,8 +92,9 @@ NDPluginDriver::NDPluginDriver(const char *portName, int queueSize, int blocking
                                int maxBuffers, size_t maxMemory, int interfaceMask, int interruptMask,
                                int asynFlags, int autoConnect, int priority, int stackSize, int maxThreads,
                                bool compressionAware)
-
-    : asynNDArrayDriver(portName, maxAddr, maxBuffers, maxMemory,
+   : asynNDArrayDriver(
+          static_cast<asynNDArrayDriverParamSet*>(this),  // Upcast to provide asynNDArrayDriver with its param set
+          portName, maxAddr, maxBuffers, maxMemory,
           interfaceMask | asynInt32Mask | asynFloat64Mask | asynOctetMask | asynInt32ArrayMask | asynDrvUserMask,
           interruptMask | asynInt32Mask | asynFloat64Mask | asynOctetMask | asynInt32ArrayMask,
           asynFlags, autoConnect, priority, stackSize),
