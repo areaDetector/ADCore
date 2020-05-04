@@ -1,6 +1,6 @@
 # This file contains the commands to build driver applications using the common set of plugins
 # The variable DBD_NAME should be defined to specify the name of the application DBD file.
-# For backwards compatibilty if DBD_NAME is not specified then PROD_NAME must be specified, 
+# For backwards compatibilty if DBD_NAME is not specified then PROD_NAME must be specified,
 # and DBD_NAME will set to this.
 
 ifndef DBD_NAME
@@ -254,7 +254,12 @@ ifdef ADCOMPVISION
     ifeq ($(WITH_OPENCV_VIDEO), YES)
       PROD_SYS_LIBS += opencv_video opencv_videoio
     endif
-  endif 
+  endif
+endif
+
+ifdef ADPLUGINCENTROIDS
+  $(DBD_NAME)_DBD += NDPluginCentroids.dbd
+  PROD_LIBS += NDPluginCentroids centroids
 endif
 
 # Required modules
@@ -263,7 +268,7 @@ PROD_LIBS          += asyn
 
 ifeq ($(EPICS_LIBCOM_ONLY),YES)
   PROD_LIBS        += Com
-else 
+else
   # Optional modules
   ifdef ALIVE
     $(DBD_NAME)_DBD += aliveSupport.dbd
