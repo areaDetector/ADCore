@@ -173,10 +173,7 @@ void NDPluginProcess::processCallbacks(NDArray *pArray)
         }
         if (background) value -= background[i];
         if (flatField) {
-            if (flatField[i] != 0.) 
-                value *= scaleFlatField / flatField[i];
-            else
-                value = scaleFlatField;
+            if (flatField[i] != 0.) value *= scaleFlatField / flatField[i];
         }
         if (enableOffsetScale) value = (value + offset)*scale;
         if (enableHighClip && (value > highClip)) value = highClip;
