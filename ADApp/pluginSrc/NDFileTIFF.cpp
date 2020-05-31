@@ -462,7 +462,7 @@ asynStatus NDFileTIFF::readFile(NDArray **pArray)
         asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
             "%s::%s Sample format is not defined! Default UINT is used.\n",
             driverName, __FUNCTION__);
-    	sampleFormat = SAMPLEFORMAT_UINT;
+        sampleFormat = SAMPLEFORMAT_UINT;
     }
 
     if      ((bitsPerSample == 8)  && (sampleFormat == SAMPLEFORMAT_INT))     dataType = NDInt8;

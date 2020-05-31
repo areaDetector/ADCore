@@ -282,7 +282,7 @@ asynStatus NDPluginCircularBuff::writeInt32(asynUser *pasynUser, epicsInt32 valu
         getIntegerParam(NDCircBuffFlushOnSoftTrig, &flushOn);
 
         if (flushOn > 0){
-        	flushPreBuffer();
+            flushPreBuffer();
         }
 
     }  else if (function == NDCircBuffPreTrigger){

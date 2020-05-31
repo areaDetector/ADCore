@@ -2043,17 +2043,17 @@ asynStatus NDFileHDF5::writeInt32(asynUser *pasynUser, epicsInt32 value)
     }
     status = asynError;
   } else if (function == NDFileHDF5_SWMRFlushNow){
-	  if (this->file != 0 && value > 0){
-		  // Set the parameter
-		  setIntegerParam(NDFileHDF5_SWMRFlushNow, 1);
-		  callParamCallbacks();
-		  // Now send the event to the flush task
-		  epicsEventSignal(this->flushEventId);
-	  } else {
-		  // We cannot flush if we are not saving to file
-	      status = asynError;
-	      setIntegerParam(function, oldvalue);
-	  }
+      if (this->file != 0 && value > 0){
+          // Set the parameter
+          setIntegerParam(NDFileHDF5_SWMRFlushNow, 1);
+          callParamCallbacks();
+          // Now send the event to the flush task
+          epicsEventSignal(this->flushEventId);
+      } else {
+          // We cannot flush if we are not saving to file
+          status = asynError;
+          setIntegerParam(function, oldvalue);
+      }
   } else
   {
     if (function < FIRST_NDFILE_HDF5_PARAM)
