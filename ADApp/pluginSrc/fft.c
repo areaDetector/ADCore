@@ -9,7 +9,7 @@
 #ifndef M_PI
   #define M_PI 3.14159265358979323846
 #endif
- 
+
 void fft_1D(double data[], unsigned long nn, int isign)
 {
   unsigned long n,mmax,m,j,istep,i;

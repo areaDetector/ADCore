@@ -501,7 +501,7 @@ int NDFileNexus::processStreamData(NDArray *pArray) {
   getIntegerParam(addr, NDFileWriteMode, &fileWriteMode);
   getIntegerParam(addr, NDFileNumCapture, &numCapture);
   this->unlock();
-  
+
   rank = pArray->ndims;
   for (ii=0; ii<rank; ii++) {
     switch(fileWriteMode) {

@@ -55,8 +55,8 @@ void ADDriver::setShutter(int open)
 }
 
 /** Sets an int32 parameter.
-  * \param[in] pasynUser asynUser structure that contains the function code in pasynUser->reason. 
-  * \param[in] value The value for this parameter 
+  * \param[in] pasynUser asynUser structure that contains the function code in pasynUser->reason.
+  * \param[in] value The value for this parameter
   *
   * Takes action if the function code requires it.  Currently only ADShutterControl requires
   * action here.  This method is normally called from the writeInt32 method in derived classes, which
@@ -69,7 +69,7 @@ asynStatus ADDriver::writeInt32(asynUser *pasynUser, epicsInt32 value)
     asynStatus status = asynSuccess;
     const char *functionName = "writeInt32";
 
-    status = parseAsynUser(pasynUser, &function, &addr, &paramName); 
+    status = parseAsynUser(pasynUser, &function, &addr, &paramName);
     if (status != asynSuccess) return status;
 
     status = setIntegerParam(addr, function, value);
@@ -96,8 +96,8 @@ asynStatus ADDriver::writeInt32(asynUser *pasynUser, epicsInt32 value)
 }
 
 
-/** All of the arguments are simply passed to the constructor for the asynNDArrayDriver base class, 
-  * except numParams.  As of R3-0 numParams is no longer used in asynNDArrayDriver but we have left 
+/** All of the arguments are simply passed to the constructor for the asynNDArrayDriver base class,
+  * except numParams.  As of R3-0 numParams is no longer used in asynNDArrayDriver but we have left
   * it in here to avoid needing to change all drivers yet. In R5-0 we expect to remove maxBuffers and
   * maxMemory as well, so we will wait until then to change the ADDriver constructor arguments.
   * After calling the base class constructor this method sets reasonable default values for all of the parameters
@@ -148,12 +148,12 @@ ADDriver::ADDriver(const char *portName, int maxAddr, int numParams, int maxBuff
     createParam(ADReadStatusString,          asynParamInt32, &ADReadStatus);
     createParam(ADStatusMessageString,       asynParamOctet, &ADStatusMessage);
     createParam(ADStringToServerString,      asynParamOctet, &ADStringToServer);
-    createParam(ADStringFromServerString,    asynParamOctet, &ADStringFromServer);    
+    createParam(ADStringFromServerString,    asynParamOctet, &ADStringFromServer);
 
     /* Here we set the values of read-only parameters and of read/write parameters that cannot
      * or should not get their values from the database.  Note that values set here will override
-     * those in the database for output records because if asyn device support reads a value from 
-     * the driver with no error during initialization then it sets the output record to that value.  
+     * those in the database for output records because if asyn device support reads a value from
+     * the driver with no error during initialization then it sets the output record to that value.
      * If a value is not set here then the read request will return an error (uninitialized).
      * Values set here will be overridden by values from save/restore if they exist. */
     setIntegerParam(ADMaxSizeX,     1);

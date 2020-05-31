@@ -69,8 +69,8 @@ typedef struct NDOverlay {
 /** Overlay graphics on top of an image.  Useful for highlighting ROIs and displaying cursors */
 class epicsShareClass NDPluginOverlay : public NDPluginDriver {
 public:
-    NDPluginOverlay(const char *portName, int queueSize, int blockingCallbacks, 
-                 const char *NDArrayPort, int NDArrayAddr, int maxOverlays, 
+    NDPluginOverlay(const char *portName, int queueSize, int blockingCallbacks,
+                 const char *NDArrayPort, int NDArrayAddr, int maxOverlays,
                  int maxBuffers, size_t maxMemory,
                  int priority, int stackSize, int maxThreads);
     /* These methods override the virtual methods in the base class */
@@ -99,7 +99,7 @@ protected:
     int NDPluginOverlayTimeStampFormat;
     int NDPluginOverlayFont;
     int NDPluginOverlayDisplayText;
-                                
+
 private:
     int maxOverlays_;
     NDArrayInfo prevArrayInfo_;
@@ -109,5 +109,5 @@ private:
     int doOverlay(NDArray *pArray, NDOverlay_t *pOverlay, NDArrayInfo_t *pArrayInfo);
     template <typename epicsType> void setPixel(epicsType *pValue, NDOverlay_t *pOverlay, NDArrayInfo_t *pArrayInfo);
 };
-    
+
 #endif

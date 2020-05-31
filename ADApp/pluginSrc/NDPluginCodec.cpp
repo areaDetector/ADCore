@@ -85,7 +85,7 @@ static NDArray *allocArray(NDArray *input, int dataType = -1, size_t dataSize=0,
     NDArray *output = pool->alloc(input->ndims, dims, dt, dataSize, pData);
     // Use copy method to copy metadata.  copyData=false, copyDimensions=true, copyDataType=false
     pool->copy(input, output, false, true, false);
-    
+
     return output;
 
 }
@@ -278,7 +278,7 @@ NDArray *decompressJPEG(NDArray *input, NDCodecStatus_t *status, char *errorMess
 {
     // Sanity check
     if (input->codec.name != codecName[NDCODEC_JPEG]) {
-        sprintf(errorMessage, "Invalid codec '%s', expected '%s'", 
+        sprintf(errorMessage, "Invalid codec '%s', expected '%s'",
                 input->codec.name.c_str(), codecName[NDCODEC_JPEG].c_str());
         *status = NDCODEC_ERROR;
         return NULL;
@@ -357,7 +357,7 @@ static const char* bloscCompName[] = {
     "zstd",
 };
 
-NDArray *compressBlosc(NDArray *input, int clevel, int shuffle, NDCodecBloscComp_t compressor, 
+NDArray *compressBlosc(NDArray *input, int clevel, int shuffle, NDCodecBloscComp_t compressor,
                        int numThreads, NDCodecStatus_t *status, char *errorMessage)
 {
     if (!input->codec.empty()) {
@@ -442,7 +442,7 @@ NDArray *decompressBlosc(NDArray *input, int numThreads, NDCodecStatus_t *status
 
 #else
 
-NDArray *compressBlosc(NDArray *input, int clevel, int shuffle, NDCodecBloscComp_t compressor, 
+NDArray *compressBlosc(NDArray *input, int clevel, int shuffle, NDCodecBloscComp_t compressor,
                        int numThreads, NDCodecStatus_t *status, char *errorMessage)
 {
     sprintf(errorMessage, "No Blosc support");
@@ -555,7 +555,7 @@ NDArray *compressBSLZ4(NDArray *input, NDCodecStatus_t *status, char *errorMessa
 
     size_t blockSize = 0;
 
-    int64_t compSize = bshuf_compress_lz4(input->pData, output->pData, info.nElements, 
+    int64_t compSize = bshuf_compress_lz4(input->pData, output->pData, info.nElements,
                                           info.bytesPerElement, blockSize);
 
     if (compSize < 0) {

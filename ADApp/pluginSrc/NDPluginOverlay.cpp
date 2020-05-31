@@ -73,7 +73,7 @@ void NDPluginOverlay::setPixel(epicsType *pValue, NDOverlay_t *pOverlay, NDArray
 }
 
 
-
+
 template <typename epicsType>
 void NDPluginOverlay::doOverlayT(NDArray *pArray, NDOverlay_t *pOverlay, NDArrayInfo_t *pArrayInfo)
 {
@@ -95,7 +95,7 @@ void NDPluginOverlay::doOverlayT(NDArray *pArray, NDOverlay_t *pOverlay, NDArray
 
   asynPrint(pasynUserSelf, ASYN_TRACEIO_DRIVER,
     "NDPluginOverlay::DoOverlayT, shape=%d, Xpos=%d, Ypos=%d, Xsize=%d, Ysize=%d\n",
-    pOverlay->shape, (int)pOverlay->PositionX, (int)pOverlay->PositionY, 
+    pOverlay->shape, (int)pOverlay->PositionX, (int)pOverlay->PositionY,
     (int)pOverlay->SizeX, (int)pOverlay->SizeY);
 
   if (pOverlay->pvt.changed) {
@@ -139,7 +139,7 @@ void NDPluginOverlay::doOverlayT(NDArray *pArray, NDOverlay_t *pOverlay, NDArray
 
         //For non-zero width, grow the rectangle towards the center.
         for (iy=ymin; iy<=ymax; iy++) {
-          if ((iy < (ymin + ywide)) || 
+          if ((iy < (ymin + ywide)) ||
               (iy > (ymax - ywide))) {
             for (ix=xmin; ix<=xmax; ix++) {
               addPixel(pOverlay, ix, iy, pArrayInfo);
@@ -167,7 +167,7 @@ void NDPluginOverlay::doOverlayT(NDArray *pArray, NDOverlay_t *pOverlay, NDArray
         xmax = (int)(pArrayInfo->xSize-1);
         ymax = (int)(pArrayInfo->ySize-1);
 
-        // Use the parametric equation for an ellipse.  
+        // Use the parametric equation for an ellipse.
         // Only need to compute 0 to pi/2, other quadrants by symmetry
         // Make 2*(xsize + ysize) angle points
         nSteps = 2*(xsize + ysize);
@@ -182,7 +182,7 @@ void NDPluginOverlay::doOverlayT(NDArray *pArray, NDOverlay_t *pOverlay, NDArray
             addPixel(pOverlay, (xcent - ix), (ycent - iy), pArrayInfo);
           }
         }
-        // There may be duplicate pixels in the address list.  
+        // There may be duplicate pixels in the address list.
         // We must remove them or the XOR draw mode won't work because the pixel will be set and then unset
         std::sort(pOverlay->pvt.addressOffset.begin(), pOverlay->pvt.addressOffset.end());
         it = std::unique(pOverlay->pvt.addressOffset.begin(), pOverlay->pvt.addressOffset.end());
@@ -295,7 +295,7 @@ int NDPluginOverlay::doOverlay(NDArray *pArray, NDOverlay_t *pOverlay, NDArrayIn
   return(ND_SUCCESS);
 }
 
-
+
 /** Callback function that is called by the NDArray driver with new NDArray data.
   * Draws overlays on top of the array.
   * \param[in] pArray  The NDArray from the callback.
@@ -322,17 +322,17 @@ void NDPluginOverlay::processCallbacks(NDArray *pArray)
 
   /* Copy the input array so we can modify it. */
   pOutput = this->pNDArrayPool->copy(pArray, NULL, 1);
-  
+
   /* Get information about the array needed later */
   pOutput->getInfo(&arrayInfo);
   arrayInfoChanged = (memcmp(&arrayInfo, &this->prevArrayInfo_, sizeof(arrayInfo)) != 0);
   this->prevArrayInfo_ = arrayInfo;
   setIntegerParam(NDPluginOverlayMaxSizeX, (int)arrayInfo.xSize);
   setIntegerParam(NDPluginOverlayMaxSizeY, (int)arrayInfo.ySize);
- 
+
   /* Copy the previous contents of each overlay */
   pOverlays = this->prevOverlays_;
-  
+
   /* Loop over the overlays in this driver */
   for (overlay=0; overlay<this->maxOverlays_; overlay++) {
     pOverlay = &pOverlays[overlay];
@@ -353,9 +353,9 @@ void NDPluginOverlay::processCallbacks(NDArray *pArray)
     getStringParam( overlay, NDPluginOverlayTimeStampFormat, sizeof(pOverlay->TimeStampFormat), pOverlay->TimeStampFormat);
     getIntegerParam(overlay, NDPluginOverlayFont,       &pOverlay->Font);
     getStringParam( overlay, NDPluginOverlayDisplayText, sizeof(pOverlay->DisplayText), pOverlay->DisplayText);
-    
+
     pOverlay->DisplayText[sizeof(pOverlay->DisplayText)-1] = 0;
-    
+
     // Compare to see if any fields in the overlay have changed
     pOverlay->pvt.changed = (memcmp(&this->prevOverlays_[overlay], pOverlay, overlayUserLen) != 0);
     if (arrayInfoChanged) pOverlay->pvt.changed = true;
@@ -372,8 +372,8 @@ void NDPluginOverlay::processCallbacks(NDArray *pArray)
     pOverlay = &pOverlays[overlay];
     if (!pOverlay->use) continue;
     this->doOverlay(pOutput, pOverlay, &arrayInfo);
-    asynPrint(pasynUserSelf, ASYN_TRACEIO_DRIVER, 
-      "%s::%s overlay %d, changed=%d, points=%d\n", 
+    asynPrint(pasynUserSelf, ASYN_TRACEIO_DRIVER,
+      "%s::%s overlay %d, changed=%d, points=%d\n",
       driverName, functionName, overlay, pOverlay->pvt.changed, (int)pOverlay->pvt.addressOffset.size());
   }
   this->lock();
@@ -382,8 +382,8 @@ void NDPluginOverlay::processCallbacks(NDArray *pArray)
   callParamCallbacks();
 }
 
-
-
+
+
 /** Constructor for NDPluginOverlay; most parameters are simply passed to NDPluginDriver::NDPluginDriver.
   * After calling the base class constructor this method sets reasonable default values for all of the
   * ROI parameters.
@@ -441,12 +441,12 @@ NDPluginOverlay::NDPluginOverlay(const char *portName, int queueSize, int blocki
   createParam(NDPluginOverlayBlueString,            asynParamInt32, &NDPluginOverlayBlue);
   createParam(NDPluginOverlayTimeStampFormatString, asynParamOctet, &NDPluginOverlayTimeStampFormat);
   createParam(NDPluginOverlayFontString,            asynParamInt32, &NDPluginOverlayFont);
-  createParam(NDPluginOverlayDisplayTextString,     asynParamOctet, &NDPluginOverlayDisplayText);    
+  createParam(NDPluginOverlayDisplayTextString,     asynParamOctet, &NDPluginOverlayDisplayText);
 
   /* Set the plugin type string */
   setStringParam(NDPluginDriverPluginType, "NDPluginOverlay");
 
-  // Enable ArrayCallbacks.  
+  // Enable ArrayCallbacks.
   // This plugin currently ignores this setting and always does callbacks, so make the setting reflect the behavior
   setIntegerParam(NDArrayCallbacks, 1);
 
@@ -458,7 +458,7 @@ NDPluginOverlay::NDPluginOverlay(const char *portName, int queueSize, int blocki
   * For other parameters it calls NDPluginDriver::writeInt32 to see if that method understands the parameter.
   * For all parameters it sets the value in the parameter library and calls any registered callbacks.
   * \param[in] pasynUser pasynUser structure that encodes the reason and address.
-  * \param[in] value The value to write. 
+  * \param[in] value The value to write.
   * \return asynStatus
   */
 asynStatus NDPluginOverlay::writeInt32(asynUser *pasynUser, epicsInt32 value)
@@ -470,12 +470,12 @@ asynStatus NDPluginOverlay::writeInt32(asynUser *pasynUser, epicsInt32 value)
   int positionX, positionY, sizeX, sizeY, centerX, centerY;
   static const char* functionName = "writeInt32";
 
-  getAddress(pasynUser, &addr); 
+  getAddress(pasynUser, &addr);
   pOverlay = &prevOverlays_[addr];
 
   /* Set parameter and readback in parameter library */
   setIntegerParam(addr, function, value);
-  
+
   getIntegerParam(addr, NDPluginOverlayPositionX, &positionX);
   getIntegerParam(addr, NDPluginOverlayPositionY, &positionY);
   getIntegerParam(addr, NDPluginOverlayCenterX,   &centerX);
@@ -536,7 +536,7 @@ extern "C" int NDOverlayConfigure(const char *portName, int queueSize, int block
                  int maxBuffers, size_t maxMemory,
                  int priority, int stackSize, int maxThreads)
 {
-  NDPluginOverlay *pPlugin = new NDPluginOverlay(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr, 
+  NDPluginOverlay *pPlugin = new NDPluginOverlay(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr,
                                                  maxOverlays, maxBuffers, maxMemory, priority, stackSize, maxThreads);
   return pPlugin->start();
 }

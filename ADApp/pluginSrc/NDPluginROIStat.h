@@ -83,11 +83,11 @@ typedef struct NDROI {
 /** Compute statistics on ROIs in an array */
 class epicsShareClass NDPluginROIStat : public NDPluginDriver {
 public:
-    NDPluginROIStat(const char *portName, int queueSize, int blockingCallbacks, 
-                 const char *NDArrayPort, int NDArrayAddr, int maxROIs, 
+    NDPluginROIStat(const char *portName, int queueSize, int blockingCallbacks,
+                 const char *NDArrayPort, int NDArrayAddr, int maxROIs,
                  int maxBuffers, size_t maxMemory,
                  int priority, int stackSize, int maxThreads);
-    
+
     //These methods override the virtual methods in the base class
     void processCallbacks(NDArray *pArray);
     asynStatus writeInt32(asynUser *pasynUser, epicsInt32 value);
@@ -132,9 +132,9 @@ protected:
     int NDPluginROIStatTSTotal;
     int NDPluginROIStatTSNet;
     int NDPluginROIStatTSTimestamp;
-    
+
     int NDPluginROIStatLast;
-                                
+
 private:
 
     template <typename epicsType> asynStatus doComputeStatisticsT(NDArray *pArray, NDROI_t *pROI);

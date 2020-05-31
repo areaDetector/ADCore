@@ -34,11 +34,11 @@
 #define NDPluginROICollapseDimsString       "COLLAPSE_DIMS"     /* (asynInt32,   r/w) Collapse dimensions of size 1 */
 
 /** Extract Regions-Of-Interest (ROI) from NDArray data; the plugin can be a source of NDArray callbacks for
-  * other plugins, passing these sub-arrays. 
+  * other plugins, passing these sub-arrays.
   * The plugin also optionally computes a statistics on the ROI. */
 class epicsShareClass NDPluginROI : public NDPluginDriver {
 public:
-    NDPluginROI(const char *portName, int queueSize, int blockingCallbacks, 
+    NDPluginROI(const char *portName, int queueSize, int blockingCallbacks,
                  const char *NDArrayPort, int NDArrayAddr,
                  int maxBuffers, size_t maxMemory,
                  int priority, int stackSize, int maxThreads);
@@ -68,11 +68,11 @@ protected:
     int NDPluginROIDim1Reverse;
     int NDPluginROIDim2Reverse;
     int NDPluginROIDim0Enable;
-    int NDPluginROIDim1Enable;    
-    int NDPluginROIDim2Enable;    
-    int NDPluginROIDim0AutoSize;    
-    int NDPluginROIDim1AutoSize;    
-    int NDPluginROIDim2AutoSize;    
+    int NDPluginROIDim1Enable;
+    int NDPluginROIDim2Enable;
+    int NDPluginROIDim0AutoSize;
+    int NDPluginROIDim1AutoSize;
+    int NDPluginROIDim2AutoSize;
     int NDPluginROIDataType;
     int NDPluginROIEnableScale;
     int NDPluginROIScale;
@@ -82,5 +82,5 @@ private:
     int requestedSize_[3];
     int requestedOffset_[3];
 };
-    
+
 #endif

@@ -38,7 +38,7 @@ int main(int argc, char *argv[])
   hsize_t elementSize[2] = {1,1};
   hsize_t maxdims[2] = {H5S_UNLIMITED,H5S_UNLIMITED};
   int fillValue = 0;
-  
+
   /* Open the source file and dataset */
   /* All SWMR files need to use the latest file format */
   access_plist = H5Pcreate(H5P_FILE_ACCESS);
@@ -62,7 +62,7 @@ int main(int argc, char *argv[])
                        datatype, dataspace,
                        H5P_DEFAULT, cparm, access_plist);
   H5Gclose(groupDetector);
-  
+
   rank = 1;
   dims[0] = 1;
   dims[1] = 1;
@@ -106,7 +106,7 @@ int main(int argc, char *argv[])
 #if H5_VERSION_GE(1,9,178)
   H5Fstart_swmr_write(fid);
 #endif
-  
+
   H5Fclose(fid);
 
   return 0;

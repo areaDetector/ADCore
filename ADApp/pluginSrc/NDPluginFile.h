@@ -23,16 +23,16 @@ typedef int NDFileOpenMode_t;
 
 /** Base class for NDArray file writing plugins; actual file writing plugins inherit from this class.
   * This class handles the logic of single file per image, capture into buffer or streaming multiple images
-  * to a single file.  
+  * to a single file.
   * Derived classes must implement the 4 pure virtual functions: openFile, readFile, writeFile and closeFile. */
 class epicsShareClass NDPluginFile : public NDPluginDriver {
 public:
-    NDPluginFile(const char *portName, int queueSize, int blockingCallbacks, 
+    NDPluginFile(const char *portName, int queueSize, int blockingCallbacks,
                  const char *NDArrayPort, int NDArrayAddr, int maxAddr,
                  int maxBuffers, size_t maxMemory, int interfaceMask, int interruptMask,
                  int asynFlags, int autoConnect, int priority, int stackSize, int maxThreads,
                  bool compressionAware = false);
-                 
+
     /* These methods override those in the base class */
     virtual void processCallbacks(NDArray *pArray);
     virtual asynStatus writeInt32(asynUser *pasynUser, epicsInt32 value);
@@ -41,29 +41,29 @@ public:
     /** Open a file; pure virtual function that must be implemented by derived classes.
       * \param[in] fileName  Absolute path name of the file to open.
       * \param[in] openMode Bit mask with one of the access mode bits NDFileModeRead, NDFileModeWrite. NDFileModeAppend.
-      *           May also have the bit NDFileModeMultiple set if the file is to be opened to write or read multiple 
+      *           May also have the bit NDFileModeMultiple set if the file is to be opened to write or read multiple
       *           NDArrays into a single file.
-      * \param[in] pArray Pointer to an NDArray; this array does not contain data to be written or read.  
+      * \param[in] pArray Pointer to an NDArray; this array does not contain data to be written or read.
       *           Rather it can be used to determine the header information and data structure for the file.
-      *           It is guaranteed that NDArrays pass to NDPluginFile::writeFile or NDPluginFile::readFile 
+      *           It is guaranteed that NDArrays pass to NDPluginFile::writeFile or NDPluginFile::readFile
       *           will have the same data type, data dimensions and attributes as this array. */
     virtual asynStatus openFile(const char *fileName, NDFileOpenMode_t openMode, NDArray *pArray) = 0;
 
     /** Read NDArray data from a file; pure virtual function that must be implemented by derived classes.
-      * \param[in] pArray Pointer to the address of an NDArray to read the data into.  */ 
+      * \param[in] pArray Pointer to the address of an NDArray to read the data into.  */
     virtual asynStatus readFile(NDArray **pArray) = 0;
 
     /** Write NDArray data to a file; pure virtual function that must be implemented by derived classes.
       * \param[in] pArray Pointer to an NDArray to write to the file. This function can be called multiple
       *           times between the call to openFile and closeFile if the class set supportsMultipleArrays=1 and
-      *           NDFileModeMultiple was set in openMode in the call to NDPluginFile::openFile. */ 
+      *           NDFileModeMultiple was set in openMode in the call to NDPluginFile::openFile. */
     virtual asynStatus writeFile(NDArray *pArray) = 0;
 
-    /** Close the file opened with NDPluginFile::openFile; 
-      * pure virtual function that must be implemented by derived classes. */ 
+    /** Close the file opened with NDPluginFile::openFile;
+      * pure virtual function that must be implemented by derived classes. */
     virtual asynStatus closeFile() = 0;
-    
-    int supportsMultipleArrays; /**< Derived classes must set this flag to 0/1 if they cannot/can write 
+
+    int supportsMultipleArrays; /**< Derived classes must set this flag to 0/1 if they cannot/can write
                                   * multiple NDArrays to a single file. Used in capture and stream modes. */
 
 private:

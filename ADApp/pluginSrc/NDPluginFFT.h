@@ -1,9 +1,9 @@
 /**
  * NDPluginFFT.h
  *
- * Computes the FFT of 1-D or 2-D data. 
- * 
- * @author Mark Rivers 
+ * Computes the FFT of 1-D or 2-D data.
+ *
+ * @author Mark Rivers
  * @date February 2016
  */
 
@@ -48,8 +48,8 @@ typedef struct {
 /** Compute FFTs on signals */
 class epicsShareClass NDPluginFFT : public NDPluginDriver {
 public:
-  NDPluginFFT(const char *portName, int queueSize, int blockingCallbacks, 
-              const char *NDArrayPort, int NDArrayAddr, 
+  NDPluginFFT(const char *portName, int queueSize, int blockingCallbacks,
+              const char *NDArrayPort, int NDArrayAddr,
               int maxBuffers, size_t maxMemory,
               int priority, int stackSize, int maxThreads);
 
@@ -72,7 +72,7 @@ protected:
   int P_FFTReal;
   int P_FFTImaginary;
   int P_FFTAbsValue;
-                                
+
 private:
   template <typename epicsType> void convertToDoubleT(NDArray *pArray, fftPvt_t *pPvt);
   void allocateArrays(fftPvt_t *pPvt, bool sizeChanged);
@@ -95,5 +95,5 @@ private:
   double *timeAxis_;
   double *freqAxis_;
 };
-    
+
 #endif //NDPluginFFT_H

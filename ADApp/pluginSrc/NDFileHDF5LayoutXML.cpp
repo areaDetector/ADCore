@@ -536,7 +536,7 @@ namespace hdf5
     this->ptr_curr_element = dset;
 
     DataSource attrval;
-    this->process_dset_xml_attribute(attrval);   
+    this->process_dset_xml_attribute(attrval);
 
     // Check for ndattribute and store the name
     if (attrval.is_src_ndattribute()){

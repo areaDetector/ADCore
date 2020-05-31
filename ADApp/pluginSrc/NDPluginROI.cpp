@@ -32,7 +32,7 @@
 
 static const char *driverName="NDPluginROI";
 
-
+
 /** Callback function that is called by the NDArray driver with new NDArray data.
   * Extracts the NthrDArray data into each of the ROIs that are being used.
   * Computes statistics on the ROI if NDPluginROIComputeStatistics is 1.
@@ -59,7 +59,7 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
     double scale;
     int collapseDims;
     //static const char* functionName = "processCallbacks";
-    
+
     memset(dims, 0, sizeof(NDDimension_t) * ND_ARRAY_MAX_DIMS);
 
     /* Get all parameters while we have the mutex */
@@ -82,10 +82,10 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
 
     /* Call the base class method */
     NDPluginDriver::beginProcessCallbacks(pArray);
-    
+
     /* Get information about the array */
     pArray->getInfo(&arrayInfo);
-    
+
     userDims[0] = arrayInfo.xDim;
     userDims[1] = arrayInfo.yDim;
     userDims[2] = arrayInfo.colorDim;
@@ -165,11 +165,11 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
         dims[1] = dims[2];
         dims[2] = tempDim;
     }
-    
+
     if (enableScale && (scale != 0) && (scale != 1)) {
         /* This is tricky.  We want to do the operation to avoid errors due to integer truncation.
          * For example, if an image with all pixels=1 is binned 3x3 with scale=9 (divide by 9), then
-         * the output should also have all pixels=1. 
+         * the output should also have all pixels=1.
          * We do this by extracting the ROI and converting to double, do the scaling, then convert
          * to the desired data type. */
         this->pNDArrayPool->convert(pArray, &pScratch, NDFloat64, dims);
@@ -178,36 +178,36 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
         for (i=0; i<scratchInfo.nElements; i++) pData[i] = pData[i]/scale;
         this->pNDArrayPool->convert(pScratch, &pOutput, (NDDataType_t)dataType);
         pScratch->release();
-    } 
-    else {        
+    }
+    else {
         this->pNDArrayPool->convert(pArray, &pOutput, (NDDataType_t)dataType, dims);
     }
 
     /* If we selected just one color from the array, then we need to collapse the
      * dimensions and set the color mode to mono */
     colorMode = NDColorModeMono;
-    if ((pOutput->ndims == 3) && 
-        (arrayInfo.colorMode == NDColorModeRGB1) && 
-        (pOutput->dims[0].size == 1)) 
+    if ((pOutput->ndims == 3) &&
+        (arrayInfo.colorMode == NDColorModeRGB1) &&
+        (pOutput->dims[0].size == 1))
     {
         collapseDims = 1;
         pOutput->pAttributeList->add("ColorMode", "Color mode", NDAttrInt32, &colorMode);
     }
-    else if ((pOutput->ndims == 3) && 
-        (arrayInfo.colorMode == NDColorModeRGB2) && 
-        (pOutput->dims[1].size == 1)) 
+    else if ((pOutput->ndims == 3) &&
+        (arrayInfo.colorMode == NDColorModeRGB2) &&
+        (pOutput->dims[1].size == 1))
     {
         collapseDims = 1;
         pOutput->pAttributeList->add("ColorMode", "Color mode", NDAttrInt32, &colorMode);
     }
-    else if ((pOutput->ndims == 3) && 
-        (arrayInfo.colorMode == NDColorModeRGB3) && 
-        (pOutput->dims[2].size == 1)) 
+    else if ((pOutput->ndims == 3) &&
+        (arrayInfo.colorMode == NDColorModeRGB3) &&
+        (pOutput->dims[2].size == 1))
     {
         collapseDims = 1;
         pOutput->pAttributeList->add("ColorMode", "Color mode", NDAttrInt32, &colorMode);
     }
-    
+
     /* If collapseDims is set then collapse any dimensions of size 1 */
     if (collapseDims) {
         int i=0, j;
@@ -267,32 +267,32 @@ asynStatus NDPluginROI::writeInt32(asynUser *pasynUser, epicsInt32 value)
         requestedSize_[2] = value;
     } else {
         /* If this parameter belongs to a base class call its method */
-        if (function < FIRST_NDPLUGIN_ROI_PARAM) 
+        if (function < FIRST_NDPLUGIN_ROI_PARAM)
             status = NDPluginDriver::writeInt32(pasynUser, value);
     }
-    
+
     /* Do callbacks so higher layers see any changes */
     callParamCallbacks();
-    
+
     const char* paramName;
     if (status) {
         getParamName( function, &paramName );
-        asynPrint(pasynUser, ASYN_TRACE_ERROR, 
-              "%s:%s: function=%d %s, value=%d\n", 
+        asynPrint(pasynUser, ASYN_TRACE_ERROR,
+              "%s:%s: function=%d %s, value=%d\n",
               driverName, functionName, function, paramName, value);
     }
     else {
         if ( pasynTrace->getTraceMask(pasynUser) & ASYN_TRACEIO_DRIVER ) {
             getParamName( function, &paramName );
-            asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, 
-                  "%s:%s: function=%d %s, paramvalue=%d\n", 
+            asynPrint(pasynUser, ASYN_TRACEIO_DRIVER,
+                  "%s:%s: function=%d %s, paramvalue=%d\n",
                   driverName, functionName, function, paramName, value);
         }
     }
     return status;
 }
 
-
+
 /** Constructor for NDPluginROI; most parameters are simply passed to NDPluginDriver::NDPluginDriver.
   * After calling the base class constructor this method sets reasonable default values for all of the
   * ROI parameters.

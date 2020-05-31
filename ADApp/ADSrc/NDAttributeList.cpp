@@ -5,7 +5,7 @@
  * October 18, 2013
  *
  */
- 
+
 #include <stdlib.h>
 
 #include <epicsExport.h>
@@ -47,16 +47,16 @@ int NDAttributeList::add(NDAttribute *pAttribute)
 }
 
 /** Adds an attribute to the list.
-  * This is a convenience function for adding attributes to a list.  
+  * This is a convenience function for adding attributes to a list.
   * It first searches the list to see if there is an existing attribute
   * with the same name.  If there is it just changes the properties of the
   * existing attribute.  If not, it creates a new attribute with the
-  * specified properties. 
+  * specified properties.
   * IMPORTANT: This method is only capable of creating attributes
   * of the NDAttribute base class type, not derived class attributes.
   * To add attributes of a derived class to a list the NDAttributeList::add(NDAttribute*)
   * method must be used.
-  * \param[in] pName The name of the attribute to be added. 
+  * \param[in] pName The name of the attribute to be added.
   * \param[in] pDescription The description of the attribute.
   * \param[in] dataType The data type of the attribute.
   * \param[in] pValue A pointer to the value for this attribute.
@@ -83,7 +83,7 @@ NDAttribute* NDAttributeList::add(const char *pName, const char *pDescription, N
 
 /** Finds an attribute by name; the search is now case sensitive (R1-10)
   * \param[in] pName The name of the attribute to be found.
-  * \return Returns a pointer to the attribute if found, NULL if not found. 
+  * \return Returns a pointer to the attribute if found, NULL if not found.
   */
 NDAttribute* NDAttributeList::find(const char *pName)
 {
@@ -106,9 +106,9 @@ NDAttribute* NDAttributeList::find(const char *pName)
 }
 
 /** Finds the next attribute in the linked list of attributes.
-  * \param[in] pAttributeIn A pointer to the previous attribute in the list; 
+  * \param[in] pAttributeIn A pointer to the previous attribute in the list;
   * if NULL the first attribute in the list is returned.
-  * \return Returns a pointer to the next attribute if there is one, 
+  * \return Returns a pointer to the next attribute if there is one,
   * NULL if there are no more attributes in the list. */
 NDAttribute* NDAttributeList::next(NDAttribute *pAttributeIn)
 {
@@ -233,7 +233,7 @@ int NDAttributeList::report(FILE *fp, int details)
 {
   NDAttribute *pAttribute;
   NDAttributeListNode *pListNode;
-  
+
   epicsMutexLock(this->lock_);
   fprintf(fp, "\n");
   fprintf(fp, "NDAttributeList: address=%p:\n", this);

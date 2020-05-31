@@ -83,7 +83,7 @@ typedef union {
 } NDAttrValue;
 
 /** Structure used by the EPICS ellLib library for linked lists of C++ objects.
-  * This is needed for ellLists of C++ objects, for which making the first data element the ELLNODE 
+  * This is needed for ellLists of C++ objects, for which making the first data element the ELLNODE
   * does not work if the class has virtual functions or derived classes. */
 typedef struct NDAttributeListNode {
     ELLNODE node;
@@ -96,7 +96,7 @@ typedef struct NDAttributeListNode {
 class epicsShareClass NDAttribute {
 public:
     /* Methods */
-    NDAttribute(const char *pName, const char *pDescription, 
+    NDAttribute(const char *pName, const char *pDescription,
                 NDAttrSource_t sourceType, const char *pSource, NDAttrDataType_t dataType, void *pValue);
     NDAttribute(NDAttribute& attribute);
     static const char *attrSourceString(NDAttrSource_t type);

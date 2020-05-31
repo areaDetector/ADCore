@@ -27,14 +27,14 @@
 
 static const char *driverName = "functAttribute";
 
-/* This asynUser is not attached to any device.  
+/* This asynUser is not attached to any device.
  * It lets one turn on debugging by settings the global asynTrace flag bits
  * ASTN_TRACE_ERROR (default), ASYN_TRACE_FLOW, etc. */
 
 static asynUser *pasynUserSelf = NULL;
 
 /** Constructor for function attribute
-  * \param[in] pName The name of the attribute to be created; case-insensitive. 
+  * \param[in] pName The name of the attribute to be created; case-insensitive.
   * \param[in] pDescription The description of the attribute.
   * \param[in] pSource The symbol name for the function to be called to get the value of the parameter.
   * \param[in] pParam A string that will be passed to the function, typically to specify what/how to get the value.
@@ -45,10 +45,10 @@ functAttribute::functAttribute(const char *pName, const char *pDescription, cons
       pFunction(0), functionPvt(0)
 {
     static const char *functionName = "functAttribute";
-    
+
     /* Create the static pasynUser if not already done */
     if (!pasynUserSelf) pasynUserSelf = pasynManager->createAsynUser(0,0);
-    if (pParam) 
+    if (pParam)
         functParam = epicsStrDup(pParam);
     else
         functParam = epicsStrDup("");
@@ -65,7 +65,7 @@ functAttribute::functAttribute(const char *pName, const char *pDescription, cons
             driverName, functionName, pSource);
         goto error;
     }
-    
+
 error:
     return;
 }
@@ -92,7 +92,7 @@ functAttribute::~functAttribute()
 functAttribute* functAttribute::copy(NDAttribute *pAttr)
 {
   functAttribute *pOut = (functAttribute *)pAttr;
-  if (!pOut) 
+  if (!pOut)
     pOut = new functAttribute(*this);
   else {
     // NOTE: We assume that if the attribute name is the same then the function name and parameter are also the same
@@ -109,15 +109,15 @@ functAttribute* functAttribute::copy(NDAttribute *pAttr)
 int functAttribute::updateValue()
 {
     //static const char *functionName = "updateValue";
-    
+
     if (!this->pFunction) return asynError;
-    
+
     this->pFunction(this->functParam, &functionPvt, this);
     return asynSuccess;
 }
 
 
-/** Reports on the properties of the functAttribute object; 
+/** Reports on the properties of the functAttribute object;
   * calls base class NDAttribute::report() to report on the parameter value.
   * \param[in] fp File pointer for the report output.
   * \param[in] details Level of report details desired; currently does nothing in this derived class.
@@ -131,4 +131,4 @@ int functAttribute::report(FILE *fp, int details)
     fprintf(fp, "    functionPvt=%p\n", this->functionPvt);
     return(ND_SUCCESS);
 }
-    
+

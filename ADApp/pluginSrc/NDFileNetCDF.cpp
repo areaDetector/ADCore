@@ -4,7 +4,7 @@
  * Mark Rivers
  * April 17, 2008
  */
- 
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -34,15 +34,15 @@ static const char *driverName = "NDFileNetCDF";
                 driverName, functionName, nc_strerror(e)); \
                 return(asynError);}
 
-/** Opens a netCDF file.  
-  * In write mode if NDFileModeMultiple is set then the first dimension is set to NC_UNLIMITED to allow 
+/** Opens a netCDF file.
+  * In write mode if NDFileModeMultiple is set then the first dimension is set to NC_UNLIMITED to allow
   * multiple arrays to be written to the same file.
   * NOTE: Does not currently support NDFileModeRead or NDFileModeAppend.
   * \param[in] fileName  Absolute path name of the file to open.
   * \param[in] openMode Bit mask with one of the access mode bits NDFileModeRead, NDFileModeWrite, NDFileModeAppend.
-  *           May also have the bit NDFileModeMultiple set if the file is to be opened to write or read multiple 
+  *           May also have the bit NDFileModeMultiple set if the file is to be opened to write or read multiple
   *           NDArrays into a single file.
-  * \param[in] pArray Pointer to an NDArray; this array is used to determine the header information and data 
+  * \param[in] pArray Pointer to an NDArray; this array is used to determine the header information and data
   *           structure for the file. */
 asynStatus NDFileNetCDF::openFile(const char *fileName, NDFileOpenMode_t openMode, NDArray *pArray)
 {
@@ -66,10 +66,10 @@ asynStatus NDFileNetCDF::openFile(const char *fileName, NDFileOpenMode_t openMod
     double fileVersion;
     static const char *functionName = "openFile";
 
-    /* We don't support reading yet */    
+    /* We don't support reading yet */
     if (openMode & NDFileModeRead) return(asynError);
-    
-    /* We don't support opening an existing file for appending yet */    
+
+    /* We don't support opening an existing file for appending yet */
     if (openMode & NDFileModeAppend) return(asynError);
 
     /* Construct an attribute list. We use a separate attribute list
@@ -81,7 +81,7 @@ asynStatus NDFileNetCDF::openFile(const char *fileName, NDFileOpenMode_t openMod
     /* Now append the attributes from the array which are already up to date from
      * the driver and prior plugins */
     pArray->pAttributeList->copy(this->pFileAttributes);
-    
+
     /* Set the next record in the file to 0 */
     this->nextRecord = 0;
 
@@ -92,10 +92,10 @@ asynStatus NDFileNetCDF::openFile(const char *fileName, NDFileOpenMode_t openMod
 
     /* Create global attribute for the data type because netCDF does not
      * distinguish signed and unsigned.  Readers can use this to know how to treat
-     * integer data. 
+     * integer data.
      * It is also needed for readers to handle NDInt64 and NDUInt64 data, which netCDF does not support.
      * These are written by casting to double, so readers must cast them from double to the actual datatype. */
-    if ((retval = nc_put_att_int(this->ncId, NC_GLOBAL, "dataType", 
+    if ((retval = nc_put_att_int(this->ncId, NC_GLOBAL, "dataType",
                                  NC_INT, 1, (const int*)&pArray->dataType)))
         ERR(retval);
 
@@ -111,13 +111,13 @@ asynStatus NDFileNetCDF::openFile(const char *fileName, NDFileOpenMode_t openMod
      * This is redundant with information netCDF puts in, but the netCDF
      * info includes the number of arrays in the file.  This can make it
      * easier to write readers */
-    if ((retval = nc_put_att_int(this->ncId, NC_GLOBAL, "numArrayDims", 
+    if ((retval = nc_put_att_int(this->ncId, NC_GLOBAL, "numArrayDims",
                                  NC_INT, 1, &pArray->ndims)))
         ERR(retval);
 
     /* Define the dimensions. NetCDF will hand back an ID for each.
      * netCDF has the first dimension changing slowest, opposite of NDArrayBuff
-     * convention. 
+     * convention.
      * We make the first dimension the number of arrays in the file.  This is either
      * 1 or NC_UNLIMITED */
     dim0 = 1;
@@ -143,16 +143,16 @@ asynStatus NDFileNetCDF::openFile(const char *fileName, NDFileOpenMode_t openMod
         ERR(retval);
 
     /* Create global attribute for information about the dimensions */
-    if ((retval = nc_put_att_int(this->ncId, NC_GLOBAL, "dimSize", 
+    if ((retval = nc_put_att_int(this->ncId, NC_GLOBAL, "dimSize",
                                  NC_INT, pArray->ndims, size)))
         ERR(retval);
-    if ((retval = nc_put_att_int(this->ncId, NC_GLOBAL, "dimOffset", 
+    if ((retval = nc_put_att_int(this->ncId, NC_GLOBAL, "dimOffset",
                                  NC_INT, pArray->ndims, offset)))
         ERR(retval);
-    if ((retval = nc_put_att_int(this->ncId, NC_GLOBAL, "dimBinning", 
+    if ((retval = nc_put_att_int(this->ncId, NC_GLOBAL, "dimBinning",
                                  NC_INT, pArray->ndims, binning)))
         ERR(retval);
-    if ((retval = nc_put_att_int(this->ncId, NC_GLOBAL, "dimReverse", 
+    if ((retval = nc_put_att_int(this->ncId, NC_GLOBAL, "dimReverse",
                                  NC_INT, pArray->ndims, reverse)))
         ERR(retval);
 
@@ -175,7 +175,7 @@ asynStatus NDFileNetCDF::openFile(const char *fileName, NDFileOpenMode_t openMod
             break;
         case NDFloat64:
         case NDInt64:  // netCDF does not support int64, but we can cast it to double
-        case NDUInt64: // Readers myst look at the 
+        case NDUInt64: // Readers myst look at the
             ncType = NC_DOUBLE;
             break;
         default:
@@ -186,21 +186,21 @@ asynStatus NDFileNetCDF::openFile(const char *fileName, NDFileOpenMode_t openMod
     }
 
     /* Define the uniqueId data variable. */
-    if ((retval = nc_def_var(this->ncId, "uniqueId", NC_INT, 1, 
+    if ((retval = nc_def_var(this->ncId, "uniqueId", NC_INT, 1,
                  &dimIds[0], &this->uniqueIdId)))
         ERR(retval);
 
     /* Define the timestamp data variable. */
-    if ((retval = nc_def_var(this->ncId, "timeStamp", NC_DOUBLE, 1, 
+    if ((retval = nc_def_var(this->ncId, "timeStamp", NC_DOUBLE, 1,
                  &dimIds[0], &this->timeStampId)))
         ERR(retval);
 
     /* Define the EPICS timestamp data variables. */
-    if ((retval = nc_def_var(this->ncId, "epicsTSSec", NC_INT, 1, 
+    if ((retval = nc_def_var(this->ncId, "epicsTSSec", NC_INT, 1,
                  &dimIds[0], &this->epicsTSSecId)))
         ERR(retval);
 
-    if ((retval = nc_def_var(this->ncId, "epicsTSNsec", NC_INT, 1, 
+    if ((retval = nc_def_var(this->ncId, "epicsTSNsec", NC_INT, 1,
                  &dimIds[0], &this->epicsTSNsecId)))
         ERR(retval);
 
@@ -267,21 +267,21 @@ asynStatus NDFileNetCDF::openFile(const char *fileName, NDFileOpenMode_t openMod
                 break;
         }
         epicsSnprintf(tempString, sizeof(tempString), "Attr_%s_DataType", attributeName);
-        if ((retval = nc_put_att_text(this->ncId, NC_GLOBAL, tempString, 
+        if ((retval = nc_put_att_text(this->ncId, NC_GLOBAL, tempString,
                                      strlen(dataTypeString), dataTypeString)))
             ERR(retval);
         epicsSnprintf(tempString, sizeof(tempString), "Attr_%s_Description", attributeName);
-        if ((retval = nc_put_att_text(this->ncId, NC_GLOBAL, tempString, 
+        if ((retval = nc_put_att_text(this->ncId, NC_GLOBAL, tempString,
                                      strlen(attributeDescription), attributeDescription)))
             ERR(retval);
         epicsSnprintf(tempString, sizeof(tempString), "Attr_%s_Source", attributeName);
-        if ((retval = nc_put_att_text(this->ncId, NC_GLOBAL, tempString, 
+        if ((retval = nc_put_att_text(this->ncId, NC_GLOBAL, tempString,
                                      strlen(attributeSource), attributeSource)))
             ERR(retval);
         epicsSnprintf(tempString, sizeof(tempString), "Attr_%s_SourceType", attributeName);
 
-        if ((retval = nc_put_att_text(this->ncId, NC_GLOBAL, tempString, 
-                                     strlen(attributeSourceTypeString), 
+        if ((retval = nc_put_att_text(this->ncId, NC_GLOBAL, tempString,
+                                     strlen(attributeSourceTypeString),
                                      attributeSourceTypeString)))
             ERR(retval);
         switch (attrDataType) {
@@ -342,9 +342,9 @@ asynStatus NDFileNetCDF::openFile(const char *fileName, NDFileOpenMode_t openMod
 /** Writes NDArray data to a netCDF file.
   * \param[in] pArray Pointer to an NDArray to write to the file. This function can be called multiple
   *           times between the call to openFile and closeFile if
-  *           NDFileModeMultiple was set in openMode in the call to NDFileNetCDF::openFile. */ 
+  *           NDFileModeMultiple was set in openMode in the call to NDFileNetCDF::openFile. */
 asynStatus NDFileNetCDF::writeFile(NDArray *pArray)
-{       
+{
     int retval;
     size_t stringCount[2];
     size_t start[ND_ARRAY_MAX_DIMS+1], count[ND_ARRAY_MAX_DIMS+1];
@@ -358,7 +358,7 @@ asynStatus NDFileNetCDF::writeFile(NDArray *pArray)
     char attrString[MAX_ATTRIBUTE_STRING_SIZE];
     static const char *functionName = "writeFile";
 
-    
+
     /* Update attribute list. We use a separate attribute list
      * from the one in pArray to avoid the need to copy the array. */
     /* Get the current values of the attributes for this plugin */
@@ -374,7 +374,7 @@ asynStatus NDFileNetCDF::writeFile(NDArray *pArray)
         count[i+1] = pArray->dims[j].size;
         start[i+1] = 0;
     }
- 
+
     /* Write the data to the file. */
     if ((retval = nc_put_vara_int(this->ncId, this->uniqueIdId, start, count, &pArray->uniqueId)))
                 ERR(retval);
@@ -493,7 +493,7 @@ asynStatus NDFileNetCDF::writeFile(NDArray *pArray)
 }
 
 /** Read NDArray data from a netCDF file; NOTE: not implemented yet.
-  * \param[in] pArray Pointer to the address of an NDArray to read the data into.  */ 
+  * \param[in] pArray Pointer to the address of an NDArray to read the data into.  */
 asynStatus NDFileNetCDF::readFile(NDArray **pArray)
 {
     //static const char *functionName = "readFile";
@@ -502,7 +502,7 @@ asynStatus NDFileNetCDF::readFile(NDArray **pArray)
 }
 
 
-/** Closes the netCDF file opened with NDFileNetCDF::openFile */ 
+/** Closes the netCDF file opened with NDFileNetCDF::openFile */
 asynStatus NDFileNetCDF::closeFile()
 {
     int retval;
@@ -520,23 +520,23 @@ asynStatus NDFileNetCDF::closeFile()
     and are passed directly to that base class constructor.
   * After calling the base class constructor this method sets NDPluginFile::supportsMultipleArrays=1.
   */
-NDFileNetCDF::NDFileNetCDF(const char *portName, int queueSize, int blockingCallbacks, 
+NDFileNetCDF::NDFileNetCDF(const char *portName, int queueSize, int blockingCallbacks,
                            const char *NDArrayPort, int NDArrayAddr,
                            int priority, int stackSize)
     /* Invoke the base class constructor.
      * We allocate 2 NDArrays of unlimited size in the NDArray pool.
-     * This driver can block (because writing a file can be slow), and it is not multi-device.  
+     * This driver can block (because writing a file can be slow), and it is not multi-device.
      * Set autoconnect to 1.  priority and stacksize can be 0, which will use defaults. */
     : NDPluginFile(portName, queueSize, blockingCallbacks,
                    NDArrayPort, NDArrayAddr, 1,
-                   2, 0, asynGenericPointerMask, asynGenericPointerMask, 
-                   ASYN_CANBLOCK, 1, priority, 
+                   2, 0, asynGenericPointerMask, asynGenericPointerMask,
+                   ASYN_CANBLOCK, 1, priority,
                    /* netCDF needs a relatively large stack, make the default be large */
                    (stackSize==0) ? epicsThreadGetStackSize(epicsThreadStackBig) : stackSize, 1)
 {
     //static const char *functionName = "NDFileNetCDF";
-    
-    /* Set the plugin type string */    
+
+    /* Set the plugin type string */
     setStringParam(NDPluginDriverPluginType, "NDFileNetCDF");
     this->supportsMultipleArrays = 1;
     this->pAttributeId = NULL;
@@ -545,7 +545,7 @@ NDFileNetCDF::NDFileNetCDF(const char *portName, int queueSize, int blockingCall
 }
 
 /** Configuration routine.  Called directly, or from the iocsh function in NDFileEpics */
-extern "C" int NDFileNetCDFConfigure(const char *portName, int queueSize, int blockingCallbacks, 
+extern "C" int NDFileNetCDFConfigure(const char *portName, int queueSize, int blockingCallbacks,
                                      const char *NDArrayPort, int NDArrayAddr,
                                      int priority, int stackSize)
 {
@@ -573,7 +573,7 @@ static const iocshArg * const initArgs[] = {&initArg0,
 static const iocshFuncDef initFuncDef = {"NDFileNetCDFConfigure",7,initArgs};
 static void initCallFunc(const iocshArgBuf *args)
 {
-    NDFileNetCDFConfigure(args[0].sval, args[1].ival, args[2].ival, args[3].sval, 
+    NDFileNetCDFConfigure(args[0].sval, args[1].ival, args[2].ival, args[3].sval,
                              args[4].ival, args[5].ival, args[6].ival);
 }
 

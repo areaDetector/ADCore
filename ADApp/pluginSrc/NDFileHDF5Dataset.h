@@ -32,7 +32,7 @@ class NDFileHDF5Dataset
     asynUser    *pAsynUser_;   // Pointer to the asynUser structure
     std::string name_;         // Name of this dataset
     hid_t       dataset_;      // Dataset handle
-    int         nextRecord_; 
+    int         nextRecord_;
     int         arrayDims[ND_ARRAY_MAX_DIMS];
     bool        multiFrame_;   // Whether this is a multi frame dataset
     int         rank_;         // number of dimensions

@@ -1,6 +1,6 @@
 /*
  * NDFileNull.h
- * Dummy file writer, whose main purpose is to allow deleting original driver files without re-writing them in 
+ * Dummy file writer, whose main purpose is to allow deleting original driver files without re-writing them in
  * an actual file plugin.
  *
  * Mark Rivers

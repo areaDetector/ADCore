@@ -103,7 +103,7 @@ void NDPluginPva::processCallbacks(NDArray *pArray)
     static const char *functionName = "processCallbacks";
 
     NDPluginDriver::beginProcessCallbacks(pArray);   // Base class method
-    
+
     // Most plugins can rely on endProcessCallbacks() to check for throttling, but this one cannot
     // because the output is not an NDArray but a pvAccess server.  Need to check here.
     if (throttled(pArray)) {
@@ -123,7 +123,7 @@ void NDPluginPva::processCallbacks(NDArray *pArray)
         this->unlock();             // Function called with the lock taken
         m_record->update(pArray);
         this->lock();               // Must return locked
-    }  
+    }
 
     // Do NDArray callbacks.  We need to copy the array and get the attributes
     NDPluginDriver::endProcessCallbacks(pArray, true, true);
@@ -148,9 +148,9 @@ void NDPluginPva::processCallbacks(NDArray *pArray)
   * \param[in] NDArrayAddr asyn port driver address for initial source of
   *            NDArray callbacks.
   * \param[in] pvName Name of the PV that will be served by the EPICSv4 server.
-  * \param[in] maxBuffers The maximum number of NDArray buffers that the NDArrayPool for this driver is 
+  * \param[in] maxBuffers The maximum number of NDArray buffers that the NDArrayPool for this driver is
   *            allowed to allocate. Set this to 0 to allow an unlimited number of buffers.
-  * \param[in] maxMemory The maximum amount of memory that the NDArrayPool for this driver is 
+  * \param[in] maxMemory The maximum amount of memory that the NDArrayPool for this driver is
   *            allowed to allocate. Set this to 0 to allow an unlimited amount of memory.
   * \param[in] priority The thread priority for the asyn port driver thread if ASYN_CANBLOCK is set in asynFlags.
   *            This value should also be used for any other threads this object creates.
@@ -221,8 +221,8 @@ static const iocshArg * const initArgs[] = {&initArg0,
 static const iocshFuncDef initFuncDef = {"NDPvaConfigure",10,initArgs};
 static void initCallFunc(const iocshArgBuf *args)
 {
-    NDPvaConfigure(args[0].sval, args[1].ival, args[2].ival, 
-                   args[3].sval, args[4].ival, args[5].sval, 
+    NDPvaConfigure(args[0].sval, args[1].ival, args[2].ival,
+                   args[3].sval, args[4].ival, args[5].sval,
                    args[6].ival, args[7].ival, args[8].ival,
                    args[9].ival);
 }

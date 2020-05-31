@@ -39,11 +39,11 @@ void ROI_callback(void *userPvt, asynUser *pasynUser, void *pointer)
   callbackCount++;
 }
 
-// We define 2 structures here.  
+// We define 2 structures here.
 // ROITempCaseStr uses fixed length arrays so it can be easily initialized
 // and we need to initialize many cases
 // ROITestCaseStr used std::vector because that is what the test harness wants
- 
+
 typedef struct {
   int inputRank;
   size_t inputDims[ND_ARRAY_MAX_DIMS];
@@ -94,7 +94,7 @@ struct ROIPluginTestFixture
   TestingPlugin* downstream_plugin; // TODO: we don't put this in a shared_ptr and purposefully leak memory because asyn ports cannot be deleted
   std::vector<ROITestCaseStr> ROITestCaseStrs;
   int expectedArrayCounter;
-  
+
 
   static int testCase;
 
@@ -139,15 +139,15 @@ struct ROIPluginTestFixture
     client->registerInterruptUser(&ROI_callback);
 
     ROITempCaseStr test1 = {2, {10,10},    {0,0},   {1, 10},   2, {1, 10},   1, {10}};
-    appendTestCase(&ROITestCaseStrs, &test1); 
+    appendTestCase(&ROITestCaseStrs, &test1);
     ROITempCaseStr test2 = {3, {10,10,10}, {0,0,0}, {10,1,10}, 3, {10,1,10}, 2, {10,10}};
-    appendTestCase(&ROITestCaseStrs, &test2); 
+    appendTestCase(&ROITestCaseStrs, &test2);
     ROITempCaseStr test3 = {3, {10,10,10}, {0,0,0}, {1,1,10},  3, {1,1,10},  1, {10}};
-    appendTestCase(&ROITestCaseStrs, &test3); 
+    appendTestCase(&ROITestCaseStrs, &test3);
     ROITempCaseStr test4 = {1, {1},        {0},     {1},       1, {1},       1, {1}};
-    appendTestCase(&ROITestCaseStrs, &test4); 
+    appendTestCase(&ROITestCaseStrs, &test4);
     ROITempCaseStr test5 = {3, {10,20,30}, {0,0,0}, {5,1,1},   3, {5,1,1},   1, {5}};
-    appendTestCase(&ROITestCaseStrs, &test5); 
+    appendTestCase(&ROITestCaseStrs, &test5);
 
 }
 
@@ -185,7 +185,7 @@ BOOST_AUTO_TEST_CASE(basic_roi_operation)
 
   ROITestCaseStr *pStr = &ROITestCaseStrs[0];
   for (size_t i=0; i<ROITestCaseStrs.size(); i++, pStr++)  {
-  
+
     BOOST_MESSAGE("Test " << (i+1) << " input rank: " << pStr->inputRank);
 
     if (pStr->inputRank > 0) {
@@ -220,7 +220,7 @@ BOOST_AUTO_TEST_CASE(basic_roi_operation)
     roi->lock();
     BOOST_CHECK_NO_THROW(roi->processCallbacks(pStr->pArrays[0]));
     roi->unlock();
-    expectedArrayCounter++;  
+    expectedArrayCounter++;
     BOOST_CHECK_EQUAL(roi->readInt("ARRAY_COUNTER"), expectedArrayCounter);
 
     // Check the downstream receiver of the ROI array
@@ -230,7 +230,7 @@ BOOST_AUTO_TEST_CASE(basic_roi_operation)
     BOOST_REQUIRE_EQUAL(downstream_plugin->arrays.size(), expectedArrayCounter);
     BOOST_REQUIRE_EQUAL(downstream_plugin->arrays.back()->ndims, pStr->outputRankNormal);
     for (int j=0; j<pStr->outputRankNormal; j++) {
-      BOOST_MESSAGE("    expected normal dimension " << j 
+      BOOST_MESSAGE("    expected normal dimension " << j
                     << " size:"   <<  pStr->outputDimsNormal[j]
                     << " actual:" << downstream_plugin->arrays.back()->dims[j].size);
       BOOST_REQUIRE_EQUAL(downstream_plugin->arrays.back()->dims[j].size, pStr->outputDimsNormal[j]);
@@ -241,7 +241,7 @@ BOOST_AUTO_TEST_CASE(basic_roi_operation)
     roi->lock();
     BOOST_CHECK_NO_THROW(roi->processCallbacks(pStr->pArrays[0]));
     roi->unlock();
-    expectedArrayCounter++;  
+    expectedArrayCounter++;
     BOOST_CHECK_EQUAL(roi->readInt("ARRAY_COUNTER"), expectedArrayCounter);
 
     // Check the downstream receiver of the ROI array
@@ -250,7 +250,7 @@ BOOST_AUTO_TEST_CASE(basic_roi_operation)
     BOOST_REQUIRE_EQUAL(downstream_plugin->arrays.size(), expectedArrayCounter);
     BOOST_REQUIRE_EQUAL(downstream_plugin->arrays.back()->ndims, pStr->outputRankCollapse);
     for (int j=0; j<pStr->outputRankCollapse; j++) {
-      BOOST_MESSAGE("    expected collapsed dimension " << j 
+      BOOST_MESSAGE("    expected collapsed dimension " << j
                     << " size:"   <<  pStr->outputDimsCollapse[j]
                     << " actual:" << downstream_plugin->arrays.back()->dims[j].size);
       BOOST_REQUIRE_EQUAL(downstream_plugin->arrays.back()->dims[j].size, pStr->outputDimsCollapse[j]);

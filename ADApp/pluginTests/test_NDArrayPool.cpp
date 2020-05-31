@@ -1,4 +1,4 @@
-/* Nothing here yet*/ 
+/* Nothing here yet*/
 #include <stdio.h>
 
 
@@ -126,7 +126,7 @@ BOOST_AUTO_TEST_CASE(test_Pool)
   BOOST_CHECK(pArrayTest == 0);
   BOOST_CHECK_EQUAL(pPool->getNumFree(), 0);
   pPool->report(stdout, 6);
-    
+
 }
 
 BOOST_AUTO_TEST_SUITE_END()

@@ -288,7 +288,7 @@ asynStatus NDPluginDriver::endProcessCallbacks(NDArray *pArray, bool copyArray, 
             driverName, functionName);
         return asynError;
     }
-    
+
     // If this array would exceed the maximum output byte rate don't output it
     if (throttled(pArrayOut)) {
         asynPrint(pasynUserSelf, ASYN_TRACE_WARNING,
@@ -349,7 +349,7 @@ bool NDPluginDriver::throttled(NDArray *pArray)
 {
     double needed;
     double maxByteRate;
-    
+
     getDoubleParam(NDPluginDriverMaxByteRate, &maxByteRate);
     if (maxByteRate == 0) return false;
 
@@ -411,9 +411,9 @@ void NDPluginDriver::driverCallback(asynUser *pasynUser, void *genericPointer)
     if ((minCallbackTime == 0.) || (deltaTime > minCallbackTime)) {
         if (pasynUser->auxStatus == asynOverflow) ignoreQueueFull = true;
         pasynUser->auxStatus = asynSuccess;
-    
+
         /* Time to process the next array */
-    
+
         /* The callbacks can operate in 2 modes: blocking or non-blocking.
          * If blocking we call processCallbacks directly, executing them
          * in the detector callback thread.
@@ -689,7 +689,7 @@ asynStatus NDPluginDriver::writeInt32(asynUser *pasynUser, epicsInt32 value)
     asynStatus status = asynSuccess;
     static const char* functionName = "writeInt32";
 
-    status = parseAsynUser(pasynUser, &function, &addr, &paramName); 
+    status = parseAsynUser(pasynUser, &function, &addr, &paramName);
     if (status != asynSuccess) goto done;
 
     /* If this parameter belongs to a base class call its method */
@@ -781,7 +781,7 @@ asynStatus NDPluginDriver::writeFloat64(asynUser *pasynUser, epicsFloat64 value)
     const char *paramName;
     asynStatus status = asynSuccess;
 
-    status = parseAsynUser(pasynUser, &function, &addr, &paramName); 
+    status = parseAsynUser(pasynUser, &function, &addr, &paramName);
     if (status != asynSuccess) goto done;
 
     /* Set the parameter in the parameter library. */
@@ -818,7 +818,7 @@ asynStatus NDPluginDriver::writeOctet(asynUser *pasynUser, const char *value,
     asynStatus status = asynSuccess;
     static const char *functionName = "writeOctet";
 
-    status = parseAsynUser(pasynUser, &function, &addr, &paramName); 
+    status = parseAsynUser(pasynUser, &function, &addr, &paramName);
 
     /* Set the parameter in the parameter library. */
     status = (asynStatus)setStringParam(addr, function, (char *)value);
@@ -864,7 +864,7 @@ asynStatus NDPluginDriver::readInt32Array(asynUser *pasynUser, epicsInt32 *value
     asynStatus status = asynSuccess;
     static const char *functionName = "readInt32Array";
 
-    status = parseAsynUser(pasynUser, &function, &addr, &paramName); 
+    status = parseAsynUser(pasynUser, &function, &addr, &paramName);
     if (status != asynSuccess) return(status);
 
     if (function == NDDimensions) {

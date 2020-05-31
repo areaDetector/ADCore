@@ -1,5 +1,5 @@
 /* NDFileNull.cpp
- * Dummy file writer, whose main purpose is to allow deleting original driver files without re-writing them in 
+ * Dummy file writer, whose main purpose is to allow deleting original driver files without re-writing them in
  * an actual file plugin.
  *
  * Mark Rivers
@@ -26,7 +26,7 @@
 
 /** Opens a Null file.
   * \param[in] fileName The name of the file to open.
-  * \param[in] openMode Mask defining how the file should be opened; bits are 
+  * \param[in] openMode Mask defining how the file should be opened; bits are
   *            NDFileModeRead, NDFileModeWrite, NDFileModeAppend, NDFileModeMultiple
   * \param[in] pArray A pointer to an NDArray; this is used to determine the array and attribute properties.
   */
@@ -61,7 +61,7 @@ asynStatus NDFileNull::closeFile()
 
 /** Constructor for NDFileNull; all parameters are simply passed to NDPluginFile::NDPluginFile.
   * \param[in] portName The name of the asyn port driver to be created.
-  * \param[in] queueSize The number of NDArrays that the input queue for this plugin can hold when 
+  * \param[in] queueSize The number of NDArrays that the input queue for this plugin can hold when
   *            NDPluginDriverBlockingCallbacks=0.  Larger queues can decrease the number of dropped arrays,
   *            at the expense of more NDArray buffers being allocated from the underlying driver's NDArrayPool.
   * \param[in] blockingCallbacks Initial setting for the NDPluginDriverBlockingCallbacks flag.
@@ -77,16 +77,16 @@ NDFileNull::NDFileNull(const char *portName, int queueSize, int blockingCallback
                        int priority, int stackSize)
     /* Invoke the base class constructor.
      * We allocate 2 NDArrays of unlimited size in the NDArray pool.
-     * This driver can block (because writing a file can be slow), and it is not multi-device.  
+     * This driver can block (because writing a file can be slow), and it is not multi-device.
      * Set autoconnect to 1.  priority and stacksize can be 0, which will use defaults. */
     : NDPluginFile(portName, queueSize, blockingCallbacks,
                    NDArrayPort, NDArrayAddr, 1,
-                   2, 0, asynGenericPointerMask, asynGenericPointerMask, 
+                   2, 0, asynGenericPointerMask, asynGenericPointerMask,
                    ASYN_CANBLOCK, 1, priority, stackSize, 1)
 {
     //static const char *functionName = "NDFileNull";
 
-    /* Set the plugin type string */    
+    /* Set the plugin type string */
     setStringParam(NDPluginDriverPluginType, "NDFileNull");
     this->supportsMultipleArrays = 0;
 }

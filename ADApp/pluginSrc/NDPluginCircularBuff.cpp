@@ -40,13 +40,13 @@ asynStatus NDPluginCircularBuff::calculateTrigger(NDArray *pArray, int *trig)
     int status;
     int preTrigger, postTrigger, currentImage, triggered;
     static const char *functionName="calculateTrigger";
-    
+
     *trig = 0;
-    
+
     getIntegerParam(NDCircBuffPreTrigger,   &preTrigger);
     getIntegerParam(NDCircBuffPostTrigger,  &postTrigger);
     getIntegerParam(NDCircBuffCurrentImage, &currentImage);
-    getIntegerParam(NDCircBuffTriggered,    &triggered);   
+    getIntegerParam(NDCircBuffTriggered,    &triggered);
 
     triggerCalcArgs_[0] = epicsNAN;
     triggerCalcArgs_[1] = epicsNAN;
@@ -71,7 +71,7 @@ asynStatus NDPluginCircularBuff::calculateTrigger(NDArray *pArray, int *trig)
             triggerCalcArgs_[1] = triggerValue;
         }
     }
-    
+
     setDoubleParam(NDCircBuffTriggerAVal, triggerCalcArgs_[0]);
     setDoubleParam(NDCircBuffTriggerBVal, triggerCalcArgs_[1]);
     status = calcPerform(triggerCalcArgs_, &calcResult, triggerCalcPostfix_);
@@ -81,13 +81,13 @@ asynStatus NDPluginCircularBuff::calculateTrigger(NDArray *pArray, int *trig)
             driverName, functionName, calcErrorStr(status));
         return asynError;
     }
-    
+
     if (!isnan(calcResult) && !isinf(calcResult) && (calcResult != 0)) *trig = 1;
     setDoubleParam(NDCircBuffTriggerCalcVal, calcResult);
 
     return asynSuccess;
 }
-    
+
 
 /** Callback function that is called by the NDArray driver with new NDArray data.
   * Stores the number of pre-trigger images prior to the trigger in a ring buffer.
@@ -97,7 +97,7 @@ asynStatus NDPluginCircularBuff::calculateTrigger(NDArray *pArray, int *trig)
   */
 void NDPluginCircularBuff::processCallbacks(NDArray *pArray)
 {
-    /* 
+    /*
      * It is called with the mutex already locked.  It unlocks it during long calculations when private
      * structures don't need to be protected.
      */
@@ -111,7 +111,7 @@ void NDPluginCircularBuff::processCallbacks(NDArray *pArray)
 
     /* Call the base class method */
     NDPluginDriver::beginProcessCallbacks(pArray);
-    
+
     pArray->getInfo(&arrayInfo);
 
     // Retrieve the running state
@@ -134,7 +134,7 @@ void NDPluginCircularBuff::processCallbacks(NDArray *pArray)
         setIntegerParam(NDCircBuffTriggered, triggered);
       } else {
         getIntegerParam(NDCircBuffTriggered, &triggered);
-        if (!triggered) { 
+        if (!triggered) {
           // Check for the trigger based on meta-data in the NDArray and the trigger calculation
           calculateTrigger(pArray, &triggered);
           setIntegerParam(NDCircBuffTriggered, triggered);
@@ -172,7 +172,7 @@ void NDPluginCircularBuff::processCallbacks(NDArray *pArray)
             // Yes, so flush the ring first
             flushPreBuffer();
           }
-      
+
           currentPostCount++;
           setIntegerParam(NDCircBuffPostCount,  currentPostCount);
 
@@ -209,7 +209,7 @@ void NDPluginCircularBuff::processCallbacks(NDArray *pArray)
     } else {
       // Currently do nothing
     }
-            
+
     callParamCallbacks();
 }
 
@@ -249,7 +249,7 @@ asynStatus NDPluginCircularBuff::writeInt32(asynUser *pasynUser, epicsInt32 valu
             pOldArray_->release();
           }
           pOldArray_ = NULL;
- 
+
           previousTrigger_ = 0;
 
           // Set the status to buffer filling
@@ -306,17 +306,17 @@ asynStatus NDPluginCircularBuff::writeInt32(asynUser *pasynUser, epicsInt32 valu
         if (function < FIRST_NDPLUGIN_CIRC_BUFF_PARAM)
             status = NDPluginDriver::writeInt32(pasynUser, value);
     }
-    
+
     // Do callbacks so higher layers see any changes
     status = (asynStatus) callParamCallbacks();
-    
-    if (status) 
-        epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize, 
-                  "%s:%s: status=%d, function=%d, value=%d", 
+
+    if (status)
+        epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize,
+                  "%s:%s: status=%d, function=%d, value=%d",
                   driverName, functionName, status, function, value);
-    else        
-        asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, 
-              "%s:%s: function=%d, value=%d\n", 
+    else
+        asynPrint(pasynUser, ASYN_TRACEIO_DRIVER,
+              "%s:%s: function=%d, value=%d\n",
               driverName, functionName, function, value);
     return status;
 }
@@ -356,8 +356,8 @@ asynStatus NDPluginCircularBuff::writeOctet(asynUser *pasynUser, const char *val
       "%s::%s error processing infix expression=%s, error=%s\n",
       driverName, functionName, triggerCalcInfix_, calcErrorStr(postfixError));
     }
-  } 
-  
+  }
+
   else if (function < FIRST_NDPLUGIN_CIRC_BUFF_PARAM) {
       /* If this parameter belongs to a base class call its method */
       status = NDPluginDriver::writeOctet(pasynUser, value, nChars, nActual);
@@ -449,14 +449,14 @@ NDPluginCircularBuff::NDPluginCircularBuff(const char *portName, int queueSize, 
     // Init the pre and post count to 100
     setIntegerParam(NDCircBuffPreTrigger, 100);
     setIntegerParam(NDCircBuffPostTrigger, 100);
-    
+
     // Init the preset trigger count to 1
     setIntegerParam(NDCircBuffPresetTriggerCount, 1);
     setIntegerParam(NDCircBuffActualTriggerCount, 0);
 
     setIntegerParam(NDCircBuffFlushOnSoftTrig, 0);
-    
-    // Enable ArrayCallbacks.  
+
+    // Enable ArrayCallbacks.
     // This plugin currently ignores this setting and always does callbacks, so make the setting reflect the behavior
     setIntegerParam(NDArrayCallbacks, 1);
 

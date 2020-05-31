@@ -13,7 +13,7 @@
 
 #include "NDFileHDF5Layout.h"
 
-namespace hdf5 
+namespace hdf5
 {
 
   /* ================== Attribute Class public methods ==================== */

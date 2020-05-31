@@ -16,21 +16,21 @@ typedef struct {
 /** A plugin that subscribes to callbacks from multiple ports, not just a single port  */
 class epicsShareClass NDPluginGather : public NDPluginDriver {
 public:
-    NDPluginGather(const char *portName, int queueSize, int blockingCallbacks, 
-                   int maxPorts, 
+    NDPluginGather(const char *portName, int queueSize, int blockingCallbacks,
+                   int maxPorts,
                    int maxBuffers, size_t maxMemory,
                    int priority, int stackSize);
 
 protected:
     /* These methods override the virtual methods in the base class */
     virtual void processCallbacks(NDArray *pArray);
-    virtual asynStatus connectToArrayPort(void);    
+    virtual asynStatus connectToArrayPort(void);
     virtual asynStatus setArrayInterrupt(int connect);
 
-                                
+
 private:
     int maxPorts_;
     NDGatherNDArraySource_t *NDArraySrc_;
 };
-    
+
 #endif

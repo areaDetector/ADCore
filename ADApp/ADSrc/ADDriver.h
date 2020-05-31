@@ -42,7 +42,7 @@ typedef enum
     ADStatusWaiting,      /**< Detector is waiting for something, typically for the acquire period to elapse */
     ADStatusInitializing, /**< Detector is initializing, typically at startup */
     ADStatusDisconnected, /**< Detector is not connected */
-    ADStatusAborted       /**< Detector aquisition has been aborted.*/            
+    ADStatusAborted       /**< Detector aquisition has been aborted.*/
 } ADStatus_t;
 
 /** Enumeration of image collection modes */
@@ -69,8 +69,8 @@ typedef enum
     ADTriggerExternal       /**< External trigger input */
 } ADTriggerMode_t;
 
-/** Strings defining parameters that affect the behaviour of the detector. 
-  * These are the values passed to drvUserCreate. 
+/** Strings defining parameters that affect the behaviour of the detector.
+  * These are the values passed to drvUserCreate.
   * The driver will place in pasynUser->reason an integer to be used when the
   * standard asyn interface methods are called. */
  /*                               String                 asyn interface  access   Description  */

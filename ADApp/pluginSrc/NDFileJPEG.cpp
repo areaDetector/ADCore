@@ -27,7 +27,7 @@ static const char *driverName = "NDFileJPEG";
 
 /** Opens a JPEG file.
   * \param[in] fileName The name of the file to open.
-  * \param[in] openMode Mask defining how the file should be opened; bits are 
+  * \param[in] openMode Mask defining how the file should be opened; bits are
   *            NDFileModeRead, NDFileModeWrite, NDFileModeAppend, NDFileModeMultiple
   * \param[in] pArray A pointer to an NDArray; this is used to determine the array and attribute properties.
   */
@@ -49,7 +49,7 @@ asynStatus NDFileJPEG::openFile(const char *fileName, NDFileOpenMode_t openMode,
         case NDUInt8:
             break;
         default:
-            asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, 
+            asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
             "%s:%s: only 8-bit data is supported\n",
             driverName, functionName);
         return(asynError);
@@ -85,7 +85,7 @@ asynStatus NDFileJPEG::openFile(const char *fileName, NDFileOpenMode_t openMode,
         this->jpegInfo.in_color_space = JCS_RGB;
         this->colorMode = NDColorModeRGB3;
     } else {
-        asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, 
+        asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
             "%s:%s: unsupported array structure\n",
             driverName, functionName);
         return(asynError);
@@ -93,12 +93,12 @@ asynStatus NDFileJPEG::openFile(const char *fileName, NDFileOpenMode_t openMode,
 
    /* Create the file. */
     if ((this->outFile = fopen(fileName, "wb")) == NULL ) {
-        asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, 
+        asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
         "%s:%s error opening file %s\n",
         driverName, functionName, fileName);
         return(asynError);
     }
-    
+
     jpeg_set_defaults(&this->jpegInfo);
 
     /* Set the file quality */
@@ -107,7 +107,7 @@ asynStatus NDFileJPEG::openFile(const char *fileName, NDFileOpenMode_t openMode,
     getIntegerParam(NDFileJPEGQuality, &quality);
     this->unlock();
     jpeg_set_quality(&this->jpegInfo, quality, TRUE);
-    
+
     jpeg_start_compress(&this->jpegInfo, TRUE);
     return(asynSuccess);
 }
@@ -126,7 +126,7 @@ asynStatus NDFileJPEG::writeFile(NDArray *pArray)
     static const char *functionName = "writeFile";
 
     asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW,
-              "%s:%s: %lu, %lu\n", 
+              "%s:%s: %lu, %lu\n",
               driverName, functionName, (unsigned long)pArray->dims[0].size, (unsigned long)pArray->dims[1].size);
 
     switch (this->colorMode) {
@@ -149,7 +149,7 @@ asynStatus NDFileJPEG::writeFile(NDArray *pArray)
             pBlue = pGreen + sizeX * sizeY;
             break;
         default:
-            asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, 
+            asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
                 "%s:%s: unknown color mode %d\n",
                 driverName, functionName, this->colorMode);
             return(asynError);
@@ -178,14 +178,14 @@ asynStatus NDFileJPEG::writeFile(NDArray *pArray)
                 pGreen += stepSize;
                 break;
             default:
-                asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, 
+                asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
                     "%s:%s: unknown color mode %d\n",
                     driverName, functionName, this->colorMode);
                 return(asynError);
                 break;
         }
         if (nwrite != 1) {
-            asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, 
+            asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
                 "%s:%s: error writing data to file\n",
                 driverName, functionName);
             return(asynError);
@@ -288,7 +288,7 @@ void NDFileJPEG::termDestination()
 
 /** Constructor for NDFileJPEG; all parameters are simply passed to NDPluginFile::NDPluginFile.
   * \param[in] portName The name of the asyn port driver to be created.
-  * \param[in] queueSize The number of NDArrays that the input queue for this plugin can hold when 
+  * \param[in] queueSize The number of NDArrays that the input queue for this plugin can hold when
   *            NDPluginDriverBlockingCallbacks=0.  Larger queues can decrease the number of dropped arrays,
   *            at the expense of more NDArray buffers being allocated from the underlying driver's NDArrayPool.
   * \param[in] blockingCallbacks Initial setting for the NDPluginDriverBlockingCallbacks flag.
@@ -304,17 +304,17 @@ NDFileJPEG::NDFileJPEG(const char *portName, int queueSize, int blockingCallback
                        int priority, int stackSize)
     /* Invoke the base class constructor.
      * We allocate 2 NDArrays of unlimited size in the NDArray pool.
-     * This driver can block (because writing a file can be slow), and it is not multi-device.  
+     * This driver can block (because writing a file can be slow), and it is not multi-device.
      * Set autoconnect to 1.  priority and stacksize can be 0, which will use defaults. */
     : NDPluginFile(portName, queueSize, blockingCallbacks,
                    NDArrayPort, NDArrayAddr, 1,
-                   0, 0, asynGenericPointerMask, asynGenericPointerMask, 
+                   0, 0, asynGenericPointerMask, asynGenericPointerMask,
                    ASYN_CANBLOCK, 1, priority, stackSize, 1)
 {
     //static const char *functionName = "NDFileJPEG";
 
     createParam(NDFileJPEGQualityString, asynParamInt32, &NDFileJPEGQuality);
-    
+
     jpeg_create_compress(&this->jpegInfo);
     this->jpegInfo.err = jpeg_std_error(&this->jpegErr);
 
@@ -329,7 +329,7 @@ NDFileJPEG::NDFileJPEG(const char *portName, int queueSize, int blockingCallback
     this->destMgr.pNDFileJPEG = this;
     this->jpegInfo.dest = (jpeg_destination_mgr *) &this->destMgr;
 
-    /* Set the plugin type string */    
+    /* Set the plugin type string */
     setStringParam(NDPluginDriverPluginType, "NDFileJPEG");
     this->supportsMultipleArrays = 0;
     setIntegerParam(NDFileJPEGQuality, 50);

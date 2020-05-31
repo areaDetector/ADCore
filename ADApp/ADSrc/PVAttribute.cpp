@@ -28,14 +28,14 @@ static const char *driverName = "PVAttribute";
 static ca_client_context *pCaInputContext=NULL;
 static void connectCallbackC(struct connection_handler_args cha);
 
-/* This asynUser is not attached to any device.  
+/* This asynUser is not attached to any device.
  * It lets one turn on debugging by settings the global asynTrace flag bits
  * ASTN_TRACE_ERROR (default), ASYN_TRACE_FLOW, etc. */
 
 static asynUser *pasynUserSelf = NULL;
 
 /** Constructor for an EPICS PV attribute
-  * \param[in] pName The name of the attribute to be created; case-insensitive. 
+  * \param[in] pName The name of the attribute to be created; case-insensitive.
   * \param[in] pDescription The description of the attribute.
   * \param[in] pSource The name of the EPICS PV to be used to obtain the attribute value.
   * \param[in] dbrType The EPICS DBR_XXX type to be used (DBR_STRING, DBR_DOUBLE, etc).
@@ -48,7 +48,7 @@ PVAttribute::PVAttribute(const char *pName, const char *pDescription,
     dbrType(dbrType), callbackString(0), connectedOnce(false)
 {
     static const char *functionName = "PVAttribute";
-    
+
     /* Create the static pasynUser if not already done */
     if (!pasynUserSelf) pasynUserSelf = pasynManager->createAsynUser(0,0);
 
@@ -77,7 +77,7 @@ PVAttribute::PVAttribute(const char *pName, const char *pDescription,
 
 /** Copy constructor for an EPICS PV attribute
   * \param[in] attribute The PVAttribute to copy from.
-  * NOTE: The copy is not "functional", i.e. it does not update when the PV changes, the value is frozen. 
+  * NOTE: The copy is not "functional", i.e. it does not update when the PV changes, the value is frozen.
   */
 PVAttribute::PVAttribute(PVAttribute& attribute)
     : NDAttribute(attribute)
@@ -99,7 +99,7 @@ PVAttribute::~PVAttribute()
 PVAttribute* PVAttribute::copy(NDAttribute *pAttr)
 {
   PVAttribute *pOut = (PVAttribute *)pAttr;
-  if (!pOut) 
+  if (!pOut)
     pOut = new PVAttribute(*this);
   else {
     // NOTE: We assume that if the attribute name is the same then the source PV and dbrTtype
@@ -118,7 +118,7 @@ static void monitorCallbackC(struct event_handler_args cha)
 
 /** Monitor callback called whenever an EPICS PV changes value.
   * Calls NDAttribute::setValue to store the new value.
-  * \param[in] eha Event handler argument structure passed by channel access. 
+  * \param[in] eha Event handler argument structure passed by channel access.
   */
 void PVAttribute::monitorCallback(struct event_handler_args eha)
 {
@@ -127,8 +127,8 @@ void PVAttribute::monitorCallback(struct event_handler_args eha)
     const char *functionName = "monitorCallback";
 
     epicsMutexLock(this->lock);
-    asynPrint(pasynUserSelf, ASYN_TRACE_FLOW, 
-        "%s:%s: PV=%s\n", 
+    asynPrint(pasynUserSelf, ASYN_TRACE_FLOW,
+        "%s:%s: PV=%s\n",
         driverName, functionName, this->getSource());
 
     if (eha.status != ECA_NORMAL) {
@@ -180,10 +180,10 @@ void PVAttribute::monitorCallback(struct event_handler_args eha)
 int PVAttribute::updateValue()
 {
     //static const char *functionName = "updateValue"
-    
+
     void *pValue;
     NDAttrDataType_t dataType = this->getDataType();
-    
+
     epicsMutexLock(this->lock);
     if (dataType == NDAttrString)
         pValue = callbackString;
@@ -206,7 +206,7 @@ static void connectCallbackC(struct connection_handler_args cha)
 /** Connection callback called whenever an EPICS PV connects or disconnects.
   * If it is a connection event it calls ca_add_masked_array_event to request
   * callbacks whenever the value changes.
-  * \param[in] cha Connection handler argument structure passed by channel access. 
+  * \param[in] cha Connection handler argument structure passed by channel access.
   */
 void PVAttribute::connectCallback(struct connection_handler_args cha)
 {
@@ -216,7 +216,7 @@ void PVAttribute::connectCallback(struct connection_handler_args cha)
     int nRequest=1;
     int elementCount;
     NDAttrDataType_t dataType;
-    
+
     epicsMutexLock(this->lock);
     if (chanId && (ca_state(chanId) == cs_conn)) {
         dbfType = ca_field_type(chanId);
@@ -225,8 +225,8 @@ void PVAttribute::connectCallback(struct connection_handler_args cha)
         }
         connectedOnce = true;
         elementCount = ca_element_count(chanId);
-        asynPrint(pasynUserSelf, ASYN_TRACE_FLOW, 
-            "%s:%s: Connect event, PV=%s, chanId=%p, dbfType=%ld, elementCount=%d, dbrType=%ld\n", 
+        asynPrint(pasynUserSelf, ASYN_TRACE_FLOW,
+            "%s:%s: Connect event, PV=%s, chanId=%p, dbfType=%ld, elementCount=%d, dbrType=%ld\n",
             driverName, functionName, this->getSource(), chanId, dbfType, elementCount, dbrType);
         switch(dbfType) {
             case DBF_STRING:
@@ -293,11 +293,11 @@ void PVAttribute::connectCallback(struct connection_handler_args cha)
                 driverName, functionName, dbrType);
                 goto done;
         }
-        asynPrint(pasynUserSelf, ASYN_TRACE_FLOW, 
-            "%s:%s: Connect event, PV=%s, chanId=%p, type=%d\n", 
+        asynPrint(pasynUserSelf, ASYN_TRACE_FLOW,
+            "%s:%s: Connect event, PV=%s, chanId=%p, type=%d\n",
             driverName, functionName, this->getSource(), chanId, dataType);
         this->setDataType(dataType);
-            
+
         /* Set value change callback on this PV */
         SEVCHK(ca_add_masked_array_event(
             dbrType,
@@ -309,15 +309,15 @@ void PVAttribute::connectCallback(struct connection_handler_args cha)
             &this->eventId, DBE_VALUE),"ca_add_masked_array_event");
     } else {
         /* This is a disconnection event */
-        asynPrint(pasynUserSelf, ASYN_TRACE_FLOW, 
-            "%s:%s: Disconnect event, PV=%s, chanId=%p\n", 
+        asynPrint(pasynUserSelf, ASYN_TRACE_FLOW,
+            "%s:%s: Disconnect event, PV=%s, chanId=%p\n",
             driverName, functionName, this->getSource(), chanId);
     }
     done:
     epicsMutexUnlock(this->lock);
 }
 
-/** Reports on the properties of the PVAttribute object; 
+/** Reports on the properties of the PVAttribute object;
   * calls base class NDAttribute::report() to report on the parameter value.
   * \param[in] fp File pointer for the report output.
   * \param[in] details Level of report details desired; currently does nothing in this derived class.
@@ -331,4 +331,4 @@ int PVAttribute::report(FILE *fp, int details)
     fprintf(fp, "    eventId=%p\n", this->eventId);
     return(ND_SUCCESS);
 }
-    
+

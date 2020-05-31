@@ -2,7 +2,7 @@
 //  Keith Brister 2014-06-26
 //
 //
-// Modified output from bdf2c 
+// Modified output from bdf2c
 // (c) 2009, 2010 Lutz Sammer, License: AGPLv3
 
 typedef struct NDPluginOverlayTextFontBitmapStruct {

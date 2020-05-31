@@ -12,7 +12,7 @@
 #include <stdio.h>
 #include <ellLib.h>
 #include <epicsMutex.h>
- 
+
 #include "NDAttribute.h"
 
 
@@ -23,7 +23,7 @@ public:
     NDAttributeList();
     ~NDAttributeList();
     int          add(NDAttribute *pAttribute);
-    NDAttribute* add(const char *pName, const char *pDescription="", 
+    NDAttribute* add(const char *pName, const char *pDescription="",
                      NDAttrDataType_t dataType=NDAttrUndefined, void *pValue=NULL);
     NDAttribute* find(const char *pName);
     NDAttribute* next(NDAttribute *pAttribute);
@@ -33,7 +33,7 @@ public:
     int          copy(NDAttributeList *pOut);
     int          updateValues();
     int          report(FILE *fp, int details);
-    
+
 private:
     ELLLIST      list_;   /**< The EPICS ELLLIST  */
     epicsMutexId lock_;  /**< Mutex to protect the ELLLIST */

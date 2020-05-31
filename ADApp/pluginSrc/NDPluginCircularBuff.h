@@ -40,10 +40,10 @@ public:
     void processCallbacks(NDArray *pArray);
     asynStatus writeInt32(asynUser *pasynUser, epicsInt32 value);
     asynStatus writeOctet(asynUser *pasynUser, const char *value, size_t nChars, size_t *nActual);
-    
+
     //template <typename epicsType> asynStatus doProcessCircularBuffT(NDArray *pArray);
     //asynStatus doProcessCircularBuff(NDArray *pArray);
-   
+
 protected:
     int NDCircBuffControl;
     #define FIRST_NDPLUGIN_CIRC_BUFF_PARAM NDCircBuffControl
@@ -78,6 +78,6 @@ private:
     char triggerCalcPostfix_[MAX_POSTFIX_SIZE];
     double triggerCalcArgs_[CALCPERFORM_NARGS];
 };
-    
+
 #endif
 

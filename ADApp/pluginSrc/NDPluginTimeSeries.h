@@ -2,8 +2,8 @@
  * NDPluginTimeSeries.h
  *
  * Plugin that creates time-series arrays from callback data.
- * 
- * @author Mark Rivers 
+ *
+ * @author Mark Rivers
  * @date February 2016
  */
 
@@ -36,8 +36,8 @@
 /** Compute time series on signals */
 class epicsShareClass NDPluginTimeSeries : public NDPluginDriver {
 public:
-  NDPluginTimeSeries(const char *portName, int queueSize, int blockingCallbacks, 
-                     const char *NDArrayPort, int NDArrayAddr, 
+  NDPluginTimeSeries(const char *portName, int queueSize, int blockingCallbacks,
+                     const char *NDArrayPort, int NDArrayAddr,
                      int maxSignals, int maxBuffers, size_t maxMemory,
                      int priority, int stackSize);
 
@@ -64,7 +64,7 @@ protected:
 
   // Per-signal parameters
   int P_TSTimeSeries;
-                                
+
 private:
   template <typename epicsType> asynStatus doAddToTimeSeriesT(NDArray *pArray);
   asynStatus addToTimeSeries(NDArray *pArray);
@@ -97,5 +97,5 @@ private:
   double *timeStamp_;
   NDArray *pTimeCircular_;
 };
-    
+
 #endif //NDPluginTimeSeries_H

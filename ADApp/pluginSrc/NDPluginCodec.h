@@ -57,7 +57,7 @@ typedef enum {
 NDArray *compressJPEG(NDArray *input, int quality, NDCodecStatus_t *status, char *errorMessage);
 NDArray *decompressJPEG(NDArray *input, NDCodecStatus_t *status, char *errorMessage);
 
-NDArray *compressBlosc(NDArray *input, int clevel, int shuffle, NDCodecBloscComp_t compressor, 
+NDArray *compressBlosc(NDArray *input, int clevel, int shuffle, NDCodecBloscComp_t compressor,
                        int numThreads, NDCodecStatus_t *status, char *errorMessage);
 NDArray *decompressBlosc(NDArray *input, int numThreads, NDCodecStatus_t *status, char *errorMessage);
 NDArray *compressLZ4(NDArray *input, NDCodecStatus_t *status, char *errorMessage);
@@ -91,5 +91,5 @@ protected:
     int NDCodecBloscNumThreads;
 
 };
- 
+
 #endif

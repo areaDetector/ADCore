@@ -74,10 +74,10 @@ class epicsShareClass NDFileHDF5 : public NDPluginFile
     static const char *str_NDFileHDF5_posName[MAXEXTRADIMS];
     static const char *str_NDFileHDF5_posIndex[MAXEXTRADIMS];
 
-    NDFileHDF5(const char *portName, int queueSize, int blockingCallbacks, 
+    NDFileHDF5(const char *portName, int queueSize, int blockingCallbacks,
                const char *NDArrayPort, int NDArrayAddr,
                int priority, int stackSize);
-       
+
     /* The methods that this class implements */
     virtual asynStatus openFile(const char *fileName, NDFileOpenMode_t openMode, NDArray *pArray);
     virtual asynStatus readFile(NDArray **pArray);
