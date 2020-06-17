@@ -26,6 +26,7 @@ static  NDArrayPool *arrayPool;
 
 struct NDFileHDF5TestFixture
 {
+  asynNDArrayDriverParamSet* paramSet;
   asynNDArrayDriver* dummy_driver;
   boost::shared_ptr<HDF5PluginWrapper> hdf5;
 
@@ -43,7 +44,8 @@ struct NDFileHDF5TestFixture
     // We need some upstream driver for our test plugin so that calls to connectToArrayPort don't fail, but we can then ignore it and send
     // arrays by calling processCallbacks directly.
     // Thus we instansiate a basic asynPortDriver object which is never used.
-    dummy_driver = new asynNDArrayDriver(dummy_port.c_str(), 1, 0, 0, asynGenericPointerMask, asynGenericPointerMask, 0, 0, 0, 0);
+    paramSet = new asynNDArrayDriverParamSet();
+    dummy_driver = new asynNDArrayDriver(paramSet, dummy_port.c_str(), 1, 0, 0, asynGenericPointerMask, asynGenericPointerMask, 0, 0, 0, 0);
     arrayPool = dummy_driver->pNDArrayPool;
 
     // This is the plugin under test
@@ -66,6 +68,7 @@ struct NDFileHDF5TestFixture
   {
     hdf5.reset();
     delete dummy_driver;
+    delete paramSet;
   }
 
   void setup_hdf_stream()

@@ -22,6 +22,7 @@ using namespace std;
 struct NDPluginCircularBuffFixture
 {
     NDArrayPool *arrayPool;
+    asynNDArrayDriverParamSet* paramSet;
     asynNDArrayDriver *dummy_driver;
     NDPluginCircularBuff *cb;
     TestingPlugin *ds;
@@ -47,7 +48,8 @@ struct NDPluginCircularBuffFixture
         // We need some upstream driver for our test plugin so that calls to connectToArrayPort don't fail, but we can then ignore it and send
         // arrays by calling processCallbacks directly.
         // Thus we instantiate a basic asynPortDriver object which is never used.
-        dummy_driver = new asynNDArrayDriver(dummy_port.c_str(), 1, 0, 0, asynGenericPointerMask, asynGenericPointerMask, 0, 0, 0, 0);
+        paramSet = new asynNDArrayDriverParamSet();
+        dummy_driver = new asynNDArrayDriver(paramSet, dummy_port.c_str(), 1, 0, 0, asynGenericPointerMask, asynGenericPointerMask, 0, 0, 0, 0);
         arrayPool = dummy_driver->pNDArrayPool;
 
         // This is the plugin under test
@@ -82,6 +84,7 @@ struct NDPluginCircularBuffFixture
         //delete ds; // TODO: something is wrong here - if we delete ds we get a memory corruption error (in a loop!?!?)
         delete cb;
         delete dummy_driver;
+        delete paramSet;
     }
     void cbProcess(NDArray *pArray)
     {

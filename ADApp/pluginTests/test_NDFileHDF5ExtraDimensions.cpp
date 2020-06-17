@@ -374,6 +374,7 @@ BOOST_AUTO_TEST_CASE(test_TenExtraDimensions)
 
 BOOST_AUTO_TEST_CASE(test_PluginExtraDimensions)
 {
+  asynNDArrayDriverParamSet* paramSet = new asynNDArrayDriverParamSet();
   boost::shared_ptr<asynNDArrayDriver> driver;
   boost::shared_ptr<HDF5PluginWrapper> hdf5;
 
@@ -386,7 +387,7 @@ BOOST_AUTO_TEST_CASE(test_PluginExtraDimensions)
 
   // We need some upstream driver for our test plugin so that calls to connectArrayPort don't fail, but we can then ignore it and send
   // arrays by calling processCallbacks directly.
-  driver = boost::shared_ptr<asynNDArrayDriver>(new asynNDArrayDriver(simport.c_str(), 1, 0, 0, asynGenericPointerMask, asynGenericPointerMask, 0, 0, 0, 0));
+  driver = boost::shared_ptr<asynNDArrayDriver>(new asynNDArrayDriver(paramSet, simport.c_str(), 1, 0, 0, asynGenericPointerMask, asynGenericPointerMask, 0, 0, 0, 0));
   NDArrayPool *arrayPool = driver->pNDArrayPool;
 
   // This is the plugin under test
@@ -670,5 +671,6 @@ BOOST_AUTO_TEST_CASE(test_PluginExtraDimensions)
   BOOST_REQUIRE_EQUAL(hdf5->getVirtualDim(8), 3);
   BOOST_REQUIRE_EQUAL(hdf5->getVirtualDim(9), 2);
 
+  delete paramSet;
 }
 

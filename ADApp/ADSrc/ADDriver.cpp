@@ -36,15 +36,15 @@ void ADDriver::setShutter(int open)
     double delay;
     double shutterOpenDelay, shutterCloseDelay;
 
-    getIntegerParam(ADShutterMode, &itemp); shutterMode = (ADShutterMode_t)itemp;
-    getDoubleParam(ADShutterOpenDelay, &shutterOpenDelay);
-    getDoubleParam(ADShutterCloseDelay, &shutterCloseDelay);
+    getIntegerParam(paramSet->ADShutterMode, &itemp); shutterMode = (ADShutterMode_t)itemp;
+    getDoubleParam(paramSet->ADShutterOpenDelay, &shutterOpenDelay);
+    getDoubleParam(paramSet->ADShutterCloseDelay, &shutterCloseDelay);
 
     switch (shutterMode) {
         case ADShutterModeNone:
             break;
         case ADShutterModeEPICS:
-            setIntegerParam(ADShutterControlEPICS, open);
+            setIntegerParam(paramSet->ADShutterControlEPICS, open);
             callParamCallbacks();
             delay = shutterOpenDelay - shutterCloseDelay;
             epicsThreadSleep(delay);
@@ -74,7 +74,7 @@ asynStatus ADDriver::writeInt32(asynUser *pasynUser, epicsInt32 value)
 
     status = setIntegerParam(addr, function, value);
 
-    if (function == ADShutterControl) {
+    if (function == paramSet->ADShutterControl) {
         setShutter(value);
     } else {
         /* If this parameter belongs to a base class call its method */
@@ -103,52 +103,19 @@ asynStatus ADDriver::writeInt32(asynUser *pasynUser, epicsInt32 value)
   * After calling the base class constructor this method sets reasonable default values for all of the parameters
   * defined in ADDriver.h.
   */
-ADDriver::ADDriver(const char *portName, int maxAddr, int numParams, int maxBuffers, size_t maxMemory,
+ADDriver::ADDriver(ADDriverParamSet* paramSet,
+                   const char *portName, int maxAddr, int numParams, int maxBuffers, size_t maxMemory,
                    int interfaceMask, int interruptMask,
-                   int asynFlags, int autoConnect, int priority, int stackSize)
-
-    : asynNDArrayDriver(portName, maxAddr, maxBuffers, maxMemory,
-          interfaceMask | asynInt32Mask | asynFloat64Mask | asynOctetMask | asynGenericPointerMask | asynDrvUserMask,
-          interruptMask | asynInt32Mask | asynFloat64Mask | asynOctetMask | asynGenericPointerMask,
-          asynFlags, autoConnect, priority, stackSize)
-
+                   int asynFlags, int autoConnect, int priority, int stackSize):
+    : asynNDArrayDriver(
+        paramSet,
+        portName, maxAddr, maxBuffers, maxMemory,
+        interfaceMask | asynInt32Mask | asynFloat64Mask | asynOctetMask | asynGenericPointerMask | asynDrvUserMask,
+        interruptMask | asynInt32Mask | asynFloat64Mask | asynOctetMask | asynGenericPointerMask,
+        asynFlags, autoConnect, priority, stackSize),
+    paramSet(paramSet)
 {
     //char *functionName = "ADDriver";
-
-    createParam(ADGainString,                asynParamFloat64, &ADGain);
-    createParam(ADBinXString,                asynParamInt32, &ADBinX);
-    createParam(ADBinYString,                asynParamInt32, &ADBinY);
-    createParam(ADMinXString,                asynParamInt32, &ADMinX);
-    createParam(ADMinYString,                asynParamInt32, &ADMinY);
-    createParam(ADSizeXString,               asynParamInt32, &ADSizeX);
-    createParam(ADSizeYString,               asynParamInt32, &ADSizeY);
-    createParam(ADMaxSizeXString,            asynParamInt32, &ADMaxSizeX);
-    createParam(ADMaxSizeYString,            asynParamInt32, &ADMaxSizeY);
-    createParam(ADReverseXString,            asynParamInt32, &ADReverseX);
-    createParam(ADReverseYString,            asynParamInt32, &ADReverseY);
-    createParam(ADFrameTypeString,           asynParamInt32, &ADFrameType);
-    createParam(ADImageModeString,           asynParamInt32, &ADImageMode);
-    createParam(ADNumExposuresString,        asynParamInt32, &ADNumExposures);
-    createParam(ADNumExposuresCounterString, asynParamInt32, &ADNumExposuresCounter);
-    createParam(ADNumImagesString,           asynParamInt32, &ADNumImages);
-    createParam(ADNumImagesCounterString,    asynParamInt32, &ADNumImagesCounter);
-    createParam(ADAcquireTimeString,         asynParamFloat64, &ADAcquireTime);
-    createParam(ADAcquirePeriodString,       asynParamFloat64, &ADAcquirePeriod);
-    createParam(ADTimeRemainingString,       asynParamFloat64, &ADTimeRemaining);
-    createParam(ADStatusString,              asynParamInt32, &ADStatus);
-    createParam(ADTriggerModeString,         asynParamInt32, &ADTriggerMode);
-    createParam(ADShutterControlString,      asynParamInt32, &ADShutterControl);
-    createParam(ADShutterControlEPICSString, asynParamInt32, &ADShutterControlEPICS);
-    createParam(ADShutterStatusString,       asynParamInt32, &ADShutterStatus);
-    createParam(ADShutterModeString,         asynParamInt32, &ADShutterMode);
-    createParam(ADShutterOpenDelayString,    asynParamFloat64, &ADShutterOpenDelay);
-    createParam(ADShutterCloseDelayString,   asynParamFloat64, &ADShutterCloseDelay);
-    createParam(ADTemperatureString,         asynParamFloat64, &ADTemperature);
-    createParam(ADTemperatureActualString,   asynParamFloat64, &ADTemperatureActual);
-    createParam(ADReadStatusString,          asynParamInt32, &ADReadStatus);
-    createParam(ADStatusMessageString,       asynParamOctet, &ADStatusMessage);
-    createParam(ADStringToServerString,      asynParamOctet, &ADStringToServer);
-    createParam(ADStringFromServerString,    asynParamOctet, &ADStringFromServer);
 
     /* Here we set the values of read-only parameters and of read/write parameters that cannot
      * or should not get their values from the database.  Note that values set here will override
@@ -156,16 +123,15 @@ ADDriver::ADDriver(const char *portName, int maxAddr, int numParams, int maxBuff
      * the driver with no error during initialization then it sets the output record to that value.
      * If a value is not set here then the read request will return an error (uninitialized).
      * Values set here will be overridden by values from save/restore if they exist. */
-    setIntegerParam(ADMaxSizeX,     1);
-    setIntegerParam(ADMaxSizeY,     1);
-    setIntegerParam(ADStatus,       ADStatusIdle);
-    setIntegerParam(ADNumImagesCounter, 0);
-    setIntegerParam(ADNumExposuresCounter, 0);
-    setDoubleParam( ADTimeRemaining, 0.0);
-    setIntegerParam(ADShutterStatus, 0);
-    setIntegerParam(ADAcquire, 0);
+    setIntegerParam(paramSet->ADMaxSizeX, 1);
+    setIntegerParam(paramSet->ADMaxSizeY, 1);
+    setIntegerParam(paramSet->ADStatus, ADStatusIdle);
+    setIntegerParam(paramSet->ADNumImagesCounter, 0);
+    setIntegerParam(paramSet->ADNumExposuresCounter, 0);
+    setDoubleParam(paramSet->ADTimeRemaining, 0.0);
+    setIntegerParam(paramSet->ADShutterStatus, 0);
 
-    setStringParam (ADStatusMessage,  "");
-    setStringParam (ADStringToServer, "");
-    setStringParam (ADStringFromServer,  "");
+    setStringParam(paramSet->ADStatusMessage, "");
+    setStringParam(paramSet->ADStringToServer, "");
+    setStringParam(paramSet->ADStringFromServer, "");
 }
