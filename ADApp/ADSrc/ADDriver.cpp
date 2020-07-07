@@ -54,6 +54,24 @@ void ADDriver::setShutter(int open)
     }
 }
 
+/** Connects driver to device;
+  * This method uses the class variable deviceIsConnected to determine whether to call
+  * the base class method, which in turn calls pasynManager::exceptionConnect().
+  * \param[in] pasynUser The pasynUser structure which contains information about the port and address */
+asynStatus ADDriver::connect(asynUser *pasynUser)
+{
+    static const char *functionName = "connect";
+
+    if (this->deviceIsConnected) {
+        return asynNDArrayDriver::connect(pasynUser);
+    }
+    asynPrint(pasynUserSelf, ASYN_TRACE_WARNING,
+        "%s::%s warning attempt to connect but deviceIsConnected is false\n",
+        driverName, functionName);
+    return asynSuccess;
+}
+
+
 /** Sets an int32 parameter.
   * \param[in] pasynUser asynUser structure that contains the function code in pasynUser->reason.
   * \param[in] value The value for this parameter
@@ -110,7 +128,8 @@ ADDriver::ADDriver(const char *portName, int maxAddr, int numParams, int maxBuff
     : asynNDArrayDriver(portName, maxAddr, maxBuffers, maxMemory,
           interfaceMask | asynInt32Mask | asynFloat64Mask | asynOctetMask | asynGenericPointerMask | asynDrvUserMask,
           interruptMask | asynInt32Mask | asynFloat64Mask | asynOctetMask | asynGenericPointerMask,
-          asynFlags, autoConnect, priority, stackSize)
+          asynFlags, autoConnect, priority, stackSize),
+    deviceIsConnected(true)
 
 {
     //char *functionName = "ADDriver";
