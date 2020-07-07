@@ -139,6 +139,7 @@ public:
 
     /* These are the methods that we override from asynPortDriver */
     virtual asynStatus writeInt32(asynUser *pasynUser, epicsInt32 value);
+    virtual asynStatus connect(asynUser *pasynUser);
 
     /* These are the methods that are new to this class */
     virtual void setShutter(int open);
@@ -179,6 +180,8 @@ protected:
     int ADStatusMessage;
     int ADStringToServer;
     int ADStringFromServer;
+    
+    bool deviceIsConnected;
 };
 
 #endif
