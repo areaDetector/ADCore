@@ -55,18 +55,23 @@ void ADDriver::setShutter(int open)
 }
 
 /** Connects driver to device;
-  * This method uses the class variable deviceIsConnected to determine whether to call
-  * the base class method, which in turn calls pasynManager::exceptionConnect().
+  * This method is called when the driver's pasynCommon->connect() function is called.
+  * It uses the class variable deviceIsReachable to determine whether to call
+  * asynPortDriver::connect(), which in turn calls pasynManager::exceptionConnect()
+  * to signal that the driver is connected to the underlying hardware.
+  * Derived classes can override this method if they need to handle connect() calls in a more
+  * complex way.  For example, with a network camera that can be temporarily unreachable
+  * the driver could attempt to connect to the camera each time that connect() is called.
   * \param[in] pasynUser The pasynUser structure which contains information about the port and address */
 asynStatus ADDriver::connect(asynUser *pasynUser)
 {
     static const char *functionName = "connect";
 
-    if (this->deviceIsConnected) {
-        return asynNDArrayDriver::connect(pasynUser);
+    if (this->deviceIsReachable) {
+        return asynPortDriver::connect(pasynUser);
     }
     asynPrint(pasynUserSelf, ASYN_TRACE_WARNING,
-        "%s::%s warning attempt to connect but deviceIsConnected is false\n",
+        "%s::%s warning attempt to connect but deviceIsReachable is false\n",
         driverName, functionName);
     return asynSuccess;
 }
@@ -129,7 +134,7 @@ ADDriver::ADDriver(const char *portName, int maxAddr, int numParams, int maxBuff
           interfaceMask | asynInt32Mask | asynFloat64Mask | asynOctetMask | asynGenericPointerMask | asynDrvUserMask,
           interruptMask | asynInt32Mask | asynFloat64Mask | asynOctetMask | asynGenericPointerMask,
           asynFlags, autoConnect, priority, stackSize),
-    deviceIsConnected(true)
+    deviceIsReachable(true)
 
 {
     //char *functionName = "ADDriver";
