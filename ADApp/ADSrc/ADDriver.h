@@ -181,7 +181,7 @@ protected:
     int ADStringToServer;
     int ADStringFromServer;
     
-    bool deviceIsConnected;
+    bool deviceIsReachable;
 };
 
 #endif
