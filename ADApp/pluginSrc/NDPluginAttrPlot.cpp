@@ -264,7 +264,7 @@ asynStatus NDPluginAttrPlot::push_data(epicsInt32 uid, NDAttributeList& list) {
         data_[i].push_back(new_values[i]);
     }
 
-    delete new_values;
+    delete [] new_values;
     return asynSuccess;
 }
 

@@ -5,7 +5,9 @@
 
 #include <hdf5_hl.h>
 
+#ifndef htonll
 #define htonll(x) ( ( (uint64_t)(htonl( (uint32_t)((x << 32) >> 32)))<< 32) | htonl( ((uint32_t)(x >> 32)) ))
+#endif
 
 static const char *fileName = "NDFileHDF5Dataset";
 

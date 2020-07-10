@@ -106,8 +106,8 @@ std::vector<hsize_t> HDF5FileReader::getDatasetDimensions(const std::string& nam
       // Close the dataset
       H5Dclose(dataset_id);
 
-      delete dims;
-      delete maxdims;
+      delete [] dims;
+      delete [] maxdims;
     }
   }
   return vdims;
