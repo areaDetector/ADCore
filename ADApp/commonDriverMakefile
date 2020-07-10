@@ -190,7 +190,7 @@ ifeq ($(WITH_BOOST),YES)
     PROD_SYS_LIBS += boost_system
   else
     ifdef BOOST_LIB
-      BOOST_DIR        = $(BOOST_LIB)
+      boost_system_DIR = $(BOOST_LIB)
       PROD_LIBS     += boost_system
     else
       PROD_SYS_LIBS += boost_system
