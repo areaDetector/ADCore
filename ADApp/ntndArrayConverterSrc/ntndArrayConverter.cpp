@@ -9,22 +9,6 @@ using namespace epics::nt;
 using namespace epics::pvData;
 using tr1::static_pointer_cast;
 
-// Maps the selected index of the value field to its type.
-static const NDDataType_t scalarToNDDataType[pvString+1] = {
-        NDInt8,     // 0:  pvBoolean (not supported)
-        NDInt8,     // 1:  pvByte
-        NDInt16,    // 2:  pvShort
-        NDInt32,    // 3:  pvInt
-        NDInt64,    // 4:  pvLong
-        NDUInt8,    // 5:  pvUByte
-        NDUInt16,   // 6:  pvUShort
-        NDUInt32,   // 7:  pvUInt
-        NDUInt64,   // 8:  pvULong
-        NDFloat32,  // 9:  pvFloat
-        NDFloat64,  // 10: pvDouble
-        NDInt8,     // 11: pvString (notSupported)
-};
-
 // Maps ScalarType to NDAttrDataType_t
 static const NDAttrDataType_t scalarToNDAttrDataType[pvString+1] = {
         NDAttrInt8,     // 0:  pvBoolean (not supported)

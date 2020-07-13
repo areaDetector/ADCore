@@ -331,43 +331,43 @@ asynStatus NDFileHDF5AttributeDataset::typeAsHdf()
       H5Tset_size(datatype_, MAX_ATTRIBUTE_STRING_SIZE);
       *(epicsUInt8*)this->ptrFillValue_ = (epicsUInt8)fillvalue;
       break;
-    case NDInt8:
+    case NDAttrInt8:
       datatype_ = H5T_NATIVE_INT8;
       *(epicsInt8*)this->ptrFillValue_ = (epicsInt8)fillvalue;
       break;
-    case NDUInt8:
+    case NDAttrUInt8:
       datatype_ = H5T_NATIVE_UINT8;
       *(epicsUInt8*)this->ptrFillValue_ = (epicsUInt8)fillvalue;
       break;
-    case NDInt16:
+    case NDAttrInt16:
       datatype_ = H5T_NATIVE_INT16;
       *(epicsInt16*)this->ptrFillValue_ = (epicsInt16)fillvalue;
       break;
-    case NDUInt16:
+    case NDAttrUInt16:
       datatype_ = H5T_NATIVE_UINT16;
       *(epicsUInt16*)this->ptrFillValue_ = (epicsUInt16)fillvalue;
       break;
-    case NDInt32:
+    case NDAttrInt32:
       datatype_ = H5T_NATIVE_INT32;
       *(epicsInt32*)this->ptrFillValue_ = (epicsInt32)fillvalue;
       break;
-    case NDUInt32:
+    case NDAttrUInt32:
       datatype_ = H5T_NATIVE_UINT32;
       *(epicsUInt32*)this->ptrFillValue_ = (epicsUInt32)fillvalue;
       break;
-    case NDInt64:
+    case NDAttrInt64:
       datatype_ = H5T_NATIVE_INT64;
       *(epicsInt64*)this->ptrFillValue_ = (epicsInt64)fillvalue;
       break;
-    case NDUInt64:
+    case NDAttrUInt64:
       datatype_ = H5T_NATIVE_UINT64;
       *(epicsUInt64*)this->ptrFillValue_ = (epicsUInt64)fillvalue;
       break;
-    case NDFloat32:
+    case NDAttrFloat32:
       datatype_ = H5T_NATIVE_FLOAT;
       *(epicsFloat32*)this->ptrFillValue_ = (epicsFloat32)fillvalue;
       break;
-    case NDFloat64:
+    case NDAttrFloat64:
       datatype_ = H5T_NATIVE_DOUBLE;
       *(epicsFloat64*)this->ptrFillValue_ = (epicsFloat64)fillvalue;
       break;
