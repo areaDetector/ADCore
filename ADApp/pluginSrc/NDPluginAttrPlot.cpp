@@ -46,8 +46,6 @@ NDPluginAttrPlot::NDPluginAttrPlot(const char * port, int n_attributes,
                 in_port,     // Source of NDArray callbacks - port
                 in_addr,     // Source of NDArray callbacks - address
                 std::max(n_attributes, n_data_blocks), // Max number of addresses
-                NUM_NDATTRPLOT_PARAMS, /* The number of parameters that
-                                        * the class supports */
                 -1,    // The maximum number of NDArray buffers (-1 = unlimited)
                 -1,    // The maximum amount of memory (-1 = unlimited)
                 asynFloat64ArrayMask | asynGenericPointerMask | asynInt32Mask |
@@ -59,7 +57,8 @@ NDPluginAttrPlot::NDPluginAttrPlot(const char * port, int n_attributes,
                 ASYN_MULTIDEVICE, // Flags when creating the asyn port driver
                 1,     // The autoConnect flag for the asyn port driver
                 priority, // The thread priority for the asyn port driver thread
-                stackSize // The stack size for the asyn port driver thread
+                stackSize, // The stack size for the asyn port driver thread
+                1 //  Maximum number of threads
             ),
       state_(NDAttrPlot_InitState),
       data_(),
