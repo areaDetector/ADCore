@@ -27,7 +27,7 @@
  *  NDPos_CurrentPos         - Value of the next position to attach to the NDArray
  */
 
-#ifndef NDPosPluginAPP_SRC_NDPosPlugin_H_
+#ifndef NDPosPluginAPP_SRC_NDPOSPLUGIN_H_
 #define NDPosPluginAPP_SRC_NDPOSPLUGIN_H_
 
 #include <epicsTypes.h>

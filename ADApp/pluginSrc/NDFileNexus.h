@@ -49,8 +49,6 @@ protected:
 
 private:
     NXhandle nxFileHandle;
-    int bitsPerSample;
-    NDColorMode_t colorMode;
     xmlDoc *configDoc;
     xmlNodePtr rootNode;
     NDAttributeList *pFileAttributes;

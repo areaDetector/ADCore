@@ -934,7 +934,7 @@ NDPluginFile::NDPluginFile(const char *portName, int queueSize, int blockingCall
                      NDArrayPort, NDArrayAddr, maxAddr, maxBuffers, maxMemory,
                      asynGenericPointerMask, asynGenericPointerMask,
                      asynFlags, autoConnect, priority, stackSize, maxThreads, compressionAware),
-    pCapture(NULL), captureBufferSize(0)
+    pCapture(NULL)
 {
     //static const char *functionName = "NDPluginFile";
 

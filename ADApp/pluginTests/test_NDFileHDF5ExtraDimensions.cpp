@@ -26,8 +26,6 @@
 #include "HDF5FileReader.h"
 #include "NDFileHDF5Dataset.h"
 
-const int TEST_RANK = 5;
-const int MAX_DIM_SIZE = 10;
 hid_t dataspace;
 NDArray* parr;
 
@@ -90,11 +88,11 @@ NDFileHDF5Dataset *createTestDataset(int rank, int *max_dim_size, asynUser *pasy
 
   dataset->configureDims(parr, true, extraDims, extra_dims, chunk_extra_dims, user_chunking);
 
-  delete dims;
-  delete extra_dims;
-  delete user_chunking;
-  delete maxdims;
-  delete chunkdims;
+  delete [] dims;
+  delete [] extra_dims;
+  delete [] user_chunking;
+  delete [] maxdims;
+  delete [] chunkdims;
 
   return dataset;
 }

@@ -222,14 +222,9 @@ class epicsShareClass NDFileHDF5 : public NDPluginFile
 
     hdf5::LayoutXML layout;
 
-    int arrayDataId;
-    int uniqueIdId;
-    int timeStampId;
     int nextRecord;
-    hid_t h5type;
     int *pAttributeId;
     NDAttributeList *pFileAttributes;
-    epicsInt32 arrayDims[ND_ARRAY_MAX_DIMS];
     bool multiFrameFile;
     char *extraDimNameN;
     char *extraDimNameX;

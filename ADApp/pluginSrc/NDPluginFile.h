@@ -81,7 +81,6 @@ private:
     bool isFrameValid(NDArray *pArray); /**< Compare pArray dimensions and datatype against latched NDArrayInfo_t structure */
 
     NDArray **pCapture;
-    int captureBufferSize;
     epicsMutexId fileMutexId;
     bool useAttrFilePrefix;
     bool lazyOpen;
