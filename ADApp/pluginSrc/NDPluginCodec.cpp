@@ -473,7 +473,7 @@ NDArray *compressLZ4(NDArray *input, NDCodecStatus_t *status, char *errorMessage
 
     NDArrayInfo_t info;
     input->getInfo(&info);
-    int outputSize = LZ4_compressBound(info.totalBytes);
+    int outputSize = LZ4_compressBound((int)info.totalBytes);
     NDArray *output = allocArray(input, -1, outputSize);
 
     if (!output) {
@@ -482,7 +482,7 @@ NDArray *compressLZ4(NDArray *input, NDCodecStatus_t *status, char *errorMessage
         return NULL;
     }
 
-    int compSize = LZ4_compress_default((const char*)input->pData, (char*)output->pData, info.totalBytes, outputSize);
+    int compSize = LZ4_compress_default((const char*)input->pData, (char*)output->pData, (int)info.totalBytes, outputSize);
 
     if (compSize <= 0) {
         output->release();
@@ -519,7 +519,7 @@ NDArray *decompressLZ4(NDArray *input, NDCodecStatus_t *status, char *errorMessa
         return NULL;
     }
 
-    int ret = LZ4_decompress_fast((const char*)input->pData, (char*)output->pData, info.totalBytes);
+    int ret = LZ4_decompress_fast((const char*)input->pData, (char*)output->pData, (int)info.totalBytes);
 
     if (ret <= 0){
         output->release();
@@ -566,7 +566,7 @@ NDArray *compressBSLZ4(NDArray *input, NDCodecStatus_t *status, char *errorMessa
     }
 
     output->codec.name = codecName[NDCODEC_BSLZ4];
-    output->compressedSize = compSize;
+    output->compressedSize = (size_t)compSize;
 
     return output;
 }

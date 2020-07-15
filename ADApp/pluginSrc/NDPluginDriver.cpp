@@ -217,7 +217,7 @@ void NDPluginDriver::beginProcessCallbacks(NDArray *pArray)
     setIntegerParam(NDColorMode, colorMode);
     setIntegerParam(NDBayerPattern, bayerPattern);
     setStringParam(NDCodec, pArray->codec.name);
-    setIntegerParam(NDCompressedSize, pArray->compressedSize);
+    setIntegerParam(NDCompressedSize, (int)pArray->compressedSize);
     setIntegerParam(NDUniqueId, pArray->uniqueId);
     setTimeStamp(&pArray->epicsTS);
     setDoubleParam(NDTimeStamp, pArray->timeStamp);
@@ -356,9 +356,9 @@ bool NDPluginDriver::throttled(NDArray *pArray)
     if (pArray->codec.empty()) {
         NDArrayInfo info;
         pArray->getInfo(&info);
-        needed = info.totalBytes;
+        needed = (double)info.totalBytes;
     } else {
-        needed = pArray->compressedSize;
+        needed = (double)pArray->compressedSize;
     }
     return !throttler_->tryTake(needed);
 }

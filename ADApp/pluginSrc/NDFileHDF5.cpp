@@ -3430,12 +3430,12 @@ asynStatus NDFileHDF5::configureCompression(NDArray *pArray)
             pAttribute->getValue(NDAttrInt32, &colorMode);
         cds[0] = jpegQuality;
         if ((pArray->ndims == 2) && (colorMode == NDColorModeMono)) {
-          cds[1] = pArray->dims[0].size;
-          cds[2] = pArray->dims[1].size;
+          cds[1] = (unsigned int)pArray->dims[0].size;
+          cds[2] = (unsigned int)pArray->dims[1].size;
           cds[3] = 0;
         } else if ((pArray->ndims == 3) && (colorMode == NDColorModeRGB1)) {
-          cds[1] = pArray->dims[1].size;
-          cds[2] = pArray->dims[2].size;
+          cds[1] = (unsigned int)pArray->dims[1].size;
+          cds[2] = (unsigned int)pArray->dims[2].size;
           cds[3] = 1;
         } else {
           asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, "JPEG compression only supports 2-D mono and 3-D RGB1 modes\n");

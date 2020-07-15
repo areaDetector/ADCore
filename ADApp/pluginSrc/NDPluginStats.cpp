@@ -356,8 +356,8 @@ asynStatus NDPluginStats::doComputeProfilesT(NDArray *pArray, NDStats_t *pStats)
     iy = MIN(iy, pStats->profileSizeY-1);
     pCursor = pData + iy*pStats->profileSizeX;
     for (ix=0; ix<pStats->profileSizeX; ix++) {
-        pStats->profileX[profCentroid][ix] = *pCentroid++;
-        pStats->profileX[profCursor][ix]   = *pCursor++;
+        pStats->profileX[profCentroid][ix] = (double)*pCentroid++;
+        pStats->profileX[profCursor][ix]   = (double)*pCursor++;
     }
     ix = (size_t) (pStats->centroidX + 0.5);
     ix = MAX(ix, 0);
@@ -368,8 +368,8 @@ asynStatus NDPluginStats::doComputeProfilesT(NDArray *pArray, NDStats_t *pStats)
     ix = MIN(ix, pStats->profileSizeX-1);
     pCursor = pData + ix;
     for (iy=0; iy<pStats->profileSizeY; iy++) {
-        pStats->profileY[profCentroid][iy] = *pCentroid;
-        pStats->profileY[profCursor][iy]   = *pCursor;
+        pStats->profileY[profCentroid][iy] = (double)*pCentroid;
+        pStats->profileY[profCursor][iy]   = (double)*pCursor;
         pCentroid += pStats->profileSizeX;
         pCursor   += pStats->profileSizeX;
     }

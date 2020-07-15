@@ -280,10 +280,10 @@ void NDPluginColorConvert::convertColor(NDArray *pArray)
             // loop over each pixel
             for(unsigned int ipixel=0; ipixel<imageSize; ipixel++) {
                 unsigned int x = ipixel % rowSize;
-                unsigned int y = ipixel / rowSize;
+                unsigned int y = (unsigned int)(ipixel / rowSize);
                 // x and y value used for determining pixel colour w.r.t. bayer pattern & offsets
-                unsigned int bx = x + pArray->dims[0].offset; // original x before offset
-                unsigned int by = y + pArray->dims[1].offset; // original y before offset
+                unsigned int bx = (unsigned int)(x + pArray->dims[0].offset); // original x before offset
+                unsigned int by = (unsigned int)(y + pArray->dims[1].offset); // original y before offset
                 // account for bayer pattern in x and y
                 // bayerPattern = {0:RGGB, 1:GBRG. 2:GRBG, 3:BGGR}
                 bx += int(bayerPattern>>1)&1; // first bit of bayer pattern enum
@@ -303,31 +303,31 @@ void NDPluginColorConvert::convertColor(NDArray *pArray)
                 p9 = pIn+rowSize+1; // below right of pixel
 
                 // coordinates from original image to get colour type
-                if (bx%2==0 && by%2==0) { rvalue = *pIn; whatcolour = red; }
-                else if (bx%2==1 && by%2==1) { bvalue = *pIn; whatcolour = blue; }
-                else if (bx%2 != by%2) { gvalue = *pIn; whatcolour = green; }
+                if (bx%2==0 && by%2==0) { rvalue = (unsigned int)*pIn; whatcolour = red; }
+                else if (bx%2==1 && by%2==1) { bvalue = (unsigned int)*pIn; whatcolour = blue; }
+                else if (bx%2 != by%2) { gvalue = (unsigned int)*pIn; whatcolour = green; }
 
                 // only interpolate pixels not touching a border
                 if (x>0 && x<rowSize-1 && y>0 && y<numRows-1) {
                     if (whatcolour == red) {
                         // if pixel is red
-                        bvalue = (*p1 + *p3 + *p7 + *p9) / 4;
-                        gvalue = (*p2 + *p4 + *p6 + *p8) / 4;
+                        bvalue = (unsigned int)(*p1 + *p3 + *p7 + *p9) / 4;
+                        gvalue = (unsigned int)(*p2 + *p4 + *p6 + *p8) / 4;
                     }
                     if (whatcolour == blue) {
                         // if pixel is blue
-                        rvalue = (*p1 + *p3 + *p7 + *p9) / 4;
-                        gvalue = (*p2 + *p4 + *p6 + *p8) / 4;
+                        rvalue = (unsigned int)(*p1 + *p3 + *p7 + *p9) / 4;
+                        gvalue = (unsigned int)(*p2 + *p4 + *p6 + *p8) / 4;
                     }
                     if (whatcolour == green && bx%2 == 1) {
                         // if pixel is green (next to red)
-                        rvalue = (*p4 + *p6) / 2;
-                        bvalue = (*p2 + *p8) / 2;
+                        rvalue = (unsigned int)(*p4 + *p6) / 2;
+                        bvalue = (unsigned int)(*p2 + *p8) / 2;
                     }
                     if (whatcolour == green && bx%2 == 0) {
                         // if pixel is green (next to blue)
-                        bvalue = (*p4 + *p6) / 2;
-                        rvalue = (*p2 + *p8) / 2;
+                        bvalue = (unsigned int)(*p4 + *p6) / 2;
+                        rvalue = (unsigned int)(*p2 + *p8) / 2;
                     }
                 }
 

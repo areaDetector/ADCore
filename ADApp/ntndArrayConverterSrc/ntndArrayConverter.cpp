@@ -421,7 +421,7 @@ void NTNDArrayConverter::fromValue (NDArray *src)
     codec->getSubField<PVUnion>("parameters")->set(uncompressedType);
     codec->getSubField<PVString>("name")->put(src->codec.name);
 
-    size_t count = src->codec.empty() ? arrayInfo.nElements : compressedSize;
+    size_t count = src->codec.empty() ? arrayInfo.nElements : (size_t)compressedSize;
 
     src->reserve();
     shared_vector<arrayValType> temp((srcDataType*)src->pData,

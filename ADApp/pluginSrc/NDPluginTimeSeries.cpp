@@ -283,7 +283,7 @@ void NDPluginTimeSeries::doTimeSeriesCallbacksT()
   if (acquireMode_ == TSAcquireModeFixed) {
     for (signal=0; signal<numSignals_; signal++) {
       for (timeOut=0; timeOut<currentTimePoint_; timeOut++) {
-        signalData_[timeOut] = timeCircular[signal*numTimePoints_ + timeOut];
+        signalData_[timeOut] = (double)timeCircular[signal*numTimePoints_ + timeOut];
       }
       doCallbacksFloat64Array(signalData_, currentTimePoint_, P_TSTimeSeries, signal);
     }
@@ -292,7 +292,7 @@ void NDPluginTimeSeries::doTimeSeriesCallbacksT()
     timeIn = currentTimePoint_;
     for (signal=0; signal<numSignals_; signal++) {
       for (timeOut=0; timeOut<numTimePoints_; timeOut++) {
-        signalData_[timeOut] = timeCircular[signal*numTimePoints_ + timeIn];
+        signalData_[timeOut] = (double)timeCircular[signal*numTimePoints_ + timeIn];
         if (++timeIn >= numTimePoints_) timeIn = 0;
       }
       doCallbacksFloat64Array(signalData_, numTimePoints_, P_TSTimeSeries, signal);
