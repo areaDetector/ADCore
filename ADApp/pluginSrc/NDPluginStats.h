@@ -78,6 +78,7 @@ typedef struct NDStats {
     size_t profileSizeY;
     size_t cursorX;
     size_t cursorY;
+    double  cursorValue;
     epicsInt32 *totalArray;
     epicsInt32 *netArray;
     int histSize;
@@ -125,6 +126,7 @@ typedef struct NDStats {
 #define NDPluginStatsProfileSizeYString       "PROFILE_SIZE_Y"      /* (asynInt32,        r/o) Y profile size */
 #define NDPluginStatsCursorXString            "CURSOR_X"            /* (asynInt32,        r/w) X cursor position */
 #define NDPluginStatsCursorYString            "CURSOR_Y"            /* (asynInt32,        r/w) Y cursor position */
+#define NDPluginStatsCursorValString          "CURSOR_VAL"          /* (asynFloat64,      r/o) value at cursor position */
 #define NDPluginStatsProfileAverageXString    "PROFILE_AVERAGE_X"   /* (asynFloat64Array, r/o) X average profile array */
 #define NDPluginStatsProfileAverageYString    "PROFILE_AVERAGE_Y"   /* (asynFloat64Array, r/o) Y average profile array */
 #define NDPluginStatsProfileThresholdXString  "PROFILE_THRESHOLD_X" /* (asynFloat64Array, r/o) X average profile array after threshold */
@@ -212,6 +214,7 @@ protected:
     int NDPluginStatsProfileSizeY;
     int NDPluginStatsCursorX;
     int NDPluginStatsCursorY;
+    int NDPluginStatsCursorVal;
     int NDPluginStatsProfileAverageX;
     int NDPluginStatsProfileAverageY;
     int NDPluginStatsProfileThresholdX;

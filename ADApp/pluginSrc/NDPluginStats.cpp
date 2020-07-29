@@ -367,6 +367,8 @@ asynStatus NDPluginStats::doComputeProfilesT(NDArray *pArray, NDStats_t *pStats)
     ix = MAX(ix, 0);
     ix = MIN(ix, pStats->profileSizeX-1);
     pCursor = pData + ix;
+    /* Compute cursor value. */
+    pStats->cursorValue = *(pData + iy * pStats->profileSizeX + ix);
     for (iy=0; iy<pStats->profileSizeY; iy++) {
         pStats->profileY[profCentroid][iy] = (double)*pCentroid;
         pStats->profileY[profCursor][iy]   = (double)*pCursor;
@@ -626,6 +628,7 @@ void NDPluginStats::processCallbacks(NDArray *pArray)
         doCallbacksFloat64Array(pStats->profileY[profCentroid],  pStats->profileSizeY, NDPluginStatsProfileCentroidY, 0);
         doCallbacksFloat64Array(pStats->profileX[profCursor],    pStats->profileSizeX, NDPluginStatsProfileCursorX, 0);
         doCallbacksFloat64Array(pStats->profileY[profCursor],    pStats->profileSizeY, NDPluginStatsProfileCursorY, 0);
+        setDoubleParam(NDPluginStatsCursorVal,     pStats->cursorValue);
     }
 
     if (computeHistogram) {
@@ -815,6 +818,7 @@ NDPluginStats::NDPluginStats(const char *portName, int queueSize, int blockingCa
     createParam(NDPluginStatsProfileSizeYString,      asynParamInt32,         &NDPluginStatsProfileSizeY);
     createParam(NDPluginStatsCursorXString,           asynParamInt32,         &NDPluginStatsCursorX);
     createParam(NDPluginStatsCursorYString,           asynParamInt32,         &NDPluginStatsCursorY);
+    createParam(NDPluginStatsCursorValString,         asynParamFloat64,       &NDPluginStatsCursorVal);
     createParam(NDPluginStatsProfileAverageXString,   asynParamFloat64Array,  &NDPluginStatsProfileAverageX);
     createParam(NDPluginStatsProfileAverageYString,   asynParamFloat64Array,  &NDPluginStatsProfileAverageY);
     createParam(NDPluginStatsProfileThresholdXString, asynParamFloat64Array,  &NDPluginStatsProfileThresholdX);
