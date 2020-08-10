@@ -19,7 +19,7 @@ the EXAMPLE_RELEASE_PATHS.local, EXAMPLE_RELEASE_LIBS.local, and EXAMPLE_RELEASE
 files respectively, in the configure/ directory of the appropriate release of the
 [top-level areaDetector](https://github.com/areaDetector/areaDetector) repository.
 
-## __R3-10 (July XXX, 2020)__
+## __R3-10 (August XXX, 2020)__
 
 ### ADDriver
   * Added new bool member variable deviceIsReachable and new method connect().
@@ -33,12 +33,22 @@ files respectively, in the configure/ directory of the appropriate release of th
 ### NDFileHDF
   * Fixed a problem that constant datasets were not closed before closing the file.
     This produced warning messages, and probably minor memory leaks.
+  * Changed free() calls for XML variables to xmlGetGlobalState()->xmlFree().
+    This fixes issues when mixing static and dynamically built libraries.
+    Thanks to Ben Bradnick for this.
 
-### NDPluginCicularBuff
+### NDPluginCircularBuff
   * Added extra checks when pre-count is set
     - A negative value resulted in a segfault.
     - Changing it while acquiring doesn't make sense, as it is used
       to allocate the ring buffer when starting an acquisition
+
+### NDPluginStats
+  * Added new CursonVal record that contains the current value of the pixel at the cursor position.
+    Thanks to Ray Gregory from ORNL for this.
+
+### NDPluginPva
+  * Removed unneeded NTNDArrayRecord::destroy() method which will cause an error in a future release of base.
 
 ### docs/ADCore/NDFileHDF5.rst, XML_schema/hdf5
   * Fixed the XML schema and the documentation for the use of the "when" attribute in HDF5 layout XML files.
@@ -49,6 +59,9 @@ files respectively, in the configure/ directory of the appropriate release of th
 
 ### NDStats.adl
   * Fixed typo in arguments for centroidX timeseries plot related display.
+
+### Many source files
+  * Fixed minor problems that caused compiler warnings.
 
 ## __R3-9 (February 24, 2020)__
 
