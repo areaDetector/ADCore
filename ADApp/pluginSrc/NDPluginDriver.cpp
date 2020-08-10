@@ -746,11 +746,9 @@ asynStatus NDPluginDriver::writeInt32(asynUser *pasynUser, epicsInt32 value)
         if (pPrevInputArray_) {
             driverCallback(pasynUserSelf, pPrevInputArray_);
         } else {
-            asynPrint(pasynUser, ASYN_TRACE_ERROR,
+            asynPrint(pasynUser, ASYN_TRACE_WARNING,
                 "%s::%s cannot do ProcessPlugin, no input array cached\n",
                 driverName, functionName);
-            status = asynError;
-            goto done;
         }
     }
 
