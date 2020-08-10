@@ -43,7 +43,6 @@ public:
     virtual ~NTNDArrayRecord () {}
     static NTNDArrayRecordPtr create (string const & name);
     virtual bool init ();
-    virtual void destroy ();
     virtual void process () {}
     void update (NDArray *pArray);
 };
@@ -68,11 +67,6 @@ bool NTNDArrayRecord::init ()
     m_ntndArray = NTNDArray::wrap(getPVStructure());
     m_converter.reset(new NTNDArrayConverter(m_ntndArray));
     return true;
-}
-
-void NTNDArrayRecord::destroy()
-{
-    PVRecord::destroy();
 }
 
 void NTNDArrayRecord::update(NDArray *pArray)
