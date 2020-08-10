@@ -383,6 +383,13 @@ are just a single name, for example ``NDPluginStatsComputeStatistics``.
     - CURSOR_Y
     - $(P)$(R)CursorY, $(P)$(R)CursorY_RBV
     - longout, longin
+  * - NDPluginStats |br| CursorVal
+    - asynFloat64
+    - r/o
+    - Value of the pixel at the current cursor position.
+    - CURSOR_VAL
+    - $(P)$(R)CursorVal
+    - ai
   * - NDPluginStats |br| ProfileAverageX
     - asynFloat64Array
     - r/o
@@ -536,7 +543,7 @@ either from C/C++ or from the EPICS IOC shell.
                   const char *NDArrayPort, int NDArrayAddr,
                   int maxBuffers, size_t maxMemory,
                   int priority, int stackSize)
-     
+
 
 For details on the meaning of the parameters to this function refer to
 the detailed documentation on the NDStatsConfigure function in the
