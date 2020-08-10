@@ -156,8 +156,8 @@ asynStatus NDFileMagick::writeFile(NDArray *pArray)
     }
     catch (exception &ex) {
         asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
-            "%s:%s: error writing data to file\n",
-            driverName, functionName);
+            "%s:%s: error writing data to file: %s\n",
+            driverName, functionName, ex.what());
         return(asynError);
     }
 
