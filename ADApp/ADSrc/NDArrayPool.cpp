@@ -10,6 +10,9 @@
 #include <dbDefs.h>
 #include <stdint.h>
 
+#include <epicsMutex.h>
+#include <epicsTime.h>
+#include <ellLib.h>
 #include <cantProceed.h>
 
 #include <asynPortDriver.h>

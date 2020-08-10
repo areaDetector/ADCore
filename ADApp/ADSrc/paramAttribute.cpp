@@ -13,8 +13,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include <ellLib.h>
 #include <epicsMutex.h>
+#include <epicsTime.h>
+#include <ellLib.h>
 #include <epicsString.h>
 
 #include <asynPortDriver.h>

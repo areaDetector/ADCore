@@ -13,9 +13,10 @@
 #define NDArray_H
 
 #include <set>
+
 #include <epicsMutex.h>
 #include <epicsTime.h>
-#include <stdio.h>
+#include <ellLib.h>
 
 #include "NDAttribute.h"
 #include "NDAttributeList.h"
