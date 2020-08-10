@@ -368,7 +368,7 @@ asynStatus NDPluginStats::doComputeProfilesT(NDArray *pArray, NDStats_t *pStats)
     ix = MIN(ix, pStats->profileSizeX-1);
     pCursor = pData + ix;
     /* Compute cursor value. */
-    pStats->cursorValue = *(pData + iy * pStats->profileSizeX + ix);
+    pStats->cursorValue = (double)*(pData + iy * pStats->profileSizeX + ix);
     for (iy=0; iy<pStats->profileSizeY; iy++) {
         pStats->profileY[profCentroid][iy] = (double)*pCentroid;
         pStats->profileY[profCursor][iy]   = (double)*pCursor;
