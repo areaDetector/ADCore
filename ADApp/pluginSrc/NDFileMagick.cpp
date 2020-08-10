@@ -154,7 +154,7 @@ asynStatus NDFileMagick::writeFile(NDArray *pArray)
     try {
         image.write(this->fileName);
     }
-    catch (exception ex) {
+    catch (exception &ex) {
         asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
             "%s:%s: error writing data to file\n",
             driverName, functionName);
