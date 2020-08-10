@@ -24,7 +24,6 @@
 #include <asynDriver.h>
 
 #include <epicsExport.h>
-#include "NDArray.h"
 #include "NDPluginCircularBuff.h"
 
 static const char *driverName="NDPluginCircularBuff";
