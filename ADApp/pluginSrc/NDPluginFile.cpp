@@ -646,7 +646,7 @@ bool NDPluginFile::attrIsProcessingRequired(NDAttributeList* pAttrList)
         {
             if (destPortNameLen > MAX_FILENAME_LEN)
                 destPortNameLen = MAX_FILENAME_LEN;
-                ndAttr->getValue(NDAttrString, destPortName, destPortNameLen);
+            ndAttr->getValue(NDAttrString, destPortName, destPortNameLen);
             if (epicsStrnCaseCmp(destPortName, "all", destPortNameLen>3?3:destPortNameLen) != 0 &&
                 epicsStrnCaseCmp(destPortName, this->portName, destPortNameLen) != 0)
                 return false;
