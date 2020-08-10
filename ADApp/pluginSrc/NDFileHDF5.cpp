@@ -3908,8 +3908,8 @@ asynStatus NDFileHDF5::createFileLayout(NDArray *pArray)
       // File specified and exists, use the file
       asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW, "%s::%s Layout file exists, using the file: %s\n",
                 driverName, functionName, layoutFile);
-    std::string strLayoutFile = std::string(layoutFile);
-    status = this->layout.load_xml(strLayoutFile);
+      std::string strLayoutFile = std::string(layoutFile);
+      status = this->layout.load_xml(strLayoutFile);
       if (status == -1){
         this->layout.unload_xml();
         delete[] layoutFile;
