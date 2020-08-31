@@ -15,6 +15,8 @@
 #include <log4cxx/logger.h>
 #else
 
+#include <NDPluginAPI.h>
+
 // std::cout logging if log4cxx is not defined
 // define HDF5_LOGGING 1 to print log messages
 //#define HDF5_LOGGING 1
@@ -56,7 +58,7 @@ namespace hdf5
 
   /**  Used to define layout of HDF5 file with NDFileHDF5 plugin
     */
-  class epicsShareClass LayoutXML
+  class NDPLUGIN_API LayoutXML
   {
     public:
       static const std::string ATTR_ELEMENT_NAME;

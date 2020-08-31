@@ -4,7 +4,6 @@
 #include <epicsTypes.h>
 #include <epicsMessageQueue.h>
 #include <epicsTime.h>
-#include <asynStandardInterfaces.h>
 
 #include "asynNDArrayDriver.h"
 
@@ -130,7 +129,7 @@ typedef enum
 #define ADStringFromServerString    "STRING_FROM_SERVER"    /**< (asynOctet,    r/o) String received from server for message-based drivers */
 
 /** Class from which areaDetector drivers are directly derived. */
-class epicsShareClass ADDriver : public asynNDArrayDriver {
+class ADCORE_API ADDriver : public asynNDArrayDriver {
 public:
     /* This is the constructor for the class. */
     ADDriver(const char *portName, int maxAddr, int numParams, int maxBuffers, size_t maxMemory,

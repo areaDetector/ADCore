@@ -9,22 +9,12 @@
  * @date Nov 2014
  */
 
-#include <stdlib.h>
 #include <string.h>
-#include <stdio.h>
-#include <math.h>
 
 #include <cantProceed.h>
-#include <epicsTypes.h>
-#include <epicsMessageQueue.h>
-#include <epicsThread.h>
-#include <epicsEvent.h>
-#include <epicsTime.h>
 #include <iocsh.h>
-
-#include <asynDriver.h>
-
 #include <epicsExport.h>
+
 #include "NDPluginROIStat.h"
 
 #define MAX(A,B) (A)>(B)?(A):(B)

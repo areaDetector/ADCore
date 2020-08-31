@@ -20,11 +20,8 @@
 #include <libxml/parser.h>
 #include <napi.h>
 #include <string.h>
-
-#include <asynDriver.h>
-
 #include <epicsExport.h>
-#include "NDPluginFile.h"
+
 #include "NDFileNexus.h"
 
 static const char *driverName="NDFileNexus";

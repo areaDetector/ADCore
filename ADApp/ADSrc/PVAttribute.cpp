@@ -12,16 +12,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include <ellLib.h>
-#include <epicsMutex.h>
 #include <epicsString.h>
-#include <cadef.h>
-#include <epicsEvent.h>
 
-#include <asynDriver.h>
-
-#define epicsExportSharedSymbols
-#include <shareLib.h>
 #include "PVAttribute.h"
 
 static const char *driverName = "PVAttribute";

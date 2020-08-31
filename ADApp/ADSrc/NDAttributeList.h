@@ -18,7 +18,7 @@
 
 /** NDAttributeList class; this is a linked list of attributes.
   */
-class epicsShareClass NDAttributeList {
+class ADCORE_API NDAttributeList {
 public:
     NDAttributeList();
     ~NDAttributeList();

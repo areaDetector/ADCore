@@ -11,13 +11,10 @@
 
 #include <stdio.h>
 
-#include <epicsString.h>
 #include <epicsThread.h>
-#include <asynStandardInterfaces.h>
 
 #include <asynPortDriver.h>
 
-#include <epicsExport.h>
 #include "ADDriver.h"
 
 static const char *driverName = "ADDriver";

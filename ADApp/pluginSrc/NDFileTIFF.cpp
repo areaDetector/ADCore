@@ -29,11 +29,8 @@
 #include <epicsEvent.h>
 #include <epicsTime.h>
 #include <iocsh.h>
-
-#include <asynDriver.h>
-
 #include <epicsExport.h>
-#include "NDPluginFile.h"
+
 #include "tiffio.h"
 #include "NDFileTIFF.h"
 

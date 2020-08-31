@@ -9,16 +9,9 @@
 
 #include <stdlib.h>
 
-#include <epicsTypes.h>
-#include <epicsMessageQueue.h>
-#include <epicsThread.h>
-#include <epicsTime.h>
 #include <iocsh.h>
-
-#include <asynDriver.h>
-
 #include <epicsExport.h>
-#include "NDPluginDriver.h"
+
 #include "NDPluginScatter.h"
 
 static const char *driverName="NDPluginScatter";

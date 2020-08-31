@@ -10,9 +10,6 @@
 #ifndef NDPluginFFT_H
 #define NDPluginFFT_H
 
-#include <epicsTypes.h>
-#include <epicsTime.h>
-
 #include "NDPluginDriver.h"
 
 #define FFTTimeAxisString        "FFT_TIME_AXIS"        /* (asynFloat64Array, r/o) Time axis array */
@@ -46,7 +43,7 @@ typedef struct {
 } fftPvt_t;
 
 /** Compute FFTs on signals */
-class epicsShareClass NDPluginFFT : public NDPluginDriver {
+class NDPLUGIN_API NDPluginFFT : public NDPluginDriver {
 public:
   NDPluginFFT(const char *portName, int queueSize, int blockingCallbacks,
               const char *NDArrayPort, int NDArrayAddr,

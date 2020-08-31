@@ -8,21 +8,11 @@
  */
 
 #include <stdlib.h>
-#include <string.h>
-#include <stdio.h>
 #include <math.h>
 
-#include <epicsTypes.h>
-#include <epicsMessageQueue.h>
-#include <epicsThread.h>
-#include <epicsEvent.h>
-#include <epicsTime.h>
 #include <iocsh.h>
-
-#include <asynDriver.h>
-
 #include <epicsExport.h>
-#include "NDPluginDriver.h"
+
 #include "NDPluginStats.h"
 
 #define MAX(A,B) (A)>(B)?(A):(B)

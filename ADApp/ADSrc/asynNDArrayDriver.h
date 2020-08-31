@@ -129,7 +129,7 @@ typedef enum {
   * For areaDetector, both plugins and detector drivers are indirectly derived from this class.
   * asynNDArrayDriver inherits from asynPortDriver.
   */
-class epicsShareFunc asynNDArrayDriver : public asynPortDriver {
+class ADCORE_API asynNDArrayDriver : public asynPortDriver {
 public:
     asynNDArrayDriver(const char *portName, int maxAddr, int maxBuffers, size_t maxMemory,
                       int interfaceMask, int interruptMask,

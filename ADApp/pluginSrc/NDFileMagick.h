@@ -19,7 +19,7 @@ using namespace std;
 
 /** Writes NDArrays to files using the GraphicsMagick library; can write many different file formats.
   */
-class epicsShareClass NDFileMagick : public NDPluginFile {
+class NDPLUGIN_API NDFileMagick : public NDPluginFile {
 public:
     NDFileMagick(const char *portName, int queueSize, int blockingCallbacks,
                  const char *NDArrayPort, int NDArrayAddr,

@@ -81,7 +81,7 @@ typedef struct NDROI {
 
 
 /** Compute statistics on ROIs in an array */
-class epicsShareClass NDPluginROIStat : public NDPluginDriver {
+class NDPLUGIN_API NDPluginROIStat : public NDPluginDriver {
 public:
     NDPluginROIStat(const char *portName, int queueSize, int blockingCallbacks,
                  const char *NDArrayPort, int NDArrayAddr, int maxROIs,

@@ -20,16 +20,9 @@
 #include <libxml/parser.h>
 
 #include <epicsString.h>
-#include <epicsMutex.h>
-#include <epicsMutex.h>
 #include <macLib.h>
 #include <cantProceed.h>
 
-#include <asynPortDriver.h>
-
-
-#define epicsExportSharedSymbols
-#include <shareLib.h>
 #include "PVAttribute.h"
 #include "paramAttribute.h"
 #include "functAttribute.h"

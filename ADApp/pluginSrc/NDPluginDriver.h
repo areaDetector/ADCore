@@ -7,6 +7,8 @@
 #include <epicsThread.h>
 #include <epicsTime.h>
 
+#include <NDPluginAPI.h>
+
 #include "asynNDArrayDriver.h"
 
 class Throttler;
@@ -52,7 +54,7 @@ class sortedListElement {
                                                                          *to execute plugin code */
 #define NDPluginDriverMaxByteRateString         "MAX_BYTE_RATE"         /**< (asynFloat64,  r/w) Limit on byte rate output of plugin */
 /** Class from which actual plugin drivers are derived; derived from asynNDArrayDriver */
-class epicsShareClass NDPluginDriver : public asynNDArrayDriver, public epicsThreadRunable {
+class NDPLUGIN_API NDPluginDriver : public asynNDArrayDriver, public epicsThreadRunable {
 public:
     NDPluginDriver(const char *portName, int queueSize, int blockingCallbacks,
                    const char *NDArrayPort, int NDArrayAddr, int maxAddr,

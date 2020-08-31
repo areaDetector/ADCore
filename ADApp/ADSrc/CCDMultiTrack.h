@@ -13,9 +13,9 @@
 
 #include <asynPortDriver.h>
 #include <NDAttributeList.h>
-#include <shareLib.h>
+#include <ADCoreAPI.h>
 
-class epicsShareClass CCDMultiTrack
+class ADCORE_API CCDMultiTrack
 {
     asynPortDriver* mPortDriver;
 

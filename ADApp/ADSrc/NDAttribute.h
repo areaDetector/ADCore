@@ -10,15 +10,14 @@
 #define NDAttribute_H
 
 #include <string>
-
 #include <stdio.h>
-#include <string.h>
 
 #include <ellLib.h>
 #include <epicsTypes.h>
 
 /* asynDriver.h is needed only to define epicsInt64 on 3.14 */
 #include <asynDriver.h>
+#include <ADCoreAPI.h>
 
 /** Success return code  */
 #define ND_SUCCESS 0
@@ -93,7 +92,7 @@ typedef struct NDAttributeListNode {
 /** NDAttribute class; an attribute has a name, description, source type, source string,
   * data type, and value.
   */
-class epicsShareClass NDAttribute {
+class ADCORE_API NDAttribute {
 public:
     /* Methods */
     NDAttribute(const char *pName, const char *pDescription,

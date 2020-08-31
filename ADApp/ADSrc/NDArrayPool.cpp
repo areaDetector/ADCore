@@ -6,6 +6,7 @@
  *
  */
 
+#include <string.h>
 #include <stdlib.h>
 #include <dbDefs.h>
 #include <stdint.h>
@@ -14,9 +15,6 @@
 #include <epicsTime.h>
 #include <ellLib.h>
 #include <cantProceed.h>
-
-#include <asynPortDriver.h>
-
 #include <epicsExport.h>
 
 #include "asynNDArrayDriver.h"

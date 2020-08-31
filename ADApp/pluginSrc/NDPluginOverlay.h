@@ -67,7 +67,7 @@ typedef struct NDOverlay {
 #define NDPluginOverlayDisplayTextString        "OVERLAY_DISPLAY_TEXT"  /* (asynOctet,   r/w) The text to display */
 
 /** Overlay graphics on top of an image.  Useful for highlighting ROIs and displaying cursors */
-class epicsShareClass NDPluginOverlay : public NDPluginDriver {
+class NDPLUGIN_API NDPluginOverlay : public NDPluginDriver {
 public:
     NDPluginOverlay(const char *portName, int queueSize, int blockingCallbacks,
                  const char *NDArrayPort, int NDArrayAddr, int maxOverlays,

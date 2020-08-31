@@ -14,7 +14,9 @@ ifneq ($(SHARED_LIBRARIES), YES)
    USR_CFLAGS_WIN32 += -DLIBXML_STATIC
    USR_CXXFLAGS_WIN32 += -DLIBXML_STATIC
 endif
+USR_CPPFLAGS += -DBUILDING_NDPlugin_API
 
+INC      += NDPluginAPI.h
 INC      += NDPluginDriver.h
 LIB_SRCS += NDPluginDriver.cpp
 LIB_SRCS += throttler.cpp

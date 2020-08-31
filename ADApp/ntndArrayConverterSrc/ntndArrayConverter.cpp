@@ -1,7 +1,3 @@
-#include <math.h>
-#include <epicsTime.h>
-
-#include <epicsExport.h>
 #include "ntndArrayConverter.h"
 
 using namespace std;

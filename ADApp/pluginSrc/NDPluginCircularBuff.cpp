@@ -13,17 +13,10 @@
 #include <math.h>
 
 #include <epicsTypes.h>
-#include <epicsMessageQueue.h>
-#include <epicsThread.h>
-#include <epicsEvent.h>
-#include <epicsTime.h>
 #include <epicsMath.h>
 #include <iocsh.h>
-#include <postfix.h>
-
-#include <asynDriver.h>
-
 #include <epicsExport.h>
+
 #include "NDPluginCircularBuff.h"
 
 static const char *driverName="NDPluginCircularBuff";

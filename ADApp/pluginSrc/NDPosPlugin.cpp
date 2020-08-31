@@ -14,13 +14,7 @@
 #include <map>
 #include <vector>
 
-#include <epicsTypes.h>
-#include <epicsThread.h>
-
-#include <asynDriver.h>
-
 #include <epicsExport.h>
-#include "NDPluginDriver.h"
 
 #include "NDPosPlugin.h"
 #include "NDPosPluginFileReader.h"
