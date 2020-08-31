@@ -2,16 +2,17 @@
 #include <string.h>
 #include <stdio.h>
 
-#include <epicsThread.h>
-#include <iocsh.h>
-#include <epicsExport.h>
-
 #include <pv/pvDatabase.h>
 #include <pv/nt.h>
 #include <pv/channelProviderLocal.h>
 
+#include <epicsThread.h>
+#include <iocsh.h>
 
 #include <ntndArrayConverter.h>
+
+#include <epicsExport.h>
+
 #include "NDPluginPva.h"
 
 static const char *driverName="NDPluginPva";
