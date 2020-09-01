@@ -14,6 +14,8 @@ ifneq ($(SHARED_LIBRARIES), YES)
    USR_CFLAGS_WIN32 += -DLIBXML_STATIC
    USR_CXXFLAGS_WIN32 += -DLIBXML_STATIC
 endif
+
+# This flag is what switches to declspec(dllexport) when building the library
 USR_CPPFLAGS += -DBUILDING_NDPlugin_API
 
 INC      += NDPluginAPI.h
