@@ -33,13 +33,12 @@ public:
     virtual asynStatus writeFile(NDArray *pArray);
     virtual asynStatus closeFile();
 
-private:
+protected:
     TIFF *tiff;
     NDColorMode_t colorMode;
-    int *pAttributeId;
     NDAttributeList *pFileAttributes;
     int numAttributes_;
-
+    int *pAttributeId;
 };
 
 #endif
