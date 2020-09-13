@@ -197,8 +197,8 @@ ifeq ($(WITH_TIFFS3),YES)
     # This flag is used to indicate that the TIFF library was built statically
     USR_CXXFLAGS_WIN32 += -DLIBTIFF_STATIC
   endif
-  ifdef TIFF_INCLUDE
-    USR_INCLUDES += $(addprefix -I, $(TIFF_INCLUDE))
+  ifdef TIFFS3_INCLUDE
+    USR_INCLUDES += $(addprefix -I, $(TIFFS3_INCLUDE))
   endif
 endif
 
