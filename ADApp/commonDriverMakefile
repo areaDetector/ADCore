@@ -262,6 +262,20 @@ ifdef ADPLUGINCENTROIDS
   PROD_LIBS += NDPluginCentroids centroids
 endif
 
+ifeq ($(WITH_TIFFS3),YES)
+  $(DBD_NAME)_DBD += NDFileTIFFS3.dbd
+  ifeq ($(TIFF_EXTERNAL),NO)
+    PROD_LIBS += tiff
+  else
+    ifdef TIFF_LIB
+      tiff_DIR     = $(TIFF_LIB)
+      PROD_LIBS     += tiff
+    else
+      PROD_SYS_LIBS += tiff
+    endif
+  endif
+endif
+
 # Required modules
 $(DBD_NAME)_DBD   += asyn.dbd
 PROD_LIBS          += asyn

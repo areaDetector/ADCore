@@ -52,6 +52,7 @@ DB += NDAttrPlotAttr.template
 DB += NDAttrPlotData.template
 DB += NDAttrPlot.template
 DB += NDCodec.template
+DB += NDFileTIFFS3.template
 
 #----------------------------------------------------
 # If <anyname>.db template is not named <anyname>*.template add
