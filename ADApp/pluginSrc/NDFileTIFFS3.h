@@ -20,6 +20,7 @@ class epicsShareClass NDFileTIFFS3 : public NDFileTIFF {
   public:
      NDFileTIFFS3(const char *portName, int queueSize, int blockingCallbacks,
                   const char *NDArrayPort, int NDArrayAddr,
+                  const char *endpoint, int awslog,
                   int priority, int stackSize);
 
     virtual ~NDFileTIFFS3();    
@@ -31,6 +32,7 @@ class epicsShareClass NDFileTIFFS3 : public NDFileTIFF {
     std::shared_ptr<Aws::IOStream> awsStream;
     std::shared_ptr<Aws::S3::S3Client> s3Client;
     char keyName[256];
+    bool awsLogging = false;
 // 
 //     /* The methods that this class implements */
 //     virtual asynStatus readFile(NDArray **pArray);

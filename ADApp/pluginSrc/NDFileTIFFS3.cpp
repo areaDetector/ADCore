@@ -112,7 +112,7 @@ asynStatus NDFileTIFFS3::openFile(const char *fileName, NDFileOpenMode_t openMod
 
     // Now do AMAZON S3 Stuff
     awsStream = Aws::MakeShared<Aws::StringStream>("");
-    strncpy(keyName, fileName, 256);
+    strncpy(keyName, fileName, 255);
 
     if ((this->tiff = TIFFStreamOpen("TIFF", (std::ostream*)awsStream.get())) == NULL)
     {
@@ -383,7 +383,7 @@ asynStatus NDFileTIFFS3::closeFile()
   */
 NDFileTIFFS3::NDFileTIFFS3(const char *portName, int queueSize, int blockingCallbacks,
                        const char *NDArrayPort, int NDArrayAddr,
-                       int priority, int stackSize)
+                       const char *endpoint, int awslog, int priority, int stackSize)
     /* Invoke the base class constructor.
      * We allocate 2 NDArrays of unlimited size in the NDArray pool.
      * This driver can block (because writing a file can be slow), and it is not multi-device.  
@@ -397,14 +397,51 @@ NDFileTIFFS3::NDFileTIFFS3(const char *portName, int queueSize, int blockingCall
     setStringParam(NDPluginDriverPluginType, "NDFileTIFFS3");
     this->supportsMultipleArrays = 0;
 
-    // Aws::Utils::Logging::InitializeAWSLogging(
-    //     Aws::MakeShared<Aws::Utils::Logging::DefaultLogSystem>(
-    //         "NDFileTIFFS3", Aws::Utils::Logging::LogLevel::Error, "NDFileTIFFS3_"));
+    if (awslog) 
+    {
+        Aws::Utils::Logging::LogLevel level;
+        switch (awslog)
+        {
+            case 0:
+                level = Aws::Utils::Logging::LogLevel::Off;
+                break;
+            case 1:
+                level = Aws::Utils::Logging::LogLevel::Fatal;
+                break;
+            case 2:
+                level = Aws::Utils::Logging::LogLevel::Error;
+                break;
+            case 3:
+                level = Aws::Utils::Logging::LogLevel::Warn;
+                break;
+            case 4:
+                level = Aws::Utils::Logging::LogLevel::Info;
+                break;
+            case 5:
+                level = Aws::Utils::Logging::LogLevel::Debug;
+                break;
+            case 6:
+                level = Aws::Utils::Logging::LogLevel::Trace;
+                break;
+            default:
+                level = Aws::Utils::Logging::LogLevel::Off;
+                break;
+        }
+        Aws::Utils::Logging::InitializeAWSLogging(
+            Aws::MakeShared<Aws::Utils::Logging::DefaultLogSystem>(
+            "NDFileTIFFS3", level, "NDFileTIFFS3_"));
+        awsLogging = true;
+    } else {
+        awsLogging = false;
+    }
 
     Aws::InitAPI(options);
 
     Aws::Client::ClientConfiguration config;
-    config.endpointOverride = "https://dtn01.sdcc.bnl.gov:8000";
+    if (endpoint && endpoint[0]) 
+    {
+        config.endpointOverride = endpoint;
+    }
     config.verifySSL = false;
 
     s3Client = std::make_shared<Aws::S3::S3Client>(config);
@@ -413,21 +450,24 @@ NDFileTIFFS3::NDFileTIFFS3(const char *portName, int queueSize, int blockingCall
 NDFileTIFFS3::~NDFileTIFFS3() 
 {
     ShutdownAPI(options);
-    // Aws::Utils::Logging::ShutdownAWSLogging();
+    if (awsLogging)
+    {
+        Aws::Utils::Logging::ShutdownAWSLogging();
+    }
 }
 
 /* Configuration routine.  Called directly, or from the iocsh  */
 
 extern "C" int NDFileTIFFS3Configure(const char *portName, int queueSize, int blockingCallbacks,
                                      const char *NDArrayPort, int NDArrayAddr,
-                                     int priority, int stackSize)
+                                     const char *endpoint, int awslog, int priority, int stackSize)
 {
     // Stack size must be a minimum of 40000 on vxWorks because of automatic variables in NDFileTIFF::openFile()
     #ifdef vxWorks
         if (stackSize < 40000) stackSize = 40000;
     #endif
     NDFileTIFFS3 *pPlugin = new NDFileTIFFS3(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr,
-                                             priority, stackSize);
+                                             endpoint, awslog, priority, stackSize);
     return pPlugin->start();
 }
 
@@ -439,19 +479,25 @@ static const iocshArg initArg1 = { "frame queue size",iocshArgInt};
 static const iocshArg initArg2 = { "blocking callbacks",iocshArgInt};
 static const iocshArg initArg3 = { "NDArray Port",iocshArgString};
 static const iocshArg initArg4 = { "NDArray Addr",iocshArgInt};
-static const iocshArg initArg5 = { "priority",iocshArgInt};
-static const iocshArg initArg6 = { "stack size",iocshArgInt};
+static const iocshArg initArg5 = { "endpoint",iocshArgString};
+static const iocshArg initArg6 = { "awslog",iocshArgInt};
+static const iocshArg initArg7 = { "priority",iocshArgInt};
+static const iocshArg initArg8 = { "stack size",iocshArgInt};
 static const iocshArg * const initArgs[] = {&initArg0,
                                             &initArg1,
                                             &initArg2,
                                             &initArg3,
                                             &initArg4,
                                             &initArg5,
-                                            &initArg6};
-static const iocshFuncDef initFuncDef = {"NDFileTIFFS3Configure",7,initArgs};
+                                            &initArg6,
+                                            &initArg7,
+                                            &initArg8};
+static const iocshFuncDef initFuncDef = {"NDFileTIFFS3Configure",9,initArgs};
 static void initCallFunc(const iocshArgBuf *args)
 {
-    NDFileTIFFS3Configure(args[0].sval, args[1].ival, args[2].ival, args[3].sval, args[4].ival, args[5].ival, args[6].ival);
+    NDFileTIFFS3Configure(args[0].sval, args[1].ival, args[2].ival, args[3].sval, 
+                          args[4].ival, args[5].sval, args[6].ival, args[7].ival,
+                          args[8].ival);
 }
 
 extern "C" void NDFileTIFFS3Register(void)
