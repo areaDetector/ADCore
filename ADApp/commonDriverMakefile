@@ -264,14 +264,20 @@ endif
 
 ifeq ($(WITH_TIFFS3),YES)
   $(DBD_NAME)_DBD += NDFileTIFFS3.dbd
-  ifeq ($(TIFF_EXTERNAL),NO)
+  ifeq ($(TIFFS3_EXTERNAL),NO)
     PROD_LIBS += tiff
   else
-    ifdef TIFF_LIB
+    ifdef TIFFS3_LIB
       tiff_DIR     = $(TIFF_LIB)
       PROD_LIBS     += tiff
     else
       PROD_SYS_LIBS += tiff
+      PROD_SYS_LIBS += tiffxx
+      PROD_SYS_LIBS += aws-cpp-sdk-s3
+      PROD_SYS_LIBS += aws-cpp-sdk-core
+      PROD_SYS_LIBS += aws-c-event-stream
+      PROD_SYS_LIBS += aws-c-common
+      PROD_SYS_LIBS += aws-checksums
     endif
   endif
 endif
