@@ -347,6 +347,28 @@ asynStatus NDFileTIFFS3::openFile(const char *fileName, NDFileOpenMode_t openMod
     return(asynSuccess);
 }
 
+void PutObjectAsyncFinished(const Aws::S3::S3Client* s3Client, 
+    const Aws::S3::Model::PutObjectRequest& request, 
+    const Aws::S3::Model::PutObjectOutcome& outcome,
+    const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context)
+{
+    // NOTE: This just seems wrong, but we have the shared_ptr passed as 
+    // const so we can't cast dynamically. Perhaps it's ok given that its only
+    // used in this function?
+
+    NDFileTIFFS3_AWSContext *ctx = (NDFileTIFFS3_AWSContext*)context.get();
+
+    if (!outcome.IsSuccess()) {
+        std::cerr << "AWS S3 Error uploading : " << 
+            outcome.GetError().GetMessage() << std::endl;
+    }
+    //  else {
+    //     std::cerr << "AWS S3 Uploaded : " << 
+    //         context->GetUUID() << std::endl;
+    // }
+}
+
+
 asynStatus NDFileTIFFS3::closeFile()
 {
     NDFileTIFF::closeFile();
@@ -356,14 +378,11 @@ asynStatus NDFileTIFFS3::closeFile()
     objectRequest.SetKey(keyName);
     objectRequest.SetBody(awsStream);
 
-    Aws::S3::Model::PutObjectOutcome outcome = 
-        s3Client->PutObject(objectRequest);
-
-    if (!outcome.IsSuccess())
-    {
-        asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
-                  "AWS S3 Error : %s\n", outcome.GetError().GetMessage().c_str());
-    }
+    std::shared_ptr<NDFileTIFFS3_AWSContext> context =
+        Aws::MakeShared<NDFileTIFFS3_AWSContext>("PutObjectAllocationTag");
+    context->SetUUID(keyName);
+    context->SetTIFFS3(this);
+    s3Client->PutObjectAsync(objectRequest, PutObjectAsyncFinished, context);
 
     return asynSuccess;
 }

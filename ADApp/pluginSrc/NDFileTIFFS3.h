@@ -41,4 +41,20 @@ class epicsShareClass NDFileTIFFS3 : public NDFileTIFF {
 // 
 };
 
+class NDFileTIFFS3_AWSContext : public Aws::Client::AsyncCallerContext {
+  public:
+    NDFileTIFFS3_AWSContext()
+      : Aws::Client::AsyncCallerContext() {}
+
+    void SetTIFFS3(NDFileTIFFS3 *c) {
+      tiffS3 = c;
+    }
+    NDFileTIFFS3* GetTIFFS3(void) {
+      return tiffS3;
+    }
+  private:
+    NDFileTIFFS3 *tiffS3;
+};
+
+
 #endif
