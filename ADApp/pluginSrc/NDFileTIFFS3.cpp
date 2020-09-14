@@ -352,11 +352,12 @@ void PutObjectAsyncFinished(const Aws::S3::S3Client* s3Client,
     const Aws::S3::Model::PutObjectOutcome& outcome,
     const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context)
 {
-    // NOTE: This just seems wrong, but we have the shared_ptr passed as 
-    // const so we can't cast dynamically. Perhaps it's ok given that its only
-    // used in this function?
-
-    NDFileTIFFS3_AWSContext *ctx = (NDFileTIFFS3_AWSContext*)context.get();
+    std::shared_ptr<const Aws::Client::AsyncCallerContext> __ctx(context);
+    std::shared_ptr<const NDFileTIFFS3_AWSContext> _ctx = 
+        std::dynamic_pointer_cast<const NDFileTIFFS3_AWSContext>(__ctx);
+    std::shared_ptr<NDFileTIFFS3_AWSContext> ctx = std::const_pointer_cast<NDFileTIFFS3_AWSContext>(_ctx);
+    
+    std::cerr << ctx->GetTIFFS3() << std::endl;
 
     if (!outcome.IsSuccess()) {
         std::cerr << "AWS S3 Error uploading : " << 
