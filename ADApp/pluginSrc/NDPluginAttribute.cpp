@@ -13,6 +13,9 @@
 #include <algorithm>
 
 #include <iocsh.h>
+
+#include <asynDriver.h>
+
 #include <epicsExport.h>
 
 #include "NDPluginAttribute.h"

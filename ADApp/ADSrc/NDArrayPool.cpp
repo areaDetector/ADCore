@@ -15,6 +15,9 @@
 #include <epicsTime.h>
 #include <ellLib.h>
 #include <cantProceed.h>
+
+#include <asynDriver.h>
+
 #include <epicsExport.h>
 
 #include "asynNDArrayDriver.h"
