@@ -47,7 +47,7 @@
 #include <epicsThread.h>
 #include <iocsh.h>
 
-#include <asynDriver.h>
+#include <asynPortDriver.h>
 
 #include <epicsExport.h>
 

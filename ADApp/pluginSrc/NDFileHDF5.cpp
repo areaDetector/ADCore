@@ -29,7 +29,7 @@
 #include <epicsAssert.h>
 #include <osiSock.h>
 
-#include <asynDriver.h>
+#include <asynPortDriver.h>
 
 #include <epicsExport.h>
 

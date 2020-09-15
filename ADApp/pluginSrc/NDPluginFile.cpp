@@ -17,7 +17,7 @@
 #include <epicsString.h>
 #include <epicsThread.h>
 
-#include <asynDriver.h>
+#include <asynPortDriver.h>
 
 #include <epicsExport.h>
 #include <NDPluginDriver.h>
