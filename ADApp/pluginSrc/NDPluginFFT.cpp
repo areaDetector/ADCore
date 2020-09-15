@@ -19,7 +19,7 @@
 #include <epicsTime.h>
 #include <iocsh.h>
 
-#include <asynDriver.h>
+#include <asynPortDriver.h>
 
 #include <NDArray.h>
 

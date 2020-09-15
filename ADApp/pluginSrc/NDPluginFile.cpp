@@ -16,6 +16,7 @@
 #include <epicsTypes.h>
 #include <epicsString.h>
 #include <epicsThread.h>
+#include <epicsTime.h>
 
 #include <asynPortDriver.h>
 

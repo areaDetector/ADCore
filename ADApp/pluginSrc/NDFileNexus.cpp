@@ -21,7 +21,7 @@
 #include <napi.h>
 #include <string.h>
 
-#include <asynDriver.h>
+#include <asynPortDriver.h>
 
 #include <epicsExport.h>
 

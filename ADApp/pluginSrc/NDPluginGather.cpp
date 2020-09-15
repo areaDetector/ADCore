@@ -13,6 +13,7 @@
 
 #include <epicsTypes.h>
 #include <epicsThread.h>
+#include <epicsTime.h>
 #include <iocsh.h>
 
 #include <asynPortDriver.h>

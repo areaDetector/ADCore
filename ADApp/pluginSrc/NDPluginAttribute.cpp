@@ -14,6 +14,7 @@
 
 #include <iocsh.h>
 #include <epicsThread.h>
+#include <epicsTime.h>
 
 #include <asynPortDriver.h>
 

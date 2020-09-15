@@ -16,6 +16,9 @@
 #include <epicsEvent.h>
 #include <epicsTime.h>
 #include <iocsh.h>
+
+#include <asynPortDriver.h>
+
 #include <epicsExport.h>
 
 #include "NDFileNull.h"

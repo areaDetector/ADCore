@@ -15,6 +15,7 @@
 #include <vector>
 
 #include <epicsThread.h>
+#include <epicsTime.h>
 
 #include <asynPortDriver.h>
 

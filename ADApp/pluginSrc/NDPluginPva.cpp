@@ -7,7 +7,10 @@
 #include <pv/channelProviderLocal.h>
 
 #include <epicsThread.h>
+#include <epicsTime.h>
 #include <iocsh.h>
+
+#include <asynPortDriver.h>
 
 #include <ntndArrayConverter.h>
 
