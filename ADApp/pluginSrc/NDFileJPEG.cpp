@@ -10,8 +10,12 @@
 #include <string.h>
 
 #include <iocsh.h>
+#include <epicsThread.h>
+
+#include <asynDriver.h>
 
 #include <epicsExport.h>
+
 #include "NDPluginFile.h"
 #include "NDFileJPEG.h"
 

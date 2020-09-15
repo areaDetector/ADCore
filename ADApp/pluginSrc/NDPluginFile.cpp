@@ -15,6 +15,7 @@
 
 #include <epicsTypes.h>
 #include <epicsString.h>
+#include <epicsThread.h>
 
 #include <asynDriver.h>
 

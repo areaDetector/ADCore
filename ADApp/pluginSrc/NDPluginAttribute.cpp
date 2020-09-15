@@ -13,6 +13,7 @@
 #include <algorithm>
 
 #include <iocsh.h>
+#include <epicsThread.h>
 
 #include <asynDriver.h>
 

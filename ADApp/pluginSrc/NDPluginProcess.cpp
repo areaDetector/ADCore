@@ -10,6 +10,10 @@
 #include <math.h>
 
 #include <iocsh.h>
+#include <epicsThread.h>
+
+#include <asynDriver.h>
+
 #include <epicsExport.h>
 
 #include "NDPluginProcess.h"

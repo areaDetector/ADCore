@@ -20,6 +20,9 @@
 #include <libxml/parser.h>
 #include <napi.h>
 #include <string.h>
+
+#include <asynDriver.h>
+
 #include <epicsExport.h>
 
 #include "NDFileNexus.h"

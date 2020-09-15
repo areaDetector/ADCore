@@ -12,7 +12,11 @@
 #include <stdio.h>
 
 #include <epicsTypes.h>
+#include <epicsThread.h>
 #include <iocsh.h>
+
+#include <asynDriver.h>
+
 #include <epicsExport.h>
 
 #include "NDPluginGather.h"

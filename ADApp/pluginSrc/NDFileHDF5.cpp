@@ -28,6 +28,9 @@
 #define epicsAssertAuthor "the EPICS areaDetector collaboration (https://github.com/areaDetector/ADCore/issues)"
 #include <epicsAssert.h>
 #include <osiSock.h>
+
+#include <asynDriver.h>
+
 #include <epicsExport.h>
 
 #include "NDFileHDF5.h"

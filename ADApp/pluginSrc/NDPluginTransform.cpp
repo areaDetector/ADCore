@@ -14,6 +14,10 @@
 #include <string.h>
 
 #include <iocsh.h>
+#include <epicsThread.h>
+
+#include <asynDriver.h>
+
 #include <epicsExport.h>
 
 #include "NDPluginTransform.h"

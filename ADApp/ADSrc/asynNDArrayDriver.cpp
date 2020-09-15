@@ -20,6 +20,7 @@
 #include <libxml/parser.h>
 
 #include <epicsString.h>
+#include <epicsThread.h>
 #include <macLib.h>
 #include <cantProceed.h>
 

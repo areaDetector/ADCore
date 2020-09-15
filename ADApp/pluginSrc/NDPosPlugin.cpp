@@ -14,6 +14,10 @@
 #include <map>
 #include <vector>
 
+#include <epicsThread.h>
+
+#include <asynDriver.h>
+
 #include <epicsExport.h>
 
 #include "NDPosPlugin.h"

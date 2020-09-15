@@ -29,6 +29,9 @@
 #include <epicsEvent.h>
 #include <epicsTime.h>
 #include <iocsh.h>
+
+#include <asynDriver.h>
+
 #include <epicsExport.h>
 
 #include "tiffio.h"
