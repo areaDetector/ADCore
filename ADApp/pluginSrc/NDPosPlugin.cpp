@@ -14,13 +14,12 @@
 #include <map>
 #include <vector>
 
-#include <epicsTypes.h>
 #include <epicsThread.h>
+#include <epicsTime.h>
 
-#include <asynDriver.h>
+#include <asynPortDriver.h>
 
 #include <epicsExport.h>
-#include "NDPluginDriver.h"
 
 #include "NDPosPlugin.h"
 #include "NDPosPluginFileReader.h"

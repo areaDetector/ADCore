@@ -7,15 +7,6 @@
  * Created June 21, 2013
  */
 
-#include <stdlib.h>
-#include <string.h>
-#include <stdio.h>
-#include <math.h>
-
-#include <epicsString.h>
-#include <epicsMutex.h>
-#include <iocsh.h>
-
 #include "NDArrayRing.h"
 
 NDArrayRing::NDArrayRing(int noOfBuffers)

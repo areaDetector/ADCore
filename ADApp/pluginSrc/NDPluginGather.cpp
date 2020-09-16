@@ -8,18 +8,18 @@
  */
 
 #include <stdlib.h>
+#include <string.h>
 #include <stdio.h>
 
 #include <epicsTypes.h>
-#include <epicsMessageQueue.h>
 #include <epicsThread.h>
 #include <epicsTime.h>
 #include <iocsh.h>
 
-#include <asynDriver.h>
+#include <asynPortDriver.h>
 
 #include <epicsExport.h>
-#include "NDPluginDriver.h"
+
 #include "NDPluginGather.h"
 
 static const char *driverName="NDPluginGather";

@@ -1,8 +1,6 @@
 #ifndef NDPluginCodec_H
 #define NDPluginCodec_H
 
-#include <epicsTypes.h>
-
 #include "NDPluginDriver.h"
 
 #define NDCodecModeString             "MODE"             /* (NDCodecMode_t r/w) Mode: Compress/Decompress */
@@ -66,7 +64,7 @@ NDArray *compressBSLZ4(NDArray *input, NDCodecStatus_t *status, char *errorMessa
 NDArray *decompressBSLZ4(NDArray *input, NDCodecStatus_t *status, char *errorMessage);
 
 
-class epicsShareClass NDPluginCodec : public NDPluginDriver {
+class NDPLUGIN_API NDPluginCodec : public NDPluginDriver {
 public:
     NDPluginCodec(const char *portName, int queueSize, int blockingCallbacks,
                   const char *NDArrayPort, int NDArrayAddr,

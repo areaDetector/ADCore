@@ -7,22 +7,16 @@
  * Created March 12, 2010
  */
 
-#include <stdlib.h>
-#include <string.h>
-#include <stdio.h>
 #include <math.h>
 
-#include <epicsTypes.h>
-#include <epicsMessageQueue.h>
-#include <epicsThread.h>
-#include <epicsEvent.h>
-#include <epicsTime.h>
 #include <iocsh.h>
+#include <epicsThread.h>
+#include <epicsTime.h>
 
-#include <asynDriver.h>
+#include <asynPortDriver.h>
 
 #include <epicsExport.h>
-#include "NDPluginDriver.h"
+
 #include "NDPluginProcess.h"
 
 static const char *driverName="NDPluginProcess";

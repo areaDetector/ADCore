@@ -4,6 +4,8 @@
 #include <registryFunction.h>
 #include <epicsTime.h>
 
+#include <asynPortDriver.h>
+
 #include <epicsExport.h>
 #include "functAttribute.h"
 

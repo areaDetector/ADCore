@@ -14,7 +14,7 @@ typedef struct {
 } NDGatherNDArraySource_t;
 
 /** A plugin that subscribes to callbacks from multiple ports, not just a single port  */
-class epicsShareClass NDPluginGather : public NDPluginDriver {
+class NDPLUGIN_API NDPluginGather : public NDPluginDriver {
 public:
     NDPluginGather(const char *portName, int queueSize, int blockingCallbacks,
                    int maxPorts,

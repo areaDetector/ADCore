@@ -8,8 +8,8 @@
 #define NDFileHDF5_H
 
 #include <list>
+#include <string.h>
 #include <hdf5.h>
-#include <asynDriver.h>
 #include <NDPluginFile.h>
 #include <NDArray.h>
 #include "NDFileHDF5Layout.h"
@@ -64,7 +64,7 @@
 
 /** Writes NDArrays in the HDF5 file format; an XML file can control the structure of the HDF5 file.
   */
-class epicsShareClass NDFileHDF5 : public NDPluginFile
+class NDPLUGIN_API NDFileHDF5 : public NDPluginFile
 {
   public:
     static const char *str_NDFileHDF5_chunkSize[MAX_CHUNK_DIMS];

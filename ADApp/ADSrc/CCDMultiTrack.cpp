@@ -16,9 +16,7 @@
  * @date Nov 2019
  *
  */
-#include <asynPortDriver.h>
 
-#include <epicsExport.h>
 #include "CCDMultiTrack.h"
 
 static const char* CCDMultiTrackStartString = "CCD_MULTI_TRACK_START";

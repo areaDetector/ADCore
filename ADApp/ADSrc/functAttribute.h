@@ -11,14 +11,16 @@
 #ifndef INCfunctAttributeH
 #define INCfunctAttributeH
 
-#include "NDArray.h"
+#include <stdio.h>
+
+#include "NDAttribute.h"
 
 typedef int (*NDAttributeFunction)(const char *functParam, void **functionPvt, class functAttribute *pAttribute);
 
 /** Attribute that gets its value from a user-defined function
   * The updateValue() method for this class retrieves the current value from the function.
   */
-class functAttribute : public NDAttribute {
+class ADCORE_API functAttribute : public NDAttribute {
 public:
     functAttribute(const char *pName, const char *pDescription, const char *pSource, const char *pParam);
     functAttribute(functAttribute& attribute);

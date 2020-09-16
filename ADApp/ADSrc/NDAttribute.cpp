@@ -8,10 +8,7 @@
 
 #include <string>
 #include <stdlib.h>
-
-#include <epicsString.h>
-
-#include <epicsExport.h>
+#include <string.h>
 
 #include "NDAttribute.h"
 

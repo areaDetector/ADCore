@@ -16,13 +16,8 @@
 #include <ellLib.h>
 #include <vector>
 
-#include <epicsMutex.h>
-#include <epicsTime.h>
-#include <ellLib.h>
 #include <epicsTypes.h>
 #include <cantProceed.h>
-
-#include <epicsExport.h>
 
 #include "NDArray.h"
 

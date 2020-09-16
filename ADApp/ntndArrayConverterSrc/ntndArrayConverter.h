@@ -1,3 +1,6 @@
+#include <math.h>
+
+#include <ntndArrayConverterAPI.h>
 #include <NDArray.h>
 #include <pv/ntndarray.h>
 
@@ -18,7 +21,7 @@ typedef struct NTNDArrayInfo
     }x, y, color;
 }NTNDArrayInfo_t;
 
-class epicsShareClass NTNDArrayConverter
+class NTNDARRAYCONVERTER_API NTNDArrayConverter
 {
 public:
     NTNDArrayConverter(epics::nt::NTNDArrayPtr array);

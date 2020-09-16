@@ -11,7 +11,8 @@
 #ifndef INCparamAttributeH
 #define INCparamAttributeH
 
-#include "NDArray.h"
+#include "NDAttribute.h"
+#include "asynNDArrayDriver.h"
 
 /** Use native type for channel access */
 #define DBR_NATIVE -1
@@ -27,7 +28,7 @@ typedef enum {
 /** Attribute that gets its value from an asynNDArrayDriver driver parameter.
   * The updateValue() method for this class retrieves the current value of the driver parameter.
   */
-class paramAttribute : public NDAttribute {
+class ADCORE_API paramAttribute : public NDAttribute {
 public:
     paramAttribute(const char *pName, const char *pDescription, const char *pSource, int addr,
                     class asynNDArrayDriver *pDriver, const char *dataType);

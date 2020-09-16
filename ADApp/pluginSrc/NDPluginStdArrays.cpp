@@ -9,21 +9,16 @@
  * Created April 25, 2008
  */
 
-#include <stdlib.h>
 #include <string.h>
-#include <stdio.h>
 
-#include <epicsTypes.h>
-#include <epicsMessageQueue.h>
-#include <epicsThread.h>
-#include <epicsEvent.h>
-#include <epicsTime.h>
 #include <iocsh.h>
+#include <epicsThread.h>
+#include <epicsTime.h>
 
-#include <asynDriver.h>
+#include <asynPortDriver.h>
 
 #include <epicsExport.h>
-#include "NDPluginDriver.h"
+
 #include "NDPluginStdArrays.h"
 
 static const char *driverName="NDPluginStdArrays";

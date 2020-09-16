@@ -1,9 +1,12 @@
-#include "NDFileHDF5Dataset.h"
 #include <iostream>
 #include <stdlib.h>
+#include <string.h>
+
 #include <osiSock.h>
 
 #include <hdf5_hl.h>
+
+#include "NDFileHDF5Dataset.h"
 
 #ifndef htonll
 #define htonll(x) ( ( (uint64_t)(htonl( (uint32_t)(((uint64_t)x << 32) >> 32)))<< 32) | htonl( ((uint32_t)((uint64_t)x >> 32)) ))

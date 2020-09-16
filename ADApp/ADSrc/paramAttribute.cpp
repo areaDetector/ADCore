@@ -18,11 +18,6 @@
 #include <ellLib.h>
 #include <epicsString.h>
 
-#include <asynPortDriver.h>
-
-#define epicsExportSharedSymbols
-#include <shareLib.h>
-#include <asynNDArrayDriver.h>
 #include "NDArray.h"
 #include "paramAttribute.h"
 

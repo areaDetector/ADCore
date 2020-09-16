@@ -21,10 +21,10 @@
 #include <napi.h>
 #include <string.h>
 
-#include <asynDriver.h>
+#include <asynPortDriver.h>
 
 #include <epicsExport.h>
-#include "NDPluginFile.h"
+
 #include "NDFileNexus.h"
 
 static const char *driverName="NDFileNexus";

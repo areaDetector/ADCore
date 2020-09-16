@@ -90,7 +90,7 @@ typedef struct NDArrayInfo {
 /** N-dimensional array class; each array has a set of dimensions, a data type, pointer to data, and optional attributes.
   * An NDArray also has a uniqueId and timeStamp that to identify it. NDArray objects can be allocated
   * by an NDArrayPool object, which maintains a free list of NDArrays for efficient memory management. */
-class epicsShareClass NDArray {
+class ADCORE_API NDArray {
 public:
     /* Methods */
     NDArray();
@@ -159,7 +159,7 @@ class freeListElement {
   * array. When the reference count reaches 0 again the NDArray object is placed back
   * on the free list. This mechanism minimizes the copying of array data in plugins.
   */
-class epicsShareClass NDArrayPool {
+class ADCORE_API NDArrayPool {
 public:
     NDArrayPool  (class asynNDArrayDriver *pDriver, size_t maxMemory);
     virtual ~NDArrayPool() {}

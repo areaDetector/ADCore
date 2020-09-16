@@ -10,7 +10,6 @@
 #ifndef NDPluginTimeSeries_H
 #define NDPluginTimeSeries_H
 
-#include <epicsTypes.h>
 #include <epicsTime.h>
 
 #include "NDPluginDriver.h"
@@ -34,7 +33,7 @@
 
 
 /** Compute time series on signals */
-class epicsShareClass NDPluginTimeSeries : public NDPluginDriver {
+class NDPLUGIN_API NDPluginTimeSeries : public NDPluginDriver {
 public:
   NDPluginTimeSeries(const char *portName, int queueSize, int blockingCallbacks,
                      const char *NDArrayPort, int NDArrayAddr,

@@ -1,8 +1,6 @@
 #ifndef NDPluginStats_H
 #define NDPluginStats_H
 
-#include <epicsTypes.h>
-
 #include "NDPluginDriver.h"
 
 typedef enum {
@@ -156,7 +154,7 @@ typedef struct NDStats {
   * X and Y centroid and sigma
   * Histogram
   */
-class epicsShareClass NDPluginStats : public NDPluginDriver {
+class NDPLUGIN_API NDPluginStats : public NDPluginDriver {
 public:
     NDPluginStats(const char *portName, int queueSize, int blockingCallbacks,
                  const char *NDArrayPort, int NDArrayAddr,

@@ -5,11 +5,14 @@
  *      Author: gnx91527
  */
 
-#include "NDFileHDF5AttributeDataset.h"
-#include <epicsString.h>
 #include <iostream>
 #include <stdlib.h>
+#include <string.h>
+
+#include <epicsString.h>
 #include <epicsMath.h>
+
+#include "NDFileHDF5AttributeDataset.h"
 
 #define MAX_ATTRIBUTE_STRING_SIZE 256
 

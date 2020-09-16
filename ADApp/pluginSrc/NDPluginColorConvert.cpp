@@ -14,13 +14,11 @@
 #include <math.h>
 
 #include <epicsTypes.h>
-#include <epicsMessageQueue.h>
 #include <epicsThread.h>
-#include <epicsEvent.h>
 #include <epicsTime.h>
 #include <iocsh.h>
 
-#include <asynDriver.h>
+#include <asynPortDriver.h>
 
 #include <epicsExport.h>
 #include "NDPluginDriver.h"

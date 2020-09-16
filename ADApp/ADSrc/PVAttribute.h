@@ -15,14 +15,14 @@
 #include <epicsMutex.h>
 #include <epicsEvent.h>
 
-#include "NDArray.h"
+#include "NDAttribute.h"
 
 /** Use native type for channel access */
 #define DBR_NATIVE -1
 
 /** Attribute that gets its value from an EPICS PV.
   */
-class PVAttribute : public NDAttribute {
+class ADCORE_API PVAttribute : public NDAttribute {
 public:
     PVAttribute(const char *pName, const char *pDescription, const char *pSource, chtype dbrType);
     PVAttribute(PVAttribute& attribute);

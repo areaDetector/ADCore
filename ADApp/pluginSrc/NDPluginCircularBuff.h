@@ -30,7 +30,7 @@
 /** Performs a scope like capture.  Records a quantity
   * of pre-trigger and post-trigger images
   */
-class epicsShareClass NDPluginCircularBuff : public NDPluginDriver {
+class NDPLUGIN_API NDPluginCircularBuff : public NDPluginDriver {
 public:
     NDPluginCircularBuff(const char *portName, int queueSize, int blockingCallbacks,
                  const char *NDArrayPort, int NDArrayAddr,

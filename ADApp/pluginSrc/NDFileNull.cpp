@@ -17,9 +17,10 @@
 #include <epicsTime.h>
 #include <iocsh.h>
 
-#include <asynDriver.h>
+#include <asynPortDriver.h>
 
 #include <epicsExport.h>
+
 #include "NDFileNull.h"
 
 //static const char *driverName = "NDFileNull";

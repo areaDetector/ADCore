@@ -10,8 +10,6 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-#include <string.h>
-#include <list>
 #include <cmath>
 #include <iostream>
 #include <sstream>
@@ -20,11 +18,9 @@
 // #include <hdf5_hl.h> // high level HDF5 API not currently used (requires use of library hdf5_hl)
 
 #include <epicsTypes.h>
-#include <epicsMessageQueue.h>
 #include <epicsThread.h>
 #include <epicsEvent.h>
 #include <epicsTime.h>
-#include <epicsString.h>
 #include <iocsh.h>
 #ifdef epicsAssertAuthor
   #undef epicsAssertAuthor
@@ -33,9 +29,10 @@
 #include <epicsAssert.h>
 #include <osiSock.h>
 
-#include <asynDriver.h>
+#include <asynPortDriver.h>
 
 #include <epicsExport.h>
+
 #include "NDFileHDF5.h"
 
 #define METADATA_NDIMS 1

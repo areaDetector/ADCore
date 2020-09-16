@@ -30,7 +30,6 @@
 #ifndef NDPosPluginAPP_SRC_NDPOSPLUGIN_H_
 #define NDPosPluginAPP_SRC_NDPOSPLUGIN_H_
 
-#include <epicsTypes.h>
 #include <string>
 #include <list>
 #include <map>
@@ -61,7 +60,7 @@
 #define NDPOS_IDLE    0
 #define NDPOS_RUNNING 1
 
-class NDPosPlugin : public NDPluginDriver
+class NDPLUGIN_API NDPosPlugin : public NDPluginDriver
 {
 
 public:

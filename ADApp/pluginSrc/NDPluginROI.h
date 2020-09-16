@@ -36,7 +36,7 @@
 /** Extract Regions-Of-Interest (ROI) from NDArray data; the plugin can be a source of NDArray callbacks for
   * other plugins, passing these sub-arrays.
   * The plugin also optionally computes a statistics on the ROI. */
-class epicsShareClass NDPluginROI : public NDPluginDriver {
+class NDPLUGIN_API NDPluginROI : public NDPluginDriver {
 public:
     NDPluginROI(const char *portName, int queueSize, int blockingCallbacks,
                  const char *NDArrayPort, int NDArrayAddr,

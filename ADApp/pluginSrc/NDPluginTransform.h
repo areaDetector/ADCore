@@ -1,9 +1,6 @@
 #ifndef NDPluginTransform_H
 #define NDPluginTransform_H
 
-#include <epicsTypes.h>
-#include <asynStandardInterfaces.h>
-
 #include "NDPluginDriver.h"
 
 /** Map parameter enums to strings that will be used to set up EPICS databases
@@ -13,7 +10,7 @@
 static const char* pluginName = "NDPluginTransform";
 
 /** Perform transformations (rotations, flips) on NDArrays.   */
-class epicsShareClass NDPluginTransform : public NDPluginDriver {
+class NDPLUGIN_API NDPluginTransform : public NDPluginDriver {
 public:
     NDPluginTransform(const char *portName, int queueSize, int blockingCallbacks,
                  const char *NDArrayPort, int NDArrayAddr,

@@ -8,22 +8,12 @@
  *
  */
 
-#include <string.h>
-#include <stdio.h>
 #include <stdlib.h>
 
-#include <epicsMutex.h>
-#include <epicsTime.h>
-#include <ellLib.h>
 #include <epicsString.h>
+
 #include <registryFunction.h>
 
-#include <asynPortDriver.h>
-
-#define epicsExportSharedSymbols
-#include <shareLib.h>
-#include <asynNDArrayDriver.h>
-#include "NDArray.h"
 #include "functAttribute.h"
 
 static const char *driverName = "functAttribute";
