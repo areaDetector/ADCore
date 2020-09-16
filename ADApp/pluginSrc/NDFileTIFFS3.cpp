@@ -347,7 +347,7 @@ asynStatus NDFileTIFFS3::openFile(const char *fileName, NDFileOpenMode_t openMod
     return(asynSuccess);
 }
 
-void PutObjectAsyncFinished(const Aws::S3::S3Client* s3Client, 
+void NDFileTIFFS3::PutObjectAsyncFinished(const Aws::S3::S3Client* s3Client, 
     const Aws::S3::Model::PutObjectRequest& request, 
     const Aws::S3::Model::PutObjectOutcome& outcome,
     const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context)
@@ -356,17 +356,19 @@ void PutObjectAsyncFinished(const Aws::S3::S3Client* s3Client,
     std::shared_ptr<const NDFileTIFFS3_AWSContext> _ctx = 
         std::dynamic_pointer_cast<const NDFileTIFFS3_AWSContext>(__ctx);
     std::shared_ptr<NDFileTIFFS3_AWSContext> ctx = std::const_pointer_cast<NDFileTIFFS3_AWSContext>(_ctx);
-    
-    std::cerr << ctx->GetTIFFS3() << std::endl;
 
+    ctx->GetTIFFS3()->putObjectFinished(outcome);
+}
+
+void NDFileTIFFS3::putObjectFinished(const Aws::S3::Model::PutObjectOutcome& outcome)
+{
+    const char* functionName = "NDFileTIFFS3::putObjectFinished";
     if (!outcome.IsSuccess()) {
-        std::cerr << "AWS S3 Error uploading : " << 
-            outcome.GetError().GetMessage() << std::endl;
+        asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
+                  "%s:%s error, AWS S3 Error : %s\n",
+                  driverName, functionName, outcome.GetError().GetMessage().c_str());
     }
-    //  else {
-    //     std::cerr << "AWS S3 Uploaded : " << 
-    //         context->GetUUID() << std::endl;
-    // }
+    this->callParamCallbacks();
 }
 
 
@@ -383,7 +385,7 @@ asynStatus NDFileTIFFS3::closeFile()
         Aws::MakeShared<NDFileTIFFS3_AWSContext>("PutObjectAllocationTag");
     context->SetUUID(keyName);
     context->SetTIFFS3(this);
-    s3Client->PutObjectAsync(objectRequest, PutObjectAsyncFinished, context);
+    s3Client->PutObjectAsync(objectRequest, NDFileTIFFS3::PutObjectAsyncFinished, context);
 
     return asynSuccess;
 }

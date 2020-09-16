@@ -27,7 +27,16 @@ class epicsShareClass NDFileTIFFS3 : public NDFileTIFF {
     virtual asynStatus openFile(const char *fileName, NDFileOpenMode_t openMode, NDArray *pArray);
     virtual asynStatus closeFile();
 
+    // Note: The following need to be static to deal with the callback being out of the 
+    // scope of the class
+    static void PutObjectAsyncFinished(const Aws::S3::S3Client* s3Client, 
+      const Aws::S3::Model::PutObjectRequest& request, 
+      const Aws::S3::Model::PutObjectOutcome& outcome,
+      const std::shared_ptr<const Aws::Client::AsyncCallerContext>& context);
+    void putObjectFinished(const Aws::S3::Model::PutObjectOutcome& outcome);
+
   private:
+
     Aws::SDKOptions options;
     std::shared_ptr<Aws::IOStream> awsStream;
     std::shared_ptr<Aws::S3::S3Client> s3Client;
