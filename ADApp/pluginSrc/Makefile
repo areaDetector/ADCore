@@ -193,6 +193,19 @@ ifeq ($(WITH_BITSHUFFLE), YES)
   USR_CXXFLAGS += -DHAVE_BITSHUFFLE
 endif
 
+ifeq ($(WITH_TIFFS3),YES)
+  DBD      += NDFileTIFFS3.dbd
+  INC      += NDFileTIFFS3.h
+  LIB_SRCS += NDFileTIFFS3.cpp
+  ifeq ($(SHARED_LIBRARIES),NO)
+    # This flag is used to indicate that the TIFF library was built statically
+    USR_CXXFLAGS_WIN32 += -DLIBTIFF_STATIC
+  endif
+  ifdef TIFFS3_INCLUDE
+    USR_INCLUDES += $(addprefix -I, $(TIFFS3_INCLUDE))
+  endif
+endif
+
 ifdef BLOSC_INCLUDE
   USR_INCLUDES += $(addprefix -I, $(BLOSC_INCLUDE))
 endif
