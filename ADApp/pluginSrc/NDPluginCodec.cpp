@@ -43,17 +43,12 @@
 #include <stdio.h>
 #include <math.h>
 
-#include <epicsTypes.h>
-#include <epicsThread.h>
-#include <epicsTime.h>
 #include <iocsh.h>
-
-#include <asynPortDriver.h>
-
-#include <epicsExport.h>
 
 #include "Codec.h"
 #include "NDPluginCodec.h"
+
+#include <epicsExport.h>
 
 #define JPEG_MIN_QUALITY 1
 #define JPEG_MAX_QUALITY 100

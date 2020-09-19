@@ -6,17 +6,13 @@
 #include <pv/nt.h>
 #include <pv/channelProviderLocal.h>
 
-#include <epicsThread.h>
-#include <epicsTime.h>
 #include <iocsh.h>
-
-#include <asynPortDriver.h>
 
 #include <ntndArrayConverter.h>
 
-#include <epicsExport.h>
-
 #include "NDPluginPva.h"
+
+#include <epicsExport.h>
 
 static const char *driverName="NDPluginPva";
 

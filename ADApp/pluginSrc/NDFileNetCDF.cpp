@@ -10,19 +10,12 @@
 #include <string.h>
 #include <netcdf.h>
 
-#include <epicsTypes.h>
-#include <epicsMessageQueue.h>
-#include <epicsThread.h>
-#include <epicsEvent.h>
-#include <epicsTime.h>
 #include <iocsh.h>
-
-#include <asynPortDriver.h>
-
-#include <epicsExport.h>
 
 #include "NDPluginFile.h"
 #include "NDFileNetCDF.h"
+
+#include <epicsExport.h>
 
 #define MAX_ATTRIBUTE_STRING_SIZE 256
 

@@ -10,14 +10,10 @@
 #include <stdlib.h>
 
 #include <iocsh.h>
-#include <epicsThread.h>
-#include <epicsTime.h>
-
-#include <asynPortDriver.h>
-
-#include <epicsExport.h>
 
 #include "NDPluginScatter.h"
+
+#include <epicsExport.h>
 
 static const char *driverName="NDPluginScatter";
 

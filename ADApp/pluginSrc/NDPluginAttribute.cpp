@@ -13,14 +13,10 @@
 #include <algorithm>
 
 #include <iocsh.h>
-#include <epicsThread.h>
-#include <epicsTime.h>
-
-#include <asynPortDriver.h>
-
-#include <epicsExport.h>
 
 #include "NDPluginAttribute.h"
+
+#include <epicsExport.h>
 
 const epicsInt32 NDPluginAttribute::MAX_ATTR_NAME_      = 256;
 const char*      NDPluginAttribute::UNIQUE_ID_NAME_     = "NDArrayUniqueId";

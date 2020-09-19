@@ -11,14 +11,10 @@
 #include <string.h>
 
 #include <iocsh.h>
-#include <epicsThread.h>
-#include <epicsTime.h>
-
-#include <asynPortDriver.h>
-
-#include <epicsExport.h>
 
 #include "NDPluginTimeSeries.h"
+
+#include <epicsExport.h>
 
 #define DEFAULT_NUM_TSPOINTS 2048
 

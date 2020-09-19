@@ -11,16 +11,11 @@
 #include <string.h>
 #include <stdio.h>
 
-#include <epicsTypes.h>
-#include <epicsThread.h>
-#include <epicsTime.h>
 #include <iocsh.h>
 
-#include <asynPortDriver.h>
+#include "NDPluginGather.h"
 
 #include <epicsExport.h>
-
-#include "NDPluginGather.h"
 
 static const char *driverName="NDPluginGather";
 

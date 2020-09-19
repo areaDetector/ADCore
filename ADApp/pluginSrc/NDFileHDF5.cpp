@@ -17,10 +17,6 @@
 #include <sys/stat.h>
 // #include <hdf5_hl.h> // high level HDF5 API not currently used (requires use of library hdf5_hl)
 
-#include <epicsTypes.h>
-#include <epicsThread.h>
-#include <epicsEvent.h>
-#include <epicsTime.h>
 #include <iocsh.h>
 #ifdef epicsAssertAuthor
   #undef epicsAssertAuthor
@@ -29,11 +25,10 @@
 #include <epicsAssert.h>
 #include <osiSock.h>
 
-#include <asynPortDriver.h>
+#include "NDFileHDF5.h"
 
 #include <epicsExport.h>
 
-#include "NDFileHDF5.h"
 
 #define METADATA_NDIMS 1
 #define MAX_LAYOUT_LEN 1048576

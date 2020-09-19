@@ -13,17 +13,13 @@
 #include <stdio.h>
 #include <math.h>
 
-#include <epicsTypes.h>
-#include <epicsThread.h>
-#include <epicsTime.h>
 #include <iocsh.h>
 
-#include <asynPortDriver.h>
-
-#include <epicsExport.h>
 #include "NDPluginDriver.h"
 #include "colorMaps.h"
 #include "NDPluginColorConvert.h"
+
+#include <epicsExport.h>
 
 static const char *driverName="NDPluginColorConvert";
 

@@ -6,15 +6,11 @@
 #include <iocsh.h>
 #include <initHooks.h>
 #include <epicsMath.h>
-#include <epicsThread.h>
-#include <epicsTime.h>
-
-#include <asynPortDriver.h>
-
-#include <epicsExport.h>
 
 #include "NDPluginAttrPlot.h"
 #include "CircularBuffer.h"
+
+#include <epicsExport.h>
 
 ExposeDataTask::ExposeDataTask(NDPluginAttrPlot& plugin)
     : plugin_(plugin),

@@ -12,21 +12,12 @@
 #include <stdio.h>
 #include <math.h>
 
-#include <epicsTypes.h>
-#include <epicsMessageQueue.h>
-#include <epicsThread.h>
-#include <epicsEvent.h>
-#include <epicsTime.h>
 #include <iocsh.h>
-
-#include <asynPortDriver.h>
-
-#include <NDArray.h>
-
-#include <epicsExport.h>
 
 #include "NDPluginFFT.h"
 #include "fft.h"
+
+#include <epicsExport.h>
 
 #define MIN(A,B) ((A <= B) ? A : B)
 

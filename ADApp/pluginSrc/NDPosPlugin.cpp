@@ -14,15 +14,10 @@
 #include <map>
 #include <vector>
 
-#include <epicsThread.h>
-#include <epicsTime.h>
-
-#include <asynPortDriver.h>
-
-#include <epicsExport.h>
-
 #include "NDPosPlugin.h"
 #include "NDPosPluginFileReader.h"
+
+#include <epicsExport.h>
 
 static const char *driverName = "NDPosPlugin";
 

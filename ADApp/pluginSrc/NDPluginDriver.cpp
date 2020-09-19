@@ -13,19 +13,13 @@
 #include <stdio.h>
 #include <errno.h>
 
-#include <epicsTypes.h>
 #include <epicsMessageQueue.h>
-#include <epicsThread.h>
-#include <epicsEvent.h>
-#include <epicsTime.h>
 #include <cantProceed.h>
 
-#include <asynPortDriver.h>
+#include "NDPluginDriver.h"
+#include "throttler.h"
 
 #include <epicsExport.h>
-#include "NDPluginDriver.h"
-
-#include "throttler.h"
 
 typedef enum {
     ToThreadMessageData,

@@ -10,14 +10,10 @@
 #include <math.h>
 
 #include <iocsh.h>
-#include <epicsThread.h>
-#include <epicsTime.h>
-
-#include <asynPortDriver.h>
-
-#include <epicsExport.h>
 
 #include "NDPluginProcess.h"
+
+#include <epicsExport.h>
 
 static const char *driverName="NDPluginProcess";
 

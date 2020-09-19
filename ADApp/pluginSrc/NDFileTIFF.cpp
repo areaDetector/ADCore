@@ -23,19 +23,12 @@
 #include <stdio.h>
 #include <string.h>
 
-#include <epicsTypes.h>
-#include <epicsMessageQueue.h>
-#include <epicsThread.h>
-#include <epicsEvent.h>
-#include <epicsTime.h>
 #include <iocsh.h>
-
-#include <asynPortDriver.h>
-
-#include <epicsExport.h>
 
 #include "tiffio.h"
 #include "NDFileTIFF.h"
+
+#include <epicsExport.h>
 
 #define STRING_BUFFER_SIZE 2048
 

@@ -14,14 +14,10 @@
 #include <string.h>
 
 #include <iocsh.h>
-#include <epicsThread.h>
-#include <epicsTime.h>
-
-#include <asynPortDriver.h>
-
-#include <epicsExport.h>
 
 #include "NDPluginTransform.h"
+
+#include <epicsExport.h>
 
 /* Enums to describe the types of transformations */
 typedef enum {

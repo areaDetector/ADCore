@@ -10,18 +10,11 @@
 #include <stdio.h>
 #include <string.h>
 
-#include <epicsTypes.h>
-#include <epicsMessageQueue.h>
-#include <epicsThread.h>
-#include <epicsEvent.h>
-#include <epicsTime.h>
 #include <iocsh.h>
 
-#include <asynPortDriver.h>
+#include "NDFileNull.h"
 
 #include <epicsExport.h>
-
-#include "NDFileNull.h"
 
 //static const char *driverName = "NDFileNull";
 

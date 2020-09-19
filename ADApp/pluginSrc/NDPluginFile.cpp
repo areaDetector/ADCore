@@ -13,17 +13,11 @@
 #include <stdio.h>
 #include <errno.h>
 
-#include <epicsTypes.h>
 #include <epicsString.h>
-#include <epicsThread.h>
-#include <epicsTime.h>
 
-#include <asynPortDriver.h>
-
-#include <epicsExport.h>
-#include <NDPluginDriver.h>
 #include "NDPluginFile.h"
 
+#include <epicsExport.h>
 
 static const char *driverName="NDPluginFile";
 

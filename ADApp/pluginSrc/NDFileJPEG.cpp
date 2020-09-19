@@ -10,16 +10,10 @@
 #include <string.h>
 
 #include <iocsh.h>
-#include <epicsThread.h>
-#include <epicsTime.h>
-
-#include <asynPortDriver.h>
-
-#include <epicsExport.h>
-
 #include "NDPluginFile.h"
 #include "NDFileJPEG.h"
 
+#include <epicsExport.h>
 
 static const char *driverName = "NDFileJPEG";
 
