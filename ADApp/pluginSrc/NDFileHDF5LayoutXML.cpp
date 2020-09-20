@@ -166,6 +166,15 @@ namespace hdf5
 
     // if the file name contains <?xml then load it as an xml string from memory
     if (filename.find("<?xml") != std::string::npos){
+      // Do basic parsing of the memory buffer
+      xmlDocPtr docPtr = xmlParseMemory(filename.c_str(), (int)filename.length());
+      if (docPtr != NULL) {
+        LOG4CXX_INFO(log, "Success parsing XML from memory.");
+        xmlFreeDoc(docPtr);
+      } else {
+        LOG4CXX_ERROR(log, "Error parsing XML from memory.");
+        status = -1;
+      }
       this->xmlreader = xmlReaderForMemory(filename.c_str(), (int)filename.length(), NULL, NULL, 0);
       if (this->xmlreader == NULL){
         LOG4CXX_ERROR(log, "Unable to parse XML string: " << filename );
@@ -173,6 +182,15 @@ namespace hdf5
         status = -1;
       }
     } else {
+      // Do basic parsing of the file
+      xmlDocPtr docPtr = xmlParseFile(filename.c_str());
+      if (docPtr != NULL) {
+        LOG4CXX_INFO(log, "Success parsing XML file: " << filename);
+        xmlFreeDoc(docPtr);
+      } else {
+        LOG4CXX_ERROR(log, "Error parsing XML file: " << filename );
+        status = -1;
+      }
       this->xmlreader = xmlReaderForFile(filename.c_str(), NULL, 0);
       if (this->xmlreader == NULL){
         LOG4CXX_ERROR(log, "Unable to open XML file: " << filename );
