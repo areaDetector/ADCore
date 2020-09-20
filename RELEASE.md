@@ -24,7 +24,7 @@ files respectively, in the configure/ directory of the appropriate release of th
 ### Many files
   * Changed the code and the Makefiles to avoid using shareLib.h from EPICS base.
     Added new header files ADCoreAPI.h and NDPluginAPI.h that are used to control whether
-    functions, classes, and variables are definined internally to the asyn library or externally. 
+    functions, classes, and variables are definined internally to the libraries or externally. 
     This is the mechanism now used in EPICS base 7.
     It makes it much easier to avoid mistakes in the order of include files that cause external 
     functions to be accidentally exported in the DLL or shareable library. 
