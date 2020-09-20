@@ -19,7 +19,17 @@ the EXAMPLE_RELEASE_PATHS.local, EXAMPLE_RELEASE_LIBS.local, and EXAMPLE_RELEASE
 files respectively, in the configure/ directory of the appropriate release of the
 [top-level areaDetector](https://github.com/areaDetector/areaDetector) repository.
 
-## __R3-10 (August XXX, 2020)__
+## __R3-10 (September 20, 2020)__
+
+### Many files
+  * Changed the code and the Makefiles to avoid using shareLib.h from EPICS base.
+    Added new header files ADCoreAPI.h and NDPluginAPI.h that are used to control whether
+    functions, classes, and variables are definined internally to the asyn library or externally. 
+    This is the mechanism now used in EPICS base 7.
+    It makes it much easier to avoid mistakes in the order of include files that cause external 
+    functions to be accidentally exported in the DLL or shareable library. 
+    This should work on all versions of base, and have no impact on user code.
+  * Fixed many minor problems that caused compiler warnings.
 
 ### ADDriver
   * Added new bool member variable deviceIsReachable and new method connect().
@@ -31,11 +41,21 @@ files respectively, in the configure/ directory of the appropriate release of th
     driver OPI screens.
 
 ### NDFileHDF
+  * Fixed a problem loading XML layout files with invalid XML syntax.
+    Previously it would crash the IOC with no error message.
+    Now it prints an error message, sets the error status PVs in the OPI screen,
+    and does not crash.
   * Fixed a problem that constant datasets were not closed before closing the file.
     This produced warning messages, and probably minor memory leaks.
   * Changed free() calls for XML variables to xmlGetGlobalState()->xmlFree().
     This fixes issues when mixing static and dynamically built libraries.
     Thanks to Ben Bradnick for this.
+    
+### NDFileMagick
+  * Fixed a problem that GraphicsMagick was being initialized too late, resulting
+    in an assertion failure with newer versions of GraphicsMagick than the one
+    in ADSupport.
+    Thanks to Michael Davidsaver for this.
 
 ### NDPluginCircularBuff
   * Added extra checks when pre-count is set
@@ -44,7 +64,7 @@ files respectively, in the configure/ directory of the appropriate release of th
       to allocate the ring buffer when starting an acquisition
 
 ### NDPluginStats
-  * Added new CursonVal record that contains the current value of the pixel at the cursor position.
+  * Added new CursorVal record that contains the current value of the pixel at the cursor position.
     Thanks to Ray Gregory from ORNL for this.
 
 ### NDPluginPva
@@ -59,9 +79,6 @@ files respectively, in the configure/ directory of the appropriate release of th
 
 ### NDStats.adl
   * Fixed typo in arguments for centroidX timeseries plot related display.
-
-### Many source files
-  * Fixed minor problems that caused compiler warnings.
 
 ## __R3-9 (February 24, 2020)__
 
