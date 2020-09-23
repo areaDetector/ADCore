@@ -19,12 +19,22 @@ the EXAMPLE_RELEASE_PATHS.local, EXAMPLE_RELEASE_LIBS.local, and EXAMPLE_RELEASE
 files respectively, in the configure/ directory of the appropriate release of the
 [top-level areaDetector](https://github.com/areaDetector/areaDetector) repository.
 
+## __R3-11 (September XXX, 2020)__
+
+### NDFileHDF
+  * Fixed a problem with writing constant string datasets and HDF5 string attributes.
+    The call to `H5Tset_size()` is suppposed to include the trailing nil character
+    in the `size` argument, but it did not.  This led to HDF5 files that did not have the
+    correct contents, though we never had reports of problems reading them.
+    It also led to an HDF5 library error message if a string of length 0 was passed.
+    Added 1 to the `size` argument.
+
 ## __R3-10 (September 20, 2020)__
 
 ### Many files
   * Changed the code and the Makefiles to avoid using shareLib.h from EPICS base.
     Added new header files ADCoreAPI.h and NDPluginAPI.h that are used to control whether
-    functions, classes, and variables are definined internally to the libraries or externally. 
+    functions, classes, and variables are defined internally to the libraries or externally. 
     This is the mechanism now used in EPICS base 7.
     It makes it much easier to avoid mistakes in the order of include files that cause external 
     functions to be accidentally exported in the DLL or shareable library. 
