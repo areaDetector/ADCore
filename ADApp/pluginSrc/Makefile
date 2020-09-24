@@ -91,6 +91,8 @@ LIB_SRCS += NDPluginAttrPlot.cpp
 NDPluginSupport_DBD += NDPluginCodec.dbd
 INC      += NDPluginCodec.h
 LIB_SRCS += NDPluginCodec.cpp
+INC      += decompressMono12.h
+LIB_SRCS += decompressMono12.c
 
 DBD      += NDPosPlugin.dbd
 INC      += NDPosPlugin.h
