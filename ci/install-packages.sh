@@ -109,7 +109,7 @@ sudo apt-get install valgrind
 wget https://sourceforge.net/projects/ltp/files/Coverage%20Analysis/LCOV-1.11/lcov-1.11.tar.gz
 tar -zxf lcov-1.11.tar.gz
 sudo make -C lcov-1.11 install
-gem install coveralls-lcov
+sudo gem install coveralls-lcov
 
 cd external
 

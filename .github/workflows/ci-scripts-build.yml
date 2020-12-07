@@ -1,0 +1,47 @@
+# .github/workflows/ci-scripts-build.yml for use with EPICS Base ci-scripts
+# (see: https://github.com/epics-base/ci-scripts)
+
+# This is YAML - indentation levels are crucial
+
+# Set the 'name:' properties to values that work for you (MYMODULE)
+
+name: ADCore ci-scripts build
+
+# Trigger on pushes and PRs to any branch
+on: [push, pull_request]
+
+env:
+  SETUP_PATH: .ci-local:.ci
+  CMP: gcc
+  # For the sequencer on Linux/Windows/MacOS
+  APT: re2c
+  CHOCO: re2c
+  BREW: re2c
+
+jobs:
+  build-linux:
+    name: ${{ matrix.cmp }} / ${{ matrix.configuration }} / ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    # Set environment variables from matrix parameters
+    env:
+      CMP: ${{ matrix.cmp }}
+      BCFG: ${{ matrix.configuration }}
+      SET: base3-15
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-20.04]
+        cmp: [gcc]
+        configuration: [default]
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: true
+    - name: Prepare and compile dependencies
+      run: python .ci/cue.py prepare
+    - name: Build main module
+      run: python .ci/cue.py build
+    - name: Run main module tests
+      run: python .ci/cue.py test
+    - name: Collect and show test results
+      run: python .ci/cue.py test-results
