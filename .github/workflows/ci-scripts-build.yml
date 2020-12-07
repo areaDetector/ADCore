@@ -42,6 +42,9 @@ jobs:
       run: python .ci/cue.py prepare
     - name: Gem install coveralls-lcov
       run: sudo gem install coveralls-lcov
+    - name: Configure packages
+      run: sh ci/configure-packages.sh
+      shell: bash
     - name: Build main module
       run: python .ci/cue.py build
     - name: Run main module tests
