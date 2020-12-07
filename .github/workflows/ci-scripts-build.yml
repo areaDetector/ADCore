@@ -27,6 +27,7 @@ jobs:
       CMP: ${{ matrix.cmp }}
       BCFG: ${{ matrix.configuration }}
       SET: base3-15
+      APT: "re2c libboost-test-dev libboost-system-dev libhdf5-serial-dev libtiff-dev libxml2-dev valgrind lcov"
     strategy:
       fail-fast: false
       matrix:
@@ -39,6 +40,8 @@ jobs:
         submodules: true
     - name: Prepare and compile dependencies
       run: python .ci/cue.py prepare
+    - name: Gem install coveralls-lcov
+      run: sudo gem install coveralls-lcov
     - name: Build main module
       run: python .ci/cue.py build
     - name: Run main module tests
