@@ -47,7 +47,11 @@ jobs:
       shell: bash
     - name: Build main module
       run: python .ci/cue.py build
-    - name: Run main module tests
-      run: python .ci/cue.py test
-    - name: Collect and show test results
-      run: python .ci/cue.py test-results
+
+    - name: Run Tests
+      run: valgrind --leak-check=yes --log-file=valgrind_output.txt ./bin/linux-x86_64/plugin-test --log_level=test_suite
+    - name: Report
+      run: |
+        sh ci/coverage.sh
+        coveralls-lcov --source-encoding=ISO-8859-1 ci/coverage.info
+        tail --lines 15 valgrind_output.txt
