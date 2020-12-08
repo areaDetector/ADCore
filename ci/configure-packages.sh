@@ -53,3 +53,8 @@ cat configure/RELEASE.local
 
 echo "======= configure/CONFIG_SITE.linux-x86_64.Common ======================="
 cat configure/CONFIG_SITE.linux-x86_64.Common
+
+# Rebuild ADSupport with our CONFIG_SITE
+ADSUPPORT=$(grep -o 'ADSUPPORT=.*' configure/RELEASE.local | sed 's/ADSUPPORT=*//')
+cp configure/CONFIG_SITE.linux-x86_64.Common $ADSUPPORT/configure
+make clean -C $ADSUPPORT && make -sj -C $ADSUPPORT
