@@ -2505,7 +2505,11 @@ hsize_t NDFileHDF5::calcChunkCacheBytes()
   this->lock();
   getIntegerParam(NDFileHDF5_nFramesChunks, &n_frames_chunk);
   this->unlock();
-  nbytes = this->maxdims[this->rank - 1] * this->maxdims[this->rank - 2] * this->bytesPerElement * n_frames_chunk;
+  nbytes = this->maxdims[this->rank - 1]  * this->bytesPerElement * n_frames_chunk;
+  if ((this->multiFrameFile && this->rank >= 3) ||
+      (!this->multiFrameFile && this->rank >= 2)) {
+    nbytes *= this->maxdims[this->rank - 2];
+  }
   return nbytes;
 }
 
@@ -2540,8 +2544,13 @@ hsize_t NDFileHDF5::calcChunkCacheSlots()
 
   div_result = (double)this->maxdims[this->rank - 1] / (double)this->chunkdims[this->rank -1];
   num_chunks *= (unsigned int long)ceil(div_result);
-  div_result = (double)this->maxdims[this->rank - 2] / (double)this->chunkdims[this->rank -2];
-  num_chunks *= (unsigned int long)ceil(div_result);
+  // this check prevents double counting number of frames when the data is 1D in a multiframe file
+  // and it also prevents an invalid memory access when the data is 1D in a non multiframe file
+  if ((this->multiFrameFile && this->rank >= 3) ||
+      (!this->multiFrameFile && this->rank >= 2)) {
+    div_result = (double)this->maxdims[this->rank - 2] / (double)this->chunkdims[this->rank - 2];
+    num_chunks *= (unsigned int long)ceil(div_result);
+  }
   div_result = (double)n_frames_capture / (double)n_frames_chunk;
   num_chunks *= (unsigned int long)ceil(div_result);
 
