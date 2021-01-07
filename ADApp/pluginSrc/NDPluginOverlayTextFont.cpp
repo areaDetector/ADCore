@@ -8,7 +8,7 @@
 //
 // This font appears to be in the public domain.
 //
-// The full font has been whittled down to the characters 32 through 255.  
+// The full font has been whittled down to the characters 32 through 255.
 // When UTF-8, in its full glory, is needed it shouldn't be too difficult to support.
 //
 // Created from bdf2c Version 3, (c) 2009, 2010 by Lutz Sammer

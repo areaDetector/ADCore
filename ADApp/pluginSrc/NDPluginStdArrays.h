@@ -1,8 +1,6 @@
 #ifndef NDPluginStdArrays_H
 #define NDPluginStdArrays_H
 
-#include <epicsTypes.h>
-
 #include "NDPluginDriver.h"
 
 #define NDPluginStdArraysDataString "STD_ARRAY_DATA"           /* (asynXXXArray, r/w) Array data waveform */
@@ -11,9 +9,9 @@
   * asynFloat32Array or asynFloat64Array); normally used for putting NDArray data in EPICS waveform records.
   * It handles the data type conversion if the NDArray data type differs from the data type of the asyn interface.
   * It flattens the NDArrays to a single dimension because asyn and EPICS do not support multi-dimensional arrays. */
-class epicsShareClass NDPluginStdArrays : public NDPluginDriver {
+class NDPLUGIN_API NDPluginStdArrays : public NDPluginDriver {
 public:
-    NDPluginStdArrays(const char *portName, int queueSize, int blockingCallbacks, 
+    NDPluginStdArrays(const char *portName, int queueSize, int blockingCallbacks,
                       const char *NDArrayPort, int NDArrayAddr, int maxBuffers, size_t maxMemory,
                       int priority, int stackSize, int maxThreads=1);
 
@@ -36,12 +34,12 @@ protected:
     #define FIRST_NDPLUGIN_STDARRAYS_PARAM NDPluginStdArraysData
 private:
     /* These methods are just for this class */
-    template <typename epicsType> asynStatus readArray(asynUser *pasynUser, epicsType *value, 
+    template <typename epicsType> asynStatus readArray(asynUser *pasynUser, epicsType *value,
                                         size_t nElements, size_t *nIn, NDDataType_t outputType);
-    template <typename epicsType, typename interruptType> void arrayInterruptCallback(NDArray *pArray, 
-                            NDArrayPool *pNDArrayPool, 
+    template <typename epicsType, typename interruptType> void arrayInterruptCallback(NDArray *pArray,
+                            NDArrayPool *pNDArrayPool,
                             void *interruptPvt, int *initialized, NDDataType_t signedType, bool *wasThrottled);
-                                        
+
 };
 
 #endif

@@ -2,8 +2,8 @@
  * NDPluginFFT.cpp
  *
  * Plugin that computes 1-D and 2-D FFTs
- * 
- * @author Mark Rivers 
+ *
+ * @author Mark Rivers
  * @date February 2016
  */
 
@@ -12,21 +12,12 @@
 #include <stdio.h>
 #include <math.h>
 
-#include <epicsTypes.h>
-#include <epicsMessageQueue.h>
-#include <epicsThread.h>
-#include <epicsEvent.h>
-#include <epicsTime.h>
 #include <iocsh.h>
-
-#include <asynDriver.h>
-
-#include <NDArray.h>
-
-#include <epicsExport.h>
 
 #include "NDPluginFFT.h"
 #include "fft.h"
+
+#include <epicsExport.h>
 
 #define MIN(A,B) ((A <= B) ? A : B)
 
@@ -51,7 +42,7 @@
   * \param[in] maxThreads The maximum number of threads this driver is allowed to use. If 0 then 1 will be used.
   */
 NDPluginFFT::NDPluginFFT(const char *portName, int queueSize, int blockingCallbacks,
-                         const char *NDArrayPort, int NDArrayAddr, 
+                         const char *NDArrayPort, int NDArrayAddr,
                          int maxBuffers, size_t maxMemory,
                          int priority, int stackSize, int maxThreads)
     /* Invoke the base class constructor */
@@ -72,20 +63,20 @@ NDPluginFFT::NDPluginFFT(const char *portName, int queueSize, int blockingCallba
   createParam(FFTNumAverageString,              asynParamInt32, &P_FFTNumAverage);
   createParam(FFTNumAveragedString,             asynParamInt32, &P_FFTNumAveraged);
   createParam(FFTResetAverageString,            asynParamInt32, &P_FFTResetAverage);
-  
+
   createParam(FFTTimeSeriesString,       asynParamFloat64Array, &P_FFTTimeSeries);
   createParam(FFTRealString,             asynParamFloat64Array, &P_FFTReal);
   createParam(FFTImaginaryString,        asynParamFloat64Array, &P_FFTImaginary);
   createParam(FFTAbsValueString,         asynParamFloat64Array, &P_FFTAbsValue);
- 
+
   /* Set the plugin type string */
   setStringParam(NDPluginDriverPluginType, "NDPluginFFT");
-  
+
   /* Try to connect to the array port */
   connectToArrayPort();
 
   callParamCallbacks();
-  
+
 }
 
 int NDPluginFFT::nextPow2(int v)
@@ -138,9 +129,9 @@ void NDPluginFFT::computeFFT_1D(fftPvt_t *pPvt)
   }
   fft_1D(pPvt->FFTComplex, pPvt->nTimeX, 1);
   for (j=0; j<pPvt->nFreqX; j++) {
-    pPvt->FFTReal     [j] = pPvt->FFTComplex[2*j]; 
-    pPvt->FFTImaginary[j] = pPvt->FFTComplex[2*j+1]; 
-    pPvt->FFTAbsValue [j] = sqrt((pPvt->FFTComplex[2*j]   * pPvt->FFTComplex[2*j] + 
+    pPvt->FFTReal     [j] = pPvt->FFTComplex[2*j];
+    pPvt->FFTImaginary[j] = pPvt->FFTComplex[2*j+1];
+    pPvt->FFTAbsValue [j] = sqrt((pPvt->FFTComplex[2*j]   * pPvt->FFTComplex[2*j] +
                             pPvt->FFTComplex[2*j+1] * pPvt->FFTComplex[2*j+1])) / pPvt->nTimeX;
   }
   if (pPvt->suppressDC) {
@@ -148,14 +139,14 @@ void NDPluginFFT::computeFFT_1D(fftPvt_t *pPvt)
     pPvt->FFTImaginary [0] = 0;
     pPvt->FFTAbsValue  [0] = 0;
   }
-}         
+}
 
 void NDPluginFFT::computeFFT_2D(fftPvt_t *pPvt)
 {
   int i,j, k;
   double *pIn;
   unsigned long dims[2];
- 
+
   for (j=0; j<pPvt->nTimeX*pPvt->nTimeY; j++) {
     pPvt->FFTComplex[2*j] = pPvt->timeSeries[j];
     pPvt->FFTComplex[2*j+1] = 0.;
@@ -163,12 +154,12 @@ void NDPluginFFT::computeFFT_2D(fftPvt_t *pPvt)
   dims[0] = pPvt->nTimeX;
   dims[1] = pPvt->nTimeY;
   fft_ND(pPvt->FFTComplex, dims, 2, 1);
-  for (i=0, k=0, pIn=pPvt->FFTComplex; 
-       i<pPvt->nFreqY; 
+  for (i=0, k=0, pIn=pPvt->FFTComplex;
+       i<pPvt->nFreqY;
        i++, pIn+=pPvt->nTimeX*2) {
     for (j=0; j<pPvt->nFreqX; j++, k++) {
-      pPvt->FFTReal     [k] = pIn[j*2]; 
-      pPvt->FFTImaginary[k] = pIn[j*2+1]; 
+      pPvt->FFTReal     [k] = pIn[j*2];
+      pPvt->FFTImaginary[k] = pIn[j*2+1];
       pPvt->FFTAbsValue [k]= sqrt((pPvt->FFTReal[k] * pPvt->FFTReal[k]) + (pPvt->FFTImaginary[k] * pPvt->FFTImaginary[k])) / (pPvt->nTimeX * pPvt->nTimeY);
     }
   }
@@ -177,11 +168,11 @@ void NDPluginFFT::computeFFT_2D(fftPvt_t *pPvt)
     pPvt->FFTImaginary [0] = 0;
     pPvt->FFTAbsValue  [0] = 0;
   }
-}         
+}
 
 void NDPluginFFT::doArrayCallbacks(fftPvt_t *pPvt)
 {
-  int j; 
+  int j;
   size_t dims[2];
   epicsTimeStamp now;
   double *pOut;
@@ -205,7 +196,7 @@ void NDPluginFFT::doArrayCallbacks(fftPvt_t *pPvt)
     numAverage_ = numAverage;
     numAveraged = 1;
   }
-  
+
   oldFraction = 1. - 1./numAveraged;
   newFraction = 1./numAveraged;
   if (numAveraged < numAverage) numAveraged++;
@@ -245,7 +236,7 @@ void NDPluginFFT::createAxisArrays(fftPvt_t *pPvt)
 {
   double freqStep;
   int i;
-  
+
   if (timeAxis_) free(timeAxis_);
   if (freqAxis_) free(freqAxis_);
   timeAxis_ = (double *)calloc(pPvt->nTimeX, sizeof(double));
@@ -266,7 +257,7 @@ void NDPluginFFT::createAxisArrays(fftPvt_t *pPvt)
 /**
  * Templated function to copy the data from the NDArray into double arrays with padding.
  * \param[in] pArray The pointer to the NDArray object
- * \param[in] pPvt Private pointer for FFT plugin 
+ * \param[in] pPvt Private pointer for FFT plugin
  */
 template <typename epicsType>
 void NDPluginFFT::convertToDoubleT(NDArray *pArray, fftPvt_t *pPvt)
@@ -274,9 +265,9 @@ void NDPluginFFT::convertToDoubleT(NDArray *pArray, fftPvt_t *pPvt)
   epicsType *pIn;
   double *pOut;
   int i, j;
-    
+
   for (i=0, pIn=(epicsType *)pArray->pData, pOut=pPvt->timeSeries;
-       i<pPvt->nTimeYIn; 
+       i<pPvt->nTimeYIn;
        i++, pOut+=pPvt->nTimeX) {
     for (j=0; j<pPvt->nTimeXIn; j++) {
       pOut[j] = (epicsFloat64)*pIn++;
@@ -284,20 +275,20 @@ void NDPluginFFT::convertToDoubleT(NDArray *pArray, fftPvt_t *pPvt)
   }
 }
 
-     
-/** 
+
+/**
  * Callback function that is called by the NDArray driver with new NDArray data.
  * Appends the new array data to the time series if possible.
  * \param[in] pArray The NDArray from the callback.
  */
 void NDPluginFFT::processCallbacks(NDArray *pArray)
 {
-  //This function is called with the mutex already locked.  
+  //This function is called with the mutex already locked.
   //It unlocks it during long calculations when private structures don't need to be protected.
 
   double timePerPoint;
   fftPvt_t *pPvt = new fftPvt_t;
-  bool sizeChanged = false;  
+  bool sizeChanged = false;
   const char* functionName = "NDPluginFFT::processCallbacks";
 
   /* Call the base class method */
@@ -387,11 +378,11 @@ void NDPluginFFT::processCallbacks(NDArray *pArray)
 
 /** Configuration command */
 extern "C" int NDFFTConfigure(const char *portName, int queueSize, int blockingCallbacks,
-                                     const char *NDArrayPort, int NDArrayAddr, 
+                                     const char *NDArrayPort, int NDArrayAddr,
                                      int maxBuffers, size_t maxMemory,
                                      int priority, int stackSize, int maxThreads)
 {
-    NDPluginFFT *pPlugin = new NDPluginFFT(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr, 
+    NDPluginFFT *pPlugin = new NDPluginFFT(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr,
                                            maxBuffers, maxMemory, priority, stackSize, maxThreads);
     return pPlugin->start();
 }

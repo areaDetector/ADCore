@@ -11,8 +11,7 @@
 #include <string>
 #include <hdf5.h>
 #include <asynDriver.h>
-#include <NDPluginFile.h>
-#include <NDArray.h>
+#include <NDAttribute.h>
 #include "NDFileHDF5Layout.h"
 #include "NDFileHDF5VersionCheck.h"
 

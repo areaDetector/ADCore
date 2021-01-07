@@ -9,13 +9,13 @@
  * Modifed to write all NDAttributes as TIFF Ascii file tags.
  * This uses private tag numbers between 65010 and 65500.
  * The NDAttribute name is encoded along with the value as
- * a string (because adding the name to the TIFFFieldInfo 
+ * a string (because adding the name to the TIFFFieldInfo
  * struct doesn't seem to make it to the tag in the file).
  *
  * The NDAttributes from the driver are read from the NDArray.
- * NDAttributes from the driver are appended to the 
+ * NDAttributes from the driver are appended to the
  * NDAttributeList for this plugin.
- * 
+ *
  * Matt Pearson, April 4, 2014.
  */
 
@@ -23,22 +23,15 @@
 #include <stdio.h>
 #include <string.h>
 
-#include <epicsTypes.h>
-#include <epicsMessageQueue.h>
-#include <epicsThread.h>
-#include <epicsEvent.h>
-#include <epicsTime.h>
 #include <iocsh.h>
 
-#include <asynDriver.h>
-
-#include <epicsExport.h>
-#include "NDPluginFile.h"
 #include "tiffio.h"
 #include "NDFileTIFF.h"
 
+#include <epicsExport.h>
+
 #define STRING_BUFFER_SIZE 2048
- 
+
 static const char *driverName = "NDFileTIFF";
 
 
@@ -74,7 +67,7 @@ static void augmentLibTiffWithCustomTags() {
 
 /** Opens a TIFF file.
   * \param[in] fileName The name of the file to open.
-  * \param[in] openMode Mask defining how the file should be opened; bits are 
+  * \param[in] openMode Mask defining how the file should be opened; bits are
   *            NDFileModeRead, NDFileModeWrite, NDFileModeAppend, NDFileModeMultiple
   * \param[in] pArray A pointer to an NDArray; this is used to determine the array and attribute properties.
   */
@@ -112,32 +105,32 @@ asynStatus NDFileTIFF::openFile(const char *fileName, NDFileOpenMode_t openMode,
     else if (openMode & NDFileModeRead) {
         /* Open the file. */
         if ((this->tiff = TIFFOpen(fileName, "rc")) == NULL ) {
-            asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, 
+            asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
             "%s:%s error opening file %s\n",
             driverName, functionName, fileName);
             return(asynError);
         }
         asynPrint(pasynUserSelf, ASYN_TRACE_FLOW,
-            "%s::%s opened file %s\n", 
+            "%s::%s opened file %s\n",
             driverName, functionName, fileName);
     }
 
     /* Open file for writing */
     else if (openMode & NDFileModeWrite) {
         if ((this->tiff = TIFFOpen(fileName, "w")) == NULL ) {
-            asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, 
+            asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
             "%s:%s error opening file %s\n",
             driverName, functionName, fileName);
             return(asynError);
         }
         asynPrint(pasynUserSelf, ASYN_TRACE_FLOW,
-            "%s::%s opened file %s\n", 
+            "%s::%s opened file %s\n",
             driverName, functionName, fileName);
     }
 
     // If the file is open for reading we are done
     if (openMode & NDFileModeRead) return asynSuccess;
-    
+
     /* We do some special treatment based on colorMode */
     pAttribute = pArray->pAttributeList->find("ColorMode");
     if (pAttribute) pAttribute->getValue(NDAttrInt32, &colorMode);
@@ -225,7 +218,7 @@ asynStatus NDFileTIFF::openFile(const char *fileName, NDFileOpenMode_t openMode,
         planarConfig = PLANARCONFIG_SEPARATE;
         this->colorMode = NDColorModeRGB3;
     } else {
-        asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, 
+        asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
             "%s:%s: unsupported array structure\n",
             driverName, functionName);
         return(asynError);
@@ -242,12 +235,12 @@ asynStatus NDFileTIFF::openFile(const char *fileName, NDFileOpenMode_t openMode,
     TIFFSetField(this->tiff, TIFFTAG_PLANARCONFIG, planarConfig);
     TIFFSetField(this->tiff, TIFFTAG_IMAGEWIDTH, (epicsUInt32)sizeX);
     TIFFSetField(this->tiff, TIFFTAG_IMAGELENGTH, (epicsUInt32)sizeY);
-    TIFFSetField(this->tiff, TIFFTAG_ROWSPERSTRIP, (epicsUInt32)rowsPerStrip);   
-    
+    TIFFSetField(this->tiff, TIFFTAG_ROWSPERSTRIP, (epicsUInt32)rowsPerStrip);
+
     this->pFileAttributes->clear();
     this->getAttributes(this->pFileAttributes);
     pArray->pAttributeList->copy(this->pFileAttributes);
- 
+
     pAttribute = this->pFileAttributes->find("Model");
     if (pAttribute) {
         pAttribute->getValue(NDAttrString, tagString, sizeof(tagString)-1);
@@ -255,7 +248,7 @@ asynStatus NDFileTIFF::openFile(const char *fileName, NDFileOpenMode_t openMode,
     } else {
         TIFFSetField(this->tiff, TIFFTAG_MODEL, "Unknown");
     }
-    
+
     pAttribute = this->pFileAttributes->find("Manufacturer");
     if (pAttribute) {
         pAttribute->getValue(NDAttrString, tagString);
@@ -275,7 +268,7 @@ asynStatus NDFileTIFF::openFile(const char *fileName, NDFileOpenMode_t openMode,
 
     int count = 0;
     int tagId = TIFFTAG_FIRST_ATTRIBUTE;
-   
+
     numAttributes_ = this->pFileAttributes->count();
     asynPrint(this->pasynUserSelf, ASYN_TRACEIO_DRIVER,
         "%s:%s this->pFileAttributes->count(): %d\n",
@@ -356,7 +349,7 @@ asynStatus NDFileTIFF::openFile(const char *fileName, NDFileOpenMode_t openMode,
         }
         pAttribute = this->pFileAttributes->next(pAttribute);
     }
-    
+
     return(asynSuccess);
 }
 
@@ -372,11 +365,11 @@ asynStatus NDFileTIFF::writeFile(NDArray *pArray)
     static const char *functionName = "writeFile";
 
     asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW,
-              "%s:%s: writing file dimensions=[%lu, %lu]\n", 
+              "%s:%s: writing file dimensions=[%lu, %lu]\n",
               driverName, functionName, (unsigned long)pArray->dims[0].size, (unsigned long)pArray->dims[1].size);
 
     if (this->tiff == NULL) {
-        asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, 
+        asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
         "%s:%s NULL TIFF file\n",
         driverName, functionName);
         return(asynError);
@@ -388,7 +381,7 @@ asynStatus NDFileTIFF::writeFile(NDArray *pArray)
     switch (this->colorMode) {
         case NDColorModeMono:
         case NDColorModeRGB1:
-            nwrite = TIFFWriteEncodedStrip(this->tiff, 0, pArray->pData, stripSize); 
+            nwrite = TIFFWriteEncodedStrip(this->tiff, 0, pArray->pData, stripSize);
             break;
         case NDColorModeRGB2:
             /* TIFF readers don't support row interleave, put all the red strips first, then all the blue, then green. */
@@ -407,14 +400,14 @@ asynStatus NDFileTIFF::writeFile(NDArray *pArray)
             }
             break;
         default:
-            asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, 
+            asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
                 "%s:%s: unknown color mode %d\n",
                 driverName, functionName, this->colorMode);
             return(asynError);
             break;
     }
     if (nwrite <= 0) {
-        asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, 
+        asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
             "%s:%s: error writing data to file\n",
             driverName, functionName);
         return(asynError);
@@ -423,7 +416,7 @@ asynStatus NDFileTIFF::writeFile(NDArray *pArray)
     return(asynSuccess);
 }
 
-/** Reads single NDArray from a TIFF file; 
+/** Reads single NDArray from a TIFF file;
   * \param[in] pArray Pointer to the NDArray to be read
   */
 asynStatus NDFileTIFF::readFile(NDArray **pArray)
@@ -454,7 +447,7 @@ asynStatus NDFileTIFF::readFile(NDArray **pArray)
     TIFFGetField(this->tiff, TIFFTAG_PLANARCONFIG,     &planarConfig);
     TIFFGetField(this->tiff, TIFFTAG_IMAGEWIDTH,       &sizeX);
     TIFFGetField(this->tiff, TIFFTAG_IMAGELENGTH,      &sizeY);
-    TIFFGetField(this->tiff, TIFFTAG_ROWSPERSTRIP,     &rowsPerStrip);   
+    TIFFGetField(this->tiff, TIFFTAG_ROWSPERSTRIP,     &rowsPerStrip);
     numStrips= TIFFNumberOfStrips(this->tiff);
 
     if (0 == sampleFormat)
@@ -462,7 +455,7 @@ asynStatus NDFileTIFF::readFile(NDArray **pArray)
         asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
             "%s::%s Sample format is not defined! Default UINT is used.\n",
             driverName, __FUNCTION__);
-    	sampleFormat = SAMPLEFORMAT_UINT;
+        sampleFormat = SAMPLEFORMAT_UINT;
     }
 
     if      ((bitsPerSample == 8)  && (sampleFormat == SAMPLEFORMAT_INT))     dataType = NDInt8;
@@ -476,10 +469,10 @@ asynStatus NDFileTIFF::readFile(NDArray **pArray)
     else if ((bitsPerSample == 32) && (sampleFormat == SAMPLEFORMAT_IEEEFP))  dataType = NDFloat32;
     else if ((bitsPerSample == 64) && (sampleFormat == SAMPLEFORMAT_IEEEFP))  dataType = NDFloat64;
     else {
-        asynPrint(pasynUserSelf, ASYN_TRACE_ERROR, 
-            "%s::%s unsupport bitsPerSample=%d and sampleFormat=%d\n", 
+        asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
+            "%s::%s unsupport bitsPerSample=%d and sampleFormat=%d\n",
             driverName, functionName, bitsPerSample, sampleFormat);
-        return asynError;    
+        return asynError;
     }
 
     if ((photoMetric == PHOTOMETRIC_MINISBLACK)  &&
@@ -490,7 +483,7 @@ asynStatus NDFileTIFF::readFile(NDArray **pArray)
         dims[1] = sizeY;
         clrMode = NDColorModeMono;
     }
-    else if ((photoMetric == PHOTOMETRIC_RGB) && 
+    else if ((photoMetric == PHOTOMETRIC_RGB) &&
         (planarConfig == PLANARCONFIG_CONTIG)   &&
         (samplesPerPixel == 3)) {
         ndims = 3;
@@ -499,7 +492,7 @@ asynStatus NDFileTIFF::readFile(NDArray **pArray)
         dims[2] = sizeY;
         clrMode = NDColorModeRGB1;
     }
-    else if ((photoMetric == PHOTOMETRIC_RGB) && 
+    else if ((photoMetric == PHOTOMETRIC_RGB) &&
         (planarConfig == PLANARCONFIG_SEPARATE)   &&
         (samplesPerPixel == 3)) {
         ndims = 3;
@@ -509,12 +502,12 @@ asynStatus NDFileTIFF::readFile(NDArray **pArray)
         clrMode = NDColorModeRGB3;
     }
     else {
-        asynPrint(pasynUserSelf, ASYN_TRACE_ERROR, 
+        asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
             "%s::%s unsupport photoMetric=%d, planarConfig=%d, and samplesPerPixel=%d\n",
             driverName, functionName, photoMetric, planarConfig, samplesPerPixel);
-        return asynError;    
+        return asynError;
     }
-    
+
     pImage = this->pNDArrayPool->alloc(ndims, dims, dataType, 0, 0);
     *pArray = pImage;
     buffer = (char *)pImage->pData;
@@ -554,7 +547,7 @@ asynStatus NDFileTIFF::readFile(NDArray **pArray)
     if (fieldStat == 1) pImage->epicsTS.secPastEpoch = tempLong;
     fieldStat = TIFFGetField(this->tiff, TIFFTAG_EPICSTSNSEC, &tempLong);
     if (fieldStat == 1) pImage->epicsTS.nsec = tempLong;
-    
+
     for (int i=TIFFTAG_FIRST_ATTRIBUTE; i<=TIFFTAG_LAST_ATTRIBUTE; i++) {
         fieldStat = TIFFGetField(this->tiff, i, &tempString);
         if (fieldStat == 1) {
@@ -577,14 +570,14 @@ asynStatus NDFileTIFF::closeFile()
     static const char *functionName = "closeFile";
 
     if (this->tiff == NULL) {
-        asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, 
+        asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
         "%s:%s NULL TIFF file\n",
         driverName, functionName);
         return(asynError);
     }
 
     asynPrint(pasynUserSelf, ASYN_TRACE_FLOW,
-        "%s::%s closing file\n", 
+        "%s::%s closing file\n",
         driverName, functionName);
     TIFFClose(this->tiff);
 
@@ -594,7 +587,7 @@ asynStatus NDFileTIFF::closeFile()
 
 /** Constructor for NDFileTIFF; all parameters are simply passed to NDPluginFile::NDPluginFile.
   * \param[in] portName The name of the asyn port driver to be created.
-  * \param[in] queueSize The number of NDArrays that the input queue for this plugin can hold when 
+  * \param[in] queueSize The number of NDArrays that the input queue for this plugin can hold when
   *            NDPluginDriverBlockingCallbacks=0.  Larger queues can decrease the number of dropped arrays,
   *            at the expense of more NDArray buffers being allocated from the underlying driver's NDArrayPool.
   * \param[in] blockingCallbacks Initial setting for the NDPluginDriverBlockingCallbacks flag.
@@ -610,17 +603,17 @@ NDFileTIFF::NDFileTIFF(const char *portName, int queueSize, int blockingCallback
                        int priority, int stackSize)
     /* Invoke the base class constructor.
      * We allocate 2 NDArrays of unlimited size in the NDArray pool.
-     * This driver can block (because writing a file can be slow), and it is not multi-device.  
+     * This driver can block (because writing a file can be slow), and it is not multi-device.
      * Set autoconnect to 1.  priority and stacksize can be 0, which will use defaults. */
     : NDPluginFile(portName, queueSize, blockingCallbacks,
                    NDArrayPort, NDArrayAddr, 1,
-                   2, 0, asynGenericPointerMask, asynGenericPointerMask, 
+                   2, 0, asynGenericPointerMask, asynGenericPointerMask,
                    ASYN_CANBLOCK, 1, priority, stackSize, 1),
     numAttributes_(0)
 {
     //static const char *functionName = "NDFileTIFF";
 
-    /* Set the plugin type string */    
+    /* Set the plugin type string */
     setStringParam(NDPluginDriverPluginType, "NDFileTIFF");
     this->supportsMultipleArrays = 0;
 

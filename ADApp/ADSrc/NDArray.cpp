@@ -16,13 +16,8 @@
 #include <ellLib.h>
 #include <vector>
 
-#include <epicsMutex.h>
 #include <epicsTypes.h>
-#include <epicsString.h>
-#include <ellLib.h>
 #include <cantProceed.h>
-
-#include <epicsExport.h>
 
 #include "NDArray.h"
 
@@ -74,7 +69,7 @@ NDArray::NDArray(int nDims, size_t *dims, NDDataType_t dataType, size_t dataSize
   }
 }
 
-/** NDArray destructor 
+/** NDArray destructor
   * Frees the data array, deletes all attributes, frees the attribute list and destroys the mutex. */
 NDArray::~NDArray()
 {
@@ -125,7 +120,7 @@ int NDArray::computeArrayInfo(int ndims, size_t *dims, NDDataType_t dataType, ND
   pInfo->totalBytes = pInfo->nElements * pInfo->bytesPerElement;
   return ND_SUCCESS;
 }
-/** Convenience method returns information about an NDArray, including the total number of elements, 
+/** Convenience method returns information about an NDArray, including the total number of elements,
   * the number of bytes per element, and the total number of bytes in the array.
   \param[out] pInfo Pointer to an NDArrayInfo_t structure, must have been allocated by caller. */
 int NDArray::getInfo(NDArrayInfo_t *pInfo)
@@ -137,7 +132,7 @@ int NDArray::getInfo(NDArrayInfo_t *pInfo)
   int status = NDArray::computeArrayInfo(this->ndims, dims_t, this->dataType, pInfo);
   delete[] dims_t;
   if (status != ND_SUCCESS) return status;
-  
+
   pInfo->colorMode = NDColorModeMono;
   pAttribute = this->pAttributeList->find("ColorMode");
   if (pAttribute) pAttribute->getValue(NDAttrInt32, &pInfo->colorMode);
@@ -245,7 +240,7 @@ int NDArray::release()
 int NDArray::report(FILE *fp, int details)
 {
   int dim;
-  
+
   fprintf(fp, "\n");
   fprintf(fp, "NDArray  Array address=%p:\n", this);
   fprintf(fp, "  ndims=%d dims=[",

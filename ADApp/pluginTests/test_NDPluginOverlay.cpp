@@ -39,11 +39,11 @@ void Overlay_callback(void *userPvt, asynUser *pasynUser, void *pointer)
   callbackCount++;
 }
 
-// We define 2 structures here.  
+// We define 2 structures here.
 // overlayTempCaseStr uses fixed length arrays so it can be easily initialized
 // and we need to initialize many cases
 // overlayTestCaseStr used std::vector because that is what the test harness wants
- 
+
 typedef struct {
   int overlayNum;
   int positionX;
@@ -117,7 +117,7 @@ struct OverlayPluginTestFixture
   TestingPlugin* downstream_plugin; // TODO: we don't put this in a shared_ptr and purposefully leak memory because asyn ports cannot be deleted
   std::vector<overlayTestCaseStr> overlayTestCaseStrs;
   int expectedArrayCounter;
-  
+
 
   static int testCase;
 
@@ -164,25 +164,25 @@ struct OverlayPluginTestFixture
 
     // Test a "normal" case
     overlayTempCaseStr test1 = {0, 500, 500, 50, 50, 1, 1, 0, 255, 0, NDOverlayCross, NDOverlaySet, 2, {1024, 1024}, NDColorModeMono};
-    appendTestCase(&overlayTestCaseStrs, &test1); 
+    appendTestCase(&overlayTestCaseStrs, &test1);
     // Test a case with size larger than array
     overlayTempCaseStr test2 = {0, 500, 500, 5000, 5000, 1, 1, 0, 255, 0, NDOverlayEllipse, NDOverlaySet, 2, {1024, 1024}, NDColorModeMono};
-    appendTestCase(&overlayTestCaseStrs, &test2); 
+    appendTestCase(&overlayTestCaseStrs, &test2);
     // Test a case with zero size
     overlayTempCaseStr test3 = {0, 500, 500, 0, 0, 1, 1, 0, 255, 0, NDOverlayRectangle, NDOverlaySet, 2, {1024, 1024}, NDColorModeMono};
-    appendTestCase(&overlayTestCaseStrs, &test3); 
+    appendTestCase(&overlayTestCaseStrs, &test3);
     // Test a case with negative position
     overlayTempCaseStr test4 = {0, -500, -500, 50, 50, 1, 1, 0, 255, 0, NDOverlayCross, NDOverlaySet, 2, {1024, 1024}, NDColorModeMono};
-    appendTestCase(&overlayTestCaseStrs, &test4); 
+    appendTestCase(&overlayTestCaseStrs, &test4);
     // Test a case with position larger than array size
     overlayTempCaseStr test5 = {0, 1500, 1500, 50, 50, 1, 1, 0, 255, 0, NDOverlayEllipse, NDOverlaySet, 2, {1024, 1024}, NDColorModeMono};
-    appendTestCase(&overlayTestCaseStrs, &test5); 
-    // Test an RGB1 case 
+    appendTestCase(&overlayTestCaseStrs, &test5);
+    // Test an RGB1 case
     overlayTempCaseStr test6 = {0, 500, 500, 50, 50, 1, 1, 0, 255, 0, NDOverlayRectangle, NDOverlaySet, 3, {3, 1024, 1024}, NDColorModeRGB1};
-    appendTestCase(&overlayTestCaseStrs, &test6); 
+    appendTestCase(&overlayTestCaseStrs, &test6);
     // Test an case with very large width
     overlayTempCaseStr test7 = {0, 500, 500, 50, 50, 5000, 5000, 0, 255, 0, NDOverlayCross, NDOverlaySet, 2, {1024, 1024}, NDColorModeMono};
-    appendTestCase(&overlayTestCaseStrs, &test7); 
+    appendTestCase(&overlayTestCaseStrs, &test7);
     // Test an case with zero width
     overlayTempCaseStr test8 = {0, 500, 500, 50, 50, 0, 0, 0, 255, 0, NDOverlayCross, NDOverlaySet, 2, {1024, 1024}, NDColorModeMono};
     appendTestCase(&overlayTestCaseStrs, &test8);
@@ -225,7 +225,7 @@ BOOST_AUTO_TEST_CASE(basic_overlay_operation)
 
   overlayTestCaseStr *pStr = &overlayTestCaseStrs[0];
   for (size_t i=0; i<overlayTestCaseStrs.size(); i++, pStr++)  {
-  
+
     BOOST_MESSAGE("Test " << (i+1) << " rank: " << pStr->rank);
 
     BOOST_CHECK_NO_THROW(Overlay->write(NDPluginOverlayUseString,       1,               pStr->overlayNum));
@@ -247,7 +247,7 @@ BOOST_AUTO_TEST_CASE(basic_overlay_operation)
     Overlay->lock();
     BOOST_CHECK_NO_THROW(Overlay->processCallbacks(pStr->pArrays[0]));
     Overlay->unlock();
-    expectedArrayCounter++;  
+    expectedArrayCounter++;
     BOOST_CHECK_EQUAL(Overlay->readInt("ARRAY_COUNTER"), expectedArrayCounter);
 
     // Check the downstream receiver of the Overlay array

@@ -8,26 +8,16 @@
  *
  * Change Log:
  *
- * 27 April 2014 
+ * 27 April 2014
  */
 
-#include <stdlib.h>
 #include <string.h>
-#include <stdio.h>
-#include <math.h>
 
-#include <epicsTypes.h>
-#include <epicsMessageQueue.h>
-#include <epicsThread.h>
-#include <epicsEvent.h>
-#include <epicsTime.h>
 #include <iocsh.h>
 
-#include <asynDriver.h>
+#include "NDPluginTransform.h"
 
 #include <epicsExport.h>
-#include "NDPluginDriver.h"
-#include "NDPluginTransform.h"
 
 /* Enums to describe the types of transformations */
 typedef enum {
@@ -82,18 +72,18 @@ void transformNDArray(NDArray *inArray, NDArray *outArray, int transformType, in
       outArray->dims[arrayInfo->yDim].size = inArray->dims[arrayInfo->xDim].size;
 
       if (colorMode == NDColorModeMono)
-      {      
+      {
         for (x = 0; x < xSize; x++)
         {
           for (y = (ySize - 1); y >= 0; y--)
           {
             outData[(((ySize-1) - y) * xStride) + (x * ySize)] = inData[(y * yStride) + (x * xStride)];
           }
-        }          
+        }
       }
 
       if (colorMode == NDColorModeRGB3)
-      {      
+      {
         for (x = 0; x < xSize; x++)
         {
           for (y = (ySize - 1); y >= 0; y--)
@@ -103,7 +93,7 @@ void transformNDArray(NDArray *inArray, NDArray *outArray, int transformType, in
             outData[(((ySize-1) - y) * xStride) + (x * ySize) + colorStride] = inData[(y * yStride) + (x * xStride) + colorStride];
             outData[(((ySize-1) - y) * xStride) + (x * ySize) + (2 * colorStride)] = inData[(y * yStride) + (x * xStride) + (2 * colorStride)];
           }
-        }          
+        }
       }
 
       if (colorMode == NDColorModeRGB2)
@@ -173,7 +163,7 @@ void transformNDArray(NDArray *inArray, NDArray *outArray, int transformType, in
             outData[(((xSize - 1) - x) * xStride) + (((ySize - 1) - y) * yStride) + (2 * colorStride)] = inData[(y * yStride) + (x * xStride) + (2 * colorStride)];
           }
         }
-      }  
+      }
       break;
 
     case (TransformRotate270):
@@ -433,7 +423,7 @@ void transformNDArray(NDArray *inArray, NDArray *outArray, int transformType, in
       if (colorMode == NDColorModeMono || colorMode == NDColorModeRGB3)
       {
         for (color = 0; color < colorSize; color++)
-        {          
+        {
           for (y = 0; y < ySize; y++)
           {
             source_offset = (y * yStride) + (color * colorStride);
@@ -526,8 +516,8 @@ void NDPluginTransform::processCallbacks(NDArray *pArray){
   callParamCallbacks();
 }
 
-
-/** Transform the image according to the selected choice.*/  
+
+/** Transform the image according to the selected choice.*/
 void NDPluginTransform::transformImage(NDArray *inArray, NDArray *outArray, NDArrayInfo_t *arrayInfo)
 {
   //static const char *functionName = "transformNDArray";
@@ -574,7 +564,7 @@ void NDPluginTransform::transformImage(NDArray *inArray, NDArray *outArray, NDAr
   return;
 }
 
-
+
 /** Constructor for NDPluginTransform; most parameters are simply passed to NDPluginDriver::NDPluginDriver.
   * After calling the base class constructor this method sets reasonable default values for all of the
   * Transform parameters.
@@ -613,12 +603,12 @@ NDPluginTransform::NDPluginTransform(const char *portName, int queueSize, int bl
   for (i = 0; i < ND_ARRAY_MAX_DIMS; i++) {
     this->userDims_[i] = i;
   }
-  
+
   /* Set the plugin type string */
   setStringParam(NDPluginDriverPluginType, "NDPluginTransform");
   setIntegerParam(NDPluginTransformType_, TransformNone);
 
-  // Enable ArrayCallbacks.  
+  // Enable ArrayCallbacks.
   // This plugin currently ignores this setting and always does callbacks, so make the setting reflect the behavior
   setIntegerParam(NDArrayCallbacks, 1);
 

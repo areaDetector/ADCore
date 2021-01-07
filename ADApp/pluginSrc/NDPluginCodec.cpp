@@ -43,18 +43,12 @@
 #include <stdio.h>
 #include <math.h>
 
-#include <epicsTypes.h>
-#include <epicsMessageQueue.h>
-#include <epicsThread.h>
-#include <epicsEvent.h>
-#include <epicsTime.h>
 #include <iocsh.h>
 
-#include <asynDriver.h>
-
-#include <epicsExport.h>
 #include "Codec.h"
 #include "NDPluginCodec.h"
+
+#include <epicsExport.h>
 
 #define JPEG_MIN_QUALITY 1
 #define JPEG_MAX_QUALITY 100
@@ -85,7 +79,7 @@ static NDArray *allocArray(NDArray *input, int dataType = -1, size_t dataSize=0,
     NDArray *output = pool->alloc(input->ndims, dims, dt, dataSize, pData);
     // Use copy method to copy metadata.  copyData=false, copyDimensions=true, copyDataType=false
     pool->copy(input, output, false, true, false);
-    
+
     return output;
 
 }
@@ -278,7 +272,7 @@ NDArray *decompressJPEG(NDArray *input, NDCodecStatus_t *status, char *errorMess
 {
     // Sanity check
     if (input->codec.name != codecName[NDCODEC_JPEG]) {
-        sprintf(errorMessage, "Invalid codec '%s', expected '%s'", 
+        sprintf(errorMessage, "Invalid codec '%s', expected '%s'",
                 input->codec.name.c_str(), codecName[NDCODEC_JPEG].c_str());
         *status = NDCODEC_ERROR;
         return NULL;
@@ -357,7 +351,7 @@ static const char* bloscCompName[] = {
     "zstd",
 };
 
-NDArray *compressBlosc(NDArray *input, int clevel, int shuffle, NDCodecBloscComp_t compressor, 
+NDArray *compressBlosc(NDArray *input, int clevel, int shuffle, NDCodecBloscComp_t compressor,
                        int numThreads, NDCodecStatus_t *status, char *errorMessage)
 {
     if (!input->codec.empty()) {
@@ -442,7 +436,7 @@ NDArray *decompressBlosc(NDArray *input, int numThreads, NDCodecStatus_t *status
 
 #else
 
-NDArray *compressBlosc(NDArray *input, int clevel, int shuffle, NDCodecBloscComp_t compressor, 
+NDArray *compressBlosc(NDArray *input, int clevel, int shuffle, NDCodecBloscComp_t compressor,
                        int numThreads, NDCodecStatus_t *status, char *errorMessage)
 {
     sprintf(errorMessage, "No Blosc support");
@@ -473,7 +467,7 @@ NDArray *compressLZ4(NDArray *input, NDCodecStatus_t *status, char *errorMessage
 
     NDArrayInfo_t info;
     input->getInfo(&info);
-    int outputSize = LZ4_compressBound(info.totalBytes);
+    int outputSize = LZ4_compressBound((int)info.totalBytes);
     NDArray *output = allocArray(input, -1, outputSize);
 
     if (!output) {
@@ -482,7 +476,7 @@ NDArray *compressLZ4(NDArray *input, NDCodecStatus_t *status, char *errorMessage
         return NULL;
     }
 
-    int compSize = LZ4_compress_default((const char*)input->pData, (char*)output->pData, info.totalBytes, outputSize);
+    int compSize = LZ4_compress_default((const char*)input->pData, (char*)output->pData, (int)info.totalBytes, outputSize);
 
     if (compSize <= 0) {
         output->release();
@@ -519,7 +513,7 @@ NDArray *decompressLZ4(NDArray *input, NDCodecStatus_t *status, char *errorMessa
         return NULL;
     }
 
-    int ret = LZ4_decompress_fast((const char*)input->pData, (char*)output->pData, info.totalBytes);
+    int ret = LZ4_decompress_fast((const char*)input->pData, (char*)output->pData, (int)info.totalBytes);
 
     if (ret <= 0){
         output->release();
@@ -555,7 +549,7 @@ NDArray *compressBSLZ4(NDArray *input, NDCodecStatus_t *status, char *errorMessa
 
     size_t blockSize = 0;
 
-    int64_t compSize = bshuf_compress_lz4(input->pData, output->pData, info.nElements, 
+    int64_t compSize = bshuf_compress_lz4(input->pData, output->pData, info.nElements,
                                           info.bytesPerElement, blockSize);
 
     if (compSize < 0) {
@@ -566,7 +560,7 @@ NDArray *compressBSLZ4(NDArray *input, NDCodecStatus_t *status, char *errorMessa
     }
 
     output->codec.name = codecName[NDCODEC_BSLZ4];
-    output->compressedSize = compSize;
+    output->compressedSize = (size_t)compSize;
 
     return output;
 }

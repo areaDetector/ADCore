@@ -10,22 +10,15 @@
  */
 
 #include <stdio.h>
-
-#include <epicsTypes.h>
-#include <epicsMessageQueue.h>
-#include <epicsThread.h>
-#include <epicsEvent.h>
-#include <epicsTime.h>
-#include <iocsh.h>
+#include <string.h>
 #include <libxml/parser.h>
 #include <napi.h>
-#include <string.h>
 
-#include <asynDriver.h>
+#include <iocsh.h>
+
+#include "NDFileNexus.h"
 
 #include <epicsExport.h>
-#include "NDPluginFile.h"
-#include "NDFileNexus.h"
 
 static const char *driverName="NDFileNexus";
 
@@ -501,7 +494,7 @@ int NDFileNexus::processStreamData(NDArray *pArray) {
   getIntegerParam(addr, NDFileWriteMode, &fileWriteMode);
   getIntegerParam(addr, NDFileNumCapture, &numCapture);
   this->unlock();
-  
+
   rank = pArray->ndims;
   for (ii=0; ii<rank; ii++) {
     switch(fileWriteMode) {

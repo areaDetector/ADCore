@@ -1,8 +1,8 @@
-/* fft.h 
+/* fft.h
  * Mark Rivers
  * February 27, 2016
  */
- 
+
 #ifndef FFT_H
 #define FFT_H
 

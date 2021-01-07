@@ -1,8 +1,6 @@
 #ifndef NDPluginStats_H
 #define NDPluginStats_H
 
-#include <epicsTypes.h>
-
 #include "NDPluginDriver.h"
 
 typedef enum {
@@ -16,7 +14,7 @@ typedef enum {
 typedef enum {
     TSMinValue,
     TSMinX,
-    TSMinY,    
+    TSMinY,
     TSMaxValue,
     TSMaxX,
     TSMaxY,
@@ -55,7 +53,7 @@ typedef struct NDStats {
     double  sigma;
     double  min;
     size_t  minX;
-    size_t  minY;    
+    size_t  minY;
     double  max;
     size_t  maxX;
     size_t  maxY;
@@ -78,6 +76,7 @@ typedef struct NDStats {
     size_t profileSizeY;
     size_t cursorX;
     size_t cursorY;
+    double  cursorValue;
     epicsInt32 *totalArray;
     epicsInt32 *netArray;
     int histSize;
@@ -118,13 +117,14 @@ typedef struct NDStats {
 #define NDPluginStatsKurtosisYString          "KURTOSISY_VALUE"     /* (asynFloat64,      r/o) Kurtosis Y */
 #define NDPluginStatsEccentricityString       "ECCENTRICITY_VALUE"  /* (asynFloat64,      r/o) Eccentricity */
 #define NDPluginStatsOrientationString        "ORIENTATION_VALUE"   /* (asynFloat64,      r/o) Orientation */
-    
-/* Profiles*/   
+
+/* Profiles*/
 #define NDPluginStatsComputeProfilesString    "COMPUTE_PROFILES"    /* (asynInt32,        r/w) Compute profiles? */
 #define NDPluginStatsProfileSizeXString       "PROFILE_SIZE_X"      /* (asynInt32,        r/o) X profile size */
 #define NDPluginStatsProfileSizeYString       "PROFILE_SIZE_Y"      /* (asynInt32,        r/o) Y profile size */
 #define NDPluginStatsCursorXString            "CURSOR_X"            /* (asynInt32,        r/w) X cursor position */
 #define NDPluginStatsCursorYString            "CURSOR_Y"            /* (asynInt32,        r/w) Y cursor position */
+#define NDPluginStatsCursorValString          "CURSOR_VAL"          /* (asynFloat64,      r/o) value at cursor position */
 #define NDPluginStatsProfileAverageXString    "PROFILE_AVERAGE_X"   /* (asynFloat64Array, r/o) X average profile array */
 #define NDPluginStatsProfileAverageYString    "PROFILE_AVERAGE_Y"   /* (asynFloat64Array, r/o) Y average profile array */
 #define NDPluginStatsProfileThresholdXString  "PROFILE_THRESHOLD_X" /* (asynFloat64Array, r/o) X average profile array after threshold */
@@ -146,7 +146,7 @@ typedef struct NDStats {
 #define NDPluginStatsHistXArrayString         "HIST_X_ARRAY"        /* (asynFloat64Array, r/o) Histogram X axis array */
 
 
-/* Arrays of total and net counts for MCA or waveform record */   
+/* Arrays of total and net counts for MCA or waveform record */
 #define NDPluginStatsCallbackPeriodString     "CALLBACK_PERIOD"     /* (asynFloat64,      r/w) Callback period */
 
 /** Does image statistics.  These include
@@ -154,9 +154,9 @@ typedef struct NDStats {
   * X and Y centroid and sigma
   * Histogram
   */
-class epicsShareClass NDPluginStats : public NDPluginDriver {
+class NDPLUGIN_API NDPluginStats : public NDPluginDriver {
 public:
-    NDPluginStats(const char *portName, int queueSize, int blockingCallbacks, 
+    NDPluginStats(const char *portName, int queueSize, int blockingCallbacks,
                  const char *NDArrayPort, int NDArrayAddr,
                  int maxBuffers, size_t maxMemory,
                  int priority, int stackSize, int maxThreads=1);
@@ -164,7 +164,7 @@ public:
     void processCallbacks(NDArray *pArray);
     asynStatus writeInt32(asynUser *pasynUser, epicsInt32 value);
     asynStatus writeFloat64(asynUser *pasynUser, epicsFloat64 value);
-    
+
     template <typename epicsType> void doComputeStatisticsT(NDArray *pArray, NDStats_t *pStats);
     int doComputeStatistics(NDArray *pArray, NDStats_t *pStats);
     template <typename epicsType> asynStatus doComputeCentroidT(NDArray *pArray, NDStats_t *pStats);
@@ -173,7 +173,7 @@ public:
     asynStatus doComputeProfiles(NDArray *pArray, NDStats_t *pStats);
     template <typename epicsType> asynStatus doComputeHistogramT(NDArray *pArray, NDStats_t *pStats);
     asynStatus doComputeHistogram(NDArray *pArray, NDStats_t *pStats);
-   
+
 protected:
     int NDPluginStatsComputeStatistics;
     #define FIRST_NDPLUGIN_STATS_PARAM NDPluginStatsComputeStatistics
@@ -181,10 +181,10 @@ protected:
     int NDPluginStatsBgdWidth;
     int NDPluginStatsMinValue;
     int NDPluginStatsMinX;
-    int NDPluginStatsMinY;            
+    int NDPluginStatsMinY;
     int NDPluginStatsMaxValue;
     int NDPluginStatsMaxX;
-    int NDPluginStatsMaxY;        
+    int NDPluginStatsMaxY;
     int NDPluginStatsMeanValue;
     int NDPluginStatsSigmaValue;
     int NDPluginStatsTotal;
@@ -205,13 +205,14 @@ protected:
     int NDPluginStatsKurtosisY;
     int NDPluginStatsEccentricity;
     int NDPluginStatsOrientation;
-    
+
     /* Profiles */
     int NDPluginStatsComputeProfiles;
     int NDPluginStatsProfileSizeX;
     int NDPluginStatsProfileSizeY;
     int NDPluginStatsCursorX;
     int NDPluginStatsCursorY;
+    int NDPluginStatsCursorVal;
     int NDPluginStatsProfileAverageX;
     int NDPluginStatsProfileAverageY;
     int NDPluginStatsProfileThresholdX;

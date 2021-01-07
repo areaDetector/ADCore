@@ -8,10 +8,7 @@
 
 #include <string>
 #include <stdlib.h>
-
-#include <epicsString.h>
-
-#include <epicsExport.h>
+#include <string.h>
 
 #include "NDAttribute.h"
 
@@ -29,19 +26,19 @@ const char *NDAttribute::attrSourceString(NDAttrSource_t type)
 }
 
 /** NDAttribute constructor
-  * \param[in] pName The name of the attribute to be created. 
+  * \param[in] pName The name of the attribute to be created.
   * \param[in] sourceType The source type of the attribute (NDAttrSource_t).
   * \param[in] pSource The source string for the attribute.
   * \param[in] pDescription The description of the attribute.
   * \param[in] dataType The data type of the attribute (NDAttrDataType_t).
   * \param[in] pValue A pointer to the value for this attribute.
   */
-  NDAttribute::NDAttribute(const char *pName, const char *pDescription, 
-                           NDAttrSource_t sourceType, const char *pSource, 
+  NDAttribute::NDAttribute(const char *pName, const char *pDescription,
+                           NDAttrSource_t sourceType, const char *pSource,
                            NDAttrDataType_t dataType, void *pValue)
-                           
+
   : dataType_(NDAttrUndefined)
-                           
+
 {
 
   this->name_ = pName ? pName : "";
@@ -107,8 +104,8 @@ NDAttribute::~NDAttribute()
 NDAttribute* NDAttribute::copy(NDAttribute *pOut)
 {
   void *pValue;
-  
-  if (!pOut) 
+
+  if (!pOut)
     pOut = new NDAttribute(*this);
   else {
     if (this->dataType_ == NDAttrString) pValue = (void *)this->string_.c_str();
@@ -176,7 +173,7 @@ const char *NDAttribute::getSourceInfo(NDAttrSource_t *pSourceType)
   return sourceTypeString_.c_str();
 }
 
-/** Sets the value for this attribute. 
+/** Sets the value for this attribute.
   * \param[in] pValue Pointer to the value. */
 int NDAttribute::setValue(const void *pValue)
 {
@@ -185,8 +182,8 @@ int NDAttribute::setValue(const void *pValue)
 
   /* Treat strings specially */
   if (dataType_ == NDAttrString) {
-    /* If the previous value was the same string don't do anything, 
-     * saves freeing and allocating memory.  
+    /* If the previous value was the same string don't do anything,
+     * saves freeing and allocating memory.
      * If not the same free the old string and copy new one. */
     if (this->string_ == (char *)pValue) return ND_SUCCESS;
     this->string_ = (char *)pValue;
@@ -232,7 +229,7 @@ int NDAttribute::setValue(const void *pValue)
   return ND_SUCCESS;
 }
 
-/** Sets the value for this attribute. 
+/** Sets the value for this attribute.
   * \param[in] value value of this attribute. */
 int NDAttribute::setValue(const std::string& value)
 {
@@ -358,7 +355,7 @@ int NDAttribute::getValue(NDAttrDataType_t dataType, void *pValue, size_t dataSi
     default:
       break;
   }
-  
+
   switch (dataType) {
     case NDAttrInt8:
       return getValueT<epicsInt8>(pValue, dataSize);
@@ -417,7 +414,7 @@ int NDAttribute::updateValue()
   */
 int NDAttribute::report(FILE *fp, int details)
 {
-  
+
   fprintf(fp, "\n");
   fprintf(fp, "NDAttribute, address=%p:\n", this);
   fprintf(fp, "  name=%s\n", this->name_.c_str());
@@ -431,43 +428,43 @@ int NDAttribute::report(FILE *fp, int details)
       fprintf(fp, "  value=%d\n", this->value_.i8);
       break;
     case NDAttrUInt8:
-      fprintf(fp, "  dataType=NDAttrUInt8\n"); 
+      fprintf(fp, "  dataType=NDAttrUInt8\n");
       fprintf(fp, "  value=%u\n", this->value_.ui8);
       break;
     case NDAttrInt16:
-      fprintf(fp, "  dataType=NDAttrInt16\n"); 
+      fprintf(fp, "  dataType=NDAttrInt16\n");
       fprintf(fp, "  value=%d\n", this->value_.i16);
       break;
     case NDAttrUInt16:
-      fprintf(fp, "  dataType=NDAttrUInt16\n"); 
+      fprintf(fp, "  dataType=NDAttrUInt16\n");
       fprintf(fp, "  value=%d\n", this->value_.ui16);
       break;
     case NDAttrInt32:
-      fprintf(fp, "  dataType=NDAttrInt32\n"); 
+      fprintf(fp, "  dataType=NDAttrInt32\n");
       fprintf(fp, "  value=%d\n", this->value_.i32);
       break;
     case NDAttrUInt32:
-      fprintf(fp, "  dataType=NDAttrUInt32\n"); 
+      fprintf(fp, "  dataType=NDAttrUInt32\n");
       fprintf(fp, "  value=%d\n", this->value_.ui32);
       break;
     case NDAttrInt64:
-      fprintf(fp, "  dataType=NDAttrInt64\n"); 
+      fprintf(fp, "  dataType=NDAttrInt64\n");
       fprintf(fp, "  value=%lld\n", this->value_.i64);
       break;
     case NDAttrUInt64:
-      fprintf(fp, "  dataType=NDAttrUInt64\n"); 
+      fprintf(fp, "  dataType=NDAttrUInt64\n");
       fprintf(fp, "  value=%llu\n", this->value_.ui64);
       break;
     case NDAttrFloat32:
-      fprintf(fp, "  dataType=NDAttrFloat32\n"); 
+      fprintf(fp, "  dataType=NDAttrFloat32\n");
       fprintf(fp, "  value=%f\n", this->value_.f32);
       break;
     case NDAttrFloat64:
-      fprintf(fp, "  dataType=NDAttrFloat64\n"); 
+      fprintf(fp, "  dataType=NDAttrFloat64\n");
       fprintf(fp, "  value=%f\n", this->value_.f64);
       break;
     case NDAttrString:
-      fprintf(fp, "  dataType=NDAttrString\n"); 
+      fprintf(fp, "  dataType=NDAttrString\n");
       fprintf(fp, "  value=%s\n", this->string_.c_str());
       break;
     case NDAttrUndefined:

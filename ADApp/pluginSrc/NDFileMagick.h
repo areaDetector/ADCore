@@ -2,7 +2,7 @@
  * NDFileMagick.h
  * Writes NDArrays to any file format supported by ImageMagick
  * Mark Rivers
- * September 20, 2010 
+ * September 20, 2010
  */
 
 #ifndef DRV_NDFileMagick_H
@@ -12,14 +12,14 @@
 #include "Magick++.h"
 using namespace Magick;
 using namespace std;
-    
+
 #define NDFileMagickQualityString      "MAGICK_QUALITY"        /* (asynInt32, r/w) File quality */
 #define NDFileMagickCompressTypeString "MAGICK_COMPRESS_TYPE"  /* (asynInt32, r/w) Compression type */
 #define NDFileMagickBitDepthString     "MAGICK_BIT_DEPTH"      /* (asynInt32, r/w) Bit depth */
 
 /** Writes NDArrays to files using the GraphicsMagick library; can write many different file formats.
   */
-class epicsShareClass NDFileMagick : public NDPluginFile {
+class NDPLUGIN_API NDFileMagick : public NDPluginFile {
 public:
     NDFileMagick(const char *portName, int queueSize, int blockingCallbacks,
                  const char *NDArrayPort, int NDArrayAddr,

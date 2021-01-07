@@ -3,31 +3,20 @@
  *
  * Region of interest plugin that calculates simple statistics
  * on multiple regions. Each ROI is identified by an asyn address
- * (starting at 0). 
- * 
- * @author Matt Pearson 
+ * (starting at 0).
+ *
+ * @author Matt Pearson
  * @date Nov 2014
  */
 
-#include <stdlib.h>
 #include <string.h>
-#include <stdio.h>
-#include <math.h>
 
 #include <cantProceed.h>
-#include <epicsTypes.h>
-#include <epicsMessageQueue.h>
-#include <epicsThread.h>
-#include <epicsEvent.h>
-#include <epicsTime.h>
 #include <iocsh.h>
 
-#include <asynDriver.h>
+#include "NDPluginROIStat.h"
 
 #include <epicsExport.h>
-
-#include "NDArray.h"
-#include "NDPluginROIStat.h"
 
 #define MAX(A,B) (A)>(B)?(A):(B)
 #define MIN(A,B) (A)<(B)?(A):(B)
@@ -73,7 +62,7 @@ asynStatus NDPluginROIStat::doComputeStatisticsT(NDArray *pArray, NDROI *pROI)
         pROI->min = value;
         pROI->max = value;
         initial = false;
-      }  
+      }
       if (value < pROI->min) pROI->min = value;
       if (value > pROI->max) pROI->max = value;
       pROI->total += value;
@@ -87,7 +76,7 @@ asynStatus NDPluginROIStat::doComputeStatisticsT(NDArray *pArray, NDROI *pROI)
         nBgd++;
         bgd += (double)pData[x];
       }
-    }    
+    }
   } else if (pArray->ndims == 2) {
     nElements = sizeX * sizeY;
     for (y=offsetY; y<offsetY+sizeY; ++y) {
@@ -98,7 +87,7 @@ asynStatus NDPluginROIStat::doComputeStatisticsT(NDArray *pArray, NDROI *pROI)
           pROI->min = value;
           pROI->max = value;
           initial = false;
-        } 
+        }
         if (value < pROI->min) pROI->min = value;
         if (value > pROI->max) pROI->max = value;
         pROI->total += value;
@@ -149,9 +138,9 @@ asynStatus NDPluginROIStat::doComputeStatisticsT(NDArray *pArray, NDROI *pROI)
 
 }
 
-     
+
 /**
- * Call the templated doComputeStatistics so we can cast correctly. 
+ * Call the templated doComputeStatistics so we can cast correctly.
  * \param[in] pArray The pointer to the NDArray object
  * \param[in] pROI The pointer to the NDROI object
  * \return asynStatus
@@ -159,7 +148,7 @@ asynStatus NDPluginROIStat::doComputeStatisticsT(NDArray *pArray, NDROI *pROI)
 asynStatus NDPluginROIStat::doComputeStatistics(NDArray *pArray, NDROI_t *pROI)
 {
   asynStatus status = asynSuccess;
-  
+
   switch(pArray->dataType) {
   case NDInt8:
     status = doComputeStatisticsT<epicsInt8>(pArray, pROI);
@@ -199,7 +188,7 @@ asynStatus NDPluginROIStat::doComputeStatistics(NDArray *pArray, NDROI_t *pROI)
 }
 
 
-/** 
+/**
  * Callback function that is called by the NDArray driver with new NDArray data.
  * Computes statistics on the ROIs if NDPluginROIStatUse is 1.
  * If NDPluginROIStatNDArrayCallbacks is 1 then it also does NDArray callbacks.
@@ -208,9 +197,9 @@ asynStatus NDPluginROIStat::doComputeStatistics(NDArray *pArray, NDROI_t *pROI)
 void NDPluginROIStat::processCallbacks(NDArray *pArray)
 {
 
-  //This function is called with the mutex already locked.  
+  //This function is called with the mutex already locked.
   //It unlocks it during long calculations when private structures don't need to be protected.
-  
+
   int itemp = 0;
   int dim = 0;
   asynStatus status = asynSuccess;
@@ -248,7 +237,7 @@ void NDPluginROIStat::processCallbacks(NDArray *pArray)
     getIntegerParam(roi, NDPluginROIStatDim0Size,     &itemp); pROI->size[0] = itemp;
     getIntegerParam(roi, NDPluginROIStatDim1Size,     &itemp); pROI->size[1] = itemp;
     getIntegerParam(roi, NDPluginROIStatBgdWidth,     &itemp); pROI->bgdWidth = itemp;
-    
+
     for (dim=0; dim<pArray->ndims; dim++) {
       pROI->offset[dim]  = MAX(pROI->offset[dim], 0);
       pROI->offset[dim]  = MIN(pROI->offset[dim], pArray->dims[dim].size-1);
@@ -256,7 +245,7 @@ void NDPluginROIStat::processCallbacks(NDArray *pArray)
       pROI->size[dim]    = MIN(pROI->size[dim], pArray->dims[dim].size - pROI->offset[dim]);
       pROI->arraySize[dim] = (int)pArray->dims[dim].size;
     }
-    
+
     /* Update the parameters that may have changed */
     setIntegerParam(roi, NDPluginROIStatDim0MaxSize, 0);
     setIntegerParam(roi, NDPluginROIStatDim1MaxSize, 0);
@@ -271,12 +260,12 @@ void NDPluginROIStat::processCallbacks(NDArray *pArray)
       setIntegerParam(roi, NDPluginROIStatDim1Size, (int)pROI->size[1]);
     }
   }
-        
+
   /* This function is called with the lock taken, and it must be set when we exit.
    * The following code can be exected without the mutex because we are not accessing elements of
    * pPvt that other threads can access. */
   this->unlock();
-    
+
   for (int roi=0; roi<maxROIs_; ++roi) {
     pROI = &pROIs[roi];
     if (!pROI->use) {
@@ -284,8 +273,8 @@ void NDPluginROIStat::processCallbacks(NDArray *pArray)
     }
     status = doComputeStatistics(pArray, pROI);
     if (status != asynSuccess) {
-      asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, 
-        "%s: doComputeStatistics failed. status=%d\n", 
+      asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
+        "%s: doComputeStatistics failed. status=%d\n",
         functionName, status);
     }
   }
@@ -340,7 +329,7 @@ void NDPluginROIStat::processCallbacks(NDArray *pArray)
   * For other parameters it calls NDPluginDriver::writeInt32 to see if that method understands the parameter.
   * For all parameters it sets the value in the parameter library and calls any registered callbacks.
   * \param[in] pasynUser pasynUser structure that encodes the reason and address.
-  * \param[in] value The value to write. 
+  * \param[in] value The value to write.
   * \return asynStatus
   */
 asynStatus NDPluginROIStat::writeInt32(asynUser *pasynUser, epicsInt32 value)
@@ -351,14 +340,14 @@ asynStatus NDPluginROIStat::writeInt32(asynUser *pasynUser, epicsInt32 value)
     int roi = 0;
     const char* functionName = "NDPluginROIStat::writeInt32";
 
-    status = getAddress(pasynUser, &roi); 
+    status = getAddress(pasynUser, &roi);
     if (status != asynSuccess) {
       return status;
     }
 
     /* Set parameter and readback in parameter library */
     stat = (setIntegerParam(roi, function, value) == asynSuccess) && stat;
-    
+
     if (function == NDPluginROIStatReset) {
       stat = (clear(roi) == asynSuccess) && stat;
     } else if (function == NDPluginROIStatResetAll) {
@@ -393,7 +382,7 @@ asynStatus NDPluginROIStat::writeInt32(asynUser *pasynUser, epicsInt32 value)
     } else if (function < FIRST_NDPLUGIN_ROISTAT_PARAM) {
       stat = (NDPluginDriver::writeInt32(pasynUser, value) == asynSuccess) && stat;
     }
-    
+
     /* Do callbacks so higher layers see any changes */
     stat = (callParamCallbacks(roi) == asynSuccess) && stat;
     stat = (callParamCallbacks() == asynSuccess) && stat;
@@ -408,7 +397,7 @@ asynStatus NDPluginROIStat::writeInt32(asynUser *pasynUser, epicsInt32 value)
         "%s: function=%d, roi=%d, value=%d\n",
         functionName, function, roi, value);
     }
-    
+
     return status;
 }
 
@@ -422,8 +411,8 @@ asynStatus NDPluginROIStat::clear(epicsUInt32 roi)
   asynStatus status = asynSuccess;
   bool stat = true;
   const char* functionName = "NDPluginROIStat::clear";
-  
-  asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW, 
+
+  asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW,
         "%s: Clearing params. roi=%d\n", functionName, roi);
 
   stat = (setDoubleParam(roi, NDPluginROIStatMinValue,  0.0) == asynSuccess) && stat;
@@ -435,7 +424,7 @@ asynStatus NDPluginROIStat::clear(epicsUInt32 roi)
   stat = (callParamCallbacks(roi) == asynSuccess) && stat;
 
   if (!stat) {
-    asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, 
+    asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
           "%s: Error clearing params. roi=%d\n", functionName, roi);
     status = asynError;
   }
@@ -446,7 +435,7 @@ asynStatus NDPluginROIStat::clear(epicsUInt32 roi)
 void NDPluginROIStat::doTimeSeriesCallbacks()
 {
   double *pData;
-    
+
   /* Loop over the ROIs in this driver */
   for (int roi=0; roi<maxROIs_; ++roi) {
     pData = timeSeries_ + (roi * MAX_TIME_SERIES_TYPES * numTSPoints_);
@@ -499,7 +488,7 @@ NDPluginROIStat::NDPluginROIStat(const char *portName, int queueSize, int blocki
     maxROIs = 1;
   }
   maxROIs_ = maxROIs;
-  
+
   /* ROI general parameters */
   createParam(NDPluginROIStatFirstString,             asynParamInt32, &NDPluginROIStatFirst);
   createParam(NDPluginROIStatNameString,              asynParamOctet, &NDPluginROIStatName);
@@ -507,7 +496,7 @@ NDPluginROIStat::NDPluginROIStat(const char *portName, int queueSize, int blocki
   createParam(NDPluginROIStatResetString,             asynParamInt32, &NDPluginROIStatReset);
   createParam(NDPluginROIStatResetAllString,          asynParamInt32, &NDPluginROIStatResetAll);
   createParam(NDPluginROIStatBgdWidthString,          asynParamInt32, &NDPluginROIStatBgdWidth);
-  
+
   /* ROI definition */
   createParam(NDPluginROIStatDim0MinString,           asynParamInt32, &NDPluginROIStatDim0Min);
   createParam(NDPluginROIStatDim0SizeString,          asynParamInt32, &NDPluginROIStatDim0Size);
@@ -518,7 +507,7 @@ NDPluginROIStat::NDPluginROIStat(const char *portName, int queueSize, int blocki
   createParam(NDPluginROIStatDim2MinString,           asynParamInt32, &NDPluginROIStatDim2Min);
   createParam(NDPluginROIStatDim2SizeString,          asynParamInt32, &NDPluginROIStatDim2Size);
   createParam(NDPluginROIStatDim2MaxSizeString,       asynParamInt32, &NDPluginROIStatDim2MaxSize);
-  
+
   /* ROI statistics */
   createParam(NDPluginROIStatMinValueString,          asynParamFloat64, &NDPluginROIStatMinValue);
   createParam(NDPluginROIStatMaxValueString,          asynParamFloat64, &NDPluginROIStatMaxValue);
@@ -539,20 +528,20 @@ NDPluginROIStat::NDPluginROIStat(const char *portName, int queueSize, int blocki
   createParam(NDPluginROIStatTSTimestampString,  asynParamFloat64Array, &NDPluginROIStatTSTimestamp);
 
   createParam(NDPluginROIStatLastString,              asynParamInt32, &NDPluginROIStatLast);
-  
+
   //Note: params set to a default value here will overwrite a default database value
 
   /* Set the plugin type string */
   setStringParam(NDPluginDriverPluginType, "NDPluginROIStat");
-  
+
   for (int roi=0; roi<maxROIs_; ++roi) {
-    
+
     setIntegerParam(roi , NDPluginROIStatFirst,             0);
     setIntegerParam(roi , NDPluginROIStatLast,              0);
 
     setStringParam (roi,  NDPluginROIStatName,              "");
     setIntegerParam(roi , NDPluginROIStatUse,               0);
-    
+
     setIntegerParam(roi , NDPluginROIStatDim0Min,           0);
     setIntegerParam(roi , NDPluginROIStatDim0Size,          0);
     setIntegerParam(roi , NDPluginROIStatDim0MaxSize,       0);
@@ -562,7 +551,7 @@ NDPluginROIStat::NDPluginROIStat(const char *portName, int queueSize, int blocki
     setIntegerParam(roi , NDPluginROIStatDim2Min,           0);
     setIntegerParam(roi , NDPluginROIStatDim2Size,          0);
     setIntegerParam(roi , NDPluginROIStatDim2MaxSize,       0);
-    
+
     setDoubleParam (roi , NDPluginROIStatMinValue,          0.0);
     setDoubleParam (roi , NDPluginROIStatMaxValue,          0.0);
     setDoubleParam (roi , NDPluginROIStatMeanValue,         0.0);
@@ -574,12 +563,12 @@ NDPluginROIStat::NDPluginROIStat(const char *portName, int queueSize, int blocki
   numTSPoints_ = DEFAULT_NUM_TSPOINTS;
   setIntegerParam(NDPluginROIStatTSNumPoints, numTSPoints_);
   timeSeries_ = (double *)calloc(MAX_TIME_SERIES_TYPES*maxROIs_*numTSPoints_, sizeof(double));
-  
+
   /* Try to connect to the array port */
   connectToArrayPort();
 
   callParamCallbacks();
-  
+
 }
 
 /** Configuration command */

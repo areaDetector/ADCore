@@ -1,5 +1,5 @@
 /** plugin-test.cpp
- * 
+ *
  *  This file just defines the basic level of the boost unittest
  *  systme for plugins. By doing this here, the actual unittests
  *  can span multiple source files.

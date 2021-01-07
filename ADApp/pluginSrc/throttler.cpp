@@ -19,7 +19,7 @@ double Throttler::refill()
     epicsTimeStamp now;
     epicsTimeGetCurrent(&now);
 
-    int refillCount = epicsTimeDiffInSeconds(&now, &lastRefill_)*1000;
+    int refillCount = (int)epicsTimeDiffInSeconds(&now, &lastRefill_)*1000;
 
     if (refillCount) {
         available_ = std::min(limit_, available_ + refillCount*refillAmount_);

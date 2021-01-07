@@ -14,7 +14,7 @@
 #include <map>
 #include <set>
 
-namespace hdf5 
+namespace hdf5
 {
 
   typedef enum {
@@ -73,7 +73,7 @@ namespace hdf5
 
       void set_when_to_save(When_t when);
       When_t get_when_to_save();
-   
+
     private:
       DataSrc_t data_src;
       std::string val;
@@ -272,7 +272,7 @@ namespace hdf5
 
   /** Class used for writing the root of the file with the NDFileHDF5 plugin.
     */
-  class Root: public Group 
+  class Root: public Group
   {
     public:
       Root();

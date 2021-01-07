@@ -1,11 +1,16 @@
-#include "NDFileHDF5Dataset.h"
 #include <iostream>
 #include <stdlib.h>
+#include <string.h>
+
 #include <osiSock.h>
 
 #include <hdf5_hl.h>
 
-#define htonll(x) ( ( (uint64_t)(htonl( (uint32_t)((x << 32) >> 32)))<< 32) | htonl( ((uint32_t)(x >> 32)) ))
+#include "NDFileHDF5Dataset.h"
+
+#ifndef htonll
+#define htonll(x) ( ( (uint64_t)(htonl( (uint32_t)(((uint64_t)x << 32) >> 32)))<< 32) | htonl( ((uint32_t)((uint64_t)x >> 32)) ))
+#endif
 
 static const char *fileName = "NDFileHDF5Dataset";
 
@@ -14,7 +19,7 @@ static const char *fileName = "NDFileHDF5Dataset";
  * \param[in] name - String name of the dataset.
  * \param[in] dataset - HDF5 handle to the dataset.
  */
-NDFileHDF5Dataset::NDFileHDF5Dataset(asynUser *pAsynUser, const std::string& name, hid_t dataset) : 
+NDFileHDF5Dataset::NDFileHDF5Dataset(asynUser *pAsynUser, const std::string& name, hid_t dataset) :
                                      pAsynUser_(pAsynUser), name_(name), dataset_(dataset), nextRecord_(0)
 {
   this->maxdims_     = NULL;
@@ -33,7 +38,7 @@ NDFileHDF5Dataset::~NDFileHDF5Dataset()
   if (this->offset_      != NULL) free(this->offset_);
   if (this->virtualdims_ != NULL) free(this->virtualdims_);
   if (this->virtualchunkdims_ != NULL) free(this->virtualchunkdims_);
-} 
+}
 
 /** configureDims.
  * Setup any extra dimensions required for this dataset
@@ -221,7 +226,7 @@ asynStatus NDFileHDF5Dataset::verifyChunking(NDArray *pArray)
   for (int index = 0; index < this->extra_rank_; index++) {
     if (this->virtualchunkdims_[index] > 1) {
       // Chunk size is not set to 1 so we cannot use direct chunk write
-      return asynError;      
+      return asynError;
     }
   }
   return asynSuccess;
@@ -255,23 +260,23 @@ asynStatus NDFileHDF5Dataset::writeFile(NDArray *pArray, hid_t datatype, hid_t d
 
   hdfstatus = H5Dset_extent(this->dataset_, this->dims_);
   if (hdfstatus){
-    asynPrint(this->pAsynUser_, ASYN_TRACE_ERROR, 
-              "%s::%s ERROR Increasing the size of the dataset [%s] failed\n", 
+    asynPrint(this->pAsynUser_, ASYN_TRACE_ERROR,
+              "%s::%s ERROR Increasing the size of the dataset [%s] failed\n",
               fileName, functionName, this->name_.c_str());
     return asynError;
   }
   // Select a hyperslab.
   hid_t fspace = H5Dget_space(this->dataset_);
   if (fspace < 0){
-    asynPrint(this->pAsynUser_, ASYN_TRACE_ERROR, 
-              "%s::%s ERROR Unable to get a copy of the dataspace for dataset [%s]\n", 
+    asynPrint(this->pAsynUser_, ASYN_TRACE_ERROR,
+              "%s::%s ERROR Unable to get a copy of the dataspace for dataset [%s]\n",
               fileName, functionName, this->name_.c_str());
     return asynError;
   }
   hdfstatus = H5Sselect_hyperslab(fspace, H5S_SELECT_SET, this->offset_, NULL, framesize, NULL);
   if (hdfstatus){
-    asynPrint(this->pAsynUser_, ASYN_TRACE_ERROR, 
-              "%s::%s ERROR Unable to select hyperslab\n", 
+    asynPrint(this->pAsynUser_, ASYN_TRACE_ERROR,
+              "%s::%s ERROR Unable to select hyperslab\n",
               fileName, functionName);
     H5Sclose(fspace);
     return asynError;
@@ -350,8 +355,8 @@ asynStatus NDFileHDF5Dataset::writeFile(NDArray *pArray, hid_t datatype, hid_t d
   }
 
   if (hdfstatus){
-    asynPrint(this->pAsynUser_, ASYN_TRACE_ERROR, 
-              "%s::%s ERROR Unable to write data to hyperslab\n", 
+    asynPrint(this->pAsynUser_, ASYN_TRACE_ERROR,
+              "%s::%s ERROR Unable to write data to hyperslab\n",
               fileName, functionName);
     H5Sclose(fspace);
     return asynError;
@@ -359,8 +364,8 @@ asynStatus NDFileHDF5Dataset::writeFile(NDArray *pArray, hid_t datatype, hid_t d
 
   hdfstatus = H5Sclose(fspace);
   if (hdfstatus){
-    asynPrint(this->pAsynUser_, ASYN_TRACE_ERROR, 
-              "%s::%s ERROR Unable to close the dataspace\n", 
+    asynPrint(this->pAsynUser_, ASYN_TRACE_ERROR,
+              "%s::%s ERROR Unable to close the dataspace\n",
               fileName, functionName);
     return asynError;
   }
@@ -389,8 +394,8 @@ asynStatus NDFileHDF5Dataset::flushDataset()
   // Flush the dataset
   hdfstatus = H5Dflush(this->dataset_);
   if (hdfstatus){
-    asynPrint(this->pAsynUser_, ASYN_TRACE_ERROR, 
-              "%s::%s ERROR Unable to flush the dataset [%s]\n", 
+    asynPrint(this->pAsynUser_, ASYN_TRACE_ERROR,
+              "%s::%s ERROR Unable to flush the dataset [%s]\n",
               fileName, functionName, this->name_.c_str());
     return asynError;
   }
@@ -403,7 +408,7 @@ asynStatus NDFileHDF5Dataset::flushDataset()
   return asynError;
   #endif
 
-  return asynSuccess;  
+  return asynSuccess;
 }
 
 /** Return the requested dimension size.

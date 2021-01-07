@@ -2,8 +2,11 @@
 #include <string.h>
 #include <stdlib.h>
 #include <registryFunction.h>
-#include <epicsExport.h>
 #include <epicsTime.h>
+
+#include <asynPortDriver.h>
+
+#include <epicsExport.h>
 #include "functAttribute.h"
 
 // These functions demonstrate using user-defined attribute functions
@@ -24,14 +27,14 @@ static int myAttrFunct1(const char *paramString, void **functionPvt, functAttrib
     int ten = 10;
     const char *gettysburg = "Four score and seven years ago our fathers";
     int *paramIndex;
-    
+
     paramIndex = (int *)*functionPvt;
-    
+
     if (paramIndex == 0) {
         paramIndex = (int *)malloc(sizeof(int));
         // This is the first time we have been called for this attribute.
         // Convert paramString to paramIndex
-        
+
         if (!strcmp(paramString, "PI")) {
             pAttribute->setDataType(NDAttrFloat64);
             *paramIndex = functPi;
@@ -39,7 +42,7 @@ static int myAttrFunct1(const char *paramString, void **functionPvt, functAttrib
         else if (!strcmp(paramString, "E")) {
             pAttribute->setDataType(NDAttrFloat64);
             *paramIndex = functE;
-        } 
+        }
         else if (!strcmp(paramString, "10")) {
             pAttribute->setDataType(NDAttrInt32);
             *paramIndex = functTen;
@@ -47,11 +50,11 @@ static int myAttrFunct1(const char *paramString, void **functionPvt, functAttrib
         else if (!strcmp(paramString, "GETTYSBURG")) {
             pAttribute->setDataType(NDAttrString);
             *paramIndex = functGettysburg;
-        } 
+        }
         else if (!strcmp(paramString, "TIME64")) {
             pAttribute->setDataType(NDAttrUInt64);
             *paramIndex = functTime64;
-        } 
+        }
         else {
             printf("Error, unknown parameter string = %s\n", paramString);
             *paramIndex = functPi;
@@ -59,20 +62,20 @@ static int myAttrFunct1(const char *paramString, void **functionPvt, functAttrib
         }
         *functionPvt = paramIndex;
     }
-    
+
     switch (*paramIndex) {
         case functPi:
             pAttribute->setValue(&_PI);
             break;
-        
+
         case functE:
             pAttribute->setValue(&_E);
             break;
-        
+
         case functTen:
             pAttribute->setValue(&ten);
             break;
-            
+
         case functGettysburg:
             pAttribute->setValue((char *)gettysburg);
             break;
@@ -85,7 +88,7 @@ static int myAttrFunct1(const char *paramString, void **functionPvt, functAttrib
             pAttribute->setValue(&value);
             break;
           }
-            
+
         default:
             return ND_ERROR;
     }

@@ -9,21 +9,15 @@
 
 #include <stdlib.h>
 
-#include <epicsTypes.h>
-#include <epicsMessageQueue.h>
-#include <epicsThread.h>
-#include <epicsTime.h>
 #include <iocsh.h>
 
-#include <asynDriver.h>
+#include "NDPluginScatter.h"
 
 #include <epicsExport.h>
-#include "NDPluginDriver.h"
-#include "NDPluginScatter.h"
 
 static const char *driverName="NDPluginScatter";
 
-/** 
+/**
   * \param[in] pArray  The NDArray from the callback.
   */
 void NDPluginScatter::processCallbacks(NDArray *pArray)
@@ -51,15 +45,15 @@ void NDPluginScatter::processCallbacks(NDArray *pArray)
             this->pArrays[0] = pArrayOut;
         }
         else {
-            asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, 
-                "%s::%s: Couldn't allocate output array. Further processing terminated.\n", 
+            asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
+                "%s::%s: Couldn't allocate output array. Further processing terminated.\n",
                 driverName, functionName);
         }
     }
 }
 
 /** Called by driver to do the callbacks to the next registered client on the asynGenericPointer interface.
-  * \param[in] pArray Pointer to the NDArray 
+  * \param[in] pArray Pointer to the NDArray
   * \param[in] reason A client will be called if reason matches pasynUser->reason registered for that client.
   * \param[in] address A client will be called if address matches the address registered for that client. */
 asynStatus NDPluginScatter::doNDArrayCallbacks(NDArray *pArray, int reason, int address)
@@ -82,7 +76,7 @@ asynStatus NDPluginScatter::doNDArrayCallbacks(NDArray *pArray, int reason, int 
         /* If this is not a multi-device then address is -1, change to 0 */
         if (addr == -1) addr = 0;
         if ((pInterrupt->pasynUser->reason != reason) || (address != addr)) continue;
-        /* Set pasynUser->auxStatus to asynOverflow.  
+        /* Set pasynUser->auxStatus to asynOverflow.
          * This is a flag that means return without generating an error if the queue is full.
          * We don't set this for the last node because if the last node cannot queue the array
          * then the array will be dropped */

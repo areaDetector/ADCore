@@ -11,7 +11,7 @@
 #include "NDPluginFile.h"
 
 /** This version number is an attribute in the netCDF file to allow readers
- * to handle changes in the file contents 
+ * to handle changes in the file contents
  * All files up through ADCore R3-8 were 3.0
  * R3-9 changed to 3.1.  This was done because the datatype attribute in the file
  * which is enum NDDataType_t changed.  NDInt64 and NDUInt64 were added after NDUInt32,
@@ -24,14 +24,14 @@
   * The netCDF format supports arrays of any dimension and all of the data types supported by NDArray.
   * It can store multiple NDArrays in a single file, so it sets NDPluginFile::supportsMultipleArrays to 1.
   * If also can store all of the attributes associated with an NDArray.
-  * This class implements the 4 pure virtual functions from 
+  * This class implements the 4 pure virtual functions from
   * NDPluginFile: openFile, readFile, writeFile and closeFile. */
-class epicsShareClass NDFileNetCDF : public NDPluginFile {
+class NDPLUGIN_API NDFileNetCDF : public NDPluginFile {
 public:
-    NDFileNetCDF(const char *portName, int queueSize, int blockingCallbacks, 
+    NDFileNetCDF(const char *portName, int queueSize, int blockingCallbacks,
                  const char *NDArrayPort, int NDArrayAddr,
                  int priority, int stackSize);
-                 
+
     /* The methods that this class implements */
     virtual asynStatus openFile(const char *fileName, NDFileOpenMode_t openMode, NDArray *pArray);
     virtual asynStatus readFile(NDArray **pArray);

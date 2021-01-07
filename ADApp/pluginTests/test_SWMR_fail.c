@@ -34,7 +34,7 @@ void writeInt32Attribute(hid_t element, const char *attr_name, hsize_t dims, int
   hid_t hdfdatatype = -1;
   hid_t hdfattr = -1;
   hid_t hdfattrdataspace = -1;
-  
+
   hdfattrdataspace = H5Screate(H5S_SCALAR);
   hdfdatatype      = H5Tcopy(H5T_NATIVE_INT32);
   if (dims == 1) {
@@ -68,7 +68,7 @@ int main(int argc, char *argv[])
   hsize_t maxdims[2] = {H5S_UNLIMITED,H5S_UNLIMITED};
   int ivalue[2];
   int fillValue = 0;
-  
+
   /* Open the source file and dataset */
   /* All SWMR files need to use the latest file format */
   access_plist = H5Pcreate(H5P_FILE_ACCESS);
@@ -171,7 +171,7 @@ int main(int argc, char *argv[])
   writeStringAttribute(dataset, "NDAttrDescription", "The NDArray EPICS timestamp nanoseconds");
   writeStringAttribute(dataset, "NDAttrSourceType",  "NDAttrSourceDriver");
   writeStringAttribute(dataset, "NDAttrSource",      "Driver");
- 
+
   /* Color mode */
   datatype = H5T_NATIVE_INT32;
   cparm = H5Pcreate(H5P_DATASET_CREATE);
@@ -222,7 +222,7 @@ int main(int argc, char *argv[])
 #if H5_VERSION_GE(1,9,178)
   H5Fstart_swmr_write(fid);
 #endif
-  
+
   H5Fclose(fid);
 
   return 0;

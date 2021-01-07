@@ -90,7 +90,7 @@ private:
  * and populated in first come first served fashion (unpredictable order).
  * On reset or reacquistion the cache is cleared and all data is discarded.
  */
-class NDPluginAttrPlot : public NDPluginDriver
+class NDPLUGIN_API NDPluginAttrPlot : public NDPluginDriver
 {
     typedef CircularBuffer<double> CB;
 
@@ -147,9 +147,6 @@ protected:
     int NDAttrPlotAttribute;
     int NDAttrPlotReset;
     int NDAttrPlotNPts;
-#define NDATTRPLOT_LAST_PARAM NDAttrPlotNPts
-#define NUM_NDATTRPLOT_PARAMS (&NDATTRPLOT_LAST_PARAM - \
-                               &NDATTRPLOT_FIRST_PARAM + 1)
 
 private:
     /**

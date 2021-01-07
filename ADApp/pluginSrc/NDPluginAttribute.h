@@ -13,9 +13,9 @@
 #define NDPluginAttributeValSumString         "ATTR_VAL_SUM"          /* (asynFloat64,      r/o) Integrated Value of Attribute */
 
 /** Extract an Attribute from an NDArray and publish the value (and array of values) over channel access.  */
-class epicsShareClass NDPluginAttribute : public NDPluginDriver {
+class NDPLUGIN_API NDPluginAttribute : public NDPluginDriver {
 public:
-    NDPluginAttribute(const char *portName, int queueSize, int blockingCallbacks, 
+    NDPluginAttribute(const char *portName, int queueSize, int blockingCallbacks,
                       const char *NDArrayPort, int NDArrayAddr, int maxAttributes,
                       int maxBuffers, size_t maxMemory,
                       int priority, int stackSize);
@@ -29,7 +29,7 @@ protected:
     int NDPluginAttributeReset;
     int NDPluginAttributeVal;
     int NDPluginAttributeValSum;
-                                
+
 private:
 
     void doTimeSeriesCallbacks(NDArray *pArray);

@@ -17,9 +17,11 @@ ifeq ($(GNU),NO)
 endif
 
 USR_CFLAGS += -DUSE_TYPED_RSET
+USR_CPPFLAGS += -DBUILDING_ADCore_API
 
 DBD += ADSupport.dbd
 
+INC += ADCoreAPI.h
 INC += ADCoreVersion.h
 INC += NDAttribute.h
 INC += NDAttributeList.h

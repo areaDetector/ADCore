@@ -30,7 +30,7 @@ class NDArrayRing
 
     // Removes all the elements from the ring.
     void clear();
-      
+
   private:
     // Array of pointers to NDArrays
     NDArray** buffers_;

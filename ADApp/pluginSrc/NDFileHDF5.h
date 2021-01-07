@@ -8,8 +8,8 @@
 #define NDFileHDF5_H
 
 #include <list>
+#include <string.h>
 #include <hdf5.h>
-#include <asynDriver.h>
 #include <NDPluginFile.h>
 #include <NDArray.h>
 #include "NDFileHDF5Layout.h"
@@ -64,7 +64,7 @@
 
 /** Writes NDArrays in the HDF5 file format; an XML file can control the structure of the HDF5 file.
   */
-class epicsShareClass NDFileHDF5 : public NDPluginFile
+class NDPLUGIN_API NDFileHDF5 : public NDPluginFile
 {
   public:
     static const char *str_NDFileHDF5_chunkSize[MAX_CHUNK_DIMS];
@@ -74,10 +74,10 @@ class epicsShareClass NDFileHDF5 : public NDPluginFile
     static const char *str_NDFileHDF5_posName[MAXEXTRADIMS];
     static const char *str_NDFileHDF5_posIndex[MAXEXTRADIMS];
 
-    NDFileHDF5(const char *portName, int queueSize, int blockingCallbacks, 
+    NDFileHDF5(const char *portName, int queueSize, int blockingCallbacks,
                const char *NDArrayPort, int NDArrayAddr,
                int priority, int stackSize);
-       
+
     /* The methods that this class implements */
     virtual asynStatus openFile(const char *fileName, NDFileOpenMode_t openMode, NDArray *pArray);
     virtual asynStatus readFile(NDArray **pArray);
@@ -122,7 +122,7 @@ class epicsShareClass NDFileHDF5 : public NDPluginFile
     hsize_t getVirtualDim(int index);
 
     std::map<std::string, NDFileHDF5Dataset *> detDataMap;  // Map of handles to detector datasets, indexed by name
-    std::map<std::string, hid_t>               attDataMap;  // Map of handles to attribute datasets, indexed by name
+    std::map<std::string, hid_t>               constDsetMap;  // Map of handles to constant datasets, indexed by name
     std::string                                defDsetName; // Name of the default data set
     std::string                                ndDsetName;  // Name of NDAttribute that specifies the destination data set
     std::map<std::string, hdf5::Element *>     onOpenMap;   // Map of handles to elements with onOpen ndattributes, indexed by fullname
@@ -222,14 +222,9 @@ class epicsShareClass NDFileHDF5 : public NDPluginFile
 
     hdf5::LayoutXML layout;
 
-    int arrayDataId;
-    int uniqueIdId;
-    int timeStampId;
     int nextRecord;
-    hid_t h5type;
     int *pAttributeId;
     NDAttributeList *pFileAttributes;
-    epicsInt32 arrayDims[ND_ARRAY_MAX_DIMS];
     bool multiFrameFile;
     char *extraDimNameN;
     char *extraDimNameX;

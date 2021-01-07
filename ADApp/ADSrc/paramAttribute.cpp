@@ -13,35 +13,31 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include <ellLib.h>
 #include <epicsMutex.h>
+#include <epicsTime.h>
+#include <ellLib.h>
 #include <epicsString.h>
 
-#include <asynPortDriver.h>
-
-#define epicsExportSharedSymbols
-#include <shareLib.h>
-#include <asynNDArrayDriver.h>
 #include "NDArray.h"
 #include "paramAttribute.h"
 
 static const char *driverName = "paramAttribute";
 
-/* This asynUser is not attached to any device.  
+/* This asynUser is not attached to any device.
  * It lets one turn on debugging by settings the global asynTrace flag bits
  * ASTN_TRACE_ERROR (default), ASYN_TRACE_FLOW, etc. */
 
 static asynUser *pasynUserSelf = NULL;
 
 /** Constructor for driver/plugin attribute
-  * \param[in] pName The name of the attribute to be created; case-insensitive. 
+  * \param[in] pName The name of the attribute to be created; case-insensitive.
   * \param[in] pDescription The description of the attribute.
   * \param[in] pSource The DRV_INFO string used to identify the parameter in the asynPortDriver.
   * \param[in] addr The asyn addr (address) for this parameter.
   * \param[in] pDriver The driver or plugin object from which to obtain the parameter.
   * \param[in] dataType The data type for this parameter.  Must be "INT", "DOUBLE", or "STRING" (case-insensitive).
   */
-paramAttribute::paramAttribute(const char *pName, const char *pDescription, const char *pSource, int addr, 
+paramAttribute::paramAttribute(const char *pName, const char *pDescription, const char *pSource, int addr,
                                class asynNDArrayDriver *pDriver, const char *dataType)
     : NDAttribute(pName, pDescription, NDAttrSourceParam, pSource, NDAttrUndefined, 0),
     paramAddr(addr), paramType(paramAttrTypeUnknown), pDriver(pDriver)
@@ -49,7 +45,7 @@ paramAttribute::paramAttribute(const char *pName, const char *pDescription, cons
     static const char *functionName = "paramAttribute";
     asynUser *pasynUser=NULL;
     int status;
-    
+
     /* Create the static pasynUser if not already done */
     if (!pasynUserSelf) pasynUserSelf = pasynManager->createAsynUser(0,0);
     if (!pSource) {
@@ -103,7 +99,7 @@ error:
 }
 
 /** Copy constructor for driver/plugin attribute
-  * \param[in] attribute A paramAttribute to copy from 
+  * \param[in] attribute A paramAttribute to copy from
   */
 paramAttribute::paramAttribute(paramAttribute& attribute)
     : NDAttribute(attribute)
@@ -131,15 +127,15 @@ int paramAttribute::updateValue()
     epicsInt64 i64Value=0;
     epicsFloat64 f64Value=0.;
     static const char *functionName = "updateValue";
-    
+
     switch (this->paramType) {
         case paramAttrTypeInt:
-            status = this->pDriver->getIntegerParam(this->paramAddr, this->paramId, 
+            status = this->pDriver->getIntegerParam(this->paramAddr, this->paramId,
                                                  &i32Value);
             this->setValue(&i32Value);
             break;
         case paramAttrTypeInt64:
-            status = this->pDriver->getInteger64Param(this->paramAddr, this->paramId, 
+            status = this->pDriver->getInteger64Param(this->paramAddr, this->paramId,
                                                  &i64Value);
             this->setValue(&i64Value);
             break;
@@ -167,7 +163,7 @@ int paramAttribute::updateValue()
 paramAttribute* paramAttribute::copy(NDAttribute *pAttr)
 {
   paramAttribute *pOut = (paramAttribute *)pAttr;
-  if (!pOut) 
+  if (!pOut)
     pOut = new paramAttribute(*this);
   else {
     NDAttribute::copy(pOut);
@@ -176,7 +172,7 @@ paramAttribute* paramAttribute::copy(NDAttribute *pAttr)
 }
 
 
-/** Reports on the properties of the paramAttribute object; 
+/** Reports on the properties of the paramAttribute object;
   * calls base class NDAttribute::report() to report on the parameter value.
   * \param[in] fp File pointer for the report output.
   * \param[in] details Level of report details desired; currently does nothing in this derived class.
@@ -190,4 +186,4 @@ int paramAttribute::report(FILE *fp, int details)
     fprintf(fp, "    Param ID=%d\n", this->paramId);
     return(ND_SUCCESS);
 }
-    
+

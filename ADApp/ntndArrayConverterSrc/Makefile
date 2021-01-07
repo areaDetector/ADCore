@@ -5,8 +5,11 @@ include $(TOP)/configure/CONFIG
 #=============================
 
 LIBRARY_IOC += ntndArrayConverter
+INC += ntndArrayConverterAPI.h
 INC += ntndArrayConverter.h
 LIB_SRCS += ntndArrayConverter.cpp
+
+USR_CPPFLAGS += -DBUILDING_ntndArrayConverter_API
 
 LIB_LIBS              += ADBase
 LIB_LIBS              += pvData

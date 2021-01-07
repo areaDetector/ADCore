@@ -9,27 +9,20 @@
 #include <stdio.h>
 #include <string.h>
 
-#include <epicsTypes.h>
-#include <epicsMessageQueue.h>
-#include <epicsThread.h>
-#include <epicsEvent.h>
-#include <epicsTime.h>
 #include <iocsh.h>
 
-#include <asynDriver.h>
+#include "NDFileMagick.h"
 
 #include <epicsExport.h>
-#include "NDPluginFile.h"
-#include "NDFileMagick.h"
 
 static const char *driverName = "NDFileMagick";
 
-static CompressionType compressionTypes[] = {NoCompression, BZipCompression, FaxCompression, Group4Compression, 
+static CompressionType compressionTypes[] = {NoCompression, BZipCompression, FaxCompression, Group4Compression,
                                              JPEGCompression, LZWCompression, RLECompression, ZipCompression};
 
 /** Opens a Magick file.
   * \param[in] fileName The name of the file to open.
-  * \param[in] openMode Mask defining how the file should be opened; bits are 
+  * \param[in] openMode Mask defining how the file should be opened; bits are
   *            NDFileModeRead, NDFileModeWrite, NDFileModeAppend, NDFileModeMultiple
   * \param[in] pArray A pointer to an NDArray; this is used to determine the array and attribute properties.
   */
@@ -43,7 +36,7 @@ asynStatus NDFileMagick::openFile(const char *fileName, NDFileOpenMode_t openMod
 
     /* We don't support opening an existing file for appending yet */
     if (openMode & NDFileModeAppend) return(asynError);
-    
+
     strncpy(this->fileName, fileName, sizeof(this->fileName));
     this->colorMode = NDColorModeMono;
 
@@ -96,7 +89,7 @@ asynStatus NDFileMagick::openFile(const char *fileName, NDFileOpenMode_t openMod
         this->colorMap = "RGB";
         this->imageType = TrueColorType;
     } else {
-        asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, 
+        asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
             "%s:%s: unsupported array structure\n",
             driverName, functionName);
         return(asynError);
@@ -118,9 +111,9 @@ asynStatus NDFileMagick::writeFile(NDArray *pArray)
     CompressionType compressType;
 
     asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW,
-              "%s:%s: size=[%lu, %lu]\n", 
+              "%s:%s: size=[%lu, %lu]\n",
               driverName, functionName, (unsigned long)this->sizeX, (unsigned long)this->sizeY);
-              
+
     /* Must lock when accessing parameter library */
     this->lock();
     getIntegerParam(NDFileMagickQuality, &quality);
@@ -145,7 +138,7 @@ asynStatus NDFileMagick::writeFile(NDArray *pArray)
         case NDColorModeRGB3:
             break;
         default:
-            asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, 
+            asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
                 "%s:%s: unknown color mode %d\n",
                 driverName, functionName, this->colorMode);
             return(asynError);
@@ -154,10 +147,10 @@ asynStatus NDFileMagick::writeFile(NDArray *pArray)
     try {
         image.write(this->fileName);
     }
-    catch (exception ex) {
-        asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, 
-            "%s:%s: error writing data to file\n",
-            driverName, functionName);
+    catch (exception &ex) {
+        asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
+            "%s:%s: error writing data to file: %s\n",
+            driverName, functionName, ex.what());
         return(asynError);
     }
 
@@ -186,7 +179,7 @@ asynStatus NDFileMagick::closeFile()
 
 /** Constructor for NDFileMagick; all parameters are simply passed to NDPluginFile::NDPluginFile.
   * \param[in] portName The name of the asyn port driver to be created.
-  * \param[in] queueSize The number of NDArrays that the input queue for this plugin can hold when 
+  * \param[in] queueSize The number of NDArrays that the input queue for this plugin can hold when
   *            NDPluginDriverBlockingCallbacks=0.  Larger queues can decrease the number of dropped arrays,
   *            at the expense of more NDArray buffers being allocated from the underlying driver's NDArrayPool.
   * \param[in] blockingCallbacks Initial setting for the NDPluginDriverBlockingCallbacks flag.
@@ -202,24 +195,22 @@ NDFileMagick::NDFileMagick(const char *portName, int queueSize, int blockingCall
                            int priority, int stackSize)
     /* Invoke the base class constructor.
      * We allocate 2 NDArrays of unlimited size in the NDArray pool.
-     * This driver can block (because writing a file can be slow), and it is not multi-device.  
+     * This driver can block (because writing a file can be slow), and it is not multi-device.
      * Set autoconnect to 1.  priority and stacksize can be 0, which will use defaults. */
     : NDPluginFile(portName, queueSize, blockingCallbacks,
                    NDArrayPort, NDArrayAddr, 1,
-                   0, 0, asynGenericPointerMask, asynGenericPointerMask, 
+                   0, 0, asynGenericPointerMask, asynGenericPointerMask,
                    ASYN_CANBLOCK, 1, priority, stackSize, 1)
 {
     //static const char *functionName = "NDFileMagick";
 
-    /* Set the plugin type string */    
+    /* Set the plugin type string */
     setStringParam(NDPluginDriverPluginType, "NDFileMagick");
     this->supportsMultipleArrays = 0;
-    
+
     createParam(NDFileMagickQualityString,       asynParamInt32, &NDFileMagickQuality);
     createParam(NDFileMagickCompressTypeString,  asynParamInt32, &NDFileMagickCompressType);
     createParam(NDFileMagickBitDepthString,      asynParamInt32, &NDFileMagickBitDepth);
-    
-    InitializeMagick(NULL);
 }
 
 /* Configuration routine.  Called directly, or from the iocsh  */
@@ -228,6 +219,9 @@ extern "C" int NDFileMagickConfigure(const char *portName, int queueSize, int bl
                                    const char *NDArrayPort, int NDArrayAddr,
                                    int priority, int stackSize)
 {
+    /* Initialize GraphicsMagick */
+    InitializeMagick(NULL);
+
     NDFileMagick *pPlugin = new NDFileMagick(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr,
                                              priority, stackSize);
     return pPlugin->start();

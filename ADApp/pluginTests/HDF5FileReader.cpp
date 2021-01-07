@@ -6,7 +6,7 @@
  */
 
 #include "HDF5FileReader.h"
- 
+
 herr_t file_info(hid_t loc_id, const char *name, const H5L_info_t *info, void *opdata)
 {
     H5O_info_t infobuf;
@@ -106,8 +106,8 @@ std::vector<hsize_t> HDF5FileReader::getDatasetDimensions(const std::string& nam
       // Close the dataset
       H5Dclose(dataset_id);
 
-      delete dims;
-      delete maxdims;
+      delete [] dims;
+      delete [] maxdims;
     }
   }
   return vdims;
@@ -117,10 +117,10 @@ int HDF5FileReader::getDatasetAttributeCount(const std::string& name)
 {
   hid_t       dataset_id;
   hsize_t     idx = 0;
-  
+
   // Zero the attribute count
   attributeCount = 0;
-      
+
   // Check the name given is present in the file
   if (objects.count(name) == 1){
     // Check the name given is a dataset

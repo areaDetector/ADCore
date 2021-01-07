@@ -1,26 +1,21 @@
 /*
  * NDPluginGather.cpp
  *
- * A plugin that subscribes to callbacks from multiple ports, not just a single port 
+ * A plugin that subscribes to callbacks from multiple ports, not just a single port
  * Author: Mark Rivers
  *
  * February 27. 2017.
  */
 
 #include <stdlib.h>
+#include <string.h>
 #include <stdio.h>
 
-#include <epicsTypes.h>
-#include <epicsMessageQueue.h>
-#include <epicsThread.h>
-#include <epicsTime.h>
 #include <iocsh.h>
 
-#include <asynDriver.h>
+#include "NDPluginGather.h"
 
 #include <epicsExport.h>
-#include "NDPluginDriver.h"
-#include "NDPluginGather.h"
 
 static const char *driverName="NDPluginGather";
 
@@ -59,7 +54,7 @@ NDPluginGather::NDPluginGather(const char *portName, int queueSize, int blocking
 
     /* Set the plugin type string */
     setStringParam(NDPluginDriverPluginType, "NDPluginGather");
-    
+
     if (maxPorts_ < 1) maxPorts_ = 1;
     NDArraySrc_ = (NDGatherNDArraySource_t *)calloc(sizeof(NDGatherNDArraySource_t), maxPorts_);
     pArraySrc = NDArraySrc_;
@@ -79,13 +74,13 @@ extern "C" {static void driverCallback(void *drvPvt, asynUser *pasynUser, void *
 }}
 
 
-/** 
+/**
   * \param[in] pArray  The NDArray from the callback.
   */
 void NDPluginGather::processCallbacks(NDArray *pArray)
 {
     /* This function is called with the mutex already locked.  It unlocks it during long calculations when private
-    * structures don't need to be protected. 
+    * structures don't need to be protected.
     */
     //static const char *functionName = "processCallbacks";
 
@@ -98,14 +93,14 @@ void NDPluginGather::processCallbacks(NDArray *pArray)
 /** Register or unregister to receive asynGenericPointer (NDArray) callbacks from the driver.
   * Note: this function must be called with the lock released, otherwise a deadlock can occur
   * in the call to cancelInterruptUser.
-  * \param[in] enableCallbacks 1 to enable callbacks, 0 to disable callbacks */ 
+  * \param[in] enableCallbacks 1 to enable callbacks, 0 to disable callbacks */
 asynStatus NDPluginGather::setArrayInterrupt(int enableCallbacks)
 {
     asynStatus status = asynSuccess;
     int i;
     NDGatherNDArraySource_t *pArraySrc = NDArraySrc_;
     static const char *functionName = "setArrayInterrupt";
-    
+
     for (i=0; i<maxPorts_; i++, pArraySrc++) {
         if (enableCallbacks && pArraySrc->connectedToArrayPort && !pArraySrc->asynGenericPointerInterruptPvt) {
             status = pArraySrc->pasynGenericPointer->registerInterruptUser(
@@ -117,9 +112,9 @@ asynStatus NDPluginGather::setArrayInterrupt(int enableCallbacks)
                     driverName, functionName, pArraySrc->pasynUserGenericPointer->errorMessage);
                 return(status);
             }
-        } 
+        }
         if (!enableCallbacks && pArraySrc->connectedToArrayPort && pArraySrc->asynGenericPointerInterruptPvt) {
-            status = pArraySrc->pasynGenericPointer->cancelInterruptUser(pArraySrc->asynGenericPointerPvt, 
+            status = pArraySrc->pasynGenericPointer->cancelInterruptUser(pArraySrc->asynGenericPointerPvt,
                             pArraySrc->pasynUserGenericPointer, pArraySrc->asynGenericPointerInterruptPvt);
             pArraySrc->asynGenericPointerInterruptPvt = NULL;
             if (status != asynSuccess) {
@@ -152,7 +147,7 @@ asynStatus NDPluginGather::connectToArrayPort(void)
         getStringParam(i, NDPluginDriverArrayPort, sizeof(arrayPort), arrayPort);
         getIntegerParam(i, NDPluginDriverArrayAddr, &arrayAddr);
 
-        /* If we are currently connected to an array port cancel interrupt request */    
+        /* If we are currently connected to an array port cancel interrupt request */
         if (pArraySrc->connectedToArrayPort) {
             status = setArrayInterrupt(0);
         }
@@ -188,7 +183,7 @@ asynStatus NDPluginGather::connectToArrayPort(void)
     status = setArrayInterrupt(enableCallbacks);
 
     return(status);
-}   
+}
 
 
 /** Configuration command */

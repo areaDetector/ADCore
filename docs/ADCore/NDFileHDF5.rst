@@ -90,8 +90,8 @@ of the same names.
     - Enum string: "constant", "ndattribute"
   * - when
     - optional
-    - Event when the attribute data is updated
-    - Enum string: "OnFileOpen", "OnFileClose", "OnFileWrite"
+    - Event when the attribute data is written
+    - Enum string: "OnFileOpen" (default), "OnFileClose"
   * - value
     - Required only if source="constant"
     - The constant value to give the attribute
@@ -135,6 +135,10 @@ of the same names.
     - yes
     - Definition of where the dataset gets its data values from
     - string enum: "detector", "ndattribute", "constant"
+  * - when
+    - optional
+    - Event when the dataset data is written
+    - Enum string: "OnFileOpen", "OnFileClose", "OnFileWrite" (default)
   * - value
     - Required only if source="constant"
     - Constant value to write directly into the HDF5 dataset

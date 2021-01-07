@@ -1,6 +1,6 @@
 /*
  * NDFileNull.h
- * Dummy file writer, whose main purpose is to allow deleting original driver files without re-writing them in 
+ * Dummy file writer, whose main purpose is to allow deleting original driver files without re-writing them in
  * an actual file plugin.
  *
  * Mark Rivers
@@ -14,7 +14,7 @@
 
 /** Writes NDArrays in the Null file format. */
 
-class epicsShareClass NDFileNull : public NDPluginFile {
+class NDPLUGIN_API NDFileNull : public NDPluginFile {
 public:
     NDFileNull(const char *portName, int queueSize, int blockingCallbacks,
                  const char *NDArrayPort, int NDArrayAddr,

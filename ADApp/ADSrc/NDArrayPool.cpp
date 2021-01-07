@@ -6,10 +6,15 @@
  *
  */
 
+#include <string.h>
 #include <stdlib.h>
 #include <dbDefs.h>
 #include <stdint.h>
 
+#include <epicsMutex.h>
+#include <epicsThread.h>
+#include <epicsTime.h>
+#include <ellLib.h>
 #include <cantProceed.h>
 
 #include <asynPortDriver.h>
@@ -48,11 +53,11 @@ NDArrayPool::NDArrayPool(class asynNDArrayDriver *pDriver, size_t maxMemory)
   listLock_ = epicsMutexCreate();
 }
 
-/** Create new NDArray object. 
-  * This method should be overriden by a pool class that manages objects 
+/** Create new NDArray object.
+  * This method should be overriden by a pool class that manages objects
   * that derive from NDArray class.
   */
-NDArray* NDArrayPool::createArray() 
+NDArray* NDArrayPool::createArray()
 {
     return new NDArray;
 }
@@ -83,16 +88,16 @@ void NDArrayPool::onReleaseArray(NDArray *pArray)
 
 
 /** Allocates a new NDArray object; the first 3 arguments are required.
-  * \param[in] ndims The number of dimensions in the NDArray. 
+  * \param[in] ndims The number of dimensions in the NDArray.
   * \param[in] dims Array of dimensions, whose size must be at least ndims.
   * \param[in] dataType Data type of the NDArray data.
   * \param[in] dataSize Number of bytes to allocate for the array data; if 0 then
   * alloc() will compute the size required from ndims, dims, and dataType.
   * \param[in] pData Pointer to a data buffer; if NULL then alloc will allocate a new
   * array buffer; if not NULL then it is assumed to point to a valid buffer.
-  * 
+  *
   * If pData is not NULL then dataSize must contain the actual number of bytes in the existing
-  * array, and this array must be large enough to hold the array data. 
+  * array, and this array must be large enough to hold the array data.
   * alloc() searches
   * its free list to find a free NDArray buffer. If is cannot find one then it will
   * allocate a new one and add it to the free list. If allocating the memory required for
@@ -139,7 +144,7 @@ NDArray* NDArrayPool::alloc(int ndims, size_t *dims, NDDataType_t dataType, size
     }
     freeList_.erase(pListElement);
   }
-    
+
   /* Initialize fields */
   pArray->pNDArrayPool = this;
   pArray->referenceCount = 1;
@@ -156,7 +161,7 @@ NDArray* NDArrayPool::alloc(int ndims, size_t *dims, NDDataType_t dataType, size
 
   /* Erase the attributes if that global flag is set */
   if (eraseNDAttributes) pArray->pAttributeList->clear();
-  
+
   /* Clear codec */
   pArray->codec.clear();
 
@@ -184,7 +189,7 @@ NDArray* NDArrayPool::alloc(int ndims, size_t *dims, NDDataType_t dataType, size
       }
     }
     if ((maxMemory_ > 0) && ((memorySize_ + dataSize) > maxMemory_)) {
-      asynPrint(pDriver_->pasynUserSelf, ASYN_TRACE_ERROR, 
+      asynPrint(pDriver_->pasynUserSelf, ASYN_TRACE_ERROR,
              "%s: error: reached limit of %ld memory (%d buffers)\n",
              functionName, (long)maxMemory_, numBuffers_);
     } else {
@@ -271,7 +276,7 @@ int NDArrayPool::reserve(NDArray *pArray)
 
   /* Make sure we own this array */
   if (pArray->pNDArrayPool != this) {
-    asynPrint(pDriver_->pasynUserSelf, ASYN_TRACE_ERROR, 
+    asynPrint(pDriver_->pasynUserSelf, ASYN_TRACE_ERROR,
       "%s::%s: ERROR, not owner!  owner=%p, should be this=%p\n",
       driverName, functionName, pArray->pNDArrayPool, this);
     return(ND_ERROR);
@@ -306,7 +311,7 @@ int NDArrayPool::release(NDArray *pArray)
 
   /* Make sure we own this array */
   if (pArray->pNDArrayPool != this) {
-    asynPrint(pDriver_->pasynUserSelf, ASYN_TRACE_ERROR, 
+    asynPrint(pDriver_->pasynUserSelf, ASYN_TRACE_ERROR,
       "%s::%s: ERROR, not owner!  owner=%p, should be this=%p\n",
       driverName, functionName, pArray->pNDArrayPool, this);
     return(ND_ERROR);
@@ -522,7 +527,7 @@ static int convertDimension(NDArray *pIn,
 /** Creates a new output NDArray from an input NDArray, performing
   * conversion operations.
   * This form of the function is for changing the data type only, not the dimensions,
-  * which are preserved. 
+  * which are preserved.
   * \param[in] pIn The input array, source of the conversion.
   * \param[out] ppOut The output array, result of the conversion.
   * \param[in] dataTypeOut The data type of the output array.
@@ -530,11 +535,11 @@ static int convertDimension(NDArray *pIn,
 int NDArrayPool::convert(NDArray *pIn,
                          NDArray **ppOut,
                          NDDataType_t dataTypeOut)
-                         
+
 {
   NDDimension_t dims[ND_ARRAY_MAX_DIMS];
   int i;
-  
+
   for (i=0; i<pIn->ndims; i++) {
     dims[i].size  = pIn->dims[i].size;
     dims[i].offset  = 0;
@@ -542,7 +547,7 @@ int NDArrayPool::convert(NDArray *pIn,
     dims[i].reverse = 0;
   }
   return this->convert(pIn, ppOut, dataTypeOut, dims);
-}             
+}
 
 /** Creates a new output NDArray from an input NDArray, performing
   * conversion operations.
@@ -682,9 +687,9 @@ int NDArrayPool::convert(NDArray *pIn,
   /* If the frame is an RGBx frame and we have collapsed that dimension then change the colorMode */
   pAttribute = pOut->pAttributeList->find("ColorMode");
   if (pAttribute && pAttribute->getValue(NDAttrInt32, &colorMode)) {
-    if      ((colorMode == NDColorModeRGB1) && (pOut->dims[0].size != 3)) 
+    if      ((colorMode == NDColorModeRGB1) && (pOut->dims[0].size != 3))
       pAttribute->setValue(&colorModeMono);
-    else if ((colorMode == NDColorModeRGB2) && (pOut->dims[1].size != 3)) 
+    else if ((colorMode == NDColorModeRGB2) && (pOut->dims[1].size != 3))
       pAttribute->setValue(&colorModeMono);
     else if ((colorMode == NDColorModeRGB3) && (pOut->dims[2].size != 3))
       pAttribute->setValue(&colorModeMono);
@@ -694,7 +699,7 @@ int NDArrayPool::convert(NDArray *pIn,
 
 /** Returns number of buffers this object has currently allocated */
 int NDArrayPool::getNumBuffers()
-{  
+{
   return numBuffers_;
 }
 

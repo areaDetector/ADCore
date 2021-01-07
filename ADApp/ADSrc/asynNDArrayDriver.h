@@ -31,8 +31,8 @@ typedef enum {
     NDAttributesMacroError
 } NDAttributesStatus_t;
 
-/** Strings defining parameters that affect the behaviour of the detector. 
-  * These are the values passed to drvUserCreate. 
+/** Strings defining parameters that affect the behaviour of the detector.
+  * These are the values passed to drvUserCreate.
   * The driver will place in pasynUser->reason an integer to be used when the
   * standard asyn interface methods are called. */
  /*                               String                 asyn interface  access   Description  */
@@ -124,12 +124,12 @@ typedef enum {
 /* Queued arrays */
 #define NDNumQueuedArraysString     "NUM_QUEUED_ARRAYS"
 
-/** This is the class from which NDArray drivers are derived; implements the asynGenericPointer functions 
-  * for NDArray objects. 
+/** This is the class from which NDArray drivers are derived; implements the asynGenericPointer functions
+  * for NDArray objects.
   * For areaDetector, both plugins and detector drivers are indirectly derived from this class.
   * asynNDArrayDriver inherits from asynPortDriver.
   */
-class epicsShareFunc asynNDArrayDriver : public asynPortDriver {
+class ADCORE_API asynNDArrayDriver : public asynPortDriver {
 public:
     asynNDArrayDriver(const char *portName, int maxAddr, int maxBuffers, size_t maxMemory,
                       int interfaceMask, int interruptMask,
@@ -160,7 +160,7 @@ public:
     asynStatus decrementQueuedArrayCount();
     int getQueuedArrayCount();
     void updateQueuedArrayCount();
-    
+
     class NDArrayPool *pNDArrayPool;     /**< An NDArrayPool pointer that is initialized to pNDArrayPoolPvt_ in the constructor.
                                      * Plugins change this pointer to the one passed in NDArray::pNDArrayPool */
 
@@ -209,7 +209,7 @@ protected:
     int NDFileWriteMessage;
     int NDFileNumCapture;
     int NDFileNumCaptured;
-    int NDFileCapture;   
+    int NDFileCapture;
     int NDFileDeleteDriverFile;
     int NDFileLazyOpen;
     int NDFileCreateDir;
@@ -237,7 +237,7 @@ private:
     epicsMutex *queuedArrayCountMutex_;
     epicsEventId queuedArrayEvent_;
     int queuedArrayCount_;
-    
+
     bool queuedArrayUpdateRun_;
     epicsEventId queuedArrayUpdateDone_;
 

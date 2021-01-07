@@ -14,16 +14,10 @@
 #include <map>
 #include <vector>
 
-#include <epicsTypes.h>
-#include <epicsThread.h>
-
-#include <asynDriver.h>
-
-#include <epicsExport.h>
-#include "NDPluginDriver.h"
-
 #include "NDPosPlugin.h"
 #include "NDPosPluginFileReader.h"
+
+#include <epicsExport.h>
 
 static const char *driverName = "NDPosPlugin";
 
@@ -32,7 +26,7 @@ static const char *driverName = "NDPosPlugin";
   * and then passes the array on.  If the plugin is not running then NDArrays are not
   * passed through to the next plugin(s) in the chain.
   * \param[in] pArray  The NDArray from the callback.
-  */ 
+  */
 void NDPosPlugin::processCallbacks(NDArray *pArray)
 {
   int index = 0;
@@ -212,8 +206,8 @@ void NDPosPlugin::processCallbacks(NDArray *pArray)
 }
 
 /** Sets an int32 parameter.
-  * \param[in] pasynUser asynUser structure that contains the function code in pasynUser->reason. 
-  * \param[in] value The value for this parameter 
+  * \param[in] pasynUser asynUser structure that contains the function code in pasynUser->reason.
+  * \param[in] value The value for this parameter
   *
   * Takes action if the function code requires it.
   */
@@ -343,7 +337,7 @@ asynStatus NDPosPlugin::writeOctet(asynUser *pasynUser, const char *value, size_
 
 /** Constructor for the NDPosPlugin class.
   * \param[in] portName The name of the asyn port driver to be created.
-  * \param[in] queueSize The number of NDArrays that the input queue for this plugin can hold when 
+  * \param[in] queueSize The number of NDArrays that the input queue for this plugin can hold when
   *            NDPluginDriverBlockingCallbacks=0.  Larger queues can decrease the number of dropped arrays,
   *            at the expense of more NDArray buffers being allocated from the underlying driver's NDArrayPool.
   * \param[in] blockingCallbacks Initial setting for the NDPluginDriverBlockingCallbacks flag.
@@ -351,9 +345,9 @@ asynStatus NDPosPlugin::writeOctet(asynUser *pasynUser, const char *value, size_
   *            of the driver doing the callbacks.
   * \param[in] NDArrayPort Name of asyn port driver for initial source of NDArray callbacks.
   * \param[in] NDArrayAddr asyn port driver address for initial source of NDArray callbacks.
-  * \param[in] maxBuffers The maximum number of buffers that the NDArrayPool for this driver is 
+  * \param[in] maxBuffers The maximum number of buffers that the NDArrayPool for this driver is
   *            allowed to allocate. Set this to -1 to allow an unlimited amount of buffers.
-  * \param[in] maxMemory The maximum amount of memory that the NDArrayPool for this driver is 
+  * \param[in] maxMemory The maximum amount of memory that the NDArrayPool for this driver is
   *            allowed to allocate. Set this to -1 to allow an unlimited amount of memory.
   * \param[in] priority The thread priority for the asyn port driver thread if ASYN_CANBLOCK is set in asynFlags.
   * \param[in] stackSize The stack size for the asyn port driver thread if ASYN_CANBLOCK is set in asynFlags.
