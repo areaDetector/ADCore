@@ -24,13 +24,13 @@ static const char *driverName="NDPluginFile";
 
 
 /** Base method for opening a file
-  * Creates the file name with NDPluginBase::createFileName, then calls the pure virtual function openFile
+  * Creates the file name with asynNDArrayDriver::createFileName, then calls the pure virtual function openFile
   * in the derived class. */
 asynStatus NDPluginFile::openFileBase(NDFileOpenMode_t openMode, NDArray *pArray)
 {
     /* Opens a file for reading or writing */
     asynStatus status = asynSuccess;
-    char fullFileName[MAX_FILENAME_LEN];
+    char fullFileName[2*MAX_FILENAME_LEN];
     char tempSuffix[MAX_FILENAME_LEN];
     char errorMessage[256];
     static const char* functionName = "openFileBase";
@@ -40,7 +40,7 @@ asynStatus NDPluginFile::openFileBase(NDFileOpenMode_t openMode, NDArray *pArray
 
     setIntegerParam(NDFileWriteStatus, NDFileWriteOK);
     setStringParam(NDFileWriteMessage, "");
-    status = (asynStatus)createFileName(MAX_FILENAME_LEN, fullFileName);
+    status = (asynStatus)createFileName(2*MAX_FILENAME_LEN, fullFileName);
     if (status) {
         asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
               "%s::%s error creating full file name, fullFileName=%s, status=%d\n",
@@ -84,7 +84,7 @@ asynStatus NDPluginFile::closeFileBase()
 {
     /* Closes a file */
     asynStatus status = asynSuccess;
-    char fullFileName[MAX_FILENAME_LEN];
+    char fullFileName[2*MAX_FILENAME_LEN];
     char tempSuffix[MAX_FILENAME_LEN];
     char tempFileName[MAX_FILENAME_LEN];
     char errorMessage[256];
@@ -131,12 +131,12 @@ asynStatus NDPluginFile::closeFileBase()
 }
 
 /** Base method for reading a file
-  * Creates the file name with NDPluginBase::createFileName, then calls the pure virtual functions openFile,
+  * Creates the file name with asynNDArrayDriver::createFileName, then calls the pure virtual functions openFile,
   * readFile and closeFile in the derived class.  Does callbacks with the NDArray that was read in. */
 asynStatus NDPluginFile::readFileBase(void)
 {
     asynStatus status = asynSuccess;
-    char fullFileName[MAX_FILENAME_LEN];
+    char fullFileName[2*MAX_FILENAME_LEN];
     NDArray *pArray=NULL;
     char errorMessage[256];
     static const char* functionName = "readFileBase";
@@ -144,7 +144,7 @@ asynStatus NDPluginFile::readFileBase(void)
     setIntegerParam(NDFileWriteStatus, NDFileWriteOK);
     setStringParam(NDFileWriteMessage, "");
 
-    status = (asynStatus)createFileName(MAX_FILENAME_LEN, fullFileName);
+    status = (asynStatus)createFileName(2*MAX_FILENAME_LEN, fullFileName);
     if (status) {
         asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
               "%s::%s error creating full file name, fullFileName=%s, status=%d\n",
