@@ -1,7 +1,28 @@
 #ifndef NDPluginProcess_H
 #define NDPluginProcess_H
 
+#include <vector>
+
 #include "NDPluginDriver.h"
+
+typedef struct {
+    int x;
+    int y;
+} pixelCoordinate;
+
+typedef enum {
+    badPixelModeSet,
+    badPixelModeReplace,
+    badPixelModeMedian
+} badPixelMode;
+
+typedef struct {
+    pixelCoordinate coordinate;
+    badPixelMode mode;
+    pixelCoordinate replaceCoordinate;
+    double setValue;
+    std::vector<pixelCoordinate> medianCoordinates;
+} badPixelDef;
 
 /* Bad pixel file*/
 #define NDPluginBadPixelFileNameString "BAD_PIXEL_FILE_NAME"    /* (asynOctet,   r/w) Name of the bad pixel file */
@@ -23,6 +44,7 @@ protected:
 
 private:
     asynStatus readBadPixelFile(const char* fileName);
+    std::vector<badPixelDef> badPixelList;
 };
 
 #endif
