@@ -121,10 +121,22 @@ asynStatus NDPluginBadPixel::readBadPixelFile(const char *fileName)
     std::ifstream file(fileName);
     file >> j;
     auto badPixels = j["Bad pixels"];
+    badPixelDef bp;
     for (size_t i=0; i<badPixels.size(); i++) {
-        int x = badPixels[i]["X"];
-        int y = badPixels[i]["Y"];
-        printf("Bad pixel %d, X=%d, Y=%d\n", (int)i, x, y);
+        bp.coordinate.x = badPixels[i]["X"];
+        bp.coordinate.y = badPixels[i]["Y"];
+        badPixelList.push_back(bp);
+        printf("Bad pixel %d, X=%d, Y=%d\n", (int)i, bp.coordinate.x, bp.coordinate.y);
+        if (badPixels[i]["Median"] !=0) {
+            std::cout << "Median " << badPixels[i]["Median"] << "\n";
+        }
+        if (badPixels[i]["Set"] !=0) {
+            std::cout << "Set " << badPixels[i]["Set"] << "\n";
+        }
+        
+        if (badPixels[i]["Replace"] !=0) {
+            std::cout << "Replace " << badPixels[i]["Replace"] << "\n";
+        }
     }
     return asynSuccess;
 }
