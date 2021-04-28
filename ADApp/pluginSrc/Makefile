@@ -11,7 +11,7 @@ DBD         += NDPluginSupport.dbd
 USR_CXXFLAGS_Linux += -DH5_NO_DEPRECATED_SYMBOLS -DH5Gopen_vers=2
 
 # json.hpp requires C++11
-USR_CXXFLAGS_Linux += -std=c++11
+NDPluginBadPixel_CXXFLAGS_Linux += -std=c++11
 
 ifneq ($(SHARED_LIBRARIES), YES)
    USR_CFLAGS_WIN32 += -DLIBXML_STATIC
