@@ -848,6 +848,26 @@ $(pv_value)</tooltip>
         <mode>1</mode>
         <description>Eiger #1 specific</description>
       </action>
+      <action type="OPEN_DISPLAY">
+        <path>ADBase.opi</path>
+        <macros>
+          <include_parent_macros>true</include_parent_macros>
+          <P>13EIG2:</P>
+          <R>cam1:</R>
+        </macros>
+        <mode>1</mode>
+        <description>Eiger #2 general</description>
+      </action>
+      <action type="OPEN_DISPLAY">
+        <path>eiger2Detector.opi</path>
+        <macros>
+          <include_parent_macros>true</include_parent_macros>
+          <P>13EIG2:</P>
+          <R>cam1:</R>
+        </macros>
+        <mode>1</mode>
+        <description>Eiger #2 specific</description>
+      </action>
     </actions>
     <actions_from_pv>false</actions_from_pv>
     <alarm_pulsing>false</alarm_pulsing>
