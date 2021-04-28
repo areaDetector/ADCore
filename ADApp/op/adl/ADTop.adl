@@ -1,6 +1,6 @@
 
 file {
-	name="/home/epics/devel/areaDetector-3-8/ADCore/ADApp/op/adl/ADTop.adl"
+	name="/home/epics/devel/areaDetector-3-10/ADCore/ADApp/op/adl/ADTop.adl"
 	version=030109
 }
 display {
@@ -356,6 +356,16 @@ text {
 		label="Eiger #1 specific"
 		name="eigerDetector.adl"
 		args="P=13EIG1:, R=cam1:"
+	}
+	display[2] {
+		label="Eiger #2 general"
+		name="ADBase.adl"
+		args="P=13EIG2:, R=cam1: "
+	}
+	display[3] {
+		label="Eiger #2 specific"
+		name="eiger2Detector.adl"
+		args="P=13EIG2:, R=cam1:"
 	}
 	clr=14
 	bclr=51
