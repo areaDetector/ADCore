@@ -10,6 +10,9 @@ DBD         += NDPluginSupport.dbd
 # Persuade travis (ubuntu 12.04) to use HDF5 API V2 (1.8 rather than default 1.6)
 USR_CXXFLAGS_Linux += -DH5_NO_DEPRECATED_SYMBOLS -DH5Gopen_vers=2
 
+# json.hpp requires C++11
+USR_CXXFLAGS_Linux += -std=c++11
+
 ifneq ($(SHARED_LIBRARIES), YES)
    USR_CFLAGS_WIN32 += -DLIBXML_STATIC
    USR_CXXFLAGS_WIN32 += -DLIBXML_STATIC
@@ -26,6 +29,13 @@ LIB_SRCS += throttler.cpp
 NDPluginSupport_DBD += NDPluginAttribute.dbd
 INC      += NDPluginAttribute.h
 LIB_SRCS += NDPluginAttribute.cpp
+
+ifeq ($(WITH_JSON), YES)
+  NDPluginSupport_DBD += NDPluginBadPixel.dbd
+  INC      += NDPluginBadPixel.h
+  INC      += json.hpp
+  LIB_SRCS += NDPluginBadPixel.cpp
+endif
 
 NDPluginSupport_DBD += NDPluginCircularBuff.dbd
 INC      += NDArrayRing.h
