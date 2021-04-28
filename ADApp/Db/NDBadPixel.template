@@ -1,0 +1,17 @@
+#=================================================================#
+# Template file: NDBadPixel.template
+# Database for NDPluginBadPixel
+
+include "NDPluginBase.template"
+
+###################################################################
+#  This record is the bad pixel filename                          #
+###################################################################
+record(waveform, "$(P)$(R)FileName")
+{
+    field(DTYP, "asynOctetWrite")
+    field(PINI, "YES")
+    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))BAD_PIXEL_FILE_NAME")
+    field(FTVL, "CHAR")
+    field(NELM, "256")
+}
