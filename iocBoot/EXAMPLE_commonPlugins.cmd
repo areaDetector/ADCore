@@ -158,6 +158,10 @@ dbLoadRecords("NDCodec.template", "P=$(PREFIX), R=Codec1:, PORT=CODEC1, ADDR=0, 
 NDCodecConfigure("CODEC2", $(QSIZE), 0, "$(PORT)", 0, 0, 0, 0, 0, 5)
 dbLoadRecords("NDCodec.template", "P=$(PREFIX), R=Codec2:, PORT=CODEC2, ADDR=0, TIMEOUT=1, NDARRAY_PORT=$(PORT)")
 
+# Create a bad pixel plugin
+NDBadPixelConfigure("BADPIX1", $(QSIZE), 0, "$(PORT)", 0, 0, 0, 0, 0, 5)
+dbLoadRecords("NDBadPixel.template", "P=$(PREFIX), R=BadPix1:, PORT=BADPIX1, ADDR=0, TIMEOUT=1, NDARRAY_PORT=$(PORT)")
+
 set_requestfile_path("./")
 set_requestfile_path("$(ADCORE)/ADApp/Db")
 set_requestfile_path("$(ADCORE)/iocBoot")
