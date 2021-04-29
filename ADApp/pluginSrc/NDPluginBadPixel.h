@@ -44,6 +44,8 @@ protected:
     #define FIRST_NDPLUGIN_BAD_PIXEL_PARAM NDPluginBadPixelFileName
 
 private:
+    template <typename epicsType> void fixBadPixelsT(NDArray *pArray, std::vector<badPixel_t> &badPixels, NDArrayInfo_t *pArrayInfo);
+    int fixBadPixels(NDArray *pArray, std::vector<badPixel_t> &badPixels, NDArrayInfo_t *pArrayInfo);
     asynStatus readBadPixelFile(const char* fileName);
     std::vector<badPixel_t> badPixelList;
 };
