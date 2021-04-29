@@ -88,7 +88,7 @@ void NDPluginBadPixel::processCallbacks(NDArray *pArray)
     this->unlock();
 
     /* Make a copy of the array because we cannot modify the input array */
-    this->pNDArrayPool->copy(pArray, pArrayOut, 0);
+    pArrayOut = this->pNDArrayPool->copy(pArray, NULL, 1);
     if (NULL == pArrayOut) {
         asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
             "%s:%s Processing aborted; cannot allocate an NDArray for storage of temporary data.\n",
