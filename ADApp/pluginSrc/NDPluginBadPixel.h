@@ -21,8 +21,8 @@ typedef struct {
     badPixelMode mode;
     pixelCoordinate replaceCoordinate;
     double setValue;
-    std::vector<pixelCoordinate> medianCoordinates;
-} badPixelDef;
+    int medianSize;
+} badPixel_t;
 
 /* Bad pixel file*/
 #define NDPluginBadPixelFileNameString "BAD_PIXEL_FILE_NAME"    /* (asynOctet,   r/w) Name of the bad pixel file */
@@ -36,6 +36,7 @@ public:
     /* These methods override the virtual methods in the base class */
     void processCallbacks(NDArray *pArray);
     asynStatus writeOctet(asynUser *pasynUser, const char *value, size_t nChars, size_t *nActual);
+    void report(FILE *fp, int details);
 
 protected:
     /* Background array subtraction */
@@ -44,7 +45,7 @@ protected:
 
 private:
     asynStatus readBadPixelFile(const char* fileName);
-    std::vector<badPixelDef> badPixelList;
+    std::vector<badPixel_t> badPixelList;
 };
 
 #endif
