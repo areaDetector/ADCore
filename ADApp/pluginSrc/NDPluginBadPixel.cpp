@@ -67,6 +67,67 @@ NDPluginBadPixel::NDPluginBadPixel(const char *portName, int queueSize, int bloc
     connectToArrayPort();
 }
 
+template <typename epicsType>
+void NDPluginBadPixel::fixBadPixelsT(NDArray *pArray, std::vector<badPixel_t> &badPixels, NDArrayInfo_t *pArrayInfo)
+{
+    epicsType *pData=(epicsType *)pArray->pData;
+
+    for (auto bp : badPixels) {
+        switch (bp.mode) {
+          case badPixelModeSet:
+            pData[0]=0;
+            break;
+
+          case badPixelModeReplace:
+            break;
+          
+          case badPixelModeMedian:
+            break;
+        }
+    }
+}
+
+int NDPluginBadPixel::fixBadPixels(NDArray *pArray, std::vector<badPixel_t> &badPixels, NDArrayInfo_t *pArrayInfo)
+{
+  switch(pArray->dataType) {
+    case NDInt8:
+      fixBadPixelsT<epicsInt8>(pArray, badPixels, pArrayInfo);
+      break;
+    case NDUInt8:
+      fixBadPixelsT<epicsUInt8>(pArray, badPixels, pArrayInfo);
+      break;
+    case NDInt16:
+      fixBadPixelsT<epicsInt16>(pArray, badPixels, pArrayInfo);
+      break;
+    case NDUInt16:
+      fixBadPixelsT<epicsUInt16>(pArray, badPixels, pArrayInfo);
+      break;
+    case NDInt32:
+      fixBadPixelsT<epicsInt32>(pArray, badPixels, pArrayInfo);
+      break;
+    case NDUInt32:
+      fixBadPixelsT<epicsUInt32>(pArray, badPixels, pArrayInfo);
+      break;
+    case NDInt64:
+      fixBadPixelsT<epicsInt64>(pArray, badPixels, pArrayInfo);
+      break;
+    case NDUInt64:
+      fixBadPixelsT<epicsUInt64>(pArray, badPixels, pArrayInfo);
+      break;
+    case NDFloat32:
+      fixBadPixelsT<epicsFloat32>(pArray, badPixels, pArrayInfo);
+      break;
+    case NDFloat64:
+      fixBadPixelsT<epicsFloat64>(pArray, badPixels, pArrayInfo);
+      break;
+    default:
+      return(ND_ERROR);
+    break;
+  }
+  return(ND_SUCCESS);
+}
+
+
 /** Callback function that is called by the NDArray driver with new NDArray data.
   * Does bad pixel processing.
   * \param[in] pArray  The NDArray from the callback.
@@ -82,6 +143,10 @@ void NDPluginBadPixel::processCallbacks(NDArray *pArray)
 
     /* Call the base class method */
     NDPluginDriver::beginProcessCallbacks(pArray);
+    
+    auto badPixels = this->badPixelList;
+    NDArrayInfo arrayInfo;
+    pArray->getInfo(&arrayInfo);
 
     /* Release the lock now that we are only doing things that don't involve memory other thread
      * cannot access */
@@ -95,19 +160,7 @@ void NDPluginBadPixel::processCallbacks(NDArray *pArray)
             driverName, functionName);
         goto doCallbacks;
     }
-
-    for (auto bp : this->badPixelList) {
-        switch (bp.mode) {
-          case badPixelModeSet:
-            break;
-
-          case badPixelModeReplace:
-            break;
-          
-          case badPixelModeMedian:
-            break;
-        }
-    }
+    fixBadPixels(pArrayOut, badPixels, &arrayInfo);
 
     doCallbacks:
     /* We must exit with the mutex locked */
