@@ -1,6 +1,6 @@
 
 file {
-	name="/home/epics/devel/areaDetector-3-3-2/ADCore/ADApp/op/adl/commonPlugins.adl"
+	name="/home/epics/devel/areaDetector/ADCore/ADApp/op/adl/commonPlugins.adl"
 	version=030109
 }
 display {
@@ -8,7 +8,7 @@ display {
 		x=337
 		y=62
 		width=935
-		height=825
+		height=850
 	}
 	clr=14
 	bclr=4
@@ -3699,954 +3699,6 @@ menu {
 "text update" {
 	object {
 		x=10
-		y=671
-		width=110
-		height=18
-	}
-	monitor {
-		chan="$(P)netCDF1:PortName_RBV"
-		clr=54
-		bclr=4
-	}
-	align="horiz. centered"
-	format="string"
-	limits {
-	}
-}
-"text update" {
-	object {
-		x=125
-		y=671
-		width=160
-		height=18
-	}
-	monitor {
-		chan="$(P)netCDF1:PluginType_RBV"
-		clr=54
-		bclr=4
-	}
-	align="horiz. centered"
-	format="string"
-	limits {
-	}
-}
-"text update" {
-	object {
-		x=10
-		y=696
-		width=110
-		height=18
-	}
-	monitor {
-		chan="$(P)TIFF1:PortName_RBV"
-		clr=54
-		bclr=4
-	}
-	align="horiz. centered"
-	format="string"
-	limits {
-	}
-}
-"text update" {
-	object {
-		x=125
-		y=696
-		width=160
-		height=18
-	}
-	monitor {
-		chan="$(P)TIFF1:PluginType_RBV"
-		clr=54
-		bclr=4
-	}
-	align="horiz. centered"
-	format="string"
-	limits {
-	}
-}
-"text update" {
-	object {
-		x=10
-		y=721
-		width=110
-		height=18
-	}
-	monitor {
-		chan="$(P)JPEG1:PortName_RBV"
-		clr=54
-		bclr=4
-	}
-	align="horiz. centered"
-	format="string"
-	limits {
-	}
-}
-"text update" {
-	object {
-		x=125
-		y=721
-		width=160
-		height=18
-	}
-	monitor {
-		chan="$(P)JPEG1:PluginType_RBV"
-		clr=54
-		bclr=4
-	}
-	align="horiz. centered"
-	format="string"
-	limits {
-	}
-}
-"text update" {
-	object {
-		x=10
-		y=746
-		width=110
-		height=18
-	}
-	monitor {
-		chan="$(P)Nexus1:PortName_RBV"
-		clr=54
-		bclr=4
-	}
-	align="horiz. centered"
-	format="string"
-	limits {
-	}
-}
-"text update" {
-	object {
-		x=125
-		y=746
-		width=160
-		height=18
-	}
-	monitor {
-		chan="$(P)Nexus1:PluginType_RBV"
-		clr=54
-		bclr=4
-	}
-	align="horiz. centered"
-	format="string"
-	limits {
-	}
-}
-"text update" {
-	object {
-		x=10
-		y=771
-		width=110
-		height=18
-	}
-	monitor {
-		chan="$(P)Magick1:PortName_RBV"
-		clr=54
-		bclr=4
-	}
-	align="horiz. centered"
-	format="string"
-	limits {
-	}
-}
-"text update" {
-	object {
-		x=125
-		y=771
-		width=160
-		height=18
-	}
-	monitor {
-		chan="$(P)Magick1:PluginType_RBV"
-		clr=54
-		bclr=4
-	}
-	align="horiz. centered"
-	format="string"
-	limits {
-	}
-}
-"text entry" {
-	object {
-		x=290
-		y=670
-		width=60
-		height=20
-	}
-	control {
-		chan="$(P)netCDF1:NDArrayPort"
-		clr=14
-		bclr=51
-	}
-	limits {
-	}
-}
-menu {
-	object {
-		x=355
-		y=670
-		width=80
-		height=20
-	}
-	control {
-		chan="$(P)netCDF1:EnableCallbacks"
-		clr=14
-		bclr=51
-	}
-}
-"text update" {
-	object {
-		x=440
-		y=671
-		width=80
-		height=18
-	}
-	monitor {
-		chan="$(P)netCDF1:EnableCallbacks_RBV"
-		clr=54
-		bclr=12
-	}
-	clrmod="alarm"
-	align="horiz. centered"
-	format="string"
-	limits {
-	}
-}
-menu {
-	object {
-		x=525
-		y=670
-		width=80
-		height=20
-	}
-	control {
-		chan="$(P)netCDF1:BlockingCallbacks"
-		clr=14
-		bclr=51
-	}
-}
-"text entry" {
-	object {
-		x=290
-		y=695
-		width=60
-		height=20
-	}
-	control {
-		chan="$(P)TIFF1:NDArrayPort"
-		clr=14
-		bclr=51
-	}
-	limits {
-	}
-}
-menu {
-	object {
-		x=355
-		y=695
-		width=80
-		height=20
-	}
-	control {
-		chan="$(P)TIFF1:EnableCallbacks"
-		clr=14
-		bclr=51
-	}
-}
-"text update" {
-	object {
-		x=440
-		y=696
-		width=80
-		height=18
-	}
-	monitor {
-		chan="$(P)TIFF1:EnableCallbacks_RBV"
-		clr=54
-		bclr=12
-	}
-	clrmod="alarm"
-	align="horiz. centered"
-	format="string"
-	limits {
-	}
-}
-menu {
-	object {
-		x=525
-		y=695
-		width=80
-		height=20
-	}
-	control {
-		chan="$(P)TIFF1:BlockingCallbacks"
-		clr=14
-		bclr=51
-	}
-}
-"text entry" {
-	object {
-		x=290
-		y=720
-		width=60
-		height=20
-	}
-	control {
-		chan="$(P)JPEG1:NDArrayPort"
-		clr=14
-		bclr=51
-	}
-	limits {
-	}
-}
-menu {
-	object {
-		x=355
-		y=720
-		width=80
-		height=20
-	}
-	control {
-		chan="$(P)JPEG1:EnableCallbacks"
-		clr=14
-		bclr=51
-	}
-}
-"text update" {
-	object {
-		x=440
-		y=721
-		width=80
-		height=18
-	}
-	monitor {
-		chan="$(P)JPEG1:EnableCallbacks_RBV"
-		clr=54
-		bclr=12
-	}
-	clrmod="alarm"
-	align="horiz. centered"
-	format="string"
-	limits {
-	}
-}
-menu {
-	object {
-		x=525
-		y=720
-		width=80
-		height=20
-	}
-	control {
-		chan="$(P)JPEG1:BlockingCallbacks"
-		clr=14
-		bclr=51
-	}
-}
-"text entry" {
-	object {
-		x=290
-		y=745
-		width=60
-		height=20
-	}
-	control {
-		chan="$(P)Nexus1:NDArrayPort"
-		clr=14
-		bclr=51
-	}
-	limits {
-	}
-}
-menu {
-	object {
-		x=355
-		y=745
-		width=80
-		height=20
-	}
-	control {
-		chan="$(P)Nexus1:EnableCallbacks"
-		clr=14
-		bclr=51
-	}
-}
-"text update" {
-	object {
-		x=440
-		y=746
-		width=80
-		height=18
-	}
-	monitor {
-		chan="$(P)Nexus1:EnableCallbacks_RBV"
-		clr=54
-		bclr=12
-	}
-	clrmod="alarm"
-	align="horiz. centered"
-	format="string"
-	limits {
-	}
-}
-menu {
-	object {
-		x=525
-		y=745
-		width=80
-		height=20
-	}
-	control {
-		chan="$(P)Nexus1:BlockingCallbacks"
-		clr=14
-		bclr=51
-	}
-}
-"text entry" {
-	object {
-		x=290
-		y=770
-		width=60
-		height=20
-	}
-	control {
-		chan="$(P)Magick1:NDArrayPort"
-		clr=14
-		bclr=51
-	}
-	limits {
-	}
-}
-menu {
-	object {
-		x=355
-		y=770
-		width=80
-		height=20
-	}
-	control {
-		chan="$(P)Magick1:EnableCallbacks"
-		clr=14
-		bclr=51
-	}
-}
-"text update" {
-	object {
-		x=440
-		y=771
-		width=80
-		height=18
-	}
-	monitor {
-		chan="$(P)Magick1:EnableCallbacks_RBV"
-		clr=54
-		bclr=12
-	}
-	clrmod="alarm"
-	align="horiz. centered"
-	format="string"
-	limits {
-	}
-}
-menu {
-	object {
-		x=525
-		y=770
-		width=80
-		height=20
-	}
-	control {
-		chan="$(P)Magick1:BlockingCallbacks"
-		clr=14
-		bclr=51
-	}
-}
-"related display" {
-	object {
-		x=865
-		y=670
-		width=60
-		height=20
-	}
-	display[0] {
-		label="netCDF1:"
-		name="NDFileNetCDF.adl"
-		args="P=$(P),R=netCDF1:,EXT=nc"
-	}
-	clr=14
-	bclr=51
-	label="More"
-}
-"text update" {
-	object {
-		x=780
-		y=671
-		width=80
-		height=18
-	}
-	monitor {
-		chan="$(P)netCDF1:ArrayRate_RBV"
-		clr=54
-		bclr=4
-	}
-	align="horiz. centered"
-	limits {
-	}
-}
-"related display" {
-	object {
-		x=865
-		y=695
-		width=60
-		height=20
-	}
-	display[0] {
-		label="TIFF1:"
-		name="NDFileTIFF.adl"
-		args="P=$(P),R=TIFF1:,EXT=tif"
-	}
-	clr=14
-	bclr=51
-	label="More"
-}
-"text update" {
-	object {
-		x=780
-		y=696
-		width=80
-		height=18
-	}
-	monitor {
-		chan="$(P)TIFF1:ArrayRate_RBV"
-		clr=54
-		bclr=4
-	}
-	align="horiz. centered"
-	limits {
-	}
-}
-"related display" {
-	object {
-		x=865
-		y=720
-		width=60
-		height=20
-	}
-	display[0] {
-		label="JPEG1:"
-		name="NDFileJPEG.adl"
-		args="P=$(P),R=JPEG1:,EXT=jpg"
-	}
-	clr=14
-	bclr=51
-	label="More"
-}
-"text update" {
-	object {
-		x=780
-		y=721
-		width=80
-		height=18
-	}
-	monitor {
-		chan="$(P)JPEG1:ArrayRate_RBV"
-		clr=54
-		bclr=4
-	}
-	align="horiz. centered"
-	limits {
-	}
-}
-"related display" {
-	object {
-		x=865
-		y=745
-		width=60
-		height=20
-	}
-	display[0] {
-		label="Nexus1:"
-		name="NDFileNexus.adl"
-		args="P=$(P),R=Nexus1:,EXT=h5"
-	}
-	clr=14
-	bclr=51
-	label="More"
-}
-"text update" {
-	object {
-		x=780
-		y=746
-		width=80
-		height=18
-	}
-	monitor {
-		chan="$(P)Nexus1:ArrayRate_RBV"
-		clr=54
-		bclr=4
-	}
-	align="horiz. centered"
-	limits {
-	}
-}
-"related display" {
-	object {
-		x=865
-		y=770
-		width=60
-		height=20
-	}
-	display[0] {
-		label="Magick1:"
-		name="NDFileMagick.adl"
-		args="P=$(P),R=Magick1:,EXT=tif"
-	}
-	clr=14
-	bclr=51
-	label="More"
-}
-"text update" {
-	object {
-		x=780
-		y=771
-		width=80
-		height=18
-	}
-	monitor {
-		chan="$(P)Magick1:ArrayRate_RBV"
-		clr=54
-		bclr=4
-	}
-	align="horiz. centered"
-	limits {
-	}
-}
-"text update" {
-	object {
-		x=695
-		y=671
-		width=80
-		height=18
-	}
-	monitor {
-		chan="$(P)netCDF1:QueueFree"
-		clr=54
-		bclr=12
-	}
-	clrmod="alarm"
-	align="horiz. centered"
-	limits {
-	}
-}
-"text update" {
-	object {
-		x=695
-		y=696
-		width=80
-		height=18
-	}
-	monitor {
-		chan="$(P)TIFF1:QueueFree"
-		clr=54
-		bclr=12
-	}
-	clrmod="alarm"
-	align="horiz. centered"
-	limits {
-	}
-}
-"text update" {
-	object {
-		x=695
-		y=721
-		width=80
-		height=18
-	}
-	monitor {
-		chan="$(P)JPEG1:QueueFree"
-		clr=54
-		bclr=12
-	}
-	clrmod="alarm"
-	align="horiz. centered"
-	limits {
-	}
-}
-"text update" {
-	object {
-		x=695
-		y=746
-		width=80
-		height=18
-	}
-	monitor {
-		chan="$(P)Nexus1:QueueFree"
-		clr=54
-		bclr=12
-	}
-	clrmod="alarm"
-	align="horiz. centered"
-	limits {
-	}
-}
-"text update" {
-	object {
-		x=695
-		y=771
-		width=80
-		height=18
-	}
-	monitor {
-		chan="$(P)Magick1:QueueFree"
-		clr=54
-		bclr=12
-	}
-	clrmod="alarm"
-	align="horiz. centered"
-	limits {
-	}
-}
-"text update" {
-	object {
-		x=610
-		y=671
-		width=80
-		height=18
-	}
-	monitor {
-		chan="$(P)netCDF1:DroppedArrays_RBV"
-		clr=54
-		bclr=4
-	}
-	align="horiz. centered"
-	limits {
-	}
-}
-"text update" {
-	object {
-		x=610
-		y=696
-		width=80
-		height=18
-	}
-	monitor {
-		chan="$(P)TIFF1:DroppedArrays_RBV"
-		clr=54
-		bclr=4
-	}
-	align="horiz. centered"
-	limits {
-	}
-}
-"text update" {
-	object {
-		x=610
-		y=721
-		width=80
-		height=18
-	}
-	monitor {
-		chan="$(P)JPEG1:DroppedArrays_RBV"
-		clr=54
-		bclr=4
-	}
-	align="horiz. centered"
-	limits {
-	}
-}
-"text update" {
-	object {
-		x=610
-		y=746
-		width=80
-		height=18
-	}
-	monitor {
-		chan="$(P)Nexus1:DroppedArrays_RBV"
-		clr=54
-		bclr=4
-	}
-	align="horiz. centered"
-	limits {
-	}
-}
-"text update" {
-	object {
-		x=610
-		y=771
-		width=80
-		height=18
-	}
-	monitor {
-		chan="$(P)Magick1:DroppedArrays_RBV"
-		clr=54
-		bclr=4
-	}
-	align="horiz. centered"
-	limits {
-	}
-}
-"text update" {
-	object {
-		x=10
-		y=796
-		width=110
-		height=18
-	}
-	monitor {
-		chan="$(P)HDF1:PortName_RBV"
-		clr=54
-		bclr=4
-	}
-	align="horiz. centered"
-	format="string"
-	limits {
-	}
-}
-"text update" {
-	object {
-		x=125
-		y=796
-		width=160
-		height=18
-	}
-	monitor {
-		chan="$(P)HDF1:PluginType_RBV"
-		clr=54
-		bclr=4
-	}
-	align="horiz. centered"
-	format="string"
-	limits {
-	}
-}
-"text entry" {
-	object {
-		x=290
-		y=795
-		width=60
-		height=20
-	}
-	control {
-		chan="$(P)HDF1:NDArrayPort"
-		clr=14
-		bclr=51
-	}
-	limits {
-	}
-}
-menu {
-	object {
-		x=355
-		y=795
-		width=80
-		height=20
-	}
-	control {
-		chan="$(P)HDF1:EnableCallbacks"
-		clr=14
-		bclr=51
-	}
-}
-"text update" {
-	object {
-		x=440
-		y=796
-		width=80
-		height=18
-	}
-	monitor {
-		chan="$(P)HDF1:EnableCallbacks_RBV"
-		clr=54
-		bclr=12
-	}
-	clrmod="alarm"
-	align="horiz. centered"
-	format="string"
-	limits {
-	}
-}
-menu {
-	object {
-		x=525
-		y=795
-		width=80
-		height=20
-	}
-	control {
-		chan="$(P)HDF1:BlockingCallbacks"
-		clr=14
-		bclr=51
-	}
-}
-"related display" {
-	object {
-		x=865
-		y=795
-		width=60
-		height=20
-	}
-	display[0] {
-		label="HDF1:"
-		name="NDFileHDF5.adl"
-		args="P=$(P),R=HDF1:,EXT=h5"
-	}
-	clr=14
-	bclr=51
-	label="More"
-}
-"text update" {
-	object {
-		x=780
-		y=796
-		width=80
-		height=18
-	}
-	monitor {
-		chan="$(P)HDF1:ArrayRate_RBV"
-		clr=54
-		bclr=4
-	}
-	align="horiz. centered"
-	limits {
-	}
-}
-"text update" {
-	object {
-		x=695
-		y=796
-		width=80
-		height=18
-	}
-	monitor {
-		chan="$(P)HDF1:QueueFree"
-		clr=54
-		bclr=12
-	}
-	clrmod="alarm"
-	align="horiz. centered"
-	limits {
-	}
-}
-"text update" {
-	object {
-		x=610
-		y=796
-		width=80
-		height=18
-	}
-	monitor {
-		chan="$(P)HDF1:DroppedArrays_RBV"
-		clr=54
-		bclr=4
-	}
-	align="horiz. centered"
-	limits {
-	}
-}
-"text update" {
-	object {
-		x=10
 		y=621
 		width=110
 		height=18
@@ -4805,6 +3857,954 @@ menu {
 "text update" {
 	object {
 		x=10
+		y=696
+		width=110
+		height=18
+	}
+	monitor {
+		chan="$(P)netCDF1:PortName_RBV"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
+	format="string"
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=125
+		y=696
+		width=160
+		height=18
+	}
+	monitor {
+		chan="$(P)netCDF1:PluginType_RBV"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
+	format="string"
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=10
+		y=721
+		width=110
+		height=18
+	}
+	monitor {
+		chan="$(P)TIFF1:PortName_RBV"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
+	format="string"
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=125
+		y=721
+		width=160
+		height=18
+	}
+	monitor {
+		chan="$(P)TIFF1:PluginType_RBV"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
+	format="string"
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=10
+		y=746
+		width=110
+		height=18
+	}
+	monitor {
+		chan="$(P)JPEG1:PortName_RBV"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
+	format="string"
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=125
+		y=746
+		width=160
+		height=18
+	}
+	monitor {
+		chan="$(P)JPEG1:PluginType_RBV"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
+	format="string"
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=10
+		y=771
+		width=110
+		height=18
+	}
+	monitor {
+		chan="$(P)Nexus1:PortName_RBV"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
+	format="string"
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=125
+		y=771
+		width=160
+		height=18
+	}
+	monitor {
+		chan="$(P)Nexus1:PluginType_RBV"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
+	format="string"
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=10
+		y=796
+		width=110
+		height=18
+	}
+	monitor {
+		chan="$(P)Magick1:PortName_RBV"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
+	format="string"
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=125
+		y=796
+		width=160
+		height=18
+	}
+	monitor {
+		chan="$(P)Magick1:PluginType_RBV"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
+	format="string"
+	limits {
+	}
+}
+"text entry" {
+	object {
+		x=290
+		y=695
+		width=60
+		height=20
+	}
+	control {
+		chan="$(P)netCDF1:NDArrayPort"
+		clr=14
+		bclr=51
+	}
+	limits {
+	}
+}
+menu {
+	object {
+		x=355
+		y=695
+		width=80
+		height=20
+	}
+	control {
+		chan="$(P)netCDF1:EnableCallbacks"
+		clr=14
+		bclr=51
+	}
+}
+"text update" {
+	object {
+		x=440
+		y=696
+		width=80
+		height=18
+	}
+	monitor {
+		chan="$(P)netCDF1:EnableCallbacks_RBV"
+		clr=54
+		bclr=12
+	}
+	clrmod="alarm"
+	align="horiz. centered"
+	format="string"
+	limits {
+	}
+}
+menu {
+	object {
+		x=525
+		y=695
+		width=80
+		height=20
+	}
+	control {
+		chan="$(P)netCDF1:BlockingCallbacks"
+		clr=14
+		bclr=51
+	}
+}
+"text entry" {
+	object {
+		x=290
+		y=720
+		width=60
+		height=20
+	}
+	control {
+		chan="$(P)TIFF1:NDArrayPort"
+		clr=14
+		bclr=51
+	}
+	limits {
+	}
+}
+menu {
+	object {
+		x=355
+		y=720
+		width=80
+		height=20
+	}
+	control {
+		chan="$(P)TIFF1:EnableCallbacks"
+		clr=14
+		bclr=51
+	}
+}
+"text update" {
+	object {
+		x=440
+		y=721
+		width=80
+		height=18
+	}
+	monitor {
+		chan="$(P)TIFF1:EnableCallbacks_RBV"
+		clr=54
+		bclr=12
+	}
+	clrmod="alarm"
+	align="horiz. centered"
+	format="string"
+	limits {
+	}
+}
+menu {
+	object {
+		x=525
+		y=720
+		width=80
+		height=20
+	}
+	control {
+		chan="$(P)TIFF1:BlockingCallbacks"
+		clr=14
+		bclr=51
+	}
+}
+"text entry" {
+	object {
+		x=290
+		y=745
+		width=60
+		height=20
+	}
+	control {
+		chan="$(P)JPEG1:NDArrayPort"
+		clr=14
+		bclr=51
+	}
+	limits {
+	}
+}
+menu {
+	object {
+		x=355
+		y=745
+		width=80
+		height=20
+	}
+	control {
+		chan="$(P)JPEG1:EnableCallbacks"
+		clr=14
+		bclr=51
+	}
+}
+"text update" {
+	object {
+		x=440
+		y=746
+		width=80
+		height=18
+	}
+	monitor {
+		chan="$(P)JPEG1:EnableCallbacks_RBV"
+		clr=54
+		bclr=12
+	}
+	clrmod="alarm"
+	align="horiz. centered"
+	format="string"
+	limits {
+	}
+}
+menu {
+	object {
+		x=525
+		y=745
+		width=80
+		height=20
+	}
+	control {
+		chan="$(P)JPEG1:BlockingCallbacks"
+		clr=14
+		bclr=51
+	}
+}
+"text entry" {
+	object {
+		x=290
+		y=770
+		width=60
+		height=20
+	}
+	control {
+		chan="$(P)Nexus1:NDArrayPort"
+		clr=14
+		bclr=51
+	}
+	limits {
+	}
+}
+menu {
+	object {
+		x=355
+		y=770
+		width=80
+		height=20
+	}
+	control {
+		chan="$(P)Nexus1:EnableCallbacks"
+		clr=14
+		bclr=51
+	}
+}
+"text update" {
+	object {
+		x=440
+		y=771
+		width=80
+		height=18
+	}
+	monitor {
+		chan="$(P)Nexus1:EnableCallbacks_RBV"
+		clr=54
+		bclr=12
+	}
+	clrmod="alarm"
+	align="horiz. centered"
+	format="string"
+	limits {
+	}
+}
+menu {
+	object {
+		x=525
+		y=770
+		width=80
+		height=20
+	}
+	control {
+		chan="$(P)Nexus1:BlockingCallbacks"
+		clr=14
+		bclr=51
+	}
+}
+"text entry" {
+	object {
+		x=290
+		y=795
+		width=60
+		height=20
+	}
+	control {
+		chan="$(P)Magick1:NDArrayPort"
+		clr=14
+		bclr=51
+	}
+	limits {
+	}
+}
+menu {
+	object {
+		x=355
+		y=795
+		width=80
+		height=20
+	}
+	control {
+		chan="$(P)Magick1:EnableCallbacks"
+		clr=14
+		bclr=51
+	}
+}
+"text update" {
+	object {
+		x=440
+		y=796
+		width=80
+		height=18
+	}
+	monitor {
+		chan="$(P)Magick1:EnableCallbacks_RBV"
+		clr=54
+		bclr=12
+	}
+	clrmod="alarm"
+	align="horiz. centered"
+	format="string"
+	limits {
+	}
+}
+menu {
+	object {
+		x=525
+		y=795
+		width=80
+		height=20
+	}
+	control {
+		chan="$(P)Magick1:BlockingCallbacks"
+		clr=14
+		bclr=51
+	}
+}
+"related display" {
+	object {
+		x=865
+		y=695
+		width=60
+		height=20
+	}
+	display[0] {
+		label="netCDF1:"
+		name="NDFileNetCDF.adl"
+		args="P=$(P),R=netCDF1:,EXT=nc"
+	}
+	clr=14
+	bclr=51
+	label="More"
+}
+"text update" {
+	object {
+		x=780
+		y=696
+		width=80
+		height=18
+	}
+	monitor {
+		chan="$(P)netCDF1:ArrayRate_RBV"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
+	limits {
+	}
+}
+"related display" {
+	object {
+		x=865
+		y=720
+		width=60
+		height=20
+	}
+	display[0] {
+		label="TIFF1:"
+		name="NDFileTIFF.adl"
+		args="P=$(P),R=TIFF1:,EXT=tif"
+	}
+	clr=14
+	bclr=51
+	label="More"
+}
+"text update" {
+	object {
+		x=780
+		y=721
+		width=80
+		height=18
+	}
+	monitor {
+		chan="$(P)TIFF1:ArrayRate_RBV"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
+	limits {
+	}
+}
+"related display" {
+	object {
+		x=865
+		y=745
+		width=60
+		height=20
+	}
+	display[0] {
+		label="JPEG1:"
+		name="NDFileJPEG.adl"
+		args="P=$(P),R=JPEG1:,EXT=jpg"
+	}
+	clr=14
+	bclr=51
+	label="More"
+}
+"text update" {
+	object {
+		x=780
+		y=746
+		width=80
+		height=18
+	}
+	monitor {
+		chan="$(P)JPEG1:ArrayRate_RBV"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
+	limits {
+	}
+}
+"related display" {
+	object {
+		x=865
+		y=770
+		width=60
+		height=20
+	}
+	display[0] {
+		label="Nexus1:"
+		name="NDFileNexus.adl"
+		args="P=$(P),R=Nexus1:,EXT=h5"
+	}
+	clr=14
+	bclr=51
+	label="More"
+}
+"text update" {
+	object {
+		x=780
+		y=771
+		width=80
+		height=18
+	}
+	monitor {
+		chan="$(P)Nexus1:ArrayRate_RBV"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
+	limits {
+	}
+}
+"related display" {
+	object {
+		x=865
+		y=795
+		width=60
+		height=20
+	}
+	display[0] {
+		label="Magick1:"
+		name="NDFileMagick.adl"
+		args="P=$(P),R=Magick1:,EXT=tif"
+	}
+	clr=14
+	bclr=51
+	label="More"
+}
+"text update" {
+	object {
+		x=780
+		y=796
+		width=80
+		height=18
+	}
+	monitor {
+		chan="$(P)Magick1:ArrayRate_RBV"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=695
+		y=696
+		width=80
+		height=18
+	}
+	monitor {
+		chan="$(P)netCDF1:QueueFree"
+		clr=54
+		bclr=12
+	}
+	clrmod="alarm"
+	align="horiz. centered"
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=695
+		y=721
+		width=80
+		height=18
+	}
+	monitor {
+		chan="$(P)TIFF1:QueueFree"
+		clr=54
+		bclr=12
+	}
+	clrmod="alarm"
+	align="horiz. centered"
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=695
+		y=746
+		width=80
+		height=18
+	}
+	monitor {
+		chan="$(P)JPEG1:QueueFree"
+		clr=54
+		bclr=12
+	}
+	clrmod="alarm"
+	align="horiz. centered"
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=695
+		y=771
+		width=80
+		height=18
+	}
+	monitor {
+		chan="$(P)Nexus1:QueueFree"
+		clr=54
+		bclr=12
+	}
+	clrmod="alarm"
+	align="horiz. centered"
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=695
+		y=796
+		width=80
+		height=18
+	}
+	monitor {
+		chan="$(P)Magick1:QueueFree"
+		clr=54
+		bclr=12
+	}
+	clrmod="alarm"
+	align="horiz. centered"
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=610
+		y=696
+		width=80
+		height=18
+	}
+	monitor {
+		chan="$(P)netCDF1:DroppedArrays_RBV"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=610
+		y=721
+		width=80
+		height=18
+	}
+	monitor {
+		chan="$(P)TIFF1:DroppedArrays_RBV"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=610
+		y=746
+		width=80
+		height=18
+	}
+	monitor {
+		chan="$(P)JPEG1:DroppedArrays_RBV"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=610
+		y=771
+		width=80
+		height=18
+	}
+	monitor {
+		chan="$(P)Nexus1:DroppedArrays_RBV"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=610
+		y=796
+		width=80
+		height=18
+	}
+	monitor {
+		chan="$(P)Magick1:DroppedArrays_RBV"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=10
+		y=821
+		width=110
+		height=18
+	}
+	monitor {
+		chan="$(P)HDF1:PortName_RBV"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
+	format="string"
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=125
+		y=821
+		width=160
+		height=18
+	}
+	monitor {
+		chan="$(P)HDF1:PluginType_RBV"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
+	format="string"
+	limits {
+	}
+}
+"text entry" {
+	object {
+		x=290
+		y=820
+		width=60
+		height=20
+	}
+	control {
+		chan="$(P)HDF1:NDArrayPort"
+		clr=14
+		bclr=51
+	}
+	limits {
+	}
+}
+menu {
+	object {
+		x=355
+		y=820
+		width=80
+		height=20
+	}
+	control {
+		chan="$(P)HDF1:EnableCallbacks"
+		clr=14
+		bclr=51
+	}
+}
+"text update" {
+	object {
+		x=440
+		y=821
+		width=80
+		height=18
+	}
+	monitor {
+		chan="$(P)HDF1:EnableCallbacks_RBV"
+		clr=54
+		bclr=12
+	}
+	clrmod="alarm"
+	align="horiz. centered"
+	format="string"
+	limits {
+	}
+}
+menu {
+	object {
+		x=525
+		y=820
+		width=80
+		height=20
+	}
+	control {
+		chan="$(P)HDF1:BlockingCallbacks"
+		clr=14
+		bclr=51
+	}
+}
+"related display" {
+	object {
+		x=865
+		y=820
+		width=60
+		height=20
+	}
+	display[0] {
+		label="HDF1:"
+		name="NDFileHDF5.adl"
+		args="P=$(P),R=HDF1:,EXT=h5"
+	}
+	clr=14
+	bclr=51
+	label="More"
+}
+"text update" {
+	object {
+		x=780
+		y=821
+		width=80
+		height=18
+	}
+	monitor {
+		chan="$(P)HDF1:ArrayRate_RBV"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=695
+		y=821
+		width=80
+		height=18
+	}
+	monitor {
+		chan="$(P)HDF1:QueueFree"
+		clr=54
+		bclr=12
+	}
+	clrmod="alarm"
+	align="horiz. centered"
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=610
+		y=821
+		width=80
+		height=18
+	}
+	monitor {
+		chan="$(P)HDF1:DroppedArrays_RBV"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=10
 		y=646
 		width=110
 		height=18
@@ -4953,6 +4953,164 @@ menu {
 	}
 	monitor {
 		chan="$(P)Codec2:DroppedArrays_RBV"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=10
+		y=671
+		width=110
+		height=18
+	}
+	monitor {
+		chan="$(P)BadPix1:PortName_RBV"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
+	format="string"
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=125
+		y=671
+		width=160
+		height=18
+	}
+	monitor {
+		chan="$(P)BadPix1:PluginType_RBV"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
+	format="string"
+	limits {
+	}
+}
+"text entry" {
+	object {
+		x=290
+		y=670
+		width=60
+		height=20
+	}
+	control {
+		chan="$(P)BadPix1:NDArrayPort"
+		clr=14
+		bclr=51
+	}
+	limits {
+	}
+}
+menu {
+	object {
+		x=355
+		y=670
+		width=80
+		height=20
+	}
+	control {
+		chan="$(P)BadPix1:EnableCallbacks"
+		clr=14
+		bclr=51
+	}
+}
+"text update" {
+	object {
+		x=440
+		y=671
+		width=80
+		height=18
+	}
+	monitor {
+		chan="$(P)BadPix1:EnableCallbacks_RBV"
+		clr=54
+		bclr=12
+	}
+	clrmod="alarm"
+	align="horiz. centered"
+	format="string"
+	limits {
+	}
+}
+menu {
+	object {
+		x=525
+		y=670
+		width=80
+		height=20
+	}
+	control {
+		chan="$(P)BadPix1:BlockingCallbacks"
+		clr=14
+		bclr=51
+	}
+}
+"related display" {
+	object {
+		x=865
+		y=670
+		width=60
+		height=20
+	}
+	display[0] {
+		label="Bad Pixel 1"
+		name="NDBadPixel.adl"
+		args="P=$(P),R=BadPix1:"
+	}
+	clr=14
+	bclr=51
+	label="More"
+}
+"text update" {
+	object {
+		x=780
+		y=671
+		width=80
+		height=18
+	}
+	monitor {
+		chan="$(P)BadPix1:ArrayRate_RBV"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=695
+		y=671
+		width=80
+		height=18
+	}
+	monitor {
+		chan="$(P)BadPix1:QueueFree"
+		clr=54
+		bclr=12
+	}
+	clrmod="alarm"
+	align="horiz. centered"
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=610
+		y=671
+		width=80
+		height=18
+	}
+	monitor {
+		chan="$(P)BadPix1:DroppedArrays_RBV"
 		clr=54
 		bclr=4
 	}
