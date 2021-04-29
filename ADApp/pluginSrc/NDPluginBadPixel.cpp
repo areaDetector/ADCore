@@ -21,54 +21,6 @@ using nlohmann::json;
 
 static const char *driverName="NDPluginBadPixel";
 
-
-/** Callback function that is called by the NDArray driver with new NDArray data.
-  * Does bad pixel processing.
-  * \param[in] pArray  The NDArray from the callback.
-  */
-void NDPluginBadPixel::processCallbacks(NDArray *pArray)
-{
-    /* This function does array processing.
-     * It is called with the mutex already locked.  It unlocks it during long calculations when private
-     * structures don't need to be protected.
-     */
-    NDArray *pArrayOut = NULL;
-    NDArrayInfo arrayInfo;
-    size_t nElements;
-    static const char* functionName = "processCallbacks";
-
-    /* Call the base class method */
-    NDPluginDriver::beginProcessCallbacks(pArray);
-
-    /* Release the lock now that we are only doing things that don't involve memory other thread
-     * cannot access */
-
-    pArray->getInfo(&arrayInfo);
-    nElements = arrayInfo.nElements;
-
-    this->unlock();
-
-    /* Make a copy of the array because we cannot modify the input array */
-    this->pNDArrayPool->copy(pArray, pArrayOut, 0);
-    if (NULL == pArrayOut) {
-        asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
-            "%s:%s Processing aborted; cannot allocate an NDArray for storage of temporary data.\n",
-            driverName, functionName);
-        goto doCallbacks;
-    }
-
-    doCallbacks:
-    /* We must exit with the mutex locked */
-    this->lock();
-
-    if ((NULL != pArrayOut)) {
-        NDPluginDriver::endProcessCallbacks(pArrayOut, false, true);
-    }
-
-    callParamCallbacks();
-}
-
-
 /** Constructor for NDPluginBadPixel; most parameters are simply passed to NDPluginDriver::NDPluginDriver.
   * After calling the base class constructor this method sets reasonable default values for all of the
   * parameters.
@@ -115,28 +67,84 @@ NDPluginBadPixel::NDPluginBadPixel(const char *portName, int queueSize, int bloc
     connectToArrayPort();
 }
 
+/** Callback function that is called by the NDArray driver with new NDArray data.
+  * Does bad pixel processing.
+  * \param[in] pArray  The NDArray from the callback.
+  */
+void NDPluginBadPixel::processCallbacks(NDArray *pArray)
+{
+    /* This function does array processing.
+     * It is called with the mutex already locked.  It unlocks it during long calculations when private
+     * structures don't need to be protected.
+     */
+    NDArray *pArrayOut = NULL;
+    static const char* functionName = "processCallbacks";
+
+    /* Call the base class method */
+    NDPluginDriver::beginProcessCallbacks(pArray);
+
+    /* Release the lock now that we are only doing things that don't involve memory other thread
+     * cannot access */
+    this->unlock();
+
+    /* Make a copy of the array because we cannot modify the input array */
+    this->pNDArrayPool->copy(pArray, pArrayOut, 0);
+    if (NULL == pArrayOut) {
+        asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
+            "%s:%s Processing aborted; cannot allocate an NDArray for storage of temporary data.\n",
+            driverName, functionName);
+        goto doCallbacks;
+    }
+
+    for (auto bp : this->badPixelList) {
+        switch (bp.mode) {
+          case badPixelModeSet:
+            break;
+
+          case badPixelModeReplace:
+            break;
+          
+          case badPixelModeMedian:
+            break;
+        }
+    }
+
+    doCallbacks:
+    /* We must exit with the mutex locked */
+    this->lock();
+
+    if ((NULL != pArrayOut)) {
+        NDPluginDriver::endProcessCallbacks(pArrayOut, false, true);
+    }
+
+    callParamCallbacks();
+}
+
 asynStatus NDPluginBadPixel::readBadPixelFile(const char *fileName)
 {
     json j;
     std::ifstream file(fileName);
     file >> j;
     auto badPixels = j["Bad pixels"];
-    badPixelDef bp;
-    for (size_t i=0; i<badPixels.size(); i++) {
-        bp.coordinate.x = badPixels[i]["X"];
-        bp.coordinate.y = badPixels[i]["Y"];
+    badPixel_t bp;
+    badPixelList.clear();
+    for (auto pixel : badPixels) {
+        bp.coordinate.x = pixel["Pixel"][0];
+        bp.coordinate.y = pixel["Pixel"][1];
+        if (pixel.find("Median") != pixel.end()) {
+            bp.mode = badPixelModeMedian;
+            bp.medianSize = pixel["Median"];
+        }
+        if (pixel.find("Set") != pixel.end()) {
+            bp.mode = badPixelModeSet;
+            bp.setValue = pixel["Set"];
+        }
+        if (pixel.find("Replace") != pixel.end()) {
+            bp.mode = badPixelModeReplace;
+            bp.replaceCoordinate.x = pixel["Replace"][0];
+            bp.replaceCoordinate.y = pixel["Replace"][1];
+        }
         badPixelList.push_back(bp);
-        printf("Bad pixel %d, X=%d, Y=%d\n", (int)i, bp.coordinate.x, bp.coordinate.y);
-        if (badPixels[i]["Median"] !=0) {
-            std::cout << "Median " << badPixels[i]["Median"] << "\n";
-        }
-        if (badPixels[i]["Set"] !=0) {
-            std::cout << "Set " << badPixels[i]["Set"] << "\n";
-        }
-        
-        if (badPixels[i]["Replace"] !=0) {
-            std::cout << "Replace " << badPixels[i]["Replace"] << "\n";
-        }
     }
     return asynSuccess;
 }
@@ -185,6 +193,29 @@ asynStatus NDPluginBadPixel::writeOctet(asynUser *pasynUser, const char *value, 
   }
   *nActual = nChars;
   return status;
+}
+
+void NDPluginBadPixel::report(FILE *fp, int details)
+{
+  if (details > 0) {
+      for (size_t i=0; i<badPixelList.size(); i++) {
+          badPixel_t bp = badPixelList[i];
+          fprintf(fp, "Bad pixel %d, coords=[%d,%d], mode=", (int)i, bp.coordinate.x, bp.coordinate.y);
+          switch (bp.mode) {
+            case badPixelModeSet:
+              fprintf(fp, "Set, value=%f\n", bp.setValue);
+              break;
+            case badPixelModeMedian:
+              fprintf(fp, "Median, size=%d\n", bp.medianSize);
+              break;
+            case badPixelModeReplace:
+              fprintf(fp, "Replace, relative coordinates=[%d,%d]\n", bp.replaceCoordinate.x, bp.replaceCoordinate.y);
+              break;
+          }
+      }
+  }
+  // Call the base class report
+  NDPluginDriver::report(fp, details);
 }
 
 /** Configuration command */
