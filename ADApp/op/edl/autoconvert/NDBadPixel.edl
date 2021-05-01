@@ -60,24 +60,11 @@ value {
 }
 endObjectProperties
 
-# (Group)
-object activeGroupClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 5
-y 40
-w 380
-h 555
-
-beginGroup
-
 # (Embedded Window)
 object activePipClass
 beginObjectProperties
 major 4
-minor 1
+minor 0
 release 0
 x 5
 y 40
@@ -95,12 +82,6 @@ displayFileName {
   0 "NDPluginBase.edl"
 }
 noScroll
-endObjectProperties
-
-endGroup
-
-visMin "A"
-visMax "1"
 endObjectProperties
 
 # (Rectangle)
@@ -126,7 +107,7 @@ minor 1
 release 1
 x 10
 y 630
-w 140
+w 40
 h 20
 font "helvetica-medium-r-14.0"
 fontAlign "right"
@@ -134,7 +115,7 @@ fgColor rgb 0 0 0
 bgColor index 3
 useDisplayBg
 value {
-  "Bad pixel file"
+  "File"
 }
 endObjectProperties
 
@@ -144,9 +125,9 @@ beginObjectProperties
 major 4
 minor 1
 release 1
-x 115
+x 125
 y 605
-w 160
+w 140
 h 20
 font "helvetica-medium-r-14.0"
 fontAlign "right"
@@ -154,7 +135,7 @@ fgColor rgb 0 0 0
 bgColor index 3
 useDisplayBg
 value {
-  "EPICS V4 PV Name"
+  "Bad Pixel File"
 }
 endObjectProperties
 
@@ -164,9 +145,9 @@ beginObjectProperties
 major 4
 minor 7
 release 0
-x 155
+x 55
 y 630
-w 220
+w 320
 h 20
 controlPv "$(P)$(R)FileName"
 format "string"
