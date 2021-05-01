@@ -10,6 +10,7 @@
 #include <iostream>
 #include <fstream>
 #include <iomanip>
+#include <algorithm>
 #include <json.hpp>
 using nlohmann::json;
 
@@ -67,22 +68,70 @@ NDPluginBadPixel::NDPluginBadPixel(const char *portName, int queueSize, int bloc
     connectToArrayPort();
 }
 
+epicsInt64 NDPluginBadPixel::computePixelOffset(pixelCoordinate coord, NDArrayInfo_t *pArrayInfo)
+{
+    // This function should return -1 if either the X or Y coordinate is out of range
+    // It should be enhanced to deal with the following detector readout settings.
+    // Non-zero offset in X or Y dimension offset, i.e. reading out only part of the detector
+    // Binning in X or Y dimension
+    // Reversal of pixels in X or Y dimension
+    epicsInt64 offset = -1;
+    if ((coord.x > 0) &&
+        (coord.y > 0) &&
+        (coord.x < pArrayInfo->xSize) &&
+        (coord.y < pArrayInfo->ySize))
+    {
+        offset = coord.y * pArrayInfo->xSize + coord.x;
+    }
+    return offset;
+}
 template <typename epicsType>
 void NDPluginBadPixel::fixBadPixelsT(NDArray *pArray, std::vector<badPixel_t> &badPixels, NDArrayInfo_t *pArrayInfo)
 {
     epicsType *pData=(epicsType *)pArray->pData;
 
     for (auto bp : badPixels) {
+        epicsInt64 offset = computePixelOffset(bp.coordinate, pArrayInfo);
+        if (offset < 0) continue;
         switch (bp.mode) {
           case badPixelModeSet:
-            pData[0]=0;
+            pData[offset]=(epicsType)bp.setValue;
             break;
 
-          case badPixelModeReplace:
-            break;
+          case badPixelModeReplace: {
+            pixelCoordinate coord = {bp.coordinate.x + bp.replaceCoordinate.x, bp.coordinate.y + bp.replaceCoordinate.y};
+            epicsInt64 replaceOffset = computePixelOffset(coord, pArrayInfo);
+            if (replaceOffset < 0) continue;
+            pData[offset] = pData[replaceOffset];
+            break; }
           
-          case badPixelModeMedian:
-            break;
+          case badPixelModeMedian: {
+            std::vector<double> medianValues;
+            pixelCoordinate coord;
+            epicsInt64 medianOffset;
+            for (int i=-bp.medianSize; i<=bp.medianSize; i++) {
+                coord.y = bp.coordinate.y + i;
+                for (int j=-bp.medianSize; j<=bp.medianSize; j++) {
+                    if ((i==0) && (j==0)) continue;
+                    coord.x = bp.coordinate.x + j;
+                    medianOffset = computePixelOffset(coord, pArrayInfo);
+                    if (medianOffset < 0) continue;
+                    medianValues.push_back(pData[medianOffset]);
+                }
+            }
+            size_t numValues = medianValues.size();
+            if (numValues > 0 ) {
+                double replaceValue;
+                size_t middle = numValues/2;
+                std::sort(medianValues.begin(), medianValues.end());
+                if ((numValues % 2) == 0) {
+                    replaceValue = (medianValues[middle-1] + medianValues[middle]) / 2.;
+                } else {
+                    replaceValue = medianValues[middle];
+                }
+                pData[offset] = replaceValue;
+            }
+            break; }
         }
     }
 }
@@ -176,28 +225,41 @@ void NDPluginBadPixel::processCallbacks(NDArray *pArray)
 asynStatus NDPluginBadPixel::readBadPixelFile(const char *fileName)
 {
     json j;
-    std::ifstream file(fileName);
-    file >> j;
-    auto badPixels = j["Bad pixels"];
-    badPixel_t bp;
-    badPixelList.clear();
-    for (auto pixel : badPixels) {
-        bp.coordinate.x = pixel["Pixel"][0];
-        bp.coordinate.y = pixel["Pixel"][1];
-        if (pixel.find("Median") != pixel.end()) {
-            bp.mode = badPixelModeMedian;
-            bp.medianSize = pixel["Median"];
+    static const char *functionName = "readBadPixelFile";
+    try {
+        std::ifstream file(fileName);
+        file >> j;
+        auto badPixels = j["Bad pixels"];
+        badPixel_t bp;
+        badPixelList.clear();
+        for (auto pixel : badPixels) {
+            bp.coordinate.x = pixel["Pixel"][0];
+            bp.coordinate.y = pixel["Pixel"][1];
+            if (pixel.find("Median") != pixel.end()) {
+                bp.mode = badPixelModeMedian;
+                bp.medianSize = pixel["Median"];
+            }
+            if (pixel.find("Set") != pixel.end()) {
+                bp.mode = badPixelModeSet;
+                bp.setValue = pixel["Set"];
+            }
+            if (pixel.find("Replace") != pixel.end()) {
+                bp.mode = badPixelModeReplace;
+                bp.replaceCoordinate.x = pixel["Replace"][0];
+                bp.replaceCoordinate.y = pixel["Replace"][1];
+            }
+            badPixelList.push_back(bp);
         }
-        if (pixel.find("Set") != pixel.end()) {
-            bp.mode = badPixelModeSet;
-            bp.setValue = pixel["Set"];
-        }
-        if (pixel.find("Replace") != pixel.end()) {
-            bp.mode = badPixelModeReplace;
-            bp.replaceCoordinate.x = pixel["Replace"][0];
-            bp.replaceCoordinate.y = pixel["Replace"][1];
-        }
-        badPixelList.push_back(bp);
+    }
+    catch (const json::parse_error& e) {
+        asynPrint(pasynUserSelf, ASYN_TRACE_ERROR, 
+            "%s::%s JSON error parsing bad pixel file: %s\n", driverName, functionName, e.what());
+        return asynError;
+    }
+    catch (std::exception e) {
+        asynPrint(pasynUserSelf, ASYN_TRACE_ERROR, 
+            "%s::%s other error parsing bad pixel file: %s\n", driverName, functionName, e.what());
+        return asynError;
     }
     return asynSuccess;
 }
@@ -253,7 +315,7 @@ void NDPluginBadPixel::report(FILE *fp, int details)
   if (details > 0) {
       for (size_t i=0; i<badPixelList.size(); i++) {
           badPixel_t bp = badPixelList[i];
-          fprintf(fp, "Bad pixel %d, coords=[%d,%d], mode=", (int)i, bp.coordinate.x, bp.coordinate.y);
+          fprintf(fp, "Bad pixel %d, coords=[%d,%d], mode=", (int)i, (int)bp.coordinate.x, (int)bp.coordinate.y);
           switch (bp.mode) {
             case badPixelModeSet:
               fprintf(fp, "Set, value=%f\n", bp.setValue);
@@ -262,7 +324,7 @@ void NDPluginBadPixel::report(FILE *fp, int details)
               fprintf(fp, "Median, size=%d\n", bp.medianSize);
               break;
             case badPixelModeReplace:
-              fprintf(fp, "Replace, relative coordinates=[%d,%d]\n", bp.replaceCoordinate.x, bp.replaceCoordinate.y);
+              fprintf(fp, "Replace, relative coordinates=[%d,%d]\n", (int)bp.replaceCoordinate.x, (int)bp.replaceCoordinate.y);
               break;
           }
       }
