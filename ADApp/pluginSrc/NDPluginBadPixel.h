@@ -6,8 +6,8 @@
 #include "NDPluginDriver.h"
 
 typedef struct {
-    int x;
-    int y;
+    size_t x;
+    size_t y;
 } pixelCoordinate;
 
 typedef enum {
@@ -47,6 +47,7 @@ private:
     template <typename epicsType> void fixBadPixelsT(NDArray *pArray, std::vector<badPixel_t> &badPixels, NDArrayInfo_t *pArrayInfo);
     int fixBadPixels(NDArray *pArray, std::vector<badPixel_t> &badPixels, NDArrayInfo_t *pArrayInfo);
     asynStatus readBadPixelFile(const char* fileName);
+    epicsInt64 computePixelOffset(pixelCoordinate coord, NDArrayInfo_t *pArrayInfo);
     std::vector<badPixel_t> badPixelList;
 };
 
