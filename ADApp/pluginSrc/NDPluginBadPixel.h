@@ -32,7 +32,7 @@ public:
     NDPluginBadPixel(const char *portName, int queueSize, int blockingCallbacks,
                      const char *NDArrayPort, int NDArrayAddr,
                      int maxBuffers, size_t maxMemory,
-                     int priority, int stackSize);
+                     int priority, int stackSize, int maxThreads);
     /* These methods override the virtual methods in the base class */
     void processCallbacks(NDArray *pArray);
     asynStatus writeOctet(asynUser *pasynUser, const char *value, size_t nChars, size_t *nActual);

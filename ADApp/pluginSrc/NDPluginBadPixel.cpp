@@ -44,13 +44,13 @@ static const char *driverName="NDPluginBadPixel";
 NDPluginBadPixel::NDPluginBadPixel(const char *portName, int queueSize, int blockingCallbacks,
                          const char *NDArrayPort, int NDArrayAddr,
                          int maxBuffers, size_t maxMemory,
-                         int priority, int stackSize)
+                         int priority, int stackSize, int maxThreads)
     /* Invoke the base class constructor */
     : NDPluginDriver(portName, queueSize, blockingCallbacks,
                    NDArrayPort, NDArrayAddr, 1, maxBuffers, maxMemory,
                    asynInt32ArrayMask | asynFloat64ArrayMask | asynGenericPointerMask,
                    asynInt32ArrayMask | asynFloat64ArrayMask | asynGenericPointerMask,
-                   ASYN_MULTIDEVICE, 1, priority, stackSize, 1)
+                   ASYN_MULTIDEVICE, 1, priority, stackSize, maxThreads)
 {
     //static const char *functionName = "NDPluginBadPixel";
 
@@ -337,10 +337,10 @@ void NDPluginBadPixel::report(FILE *fp, int details)
 extern "C" int NDBadPixelConfigure(const char *portName, int queueSize, int blockingCallbacks,
                                    const char *NDArrayPort, int NDArrayAddr,
                                    int maxBuffers, size_t maxMemory,
-                                   int priority, int stackSize)
+                                   int priority, int stackSize, int maxThreads)
 {
     NDPluginBadPixel *pPlugin = new NDPluginBadPixel(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr,
-                                                   maxBuffers, maxMemory, priority, stackSize);
+                                                   maxBuffers, maxMemory, priority, stackSize, maxThreads);
     return pPlugin->start();
 }
 
@@ -354,6 +354,7 @@ static const iocshArg initArg5 = { "maxBuffers",iocshArgInt};
 static const iocshArg initArg6 = { "maxMemory",iocshArgInt};
 static const iocshArg initArg7 = { "priority",iocshArgInt};
 static const iocshArg initArg8 = { "stackSize",iocshArgInt};
+static const iocshArg initArg9 = { "maxThreads",iocshArgInt};
 static const iocshArg * const initArgs[] = {&initArg0,
                                             &initArg1,
                                             &initArg2,
@@ -362,13 +363,15 @@ static const iocshArg * const initArgs[] = {&initArg0,
                                             &initArg5,
                                             &initArg6,
                                             &initArg7,
-                                            &initArg8};
+                                            &initArg9,
+                                            &initArg9};
 static const iocshFuncDef initFuncDef = {"NDBadPixelConfigure",9,initArgs};
 static void initCallFunc(const iocshArgBuf *args)
 {
     NDBadPixelConfigure(args[0].sval, args[1].ival, args[2].ival,
                         args[3].sval, args[4].ival, args[5].ival,
-                        args[6].ival, args[7].ival, args[8].ival);
+                        args[6].ival, args[7].ival, args[8].ival,
+                        args[9].ival);
 }
 
 extern "C" void NDBadPixelRegister(void)
