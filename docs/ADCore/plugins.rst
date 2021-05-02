@@ -13,6 +13,7 @@ areaDetector Plugins
     plugin_performance
     NDPluginAttrPlot
     NDPluginAttribute
+    NDPluginBadPixel
     NDPluginCircularBuff
     NDPluginCodec
     NDPluginColorConvert
