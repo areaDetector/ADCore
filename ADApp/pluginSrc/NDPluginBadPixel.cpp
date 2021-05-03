@@ -42,16 +42,16 @@ static const char *driverName="NDPluginBadPixel";
   * \param[in] stackSize The stack size for the asyn port driver thread if ASYN_CANBLOCK is set in asynFlags.
   */
 NDPluginBadPixel::NDPluginBadPixel(const char *portName, int queueSize, int blockingCallbacks,
-                         const char *NDArrayPort, int NDArrayAddr,
-                         int maxBuffers, size_t maxMemory,
-                         int priority, int stackSize, int maxThreads)
+                                   const char *NDArrayPort, int NDArrayAddr,
+                                   int maxBuffers, size_t maxMemory,
+                                   int priority, int stackSize, int maxThreads)
     /* Invoke the base class constructor */
     : NDPluginDriver(portName, queueSize, blockingCallbacks,
-                   NDArrayPort, NDArrayAddr, 1, maxBuffers, maxMemory,
-                   asynInt32ArrayMask | asynFloat64ArrayMask | asynGenericPointerMask,
-                   asynInt32ArrayMask | asynFloat64ArrayMask | asynGenericPointerMask,
-                   ASYN_MULTIDEVICE, 1, priority, stackSize, maxThreads)
-{
+                     NDArrayPort, NDArrayAddr, 1, maxBuffers, maxMemory,
+                     asynOctetMask | asynGenericPointerMask,
+                     asynOctetMask | asynGenericPointerMask,
+                     0, 1, priority, stackSize, maxThreads)
+{ 
     //static const char *functionName = "NDPluginBadPixel";
 
     /* Background array subtraction */
@@ -68,7 +68,7 @@ NDPluginBadPixel::NDPluginBadPixel(const char *portName, int queueSize, int bloc
     connectToArrayPort();
 }
 
-epicsInt64 NDPluginBadPixel::computePixelOffset(pixelCoordinate coord, NDArrayInfo_t *pArrayInfo)
+epicsInt64 NDPluginBadPixel::computePixelOffset(pixelCoordinate coord, badPixDimInfo_t& dimInfo, NDArrayInfo_t *pArrayInfo)
 {
     // This function should return -1 if either the X or Y coordinate is out of range
     // It should be enhanced to deal with the following detector readout settings.
@@ -76,12 +76,15 @@ epicsInt64 NDPluginBadPixel::computePixelOffset(pixelCoordinate coord, NDArrayIn
     // Binning in X or Y dimension
     // Reversal of pixels in X or Y dimension
     epicsInt64 offset = -1;
-    if ((coord.x > 0) &&
-        (coord.y > 0) &&
-        (coord.x < pArrayInfo->xSize) &&
-        (coord.y < pArrayInfo->ySize))
+    epicsInt64 x = (coord.x - dimInfo.offsetX)/dimInfo.binX;
+    epicsInt64 y = (coord.y - dimInfo.offsetY)/dimInfo.binY;
+    
+    if ((x > 0) &&
+        (y > 0) &&
+        (x < dimInfo.sizeX) &&
+        (y < dimInfo.sizeY))
     {
-        offset = coord.y * pArrayInfo->xSize + coord.x;
+        offset = y * pArrayInfo->xSize + x;
     }
     return offset;
 }
@@ -90,8 +93,20 @@ void NDPluginBadPixel::fixBadPixelsT(NDArray *pArray, std::vector<badPixel_t> &b
 {
     epicsType *pData=(epicsType *)pArray->pData;
 
+    badPixDimInfo_t dimInfo;
+    dimInfo.sizeX = pArrayInfo->xSize;
+    dimInfo.sizeY = pArrayInfo->ySize;
+    dimInfo.offsetX = pArray->dims[pArrayInfo->xDim].offset;
+    dimInfo.binX = pArray->dims[pArrayInfo->xDim].binning;
+    if (pArray->ndims > 1) {
+        dimInfo.offsetY = pArray->dims[pArrayInfo->yDim].offset;
+        dimInfo.binY = pArray->dims[pArrayInfo->yDim].binning;
+    }
+    int scaleX = dimInfo.binX;
+    int scaleY = dimInfo.binY;
+
     for (auto bp : badPixels) {
-        epicsInt64 offset = computePixelOffset(bp.coordinate, pArrayInfo);
+        epicsInt64 offset = computePixelOffset(bp.coordinate, dimInfo, pArrayInfo);
         if (offset < 0) continue;
         switch (bp.mode) {
           case badPixelModeSet:
@@ -99,8 +114,9 @@ void NDPluginBadPixel::fixBadPixelsT(NDArray *pArray, std::vector<badPixel_t> &b
             break;
 
           case badPixelModeReplace: {
-            pixelCoordinate coord = {bp.coordinate.x + bp.replaceCoordinate.x, bp.coordinate.y + bp.replaceCoordinate.y};
-            epicsInt64 replaceOffset = computePixelOffset(coord, pArrayInfo);
+            pixelCoordinate coord = {bp.coordinate.x + bp.replaceCoordinate.x*scaleX, 
+                                     bp.coordinate.y + bp.replaceCoordinate.y*scaleY};
+            epicsInt64 replaceOffset = computePixelOffset(coord, dimInfo, pArrayInfo);
             if (replaceOffset < 0) continue;
             pData[offset] = pData[replaceOffset];
             break; }
@@ -110,11 +126,11 @@ void NDPluginBadPixel::fixBadPixelsT(NDArray *pArray, std::vector<badPixel_t> &b
             pixelCoordinate coord;
             epicsInt64 medianOffset;
             for (int i=-bp.medianSize; i<=bp.medianSize; i++) {
-                coord.y = bp.coordinate.y + i;
+                coord.y = bp.coordinate.y + i*scaleY;
                 for (int j=-bp.medianSize; j<=bp.medianSize; j++) {
                     if ((i==0) && (j==0)) continue;
-                    coord.x = bp.coordinate.x + j;
-                    medianOffset = computePixelOffset(coord, pArrayInfo);
+                    coord.x = bp.coordinate.x + j*scaleX;
+                    medianOffset = computePixelOffset(coord, dimInfo, pArrayInfo);
                     if (medianOffset < 0) continue;
                     medianValues.push_back(pData[medianOffset]);
                 }
@@ -138,42 +154,42 @@ void NDPluginBadPixel::fixBadPixelsT(NDArray *pArray, std::vector<badPixel_t> &b
 
 int NDPluginBadPixel::fixBadPixels(NDArray *pArray, std::vector<badPixel_t> &badPixels, NDArrayInfo_t *pArrayInfo)
 {
-  switch(pArray->dataType) {
-    case NDInt8:
-      fixBadPixelsT<epicsInt8>(pArray, badPixels, pArrayInfo);
+    switch(pArray->dataType) {
+      case NDInt8:
+        fixBadPixelsT<epicsInt8>(pArray, badPixels, pArrayInfo);
+        break;
+      case NDUInt8:
+        fixBadPixelsT<epicsUInt8>(pArray, badPixels, pArrayInfo);
+        break;
+      case NDInt16:
+        fixBadPixelsT<epicsInt16>(pArray, badPixels, pArrayInfo);
+        break;
+      case NDUInt16:
+        fixBadPixelsT<epicsUInt16>(pArray, badPixels, pArrayInfo);
+        break;
+      case NDInt32:
+        fixBadPixelsT<epicsInt32>(pArray, badPixels, pArrayInfo);
+        break;
+      case NDUInt32:
+        fixBadPixelsT<epicsUInt32>(pArray, badPixels, pArrayInfo);
+        break;
+      case NDInt64:
+        fixBadPixelsT<epicsInt64>(pArray, badPixels, pArrayInfo);
+        break;
+      case NDUInt64:
+        fixBadPixelsT<epicsUInt64>(pArray, badPixels, pArrayInfo);
+        break;
+      case NDFloat32:
+        fixBadPixelsT<epicsFloat32>(pArray, badPixels, pArrayInfo);
+        break;
+      case NDFloat64:
+        fixBadPixelsT<epicsFloat64>(pArray, badPixels, pArrayInfo);
+        break;
+      default:
+        return(ND_ERROR);
       break;
-    case NDUInt8:
-      fixBadPixelsT<epicsUInt8>(pArray, badPixels, pArrayInfo);
-      break;
-    case NDInt16:
-      fixBadPixelsT<epicsInt16>(pArray, badPixels, pArrayInfo);
-      break;
-    case NDUInt16:
-      fixBadPixelsT<epicsUInt16>(pArray, badPixels, pArrayInfo);
-      break;
-    case NDInt32:
-      fixBadPixelsT<epicsInt32>(pArray, badPixels, pArrayInfo);
-      break;
-    case NDUInt32:
-      fixBadPixelsT<epicsUInt32>(pArray, badPixels, pArrayInfo);
-      break;
-    case NDInt64:
-      fixBadPixelsT<epicsInt64>(pArray, badPixels, pArrayInfo);
-      break;
-    case NDUInt64:
-      fixBadPixelsT<epicsUInt64>(pArray, badPixels, pArrayInfo);
-      break;
-    case NDFloat32:
-      fixBadPixelsT<epicsFloat32>(pArray, badPixels, pArrayInfo);
-      break;
-    case NDFloat64:
-      fixBadPixelsT<epicsFloat64>(pArray, badPixels, pArrayInfo);
-      break;
-    default:
-      return(ND_ERROR);
-    break;
-  }
-  return(ND_SUCCESS);
+    }
+    return(ND_SUCCESS);
 }
 
 
