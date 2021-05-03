@@ -17,13 +17,25 @@ typedef enum {
     badPixelModeMedian
 } badPixelMode;
 
-typedef struct {
-    pixelCoordinate coordinate;
-    badPixelMode mode;
-    pixelCoordinate replaceCoordinate;
-    double setValue;
-    pixelCoordinate medianCoordinate;
-} badPixel_t;
+class badPixel {
+    public:
+        badPixel(pixelCoordinate coord) {
+            coordinate = coord;
+        }
+        friend bool operator<(const badPixel& lhs, const badPixel& rhs) {
+            if (lhs.coordinate.x != rhs.coordinate.x) 
+                return (lhs.coordinate.x < rhs.coordinate.x);
+            else
+                return (lhs.coordinate.y < rhs.coordinate.y);
+        }
+        pixelCoordinate coordinate;
+        badPixelMode mode;
+        pixelCoordinate replaceCoordinate;
+        double setValue;
+        pixelCoordinate medianCoordinate;
+    private:
+        badPixel(); // Default constructor is private so objects cannot be constructed without arguments
+};
 
 typedef struct {
     epicsInt64 sizeX;
@@ -34,6 +46,7 @@ typedef struct {
     int binY;
 } badPixDimInfo_t;
 
+typedef std::set<badPixel> badPixelList_t;
 /* Bad pixel file*/
 #define NDPluginBadPixelFileNameString "BAD_PIXEL_FILE_NAME"    /* (asynOctet,   r/w) Name of the bad pixel file */
 
@@ -54,11 +67,11 @@ protected:
     #define FIRST_NDPLUGIN_BAD_PIXEL_PARAM NDPluginBadPixelFileName
 
 private:
-    template <typename epicsType> void fixBadPixelsT(NDArray *pArray, std::vector<badPixel_t> &badPixels, NDArrayInfo_t *pArrayInfo);
-    int fixBadPixels(NDArray *pArray, std::vector<badPixel_t> &badPixels, NDArrayInfo_t *pArrayInfo);
+    template <typename epicsType> void fixBadPixelsT(NDArray *pArray, badPixelList_t &badPixels, NDArrayInfo_t *pArrayInfo);
+    int fixBadPixels(NDArray *pArray, badPixelList_t &badPixels, NDArrayInfo_t *pArrayInfo);
     asynStatus readBadPixelFile(const char* fileName);
     epicsInt64 computePixelOffset(pixelCoordinate coord, badPixDimInfo_t& dimInfo, NDArrayInfo_t *pArrayInfo);
-    std::vector<badPixel_t> badPixelList;
+    badPixelList_t badPixelList;
 };
 
 #endif
