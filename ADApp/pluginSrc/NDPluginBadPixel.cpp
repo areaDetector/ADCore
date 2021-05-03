@@ -89,7 +89,7 @@ epicsInt64 NDPluginBadPixel::computePixelOffset(pixelCoordinate coord, badPixDim
     return offset;
 }
 template <typename epicsType>
-void NDPluginBadPixel::fixBadPixelsT(NDArray *pArray, std::vector<badPixel_t> &badPixels, NDArrayInfo_t *pArrayInfo)
+void NDPluginBadPixel::fixBadPixelsT(NDArray *pArray, badPixelList_t &badPixels, NDArrayInfo_t *pArrayInfo)
 {
     epicsType *pData=(epicsType *)pArray->pData;
 
@@ -116,6 +116,11 @@ void NDPluginBadPixel::fixBadPixelsT(NDArray *pArray, std::vector<badPixel_t> &b
           case badPixelModeReplace: {
             pixelCoordinate coord = {bp.coordinate.x + bp.replaceCoordinate.x*scaleX, 
                                      bp.coordinate.y + bp.replaceCoordinate.y*scaleY};
+            badPixel dummy(coord);
+            if (badPixels.find(dummy) != badPixels.end()) {
+                asynPrint(pasynUserSelf, ASYN_TRACE_WARNING, "replacement pixel [%d,%d] is also bad\n", (int)coord.x, (int)coord.y);
+                continue;
+            }
             epicsInt64 replaceOffset = computePixelOffset(coord, dimInfo, pArrayInfo);
             if (replaceOffset < 0) continue;
             pData[offset] = pData[replaceOffset];
@@ -130,6 +135,11 @@ void NDPluginBadPixel::fixBadPixelsT(NDArray *pArray, std::vector<badPixel_t> &b
                 for (int j=-bp.medianCoordinate.x; j<=bp.medianCoordinate.x; j++) {
                     if ((i==0) && (j==0)) continue;
                     coord.x = bp.coordinate.x + j*scaleX;
+                    badPixel dummy(coord);
+                    if (badPixels.find(dummy) != badPixels.end()) {
+                        asynPrint(pasynUserSelf, ASYN_TRACE_WARNING, "replacement pixel [%d,%d] is also bad\n", (int)coord.x, (int)coord.y);
+                        continue;
+                    }
                     medianOffset = computePixelOffset(coord, dimInfo, pArrayInfo);
                     if (medianOffset < 0) continue;
                     medianValues.push_back(pData[medianOffset]);
@@ -152,7 +162,7 @@ void NDPluginBadPixel::fixBadPixelsT(NDArray *pArray, std::vector<badPixel_t> &b
     }
 }
 
-int NDPluginBadPixel::fixBadPixels(NDArray *pArray, std::vector<badPixel_t> &badPixels, NDArrayInfo_t *pArrayInfo)
+int NDPluginBadPixel::fixBadPixels(NDArray *pArray, badPixelList_t &badPixels, NDArrayInfo_t *pArrayInfo)
 {
     switch(pArray->dataType) {
       case NDInt8:
@@ -246,11 +256,12 @@ asynStatus NDPluginBadPixel::readBadPixelFile(const char *fileName)
         std::ifstream file(fileName);
         file >> j;
         auto badPixels = j["Bad pixels"];
-        badPixel_t bp;
         badPixelList.clear();
+        pixelCoordinate coord;
         for (auto pixel : badPixels) {
-            bp.coordinate.x = pixel["Pixel"][0];
-            bp.coordinate.y = pixel["Pixel"][1];
+            coord.x = pixel["Pixel"][0];
+            coord.y = pixel["Pixel"][1];
+            badPixel bp(coord);
             if (pixel.find("Median") != pixel.end()) {
                 bp.mode = badPixelModeMedian;
                 bp.medianCoordinate.x = pixel["Median"][0];
@@ -265,7 +276,7 @@ asynStatus NDPluginBadPixel::readBadPixelFile(const char *fileName)
                 bp.replaceCoordinate.x = pixel["Replace"][0];
                 bp.replaceCoordinate.y = pixel["Replace"][1];
             }
-            badPixelList.push_back(bp);
+            badPixelList.insert(bp);
         }
     }
     catch (const json::parse_error& e) {
@@ -330,8 +341,8 @@ asynStatus NDPluginBadPixel::writeOctet(asynUser *pasynUser, const char *value, 
 void NDPluginBadPixel::report(FILE *fp, int details)
 {
   if (details > 0) {
-      for (size_t i=0; i<badPixelList.size(); i++) {
-          badPixel_t bp = badPixelList[i];
+      int i=0;
+      for (auto bp : badPixelList) {
           fprintf(fp, "Bad pixel %d, coords=[%d,%d], mode=", (int)i, (int)bp.coordinate.x, (int)bp.coordinate.y);
           switch (bp.mode) {
             case badPixelModeSet:
@@ -344,6 +355,7 @@ void NDPluginBadPixel::report(FILE *fp, int details)
               fprintf(fp, "Replace, relative coordinates=[%d,%d]\n", (int)bp.replaceCoordinate.x, (int)bp.replaceCoordinate.y);
               break;
           }
+          i++;
       }
   }
   // Call the base class report
