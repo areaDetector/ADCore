@@ -55,6 +55,7 @@ typedef struct NDDimension {
     size_t size;    /**< The number of elements in this dimension of the array */
     size_t offset;  /**< The offset relative to the origin of the original data source (detector, for example).
                       * If a selected region of the detector is being read, then this value may be > 0.
+                      * The offset value is specified in unbinned pixels, and in the default orientation, not reversed.
                       * The offset value is cumulative, so if a plugin such as NDPluginROI further selects
                       * a subregion, the offset is relative to the first element in the detector, and not
                       * to the first element of the region passed to NDPluginROI. */
