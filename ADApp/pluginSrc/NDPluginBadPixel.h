@@ -5,9 +5,10 @@
 
 #include "NDPluginDriver.h"
 
+// We use epicsInt64 rather than size_t in these structs because we need to do signed arithmetic on these values
 typedef struct {
-    size_t x;
-    size_t y;
+    epicsInt64 x;
+    epicsInt64 y;
 } pixelCoordinate;
 
 typedef enum {
@@ -23,6 +24,15 @@ typedef struct {
     double setValue;
     int medianSize;
 } badPixel_t;
+
+typedef struct {
+    epicsInt64 sizeX;
+    epicsInt64 sizeY;
+    epicsInt64 offsetX;
+    epicsInt64 offsetY;
+    int binX;
+    int binY;
+} badPixDimInfo_t;
 
 /* Bad pixel file*/
 #define NDPluginBadPixelFileNameString "BAD_PIXEL_FILE_NAME"    /* (asynOctet,   r/w) Name of the bad pixel file */
@@ -47,7 +57,7 @@ private:
     template <typename epicsType> void fixBadPixelsT(NDArray *pArray, std::vector<badPixel_t> &badPixels, NDArrayInfo_t *pArrayInfo);
     int fixBadPixels(NDArray *pArray, std::vector<badPixel_t> &badPixels, NDArrayInfo_t *pArrayInfo);
     asynStatus readBadPixelFile(const char* fileName);
-    epicsInt64 computePixelOffset(pixelCoordinate coord, NDArrayInfo_t *pArrayInfo);
+    epicsInt64 computePixelOffset(pixelCoordinate coord, badPixDimInfo_t& dimInfo, NDArrayInfo_t *pArrayInfo);
     std::vector<badPixel_t> badPixelList;
 };
 
