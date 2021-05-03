@@ -125,9 +125,9 @@ void NDPluginBadPixel::fixBadPixelsT(NDArray *pArray, std::vector<badPixel_t> &b
             std::vector<double> medianValues;
             pixelCoordinate coord;
             epicsInt64 medianOffset;
-            for (int i=-bp.medianSize; i<=bp.medianSize; i++) {
+            for (int i=-bp.medianCoordinate.y; i<=bp.medianCoordinate.y; i++) {
                 coord.y = bp.coordinate.y + i*scaleY;
-                for (int j=-bp.medianSize; j<=bp.medianSize; j++) {
+                for (int j=-bp.medianCoordinate.x; j<=bp.medianCoordinate.x; j++) {
                     if ((i==0) && (j==0)) continue;
                     coord.x = bp.coordinate.x + j*scaleX;
                     medianOffset = computePixelOffset(coord, dimInfo, pArrayInfo);
@@ -253,8 +253,9 @@ asynStatus NDPluginBadPixel::readBadPixelFile(const char *fileName)
             bp.coordinate.y = pixel["Pixel"][1];
             if (pixel.find("Median") != pixel.end()) {
                 bp.mode = badPixelModeMedian;
-                bp.medianSize = pixel["Median"];
-            }
+                bp.medianCoordinate.x = pixel["Median"][0];
+                bp.medianCoordinate.y = pixel["Median"][1];
+             }
             if (pixel.find("Set") != pixel.end()) {
                 bp.mode = badPixelModeSet;
                 bp.setValue = pixel["Set"];
@@ -337,7 +338,7 @@ void NDPluginBadPixel::report(FILE *fp, int details)
               fprintf(fp, "Set, value=%f\n", bp.setValue);
               break;
             case badPixelModeMedian:
-              fprintf(fp, "Median, size=%d\n", bp.medianSize);
+              fprintf(fp, "Median, size=[%d,%d]\n", (int)bp.medianCoordinate.x, (int)bp.medianCoordinate.y);
               break;
             case badPixelModeReplace:
               fprintf(fp, "Replace, relative coordinates=[%d,%d]\n", (int)bp.replaceCoordinate.x, (int)bp.replaceCoordinate.y);
