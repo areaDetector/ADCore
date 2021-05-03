@@ -22,7 +22,7 @@ typedef struct {
     badPixelMode mode;
     pixelCoordinate replaceCoordinate;
     double setValue;
-    int medianSize;
+    pixelCoordinate medianCoordinate;
 } badPixel_t;
 
 typedef struct {
