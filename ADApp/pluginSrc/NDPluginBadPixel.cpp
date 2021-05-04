@@ -79,8 +79,8 @@ epicsInt64 NDPluginBadPixel::computePixelOffset(pixelCoordinate coord, badPixDim
     epicsInt64 x = (coord.x - dimInfo.offsetX)/dimInfo.binX;
     epicsInt64 y = (coord.y - dimInfo.offsetY)/dimInfo.binY;
     
-    if ((x > 0) &&
-        (y > 0) &&
+    if ((x >= 0) &&
+        (y >= 0) &&
         (x < dimInfo.sizeX) &&
         (y < dimInfo.sizeY))
     {
@@ -95,12 +95,16 @@ void NDPluginBadPixel::fixBadPixelsT(NDArray *pArray, badPixelList_t &badPixels,
 
     badPixDimInfo_t dimInfo;
     dimInfo.sizeX = pArrayInfo->xSize;
-    dimInfo.sizeY = pArrayInfo->ySize;
     dimInfo.offsetX = pArray->dims[pArrayInfo->xDim].offset;
     dimInfo.binX = pArray->dims[pArrayInfo->xDim].binning;
     if (pArray->ndims > 1) {
+        dimInfo.sizeY = pArrayInfo->ySize;
         dimInfo.offsetY = pArray->dims[pArrayInfo->yDim].offset;
         dimInfo.binY = pArray->dims[pArrayInfo->yDim].binning;
+    } else {
+        dimInfo.sizeY = 1;
+        dimInfo.offsetY = 0;
+        dimInfo.binY = 1;
     }
     int scaleX = dimInfo.binX;
     int scaleY = dimInfo.binY;
