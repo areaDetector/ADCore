@@ -23,10 +23,10 @@ class badPixel {
             coordinate = coord;
         }
         friend bool operator<(const badPixel& lhs, const badPixel& rhs) {
-            if (lhs.coordinate.x != rhs.coordinate.x) 
-                return (lhs.coordinate.x < rhs.coordinate.x);
-            else
+            if (lhs.coordinate.y != rhs.coordinate.y) 
                 return (lhs.coordinate.y < rhs.coordinate.y);
+            else
+                return (lhs.coordinate.x < rhs.coordinate.x);
         }
         pixelCoordinate coordinate;
         badPixelMode mode;
