@@ -68,8 +68,9 @@ Notes for Replace mode:
 
 Notes for Median mode:
 
-- If the pixels used in the median calculation include other bad pixels then they will not be used,
-  and the median calculation will be performed with fewer pixels.  
+- If the pixels used in the median calculation include other bad pixels then the plugin prints a
+  warning message with ASYN_TRACE_WARNING, the bad pixels will not be used, and the median calculation 
+  will be performed with fewer pixels.
 - The median calculation will use fewer pixels if the bad pixel is too close to the border. 
   For example with a medianSize=[1,1] the plugin normally uses 8 pixels in calculating the median
   (3x3 minus the bad pixel itself). A bad pixel on any edge of the image will only use 5 pixels to 
