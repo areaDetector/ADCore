@@ -25,7 +25,7 @@ files respectively, in the configure/ directory of the appropriate release of th
   * New plugin to fix bad pixels in an NDArray.  The bad pixels are defined
     in a JSON text file.  Each bad pixel can be replaced with a fixed value,
     replaced with the value of a nearby single pixel, or replaced by the
-    median value of nearby pixels.  
+    median value of nearby pixels.
     The documentation is [here](https://areadetector.github.io/master/ADCore/NDPluginBadPixel.html).
 
 ### NDFileHDF
