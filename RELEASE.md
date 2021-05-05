@@ -19,7 +19,14 @@ the EXAMPLE_RELEASE_PATHS.local, EXAMPLE_RELEASE_LIBS.local, and EXAMPLE_RELEASE
 files respectively, in the configure/ directory of the appropriate release of the
 [top-level areaDetector](https://github.com/areaDetector/areaDetector) repository.
 
-## __R3-11 (September XXX, 2020)__
+## __R3-11 (May XXX, 2021)__
+
+### NDPluginBadPixel
+  * New plugin to fix bad pixels in an NDArray.  The bad pixels are defined
+    in a JSON text file.  Each bad pixel can be replaced with a fixed value,
+    replaced with the value of a nearby single pixel, or replaced by the
+    median value of nearby pixels.  
+    The documentation is [here](https://areadetector.github.io/master/ADCore/NDPluginBadPixel.html).
 
 ### NDFileHDF
   * Fixed a problem with writing constant string datasets and HDF5 string attributes.
