@@ -135,9 +135,9 @@ void NDPluginBadPixel::fixBadPixelsT(NDArray *pArray, badPixelList_t &badPixels,
             std::vector<double> medianValues;
             pixelCoordinate coord;
             epicsInt64 medianOffset;
-            for (int i=-bp.medianCoordinate.y; i<=bp.medianCoordinate.y; i++) {
+            for (epicsInt64 i=-bp.medianCoordinate.y; i<=bp.medianCoordinate.y; i++) {
                 coord.y = bp.coordinate.y + i*scaleY;
-                for (int j=-bp.medianCoordinate.x; j<=bp.medianCoordinate.x; j++) {
+                for (epicsInt64 j=-bp.medianCoordinate.x; j<=bp.medianCoordinate.x; j++) {
                     if ((i==0) && (j==0)) continue;
                     coord.x = bp.coordinate.x + j*scaleX;
                     badPixel dummy(coord);
@@ -147,7 +147,7 @@ void NDPluginBadPixel::fixBadPixelsT(NDArray *pArray, badPixelList_t &badPixels,
                     }
                     medianOffset = computePixelOffset(coord, dimInfo, pArrayInfo);
                     if (medianOffset < 0) continue;
-                    medianValues.push_back(pData[medianOffset]);
+                    medianValues.push_back((double)pData[medianOffset]);
                 }
             }
             size_t numValues = medianValues.size();
@@ -160,7 +160,7 @@ void NDPluginBadPixel::fixBadPixelsT(NDArray *pArray, badPixelList_t &badPixels,
                 } else {
                     replaceValue = medianValues[middle];
                 }
-                pData[offset] = replaceValue;
+                pData[offset] = (epicsType)replaceValue;
             }
             break; }
         }
