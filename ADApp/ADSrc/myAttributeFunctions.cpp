@@ -57,7 +57,8 @@ static int myAttrFunct1(const char *paramString, void **functionPvt, functAttrib
         }
         else {
             printf("Error, unknown parameter string = %s\n", paramString);
-            *paramIndex = functPi;
+            free(paramIndex);
+            paramIndex = 0;
             return ND_ERROR;
         }
         *functionPvt = paramIndex;
