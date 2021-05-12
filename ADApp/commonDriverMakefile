@@ -55,6 +55,7 @@ ifeq ($(WITH_GRAPHICSMAGICK), YES)
   $(DBD_NAME)_DBD += NDFileMagick.dbd
   ifeq ($(GRAPHICSMAGICK_EXTERNAL),NO)
     PROD_LIBS               += Magick++ coders Magick jbig jp2 bzlib png webp lcms ttf wmf filters
+    PROD_LIBS += nanohttp_stream
   else
     ifdef GRAPHICSMAGICK_LIB
       GraphicsMagick_DIR     = $(GRAPHICSMAGICK_LIB)

@@ -25,6 +25,7 @@ ifeq ($(WITH_NETCDF),YES)
 endif
 
 ifeq ($(WITH_GRAPHICSMAGICK), YES)
+  LIB_LIBS += nanohttp_stream
   ifeq ($(GRAPHICSMAGICK_EXTERNAL),NO)
     LIB_LIBS               += Magick++ coders Magick jbig jp2 bzlib png webp lcms ttf wmf filters
   else
