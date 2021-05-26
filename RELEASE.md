@@ -19,7 +19,7 @@ the EXAMPLE_RELEASE_PATHS.local, EXAMPLE_RELEASE_LIBS.local, and EXAMPLE_RELEASE
 files respectively, in the configure/ directory of the appropriate release of the
 [top-level areaDetector](https://github.com/areaDetector/areaDetector) repository.
 
-## __R3-11 (May XXX, 2021)__
+## __R3-11 (May 26, 2021)__
 
 ### NDPluginBadPixel
   * New plugin to fix bad pixels in an NDArray.  The bad pixels are defined
@@ -35,6 +35,9 @@ files respectively, in the configure/ directory of the appropriate release of th
     correct contents, though we never had reports of problems reading them.
     It also led to an HDF5 library error message if a string of length 0 was passed.
     Added 1 to the `size` argument.
+
+### commonLibraryMakefile, commonDriverMakefile
+  * Build with new library nanohttp_stream from ADSupport if WITH_GRAPHICSMAGICK=YES.
 
 ## __R3-10 (September 20, 2020)__
 
