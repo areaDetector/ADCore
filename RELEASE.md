@@ -19,6 +19,18 @@ the EXAMPLE_RELEASE_PATHS.local, EXAMPLE_RELEASE_LIBS.local, and EXAMPLE_RELEASE
 files respectively, in the configure/ directory of the appropriate release of the
 [top-level areaDetector](https://github.com/areaDetector/areaDetector) repository.
 
+## __R3-12 (July XXX, 2021)__
+
+### ADAutoSaveMenu.req
+  * New file to be used with the configMenu utility in autosave.
+    It saves all of the camera and plugin settings defined in iocBoot/iocXXX/auto_settings.req.
+    This allows manually saving and loading different configurations for different setups with the same IOC.
+    It also allows saving and then loading the settings when a camera is reset or restarted,
+    without restarting the IOC.
+### ADPlugins OPI sub-screen.
+  * Added a related display "Plugins/Other #2/AS configMenu" which allows manually saving and loading
+    configurations that use ADAutoSaveMenu.req described above.
+
 ## __R3-11 (May 26, 2021)__
 
 ### NDPluginBadPixel
