@@ -581,16 +581,16 @@ border-radius: 2px;
                 <enum>Menu</enum>
             </property>
             <property name="labels">
-                <string>Image #2;Scan #1;Acquire Sequence;devIocStats;Open CV #1;Edge #1;Bad Pixel #1</string>
+                <string>Image #2;Scan #1;Acquire Sequence;devIocStats;Open CV #1;Edge #1;Bad Pixel #1;AS configMenu</string>
             </property>
             <property name="files">
-                <string>NDStdArrays.adl;scan_more.adl;yySseq.adl;ioc_stats_soft.adl;ADCompVision.adl;NDPluginEdge.adl;NDBadPixel.adl</string>
+                <string>NDStdArrays.adl;scan_more.adl;yySseq.adl;ioc_stats_soft.adl;ADCompVision.adl;NDPluginEdge.adl;NDBadPixel.adl;configMenu.adl</string>
             </property>
             <property name="args">
-                <string>P=$(P), R=image2:;P=$(P), S=scan1, N=1;P=$(P), S=AcquireSequence;ioc=$(P);P=$(P), R=CV1:;P=$(P), R=Edge1:;P=$(P), R=BadPix1:</string>
+                <string>P=$(P), R=image2:;P=$(P), S=scan1, N=1;P=$(P), S=AcquireSequence;ioc=$(P);P=$(P), R=CV1:;P=$(P), R=Edge1:;P=$(P), R=BadPix1:;P=$(P), CONFIG=ADAutoSave</string>
             </property>
             <property name="removeParent">
-                <string>false;false;false;false;false;false;false</string>
+                <string>false;false;false;false;false;false;false;false</string>
             </property>
         </widget>
         <zorder>caLabel_0</zorder>

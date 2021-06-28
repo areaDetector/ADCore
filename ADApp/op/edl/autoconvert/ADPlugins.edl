@@ -449,8 +449,8 @@ botShadowColor rgb 17920 17920 17920
 font "helvetica-medium-r-12.0"
 icon
 buttonLabel "Other #2"
-numPvs 14
-numDsps 7
+numPvs 16
+numDsps 8
 displayFileName {
   0 "NDStdArrays.edl"
   1 "scan_more.edl"
@@ -459,6 +459,7 @@ displayFileName {
   4 "ADCompVision.edl"
   5 "NDPluginEdge.edl"
   6 "NDBadPixel.edl"
+  7 "configMenu.edl"
 }
 menuLabel {
   0 "Image #2"
@@ -468,6 +469,7 @@ menuLabel {
   4 "Open CV #1"
   5 "Edge #1"
   6 "Bad Pixel #1"
+  7 "AS configMenu"
 }
 symbols {
   0 "P=$(P),R=image2:"
@@ -477,6 +479,7 @@ symbols {
   4 "P=$(P),R=CV1:"
   5 "P=$(P),R=Edge1:"
   6 "P=$(P),R=BadPix1:"
+  7 "P=$(P),CONFIG=ADAutoSave"
 }
 replaceSymbols {
   0 1
@@ -486,6 +489,7 @@ replaceSymbols {
   4 1
   5 1
   6 1
+  7 1
 }
 endObjectProperties
 
