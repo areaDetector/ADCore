@@ -1,6 +1,6 @@
 
 file {
-	name="/home/epics/devel/areaDetector/ADCore/ADApp/op/adl/ADPlugins.adl"
+	name="/home/epics/devel/areaDetector-3-11/ADCore/ADApp/op/adl/ADPlugins.adl"
 	version=030109
 }
 display {
@@ -438,6 +438,11 @@ text {
 		label="Bad Pixel #1"
 		name="NDBadPixel.adl"
 		args="P=$(P), R=BadPix1:"
+	}
+	display[7] {
+		label="AS configMenu"
+		name="configMenu.adl"
+		args="P=$(P), CONFIG=ADAutoSave"
 	}
 	clr=14
 	bclr=51
