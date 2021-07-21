@@ -303,7 +303,8 @@ void NTNDArrayConverter::toTimeStamp (NDArray *dest)
     TimeStamp ts;
     pvSrc.get(ts);
 
-    dest->epicsTS.secPastEpoch = (epicsUInt32)ts.getSecondsPastEpoch();
+    // NDArray uses EPICS time, pvAccess uses Posix time, need to convert
+    dest->epicsTS.secPastEpoch = (epicsUInt32)ts.getSecondsPastEpoch() - POSIX_TIME_AT_EPICS_EPOCH;
     dest->epicsTS.nsec = ts.getNanoseconds();
 }
 
@@ -316,7 +317,8 @@ void NTNDArrayConverter::toDataTimeStamp (NDArray *dest)
     TimeStamp ts;
     pvSrc.get(ts);
 
-    dest->timeStamp = ts.toSeconds();
+    // NDArray uses EPICS time, pvAccess uses Posix time, need to convert
+    dest->timeStamp = ts.toSeconds() - POSIX_TIME_AT_EPICS_EPOCH;
 }
 
 template <typename pvAttrType, typename valueType>
