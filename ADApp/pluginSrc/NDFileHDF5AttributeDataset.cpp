@@ -271,7 +271,7 @@ asynStatus NDFileHDF5AttributeDataset::configureDimsFromDataset(bool multiframe,
   extradims = extradimensions;
   extraDimensions_ = extradimensions;
 
-  ndims = 2 + extradims;
+  ndims = extradims;
 
   // first check whether the dimension arrays have been allocated
   // or the number of dimensions have changed.
@@ -306,17 +306,6 @@ asynStatus NDFileHDF5AttributeDataset::configureDimsFromDataset(bool multiframe,
   }
 
   this->rank_ = ndims;
-
-  elementSize_[extradims]   = 1;
-  elementSize_[extradims+1] = 1;
-  chunk_[extradims]         = 1;
-  chunk_[extradims+1]       = 1;
-  maxdims_[extradims]       = 1;
-  maxdims_[extradims+1]     = 1;
-  dims_[extradims]          = 1;
-  dims_[extradims+1]        = 1;
-  offset_[extradims]        = 0;
-  offset_[extradims+1]      = 0;
 
   return status;
 }
