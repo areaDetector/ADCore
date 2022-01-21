@@ -19,7 +19,7 @@ the EXAMPLE_RELEASE_PATHS.local, EXAMPLE_RELEASE_LIBS.local, and EXAMPLE_RELEASE
 files respectively, in the configure/ directory of the appropriate release of the
 [top-level areaDetector](https://github.com/areaDetector/areaDetector) repository.
 
-## __R3-12 (July XXX, 2021)__
+## __R3-12 (January 20, 2022)__
 
 ### ADAutoSaveMenu.req
   * New file to be used with the configMenu utility in autosave.
@@ -30,6 +30,17 @@ files respectively, in the configure/ directory of the appropriate release of th
 ### ADPlugins OPI sub-screen.
   * Added a related display "Plugins/Other #2/AS configMenu" which allows manually saving and loading
     configurations that use ADAutoSaveMenu.req described above.
+### ntndArrayConverter
+  * Added conversion from Posix time to EPICS time when copying NTNDArray to NDArray.
+### EXAMPLE_commonPlugins.cmd
+  * Load configMenu.db.
+  * Fixes to set_request_file_path to use the /db directory rather than the App/Db directory.
+### commonDriverMakefile
+  * Added optional reccaster support module.
+### CCDMultiTrack.cpp
+  * Corrected index error.
+### NDFileHDF5AttributeDataset.cpp
+  * Removed unnecessary creation of 1x1 dimensions.
 
 ## __R3-11 (May 26, 2021)__
 
