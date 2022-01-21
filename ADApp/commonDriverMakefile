@@ -219,6 +219,11 @@ ifdef FFMPEGSERVER
   PROD_LIBS       += avdevice avformat avcodec swresample swscale avutil
 endif
 
+ifdef RECCASTER
+  $(DBD_NAME)_DBD += reccaster.dbd
+  PROD_LIBS       += reccaster
+endif
+
 ifdef ADPLUGINEDGE
   $(DBD_NAME)_DBD  += NDPluginEdge.dbd
   PROD_LIBS         += NDPluginEdge
