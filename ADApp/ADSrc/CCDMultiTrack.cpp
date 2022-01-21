@@ -66,8 +66,6 @@ void CCDMultiTrack::writeTrackStart(epicsInt32 *value, size_t nElements)
     std::vector<int> TrackStart(nElements);
     for (size_t TrackNum = 0; TrackNum < TrackStart.size(); TrackNum++)
     {
-        if (value[TrackNum] < 1)
-            throw std::string("Tracks starts must be >= 1");
         if ((TrackNum > 0) && (value[TrackNum] <= CCDMultiTrack::TrackStart(TrackNum - 1)))
             throw std::string("Tracks starts must be in ascending order");
         /* Copy the new data */
@@ -101,8 +99,6 @@ void CCDMultiTrack::writeTrackEnd(epicsInt32 *value, size_t nElements)
     mTrackEnd.resize(nElements);
     for (size_t TrackNum = 0; TrackNum < TrackEnd.size(); TrackNum++)
     {
-        if (value[TrackNum] < 2)
-            throw std::string("Tracks ends must be >= 2");
         if ((TrackNum > 0) && (value[TrackNum] <= CCDMultiTrack::TrackEnd(TrackNum - 1)))
             throw std::string("Tracks ends must be in ascending order");
         /* Copy the new data */
