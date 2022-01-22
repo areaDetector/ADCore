@@ -19,6 +19,15 @@ the EXAMPLE_RELEASE_PATHS.local, EXAMPLE_RELEASE_LIBS.local, and EXAMPLE_RELEASE
 files respectively, in the configure/ directory of the appropriate release of the
 [top-level areaDetector](https://github.com/areaDetector/areaDetector) repository.
 
+## __R3-12-1 (January 22, 2022)__
+
+### ADCoreVersion.h
+  * Changed to 3.12.1.  R3-12 neglected to change this, so it was still 3.11.
+### test_NDFileHDF5AttributeDataset.cpp
+  * Fixed this test for the changes in NDFileHDF5AttributeDataset.cpp made in R3-12.
+### Documentation file NDFileHDF5.rst
+ * Updated for the changes in NDFileHDF5AttributeDataset.cpp made in R3-12.
+
 ## __R3-12 (January 20, 2022)__
 
 ### ADAutoSaveMenu.req
