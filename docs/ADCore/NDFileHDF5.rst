@@ -483,7 +483,7 @@ Storing Attributes with Dataset Dimensions
    dataset would be a single dimension array of 60 items.
 -  If however, the NDAttribute dataset is stored with the same
    dimensionality as the main dataset then the NDAttribute dataset will
-   have the dimensions of 5x4x3x1x1.
+   have the dimensions of 5x4x3.
 
 Selective Positional Placement of Individual Frames
 ---------------------------------------------------
