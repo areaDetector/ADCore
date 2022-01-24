@@ -185,6 +185,7 @@ dbLoadRecords("$(AUTOSAVE)/db/configMenu.db", "P=$(PREFIX), CONFIG=ADAutoSave")
 #dbLoadRecords("$(FFMPEGSERVER)/db/ffmpegStream.template", "P=$(PREFIX),R=ffmstream1:,PORT=FfmStream1,NDARRAY_PORT=$(PORT)")
 #ffmpegFileConfigure("FfmFile1", 16, 0, "$(PORT)", 0, -1, 0)
 #dbLoadRecords("$(FFMPEGSERVER)/db/ffmpegFile.template", "P=$(PREFIX),R=ffmfile1:,PORT=FfmFile1,NDARRAY_PORT=$(PORT)")
+#set_requestfile_path("$(FFMPEGSERVER)/ffmpegServerApp/Db")
 
 # Optional: load NDPluginEdge plugin
 #NDEdgeConfigure("EDGE1", $(QSIZE), 0, "$(PORT)", 0, 0, 0, 0)
