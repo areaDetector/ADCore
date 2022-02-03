@@ -185,6 +185,7 @@ dbLoadRecords("$(AUTOSAVE)/db/configMenu.db", "P=$(PREFIX), CONFIG=ADAutoSave")
 #dbLoadRecords("$(FFMPEGSERVER)/db/ffmpegStream.template", "P=$(PREFIX),R=ffmstream1:,PORT=FfmStream1,NDARRAY_PORT=$(PORT)")
 #ffmpegFileConfigure("FfmFile1", 16, 0, "$(PORT)", 0, -1, 0)
 #dbLoadRecords("$(FFMPEGSERVER)/db/ffmpegFile.template", "P=$(PREFIX),R=ffmfile1:,PORT=FfmFile1,NDARRAY_PORT=$(PORT)")
+#set_requestfile_path("$(FFMPEGSERVER)/db")
 
 # Optional: load NDPluginEdge plugin
 #NDEdgeConfigure("EDGE1", $(QSIZE), 0, "$(PORT)", 0, 0, 0, 0)
@@ -194,12 +195,12 @@ dbLoadRecords("$(AUTOSAVE)/db/configMenu.db", "P=$(PREFIX), CONFIG=ADAutoSave")
 # Optional: load NDPluginCV plugin
 #NDCVConfigure("CV1", $(QSIZE), 0, "$(PORT)", 0, 0, 0, 0, 0, $(MAX_THREADS=5))
 #dbLoadRecords("$(ADCOMPVISION)/db/NDCV.template",  "P=$(PREFIX),R=CV1:, PORT=CV1,ADDR=0,TIMEOUT=1,NDARRAY_PORT=$(PORT)")
-#set_requestfile_path("$(ADCOMPVISION)/adcvApp/Db")
+#set_requestfile_path("$(ADCOMPVISION)/db")
 
 # Optional: load NDPluginBar plugin
 #NDBarConfigure("BAR1", $(QSIZE), 0, "$(PORT)", 0, 0, 0, 0, 0, $(MAX_THREADS=5))
 #dbLoadRecords("$(ADPLUGINBAR)/db/NDBar.template",  "P=$(PREFIX),R=Bar1:, PORT=BAR1,ADDR=0,TIMEOUT=1,NDARRAY_PORT=$(PORT)")
-#set_requestfile_path("$(ADPLUGINBAR)/barApp/Db")
+#set_requestfile_path("$(ADPLUGINBAR)/db")
 
 # Optional: load scan records
 #dbLoadRecords("$(SSCAN)/sscanApp/Db/scan.db", "P=$(PREFIX),MAXPTS1=2000,MAXPTS2=200,MAXPTS3=20,MAXPTS4=10,MAXPTSH=10")
