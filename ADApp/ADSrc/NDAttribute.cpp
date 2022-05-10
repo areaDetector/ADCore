@@ -17,7 +17,8 @@ static const char *NDAttrSourceStrings[] = {
     "DRIVER",
     "PARAM",
     "EPICS_PV",
-    "FUNCTION"
+    "FUNCTION",
+	"CONST"
 };
 
 const char *NDAttribute::attrSourceString(NDAttrSource_t type)
@@ -56,6 +57,9 @@ const char *NDAttribute::attrSourceString(NDAttrSource_t type)
       break;
     case NDAttrSourceFunct:
       this->sourceTypeString_ = "NDAttrSourceFunct";
+      break;
+    case NDAttrSourceConst:
+      this->sourceTypeString_ = "NDAttrSourceConst";
       break;
     default:
       this->sourceType_ = NDAttrSourceUndefined;
