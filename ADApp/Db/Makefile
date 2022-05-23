@@ -11,6 +11,10 @@ include $(TOP)/configure/CONFIG
 # Create and install (or just install)
 # databases, templates, substitutions like this
 
+# Generate all pvi templates here
+PVI_TEMPLATES=YES
+# Regenerate template files from PVI YAML files if RULES_PVI exists
+-include $(PVI)/configure/RULES_PVI
 
 DB += $(patsubst ../%, %, $(wildcard ../*.template))
 DB += $(patsubst ../%, %, $(wildcard ../*.req))
@@ -23,4 +27,3 @@ DB += $(patsubst ../%, %, $(wildcard ../*.substitutions))
 include $(TOP)/configure/RULES
 #----------------------------------------
 #  ADD RULES AFTER THIS LINE
-

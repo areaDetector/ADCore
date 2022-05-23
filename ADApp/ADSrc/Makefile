@@ -11,6 +11,12 @@ ifeq (vxWorks,$(findstring vxWorks, $(T_A)))
 CODE_CXXFLAGS=
 endif
 
+# Generate only these pvi ParamSet headers here
+PVI_PARAMSETS = asynNDArrayDriverParamSet.h ADDriverParamSet.h
+# Regenerate param set files from PVI YAML files if RULES_PVI exists
+PVI_YAML_PATHS = $(TOP)/pvi
+-include $(PVI)/configure/RULES_PVI
+
 # The following flag is need to compile/link NDArray.cpp on Solaris
 ifeq ($(GNU),NO)
   NDArray_CXXFLAGS_solaris += -features=tmplrefstatic
@@ -30,7 +36,9 @@ INC += Codec.h
 INC += PVAttribute.h
 INC += paramAttribute.h
 INC += functAttribute.h
+INC += asynNDArrayDriverParamSet.h
 INC += asynNDArrayDriver.h
+INC += ADDriverParamSet.h
 INC += ADDriver.h
 INC += CCDMultiTrack.h
 

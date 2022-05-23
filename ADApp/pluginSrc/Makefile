@@ -21,7 +21,16 @@ endif
 # This flag is what switches to declspec(dllexport) when building the library
 USR_CPPFLAGS += -DBUILDING_NDPlugin_API
 
+# Generate only these pvi ParamSet headers here
+PVI_PARAMSETS = NDPluginDriverParamSet.h
+PVI_PARAMSETS += NDPluginFileParamSet.h
+PVI_PARAMSETS += NDFileHDF5ParamSet.h
+# Regenerate param set files from PVI YAML files if RULES_PVI exists
+PVI_YAML_PATHS = $(TOP)/pvi
+-include $(PVI)/configure/RULES_PVI
+
 INC      += NDPluginAPI.h
+INC      += NDPluginDriverParamSet.h
 INC      += NDPluginDriver.h
 LIB_SRCS += NDPluginDriver.cpp
 LIB_SRCS += throttler.cpp
@@ -108,6 +117,7 @@ INC      += NDPosPluginFileReader.h
 LIB_SRCS += NDPosPlugin.cpp
 LIB_SRCS += NDPosPluginFileReader.cpp
 
+INC      += NDPluginFileParamSet.h
 INC      += NDPluginFile.h
 LIB_SRCS += NDPluginFile.cpp
 
@@ -129,6 +139,7 @@ endif
 
 ifeq ($(WITH_HDF5),YES)
   DBD      += NDFileHDF5.dbd
+  INC      += NDFileHDF5ParamSet.h
   INC      += NDFileHDF5.h
   INC      += NDFileHDF5Dataset.h
   INC      += NDFileHDF5AttributeDataset.h
@@ -243,4 +254,3 @@ include $(TOP)/ADApp/commonLibraryMakefile
 include $(TOP)/configure/RULES
 #----------------------------------------
 #  ADD RULES AFTER THIS LINE
-
