@@ -43,7 +43,7 @@ typedef struct {
 } fftPvt_t;
 
 /** Compute FFTs on signals */
-class NDPLUGIN_API NDPluginFFT : public NDPluginDriver {
+class NDPLUGIN_API NDPluginFFT : public NDPluginDriverParamSet, public NDPluginDriver {
 public:
   NDPluginFFT(const char *portName, int queueSize, int blockingCallbacks,
               const char *NDArrayPort, int NDArrayAddr,

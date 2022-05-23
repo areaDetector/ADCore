@@ -1,3 +1,4 @@
+include "ADDriverParameters.template"
 #=================================================================#
 # Template file: ADBase.template
 # Database for area detector control using asyn driver and standard asyn device support
@@ -10,570 +11,57 @@
 
 include "NDArrayBase.template"
 
-record(longin, "$(P)$(R)MaxSizeX_RBV")
-{
-   field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))MAX_SIZE_X")
-   field(SCAN, "I/O Intr")
-}
-
-record(longin, "$(P)$(R)MaxSizeY_RBV")
-{
-   field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))MAX_SIZE_Y")
-   field(SCAN, "I/O Intr")
-}
-
 ###################################################################
 #  These records control the detector readout                     #
 #  including binning, region start and size                       # 
 ###################################################################
-
-record(longout, "$(P)$(R)BinX")
-{
-   field(PINI, "YES")
-   field(DTYP, "asynInt32")
-   field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))BIN_X")
-   field(VAL,  "1")
-   info(autosaveFields, "VAL")
-}
-
-record(longin, "$(P)$(R)BinX_RBV")
-{
-   field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))BIN_X")
-   field(SCAN, "I/O Intr")
-}
-
-record(longout, "$(P)$(R)BinY")
-{
-   field(PINI, "YES")
-   field(DTYP, "asynInt32")
-   field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))BIN_Y")
-   field(VAL,  "1")
-   info(autosaveFields, "VAL")
-}
-
-record(longin, "$(P)$(R)BinY_RBV")
-{
-   field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))BIN_Y")
-   field(SCAN, "I/O Intr")
-}
-
-record(longout, "$(P)$(R)MinX")
-{
-   field(PINI, "YES")
-   field(DTYP, "asynInt32")
-   field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))MIN_X")
-   field(VAL,  "0")
-   info(autosaveFields, "VAL")
-}
-
-record(longin, "$(P)$(R)MinX_RBV")
-{
-   field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))MIN_X")
-   field(SCAN, "I/O Intr")
-}
-
-record(longout, "$(P)$(R)MinY")
-{
-   field(PINI, "YES")
-   field(DTYP, "asynInt32")
-   field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))MIN_Y")
-   field(VAL,  "0")
-   info(autosaveFields, "VAL")
-}
-
-record(longin, "$(P)$(R)MinY_RBV")
-{
-   field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))MIN_Y")
-   field(SCAN, "I/O Intr")
-}
-
-record(longout, "$(P)$(R)SizeX")
-{
-   field(PINI, "YES")
-   field(DTYP, "asynInt32")
-   field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))SIZE_X")
-   field(VAL,  "1")
-   info(autosaveFields, "VAL")
-}
-
-record(longin, "$(P)$(R)SizeX_RBV")
-{
-   field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))SIZE_X")
-   field(SCAN, "I/O Intr")
-}
-
-record(longout, "$(P)$(R)SizeY")
-{
-   field(PINI, "YES")
-   field(DTYP, "asynInt32")
-   field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))SIZE_Y")
-   field(VAL,  "1")
-   info(autosaveFields, "VAL")
-}
-
-record(longin, "$(P)$(R)SizeY_RBV")
-{
-   field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))SIZE_Y")
-   field(SCAN, "I/O Intr")
-}
-
-record(bo, "$(P)$(R)ReverseX")
-{
-   field(PINI, "YES")
-   field(DTYP, "asynInt32")
-   field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))REVERSE_X")
-   field(ZNAM, "No")
-   field(ONAM, "Yes")
-   field(VAL,  "0")
-   info(autosaveFields, "VAL")
-}
-
-record(bi, "$(P)$(R)ReverseX_RBV")
-{
-   field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))REVERSE_X")
-   field(ZNAM, "No")
-   field(ONAM, "Yes")
-   field(SCAN, "I/O Intr")
-}
-
-record(bo, "$(P)$(R)ReverseY")
-{
-   field(PINI, "YES")
-   field(DTYP, "asynInt32")
-   field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))REVERSE_Y")
-   field(ZNAM, "No")
-   field(ONAM, "Yes")
-   field(VAL,  "0")
-   info(autosaveFields, "VAL")
-}
-
-record(bi, "$(P)$(R)ReverseY_RBV")
-{
-   field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))REVERSE_Y")
-   field(ZNAM, "No")
-   field(ONAM, "Yes")
-   field(SCAN, "I/O Intr")
-}
 
 
 ###################################################################
 #  These records control the acquisition time and                 #
 #  period                                                         # 
 ###################################################################
-record(ao, "$(P)$(R)AcquireTime")
-{
-   field(PINI, "YES")
-   field(DTYP, "asynFloat64")
-   field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))ACQ_TIME")
-   field(PREC, "3")
-   field(VAL,  "1.0")
-   info(autosaveFields, "VAL")
-}
-
-record(ai, "$(P)$(R)AcquireTime_RBV")
-{
-   field(DTYP, "asynFloat64")
-   field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))ACQ_TIME")
-   field(PREC, "3")
-   field(SCAN, "I/O Intr")
-}
-
-record(ao, "$(P)$(R)AcquirePeriod")
-{
-   field(PINI, "YES")
-   field(DTYP, "asynFloat64")
-   field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))ACQ_PERIOD")
-   field(PREC, "3")
-   field(VAL,  "0")
-   info(autosaveFields, "VAL")
-}
-
-record(ai, "$(P)$(R)AcquirePeriod_RBV")
-{
-   field(DTYP, "asynFloat64")
-   field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))ACQ_PERIOD")
-   field(PREC, "3")
-   field(SCAN, "I/O Intr")
-}
-
-record(ai, "$(P)$(R)TimeRemaining_RBV")
-{
-   field(DTYP, "asynFloat64")
-   field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))TIME_REMAINING")
-   field(PREC, "3")
-   field(SCAN, "I/O Intr")
-}
 
 ###################################################################
 #  These records control the gain                                 # 
 ###################################################################
-record(ao, "$(P)$(R)Gain")
-{
-   field(PINI, "YES")
-   field(DTYP, "asynFloat64")
-   field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))GAIN")
-   field(VAL,  "1.0")
-   field(PREC, "3")
-   info(autosaveFields, "VAL")
-}
-
-record(ai, "$(P)$(R)Gain_RBV")
-{
-   field(DTYP, "asynFloat64")
-   field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))GAIN")
-   field(PREC, "3")
-   field(SCAN, "I/O Intr")
-}
 
 ###################################################################
 #  These records control the frame type                           # 
 ###################################################################
-record(mbbo, "$(P)$(R)FrameType")
-{
-   field(PINI, "YES")
-   field(DTYP, "asynInt32")
-   field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))FRAME_TYPE")
-   field(ZRST, "Normal")
-   field(ZRVL, "0")
-   field(ONST, "Background")
-   field(ONVL, "1")
-   field(TWST, "FlatField")
-   field(TWVL, "2")
-   field(THST, "DblCorrelation")
-   field(THVL, "3")
-   field(VAL,  "0")
-   info(autosaveFields, "VAL")
-}
-
-record(mbbi, "$(P)$(R)FrameType_RBV")
-{
-   field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))FRAME_TYPE")
-   field(ZRST, "Normal")
-   field(ZRVL, "0")
-   field(ONST, "Background")
-   field(ONVL, "1")
-   field(TWST, "FlatField")
-   field(TWVL, "2")
-   field(THST, "DblCorrelation")
-   field(THVL, "3")
-   field(SCAN, "I/O Intr")
-}
 
 ###################################################################
 #  These records control the acquisition mode                     # 
 ###################################################################
-record(mbbo, "$(P)$(R)ImageMode")
-{
-   field(PINI, "YES")
-   field(DTYP, "asynInt32")
-   field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))IMAGE_MODE")
-   field(ZRST, "Single")
-   field(ZRVL, "0")
-   field(ONST, "Multiple")
-   field(ONVL, "1")
-   field(TWST, "Continuous")
-   field(TWVL, "2")
-   field(VAL,  "2")
-   info(autosaveFields, "VAL")
-}
-
-record(mbbi, "$(P)$(R)ImageMode_RBV")
-{
-   field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))IMAGE_MODE")
-   field(ZRST, "Single")
-   field(ZRVL, "0")
-   field(ONST, "Multiple")
-   field(ONVL, "1")
-   field(TWST, "Continuous")
-   field(TWVL, "2")
-   field(SCAN, "I/O Intr")
-}
 
 ###################################################################
 #  These records control the trigger mode                         # 
 ###################################################################
-record(mbbo, "$(P)$(R)TriggerMode")
-{
-   field(PINI, "YES")
-   field(DTYP, "asynInt32")
-   field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))TRIGGER_MODE")
-   field(ZRST, "Internal")
-   field(ZRVL, "0")
-   field(ONST, "External")
-   field(ONVL, "1")
-   field(VAL,  "0")
-   info(autosaveFields, "VAL")
-}
-
-record(mbbi, "$(P)$(R)TriggerMode_RBV")
-{
-   field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))TRIGGER_MODE")
-   field(ZRST, "Internal")
-   field(ZRVL, "0")
-   field(ONST, "External")
-   field(ONVL, "1")
-   field(SCAN, "I/O Intr")
-}
 
 ###################################################################
 #  These records control the number of exposures and              #
 #  number of images                                               # 
 ###################################################################
-record(longout, "$(P)$(R)NumExposures")
-{
-   field(PINI, "YES")
-   field(DTYP, "asynInt32")
-   field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))NEXPOSURES")
-   field(VAL,  "1")
-   info(autosaveFields, "VAL")
-}
-
-record(longin, "$(P)$(R)NumExposures_RBV")
-{
-   field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))NEXPOSURES")
-   field(SCAN, "I/O Intr")
-}
-
-record(longin, "$(P)$(R)NumExposuresCounter_RBV")
-{
-   field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))NEXPOSURES_COUNTER")
-   field(SCAN, "I/O Intr")
-}
-record(longout, "$(P)$(R)NumImages")
-{
-   field(PINI, "YES")
-   field(DTYP, "asynInt32")
-   field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))NIMAGES")
-   field(VAL,  "1")
-   info(autosaveFields, "VAL")
-}
-
-record(longin, "$(P)$(R)NumImages_RBV")
-{
-   field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))NIMAGES")
-   field(SCAN, "I/O Intr")
-}
-
-record(longin, "$(P)$(R)NumImagesCounter_RBV")
-{
-   field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))NIMAGES_COUNTER")
-   field(SCAN, "$(SCANRATE=I/O Intr)")
-}
 
 ###################################################################
 #  These records are for the detector state                       # 
 ###################################################################
-
-record(mbbi, "$(P)$(R)DetectorState_RBV")
-{
-    field(DTYP, "asynInt32")
-    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))STATUS")
-    field(ZRST, "Idle")
-    field(ZRVL, "0")
-    field(ZRSV, "NO_ALARM")
-    field(ONST, "Acquire")
-    field(ONVL, "1")
-    field(ONSV, "NO_ALARM")
-    field(TWST, "Readout")
-    field(TWVL, "2")
-    field(TWSV, "NO_ALARM")
-    field(THST, "Correct")
-    field(THVL, "3")
-    field(THSV, "NO_ALARM")
-    field(FRST, "Saving")
-    field(FRVL, "4")
-    field(FRSV, "NO_ALARM")
-    field(FVST, "Aborting")
-    field(FVVL, "5")
-    field(FVSV, "MINOR")
-    field(SXST, "Error")
-    field(SXVL, "6")
-    field(SXSV, "MAJOR")
-    field(SVST, "Waiting")
-    field(SVVL, "7")
-    field(SVSV, "NO_ALARM")
-    field(EIST, "Initializing")
-    field(EIVL, "8")
-    field(EISV, "NO_ALARM")
-    field(NIST, "Disconnected")
-    field(NIVL, "9")
-    field(NISV, "INVALID")
-    field(TEST, "Aborted")
-    field(TEVL, "10")
-    field(TESV, "MINOR")
-    field(SCAN, "I/O Intr")
-}
 
 ###################################################################
 #  These records provide status information                       # 
 ###################################################################
 
 # Status message.
-record(waveform, "$(P)$(R)StatusMessage_RBV")
-{
-    field(DTYP, "asynOctetRead")
-    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))STATUS_MESSAGE")
-    field(FTVL, "CHAR")
-    field(NELM, "256")
-    field(SCAN, "I/O Intr")
-}
-
-record(waveform, "$(P)$(R)StringToServer_RBV")
-{
-    field(DTYP, "asynOctetRead")
-    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))STRING_TO_SERVER")
-    field(FTVL, "CHAR")
-    field(NELM, "256")
-    field(SCAN, "I/O Intr")
-}
-
-record(waveform, "$(P)$(R)StringFromServer_RBV")
-{
-    field(DTYP, "asynOctetRead")
-    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))STRING_FROM_SERVER")
-    field(FTVL, "CHAR")
-    field(NELM, "256")
-    field(SCAN, "I/O Intr")
-}
 
 ################################################################@###
 #  This record can be used to force a read of the detector status  # 
 ####################################################################
-record(bo,"$(P)$(R)ReadStatus") {
-    field(DTYP,"asynInt32")
-    field(OUT, "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))READ_STATUS")
-    field(VAL, "1")
-    field(SCAN,"Passive")
-    info(autosaveFields, "SCAN")
-}
 
 ###################################################################
 #  These records control the shutter                              # 
 ###################################################################
 
-record(mbbo, "$(P)$(R)ShutterMode")
-{
-    field(PINI, "YES")
-    field(DTYP, "asynInt32")
-    field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))SHUTTER_MODE")
-    field(ZRST, "None")
-    field(ZRVL, "0")
-    field(ONST, "EPICS PV")
-    field(ONVL, "1")
-    field(TWST, "Detector output")
-    field(TWVL, "2")
-    field(VAL,  "0")
-    info(autosaveFields, "VAL")
-}
-
-record(mbbi, "$(P)$(R)ShutterMode_RBV")
-{
-    field(DTYP, "asynInt32")
-    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))SHUTTER_MODE")
-    field(ZRST, "None")
-    field(ZRVL, "0")
-    field(ONST, "EPICS PV")
-    field(ONVL, "1")
-    field(TWST, "Camera output")
-    field(TWVL, "2")
-    field(SCAN, "I/O Intr")
-}
-
-record(bo, "$(P)$(R)ShutterControl")
-{
-    field(PINI, "YES")
-    field(DTYP, "asynInt32")
-    field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))SHUTTER_CONTROL")
-    field(ZNAM, "Close")
-    field(ONAM, "Open")
-    field(VAL,  "0")
-}
-
-record(bi, "$(P)$(R)ShutterControl_RBV")
-{
-    field(DTYP, "asynInt32")
-    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))SHUTTER_CONTROL")
-    field(ZNAM, "Close")
-    field(ONAM, "Open")
-    field(SCAN, "I/O Intr")
-}
-
-record(bi, "$(P)$(R)ShutterStatus_RBV")
-{
-    field(DTYP, "asynInt32")
-    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))SHUTTER_STATUS")
-    field(ZNAM, "Closed")
-    field(ZSV,  "NO_ALARM")
-    field(ONAM, "Open")
-    field(OSV,  "MINOR")
-    field(SCAN, "I/O Intr")
-}
-
-record(ao, "$(P)$(R)ShutterOpenDelay")
-{
-   field(PINI, "YES")
-   field(DTYP, "asynFloat64")
-   field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))SHUTTER_OPEN_DELAY")
-   field(PREC, "3")
-   field(VAL,  "0.0")
-   info(autosaveFields, "VAL")
-}
-
-record(ai, "$(P)$(R)ShutterOpenDelay_RBV")
-{
-   field(DTYP, "asynFloat64")
-   field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))SHUTTER_OPEN_DELAY")
-   field(PREC, "3")
-   field(SCAN, "I/O Intr")
-}
-
-record(ao, "$(P)$(R)ShutterCloseDelay")
-{
-   field(PINI, "YES")
-   field(DTYP, "asynFloat64")
-   field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))SHUTTER_CLOSE_DELAY")
-   field(PREC, "3")
-   field(VAL,  "0.0")
-   info(autosaveFields, "VAL")
-}
-
-record(ai, "$(P)$(R)ShutterCloseDelay_RBV")
-{
-   field(DTYP, "asynFloat64")
-   field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))SHUTTER_CLOSE_DELAY")
-   field(PREC, "3")
-   field(SCAN, "I/O Intr")
-}
-
 # This record changes state when the driver opens/closes an EPICS shutter
-record(bi, "$(P)$(R)ShutterControlEPICS")
-{
-    field(DTYP, "asynInt32")
-    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))SHUTTER_CONTROL_EPICS")
-    field(ZNAM, "Closed")
-    field(ZSV,  "NO_ALARM")
-    field(ONAM, "Open")
-    field(OSV,  "MINOR")
-    field(SCAN, "I/O Intr")
-    field(FLNK, "$(P)$(R)ShutterFanout.PROC")
-}
 
 record(fanout, "$(P)$(R)ShutterFanout")
 {
@@ -619,35 +107,6 @@ record(mbbi, "$(P)$(R)ShutterStatusEPICS_RBV")
 ###################################################################
 #  These records control the detector temperature                 # 
 ###################################################################
- 
-record(ao, "$(P)$(R)Temperature")
-{
-   field(PINI, "YES")
-   field(DTYP, "asynFloat64")
-   field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))TEMPERATURE")
-   field(PREC, "1")
-   field(EGU,  "C")
-   field(VAL,  "25.0")
-   info(autosaveFields, "VAL")
-}
-
-record(ai, "$(P)$(R)Temperature_RBV")
-{
-   field(DTYP, "asynFloat64")
-   field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))TEMPERATURE")
-   field(PREC, "1")
-   field(EGU,  "C")
-   field(SCAN, "I/O Intr")
-}
-
-record(ai, "$(P)$(R)TemperatureActual")
-{
-   field(DTYP, "asynFloat64")
-   field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))TEMPERATURE_ACTUAL")
-   field(PREC, "1")
-   field(EGU,  "C")
-   field(SCAN, "I/O Intr")
-}
 
 
 ###################################################################
@@ -662,3 +121,8 @@ record(asyn,"$(P)$(R)AsynIO")
     info("ADType", "ADDriver")
 }
 
+# Overriding value in auto-generated template
+record(mbbo, "$(P)$(R)ShutterMode")
+{
+    field(TWST, "Detector output")
+}

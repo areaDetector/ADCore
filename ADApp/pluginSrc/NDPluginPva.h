@@ -15,7 +15,7 @@ typedef std::tr1::shared_ptr<NTNDArrayRecord> NTNDArrayRecordPtr;
 
 /** Converts NDArray callback data into EPICS V4 NTNDArray data and exposes it
   * as an EPICS V4 PV  */
-class NDPLUGIN_API NDPluginPva : public NDPluginDriver,
+class NDPLUGIN_API NDPluginPva : public NDPluginDriverParamSet, public NDPluginDriver,
                      public std::tr1::enable_shared_from_this<NDPluginPva>
 {
 public:

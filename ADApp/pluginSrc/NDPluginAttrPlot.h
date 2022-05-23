@@ -90,7 +90,7 @@ private:
  * and populated in first come first served fashion (unpredictable order).
  * On reset or reacquistion the cache is cleared and all data is discarded.
  */
-class NDPLUGIN_API NDPluginAttrPlot : public NDPluginDriver
+class NDPLUGIN_API NDPluginAttrPlot : public NDPluginDriverParamSet, public NDPluginDriver
 {
     typedef CircularBuffer<double> CB;
 

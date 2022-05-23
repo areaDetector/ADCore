@@ -59,7 +59,7 @@
   * Low clipping
   * High clipping
   * Frame averaging */
-class NDPLUGIN_API NDPluginProcess : public NDPluginDriver {
+class NDPLUGIN_API NDPluginProcess : public NDPluginDriverParamSet, public NDPluginDriver {
 public:
     NDPluginProcess(const char *portName, int queueSize, int blockingCallbacks,
                  const char *NDArrayPort, int NDArrayAddr,

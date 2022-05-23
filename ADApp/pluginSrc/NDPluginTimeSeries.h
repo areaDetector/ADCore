@@ -33,7 +33,7 @@
 
 
 /** Compute time series on signals */
-class NDPLUGIN_API NDPluginTimeSeries : public NDPluginDriver {
+class NDPLUGIN_API NDPluginTimeSeries : public NDPluginDriverParamSet, public NDPluginDriver {
 public:
   NDPluginTimeSeries(const char *portName, int queueSize, int blockingCallbacks,
                      const char *NDArrayPort, int NDArrayAddr,

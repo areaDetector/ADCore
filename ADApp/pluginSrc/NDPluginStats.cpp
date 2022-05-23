@@ -765,7 +765,7 @@ NDPluginStats::NDPluginStats(const char *portName, int queueSize, int blockingCa
                          int maxBuffers, size_t maxMemory,
                          int priority, int stackSize, int maxThreads)
     /* Invoke the base class constructor */
-    : NDPluginDriver(portName, queueSize, blockingCallbacks,
+    : NDPluginDriver(static_cast<NDPluginDriverParamSet*>(this), portName, queueSize, blockingCallbacks,
                    NDArrayPort, NDArrayAddr, 2, maxBuffers, maxMemory,
                    asynInt32ArrayMask | asynFloat64ArrayMask | asynGenericPointerMask,
                    asynInt32ArrayMask | asynFloat64ArrayMask | asynGenericPointerMask,

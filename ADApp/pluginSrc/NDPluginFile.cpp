@@ -38,20 +38,20 @@ asynStatus NDPluginFile::openFileBase(NDFileOpenMode_t openMode, NDArray *pArray
     if (this->useAttrFilePrefix)
         this->attrFileNameSet();
 
-    setIntegerParam(NDFileWriteStatus, NDFileWriteOK);
-    setStringParam(NDFileWriteMessage, "");
+    setIntegerParam(paramSet->NDFileWriteStatus, NDFileWriteOK);
+    setStringParam(paramSet->NDFileWriteMessage, "");
     status = (asynStatus)createFileName(2*MAX_FILENAME_LEN, fullFileName);
     if (status) {
         asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
               "%s::%s error creating full file name, fullFileName=%s, status=%d\n",
               driverName, functionName, fullFileName, status);
-        setIntegerParam(NDFileWriteStatus, NDFileWriteError);
-        setStringParam(NDFileWriteMessage, "Error creating full file name");
+        setIntegerParam(paramSet->NDFileWriteStatus, NDFileWriteError);
+        setStringParam(paramSet->NDFileWriteMessage, "Error creating full file name");
         return(status);
     }
-    setStringParam(NDFullFileName, fullFileName);
+    setStringParam(paramSet->NDFullFileName, fullFileName);
 
-    getStringParam(NDFileTempSuffix, sizeof(tempSuffix), tempSuffix);
+    getStringParam(paramSet->NDFileTempSuffix, sizeof(tempSuffix), tempSuffix);
     if ( *tempSuffix != 0 &&
          (strlen(fullFileName) + strlen(tempSuffix)) < sizeof(fullFileName) ) {
         strcat( fullFileName, tempSuffix );
@@ -69,8 +69,8 @@ asynStatus NDPluginFile::openFileBase(NDFileOpenMode_t openMode, NDArray *pArray
         asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
               "%s::%s %s\n",
               driverName, functionName, errorMessage);
-        setIntegerParam(NDFileWriteStatus, NDFileWriteError);
-        setStringParam(NDFileWriteMessage, errorMessage);
+        setIntegerParam(paramSet->NDFileWriteStatus, NDFileWriteError);
+        setStringParam(paramSet->NDFileWriteMessage, errorMessage);
     }
     epicsMutexUnlock(this->fileMutexId);
     this->lock();
@@ -90,11 +90,11 @@ asynStatus NDPluginFile::closeFileBase()
     char errorMessage[256];
     static const char* functionName = "closeFileBase";
 
-    setIntegerParam(NDFileWriteStatus, NDFileWriteOK);
-    setStringParam(NDFileWriteMessage, "");
+    setIntegerParam(paramSet->NDFileWriteStatus, NDFileWriteOK);
+    setStringParam(paramSet->NDFileWriteMessage, "");
 
-    getStringParam(NDFullFileName, sizeof(fullFileName), fullFileName);
-    getStringParam(NDFileTempSuffix, sizeof(tempSuffix), tempSuffix);
+    getStringParam(paramSet->NDFullFileName, sizeof(fullFileName), fullFileName);
+    getStringParam(paramSet->NDFileTempSuffix, sizeof(tempSuffix), tempSuffix);
 
     /* Call the closeFile method in the derived class */
     /* Do this with the main lock released since it is slow */
@@ -123,8 +123,8 @@ asynStatus NDPluginFile::closeFileBase()
         asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
               "%s::%s %s\n",
               driverName, functionName, errorMessage);
-        setIntegerParam(NDFileWriteStatus, NDFileWriteError);
-        setStringParam(NDFileWriteMessage, errorMessage);
+        setIntegerParam(paramSet->NDFileWriteStatus, NDFileWriteError);
+        setStringParam(paramSet->NDFileWriteMessage, errorMessage);
     }
 
     return(status);
@@ -141,8 +141,8 @@ asynStatus NDPluginFile::readFileBase(void)
     char errorMessage[256];
     static const char* functionName = "readFileBase";
 
-    setIntegerParam(NDFileWriteStatus, NDFileWriteOK);
-    setStringParam(NDFileWriteMessage, "");
+    setIntegerParam(paramSet->NDFileWriteStatus, NDFileWriteOK);
+    setStringParam(paramSet->NDFileWriteMessage, "");
 
     status = (asynStatus)createFileName(2*MAX_FILENAME_LEN, fullFileName);
     if (status) {
@@ -154,7 +154,7 @@ asynStatus NDPluginFile::readFileBase(void)
 
     /* Call the readFile method in the derived class */
     /* Do this with the main lock released since it is slow */
-    setStringParam(NDFullFileName, fullFileName);
+    setStringParam(paramSet->NDFullFileName, fullFileName);
     this->unlock();
     epicsMutexLock(this->fileMutexId);
     status = this->openFile(fullFileName, NDFileModeRead, pArray);
@@ -164,8 +164,8 @@ asynStatus NDPluginFile::readFileBase(void)
         asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
                 "%s::%s %s\n",
                 driverName, functionName, errorMessage);
-        setIntegerParam(NDFileWriteStatus, NDFileWriteError);
-        setStringParam(NDFileWriteMessage, errorMessage);
+        setIntegerParam(paramSet->NDFileWriteStatus, NDFileWriteError);
+        setStringParam(paramSet->NDFileWriteMessage, errorMessage);
     }
     else {
         status = this->readFile(&pArray);
@@ -175,8 +175,8 @@ asynStatus NDPluginFile::readFileBase(void)
             asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
                     "%s::%s %s\n",
                     driverName, functionName, errorMessage);
-            setIntegerParam(NDFileWriteStatus, NDFileWriteError);
-            setStringParam(NDFileWriteMessage, errorMessage);
+            setIntegerParam(paramSet->NDFileWriteStatus, NDFileWriteError);
+            setStringParam(paramSet->NDFileWriteMessage, errorMessage);
         }
         this->closeFile();
     }
@@ -225,12 +225,12 @@ asynStatus NDPluginFile::writeFileBase()
     // when we have the mutex unlocked
     pArrayOut->reserve();
 
-    getIntegerParam(NDFileWriteMode, &fileWriteMode);
-    getIntegerParam(NDFileNumCapture, &numCapture);
-    getIntegerParam(NDFileNumCaptured, &numCaptured);
+    getIntegerParam(paramSet->NDFileWriteMode, &fileWriteMode);
+    getIntegerParam(paramSet->NDFileNumCapture, &numCapture);
+    getIntegerParam(paramSet->NDFileNumCaptured, &numCaptured);
 
-    setIntegerParam(NDFileWriteStatus, NDFileWriteOK);
-    setStringParam(NDFileWriteMessage, "");
+    setIntegerParam(paramSet->NDFileWriteStatus, NDFileWriteOK);
+    setStringParam(paramSet->NDFileWriteMessage, "");
 
     /* We unlock the overall mutex here because we want the callbacks to be able to queue new
      * frames without waiting while we write files here.  The only restriction is that the
@@ -238,11 +238,11 @@ asynStatus NDPluginFile::writeFileBase()
 
     switch(fileWriteMode) {
         case NDFileModeSingle:
-            setIntegerParam(NDWriteFile, 1);
+            setIntegerParam(paramSet->NDWriteFile, 1);
             callParamCallbacks();
-            // Some file writing plugins (e.g. HDF5) use the value of NDFileNumCaptured
+            // Some file writing plugins (e.g. HDF5) use the value of paramSet->NDFileNumCaptured
             // even in single mode
-            setIntegerParam(NDFileNumCaptured, 1);
+            setIntegerParam(paramSet->NDFileNumCaptured, 1);
             status = this->openFileBase(NDFileModeWrite, pArrayOut);
             if (status == asynSuccess) {
                 this->unlock();
@@ -257,13 +257,13 @@ asynStatus NDPluginFile::writeFileBase()
                     asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
                           "%s::%s %s\n",
                           driverName, functionName, errorMessage);
-                    setIntegerParam(NDFileWriteStatus, NDFileWriteError);
-                    setStringParam(NDFileWriteMessage, errorMessage);
+                    setIntegerParam(paramSet->NDFileWriteStatus, NDFileWriteError);
+                    setStringParam(paramSet->NDFileWriteMessage, errorMessage);
                 } else {
                     status = this->closeFileBase();
                 }
             }
-            setIntegerParam(NDWriteFile, 0);
+            setIntegerParam(paramSet->NDWriteFile, 0);
             callParamCallbacks();
             break;
         case NDFileModeCapture:
@@ -272,11 +272,11 @@ asynStatus NDPluginFile::writeFileBase()
                 asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
                     "%s::%s: ERROR, no capture buffer present\n",
                     driverName, functionName);
-                setIntegerParam(NDFileWriteStatus, NDFileWriteError);
-                setStringParam(NDFileWriteMessage, "ERROR, no capture buffer present");
+                setIntegerParam(paramSet->NDFileWriteStatus, NDFileWriteError);
+                setStringParam(paramSet->NDFileWriteMessage, "ERROR, no capture buffer present");
                 break;
             }
-            setIntegerParam(NDWriteFile, 1);
+            setIntegerParam(paramSet->NDWriteFile, 1);
             callParamCallbacks();
             if (this->supportsMultipleArrays)
                 status = this->openFileBase(NDFileModeWrite | NDFileModeMultiple, pArrayOut);
@@ -300,8 +300,8 @@ asynStatus NDPluginFile::writeFileBase()
                             asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
                                   "%s::%s %s\n",
                                   driverName, functionName, errorMessage);
-                            setIntegerParam(NDFileWriteStatus, NDFileWriteError);
-                            setStringParam(NDFileWriteMessage, errorMessage);
+                            setIntegerParam(paramSet->NDFileWriteStatus, NDFileWriteError);
+                            setStringParam(paramSet->NDFileWriteMessage, errorMessage);
                         } else {
                             if (!this->supportsMultipleArrays)
                                 status = this->closeFileBase();
@@ -313,8 +313,8 @@ asynStatus NDPluginFile::writeFileBase()
             if ((status == asynSuccess) && this->supportsMultipleArrays)
                 status = this->closeFileBase();
             this->registerInitFrameInfo(NULL);
-            setIntegerParam(NDFileNumCaptured, 0);
-            setIntegerParam(NDWriteFile, 0);
+            setIntegerParam(paramSet->NDFileNumCaptured, 0);
+            setIntegerParam(paramSet->NDWriteFile, 0);
             callParamCallbacks();
             break;
         case NDFileModeStream:
@@ -324,8 +324,8 @@ asynStatus NDPluginFile::writeFileBase()
             else
                 this->attrFileNameCheck();
             if (!this->isFrameValid(pArrayOut)) {
-                setIntegerParam(NDFileWriteStatus, NDFileWriteError);
-                setStringParam(NDFileWriteMessage, "Invalid frame. Ignoring.");
+                setIntegerParam(paramSet->NDFileWriteStatus, NDFileWriteError);
+                setStringParam(paramSet->NDFileWriteMessage, "Invalid frame. Ignoring.");
                 status = asynError;
             }
             if (status == asynSuccess) {
@@ -341,8 +341,8 @@ asynStatus NDPluginFile::writeFileBase()
                     asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
                             "%s::%s %s\n",
                             driverName, functionName, errorMessage);
-                    setIntegerParam(NDFileWriteStatus, NDFileWriteError);
-                    setStringParam(NDFileWriteMessage, errorMessage);
+                    setIntegerParam(paramSet->NDFileWriteStatus, NDFileWriteError);
+                    setStringParam(paramSet->NDFileWriteMessage, errorMessage);
                 } else {
                     status = this->attrFileCloseCheck();
                     if (!this->supportsMultipleArrays)
@@ -361,9 +361,9 @@ asynStatus NDPluginFile::writeFileBase()
      * Only do this if all of the following conditions are met
      *  - DeleteOriginalFile is true
      *  - There were no errors above
-     *  - The NDFullFileName attribute is present and contains a non-blank string
+     *  - The paramSet->NDFullFileName attribute is present and contains a non-blank string
      */
-    getIntegerParam(NDFileDeleteDriverFile, &deleteDriverFile);
+    getIntegerParam(paramSet->NDFileDeleteDriverFile, &deleteDriverFile);
     if ((status == asynSuccess) && deleteDriverFile) {
         pAttribute = pArrayOut->pAttributeList->find("DriverFileName");
         if (pAttribute) {
@@ -401,7 +401,7 @@ void NDPluginFile::freeCaptureBuffer(int numCapture)
     this->pCapture = NULL;
 }
 
-/** Handles the logic for when NDFileCapture changes state, starting or stopping capturing or streaming NDArrays
+/** Handles the logic for when paramSet->NDFileCapture changes state, starting or stopping capturing or streaming NDArrays
   * to a file.
   * \param[in] capture Flag to start or stop capture; 1=start capture, 0=stop capture. */
 asynStatus NDPluginFile::doCapture(int capture)
@@ -433,8 +433,8 @@ asynStatus NDPluginFile::doCapture(int capture)
             this->useAttrFilePrefix = true;
     }
 
-    getIntegerParam(NDFileWriteMode, &fileWriteMode);
-    getIntegerParam(NDFileNumCapture, &numCapture);
+    getIntegerParam(paramSet->NDFileWriteMode, &fileWriteMode);
+    getIntegerParam(paramSet->NDFileNumCapture, &numCapture);
 
     switch(fileWriteMode) {
         case NDFileModeSingle:
@@ -442,13 +442,13 @@ asynStatus NDPluginFile::doCapture(int capture)
             asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
                 "%s:%s ERROR: capture not supported in Single mode\n",
                 driverName, functionName);
-            setStringParam(NDFileWriteMessage, "ERROR: capture not supported in Single mode");
-            setIntegerParam(NDFileCapture, 0);
+            setStringParam(paramSet->NDFileWriteMessage, "ERROR: capture not supported in Single mode");
+            setIntegerParam(paramSet->NDFileCapture, 0);
             return(asynError);
         case NDFileModeCapture:
             if (capture) {
                 /* Capturing was just started */
-                setIntegerParam(NDFileNumCaptured, 0);
+                setIntegerParam(paramSet->NDFileNumCaptured, 0);
                 if (!pArray) {
                     asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
                         "%s::%s ERROR: No arrays collected: cannot allocate capture buffer\n",
@@ -462,7 +462,7 @@ asynStatus NDPluginFile::doCapture(int capture)
                     asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
                         "%s::%s ERROR: cannot allocate capture buffer\n",
                         driverName, functionName);
-                    setIntegerParam(NDFileCapture, 0);
+                    setIntegerParam(paramSet->NDFileCapture, 0);
                     return(asynError);
                 }
             } else {
@@ -474,14 +474,14 @@ asynStatus NDPluginFile::doCapture(int capture)
                 /* Streaming was just started */
                 if (this->supportsMultipleArrays && !this->useAttrFilePrefix && !this->lazyOpen)
                     status = this->openFileBase(NDFileModeWrite | NDFileModeMultiple, pArray);
-                setIntegerParam(NDFileNumCaptured, 0);
-                setIntegerParam(NDWriteFile, 1);
+                setIntegerParam(paramSet->NDFileNumCaptured, 0);
+                setIntegerParam(paramSet->NDWriteFile, 1);
             } else {
                 /* Streaming was just stopped */
                 if (this->supportsMultipleArrays)
                     status = this->closeFileBase();
-                setIntegerParam(NDFileCapture, 0);
-                setIntegerParam(NDWriteFile, 0);
+                setIntegerParam(paramSet->NDFileCapture, 0);
+                setIntegerParam(paramSet->NDWriteFile, 0);
             }
     }
     return(status);
@@ -506,7 +506,7 @@ asynStatus NDPluginFile::attrFileCloseCheck()
                 // Force a file close
                 this->closeFileBase();
                 // We must also set the parameter to notify we have stopped capturing
-                setIntegerParam(NDFileCapture, 0);
+                setIntegerParam(paramSet->NDFileCapture, 0);
             }
         } else {
             status = asynError;
@@ -516,7 +516,7 @@ asynStatus NDPluginFile::attrFileCloseCheck()
 }
 
 /** Check whether the attributes defining the filename has changed since last write.
- * If this is the first frame (NDFileNumCaptured == 1) then the file is opened.
+ * If this is the first frame (paramSet->NDFileNumCaptured == 1) then the file is opened.
  * For other frames we check whether the attribute file name or number has changed
  * since last write. If this is the case then the current file is closed a new one opened.
  */
@@ -532,8 +532,8 @@ asynStatus NDPluginFile::attrFileNameCheck()
 
     if (!this->useAttrFilePrefix) return status;
 
-    getIntegerParam(NDFileNumCapture, &numCapture);
-    getIntegerParam(NDFileNumCaptured, &numCaptured);
+    getIntegerParam(paramSet->NDFileNumCapture, &numCapture);
+    getIntegerParam(paramSet->NDFileNumCaptured, &numCaptured);
 
     if (numCaptured == 1) {
         status = this->openFileBase(NDFileModeWrite | NDFileModeMultiple, this->pArrays[0]);
@@ -543,7 +543,7 @@ asynStatus NDPluginFile::attrFileNameCheck()
     NDattrFileName   = this->pArrays[0]->pAttributeList->find(FILEPLUGIN_NAME);
     if (NDattrFileName != NULL) {
         NDattrFileName->getValue(NDAttrString, attrFileName, MAX_FILENAME_LEN);
-        getStringParam(NDFileName, MAX_FILENAME_LEN, ndFileName);
+        getStringParam(paramSet->NDFileName, MAX_FILENAME_LEN, ndFileName);
         compare = epicsStrnCaseCmp(attrFileName, ndFileName, strlen(attrFileName));
         if (compare != 0)
             reopenFile = true;
@@ -553,11 +553,11 @@ asynStatus NDPluginFile::attrFileNameCheck()
     if (NDattrFileNumber != NULL)
     {
         NDattrFileNumber->getValue(NDAttrInt32, (void*) &attrFileNumber, 0);
-        getIntegerParam(NDFileNumber, &ndFileNumber);
+        getIntegerParam(paramSet->NDFileNumber, &ndFileNumber);
         if (ndFileNumber != attrFileNumber)
         {
             reopenFile = true;
-            setIntegerParam( NDFileNumber, attrFileNumber);
+            setIntegerParam( paramSet->NDFileNumber, attrFileNumber);
         }
     }
     asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, "attrFileNameCheck: name=%s(%s) num=%d (%s) reopen=%d\n",
@@ -565,7 +565,7 @@ asynStatus NDPluginFile::attrFileNameCheck()
     if (reopenFile)
     {
         this->closeFileBase();
-        setIntegerParam(NDFileNumCaptured, 1);
+        setIntegerParam(paramSet->NDFileNumCaptured, 1);
         status = this->openFileBase(NDFileModeWrite | NDFileModeMultiple, this->pArrays[0]);
     }
     return status;
@@ -597,7 +597,7 @@ asynStatus NDPluginFile::attrFileNameSet()
         {
             if (attrFileNameLen > MAX_FILENAME_LEN) attrFileNameLen = MAX_FILENAME_LEN;
             ndAttr->getValue(NDAttrString, attrFileName, attrFileNameLen);
-            setStringParam(NDFileName, attrFileName);
+            setStringParam(paramSet->NDFileName, attrFileName);
         }
     }
 
@@ -608,9 +608,9 @@ asynStatus NDPluginFile::attrFileNameSet()
         if (attrDataType == NDAttrInt32)
         {
             ndAttr->getValue(NDAttrInt32, &attrFileNumber, 0);
-            setIntegerParam(NDFileNumber, attrFileNumber);
+            setIntegerParam(paramSet->NDFileNumber, attrFileNumber);
             // ensure auto increment is switched off when using attribute file numbers
-            setIntegerParam(NDAutoIncrement, 0);
+            setIntegerParam(paramSet->NDAutoIncrement, 0);
         }
     }
     return status;
@@ -702,10 +702,10 @@ bool NDPluginFile::isFrameValid(NDArray *pArray)
 }
 
 /** Callback function that is called by the NDArray driver with new NDArray data.
-  * Saves a single file if NDFileWriteMode=NDFileModeSingle and NDAutoSave=1.
-  * Stores array in a capture buffer if NDFileWriteMode=NDFileModeCapture and NDFileCapture=1.
-  * Appends data to an open file if NDFileWriteMode=NDFileModeStream and NDFileCapture=1.
-  * In capture or stream mode if the desired number of arrays has been saved (NDFileNumCaptured=NDFileNumCapture)
+  * Saves a single file if paramSet->NDFileWriteMode=NDFileModeSingle and paramSet->NDAutoSave=1.
+  * Stores array in a capture buffer if paramSet->NDFileWriteMode=NDFileModeCapture and paramSet->NDFileCapture=1.
+  * Appends data to an open file if paramSet->NDFileWriteMode=NDFileModeStream and paramSet->NDFileCapture=1.
+  * In capture or stream mode if the desired number of arrays has been saved (paramSet->NDFileNumCaptured=paramSet->NDFileNumCapture)
   * then it stops capture or streaming.
   * \param[in] pArray  The NDArray from the callback.
   */
@@ -724,16 +724,16 @@ void NDPluginFile::processCallbacks(NDArray *pArray)
     /* Most plugins want to increment the arrayCounter each time they are called, which NDPluginDriver
      * does.  However, for this plugin we only want to increment it when we actually got a callback we were
      * supposed to save.  So we save the array counter before calling base method, increment it here */
-    getIntegerParam(NDArrayCounter, &arrayCounter);
+    getIntegerParam(paramSet->NDArrayCounter, &arrayCounter);
 
     /* Call the base class method */
     NDPluginDriver::beginProcessCallbacks(pArray);
 
-    getIntegerParam(NDAutoSave, &autoSave);
-    getIntegerParam(NDFileCapture, &capture);
-    getIntegerParam(NDFileWriteMode, &fileWriteMode);
-    getIntegerParam(NDFileNumCapture, &numCapture);
-    getIntegerParam(NDFileNumCaptured, &numCaptured);
+    getIntegerParam(paramSet->NDAutoSave, &autoSave);
+    getIntegerParam(paramSet->NDFileCapture, &capture);
+    getIntegerParam(paramSet->NDFileWriteMode, &fileWriteMode);
+    getIntegerParam(paramSet->NDFileNumCapture, &numCapture);
+    getIntegerParam(paramSet->NDFileNumCaptured, &numCaptured);
 
     /* We always keep the last array so read() can use it.
      * Release previous one, reserve new one */
@@ -755,14 +755,14 @@ void NDPluginFile::processCallbacks(NDArray *pArray)
                     this->pCapture[numCaptured] = pArray;
                     numCaptured++;
                     arrayCounter++;
-                    setIntegerParam(NDFileNumCaptured, numCaptured);
+                    setIntegerParam(paramSet->NDFileNumCaptured, numCaptured);
                 }
                 if (numCaptured == numCapture) {
                     if (autoSave) {
                         writeFileBase();
                     }
                     capture = 0;
-                    setIntegerParam(NDFileCapture, capture);
+                    setIntegerParam(paramSet->NDFileCapture, capture);
                 }
             }
             break;
@@ -772,7 +772,7 @@ void NDPluginFile::processCallbacks(NDArray *pArray)
                 status = writeFileBase();
                 if (status == asynSuccess) {
                     numCaptured++;
-                    setIntegerParam(NDFileNumCaptured, numCaptured);
+                    setIntegerParam(paramSet->NDFileNumCaptured, numCaptured);
                 }
                 if (numCaptured == numCapture) {
                     doCapture(0);
@@ -782,13 +782,13 @@ void NDPluginFile::processCallbacks(NDArray *pArray)
     }
 
     /* Update the parameters.  */
-    setIntegerParam(NDArrayCounter, arrayCounter);
+    setIntegerParam(paramSet->NDArrayCounter, arrayCounter);
     callParamCallbacks();
 }
 
 
 /** Called when asyn clients call pasynInt32->write().
-  * This function performs actions for some parameters, including NDReadFile, NDWriteFile and NDFileCapture.
+  * This function performs actions for some parameters, including paramSet->NDReadFile, paramSet->NDWriteFile and paramSet->NDFileCapture.
   * For other parameters it calls NDPluginDriver::writeInt32 to see if that method understands the parameter.
   * For all parameters it sets the value in the parameter library and calls any registered callbacks..
   * \param[in] pasynUser pasynUser structure that encodes the reason and address.
@@ -802,7 +802,7 @@ asynStatus NDPluginFile::writeInt32(asynUser *pasynUser, epicsInt32 value)
     /* Set the parameter in the parameter library. */
     status = (asynStatus) setIntegerParam(function, value);
 
-    if (function == NDWriteFile) {
+    if (function == paramSet->NDWriteFile) {
         if (value) {
             /* Call the callbacks so the status changes */
             callParamCallbacks();
@@ -815,41 +815,41 @@ asynStatus NDPluginFile::writeInt32(asynUser *pasynUser, epicsInt32 value)
                 status = asynError;
             }
             /* Set the flag back to 0, since this could be a busy record */
-            setIntegerParam(NDWriteFile, 0);
+            setIntegerParam(paramSet->NDWriteFile, 0);
         }
-    } else if (function == NDReadFile) {
+    } else if (function == paramSet->NDReadFile) {
         if (value) {
             /* Call the callbacks so the status changes */
             callParamCallbacks();
             status = readFileBase();
             /* Set the flag back to 0, since this could be a busy record */
-            setIntegerParam(NDReadFile, 0);
+            setIntegerParam(paramSet->NDReadFile, 0);
         }
-    } else if (function == NDFileCapture) {
+    } else if (function == paramSet->NDFileCapture) {
         if (value) {  // Started capture or stream
             // Reset the value temporarily until the doCapture() has called the
             // inherited openFile() method and the writer is in a good state to
             // start writing frames.
             // See comments on: https://github.com/areaDetector/ADCore/pull/100
-            setIntegerParam(NDFileCapture, 0);
+            setIntegerParam(paramSet->NDFileCapture, 0);
 
-            /* Latch the NDFileLazyOpen parameter so that we don't need to care
+            /* Latch the paramSet->NDFileLazyOpen parameter so that we don't need to care
              * if the user modifies this parameter before first frame has arrived. */
             int paramFileLazyOpen = 0;
-            getIntegerParam(NDFileLazyOpen, &paramFileLazyOpen);
+            getIntegerParam(paramSet->NDFileLazyOpen, &paramFileLazyOpen);
             this->lazyOpen = (paramFileLazyOpen != 0);
             /* So far everything is OK, so we just clear the FileWriteStatus parameters */
-            setIntegerParam(NDFileWriteStatus, NDFileWriteOK);
-            setStringParam(NDFileWriteMessage, "");
-            setStringParam(NDFullFileName, "");
+            setIntegerParam(paramSet->NDFileWriteStatus, NDFileWriteOK);
+            setStringParam(paramSet->NDFileWriteMessage, "");
+            setStringParam(paramSet->NDFullFileName, "");
         }
         /* Must call doCapture if capturing was just started or stopped */
         status = doCapture(value);
         if (status == asynSuccess) {
-            if (this->lazyOpen) setStringParam(NDFileWriteMessage, "Lazy Open...");
-            setIntegerParam(NDFileCapture, value);
+            if (this->lazyOpen) setStringParam(paramSet->NDFileWriteMessage, "Lazy Open...");
+            setIntegerParam(paramSet->NDFileCapture, value);
         } else {
-            setIntegerParam(NDFileCapture, 0);
+            setIntegerParam(paramSet->NDFileCapture, 0);
         }
     } else {
         /* This was not a parameter that this driver understands, try the base class */
@@ -878,7 +878,7 @@ asynStatus NDPluginFile::writeNDArray(asynUser *pasynUser, void *genericPointer)
     //static const char *functionName = "writeNDArray";
 
     this->pArrays[0] = pArray;
-    setIntegerParam(NDFileWriteMode, NDFileModeSingle);
+    setIntegerParam(paramSet->NDFileWriteMode, NDFileModeSingle);
 
     status = writeFileBase();
 
@@ -891,9 +891,9 @@ asynStatus NDPluginFile::writeNDArray(asynUser *pasynUser, void *genericPointer)
 /** Constructor for NDPluginFile; all parameters are simply passed to NDPluginDriver::NDPluginDriver.
   * \param[in] portName The name of the asyn port driver to be created.
   * \param[in] queueSize The number of NDArrays that the input queue for this plugin can hold when
-  *            NDPluginDriverBlockingCallbacks=0.  Larger queues can decrease the number of dropped arrays,
+  *            paramSet->NDPluginDriverBlockingCallbacks=0.  Larger queues can decrease the number of dropped arrays,
   *            at the expense of more NDArray buffers being allocated from the underlying driver's NDArrayPool.
-  * \param[in] blockingCallbacks Initial setting for the NDPluginDriverBlockingCallbacks flag.
+  * \param[in] blockingCallbacks Initial setting for the paramSet->NDPluginDriverBlockingCallbacks flag.
   *            0=callbacks are queued and executed by the callback thread; 1 callbacks execute in the thread
   *            of the driver doing the callbacks.
   * \param[in] NDArrayPort Name of asyn port driver for initial source of NDArray callbacks.
@@ -912,7 +912,7 @@ asynStatus NDPluginFile::writeNDArray(asynUser *pasynUser, void *genericPointer)
   * \param[in] maxThreads The maximum number of threads this driver is allowed to use. If 0 then 1 will be used.
   * \param[in] compressionAware true if this file plugin can handle compressed NDArrays.
   */
-NDPluginFile::NDPluginFile(const char *portName, int queueSize, int blockingCallbacks,
+NDPluginFile::NDPluginFile(NDPluginFileParamSet* paramSet, const char *portName, int queueSize, int blockingCallbacks,
                            const char *NDArrayPort, int NDArrayAddr, int maxAddr,
                            int maxBuffers, size_t maxMemory, int interfaceMask, int interruptMask,
                            int asynFlags, int autoConnect, int priority, int stackSize, int maxThreads,
@@ -922,11 +922,12 @@ NDPluginFile::NDPluginFile(const char *portName, int queueSize, int blockingCall
      * We allocate 1 NDArray of unlimited size in the NDArray pool.
      * This driver can block (because writing a file can be slow), and it is not multi-device.
      * Set autoconnect to 1.  priority and stacksize can be 0, which will use defaults. */
-    : NDPluginDriver(portName, queueSize, blockingCallbacks,
+    : NDPluginDriver(static_cast<NDPluginDriverParamSet*>(paramSet), portName, queueSize, blockingCallbacks,
                      NDArrayPort, NDArrayAddr, maxAddr, maxBuffers, maxMemory,
                      asynGenericPointerMask, asynGenericPointerMask,
                      asynFlags, autoConnect, priority, stackSize, maxThreads, compressionAware),
-    pCapture(NULL)
+    pCapture(NULL),
+    paramSet(paramSet)
 {
     //static const char *functionName = "NDPluginFile";
 
@@ -936,11 +937,11 @@ NDPluginFile::NDPluginFile(const char *portName, int queueSize, int blockingCall
     this->useAttrFilePrefix = false;
     this->fileMutexId = epicsMutexCreate();
     /* Set the plugin type string */
-    setStringParam(NDPluginDriverPluginType, "NDPluginFile");
+    setStringParam(paramSet->NDPluginDriverPluginType, "NDPluginFile");
 
     // Disable ArrayCallbacks.
     // This plugin currently does not do array callbacks, so make the setting reflect the behavior
-    setIntegerParam(NDArrayCallbacks, 0);
+    setIntegerParam(paramSet->NDArrayCallbacks, 0);
 
     /* Try to connect to the NDArray port */
     connectToArrayPort();

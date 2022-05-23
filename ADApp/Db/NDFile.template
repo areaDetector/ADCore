@@ -1,3 +1,4 @@
+include "asynNDArrayDriverParameters.template"
 #=================================================================#
 # Template file: NDFile.template
 # Database for NDFile driver, which saves files for NDArray data.
@@ -5,376 +6,54 @@
 # April 7, 2008
 
 ###################################################################
-#  These records control file I/O                                 # 
+#  These records control file I/O                                 #
 ###################################################################
 
 # File path.
-record(waveform, "$(P)$(R)FilePath")
-{
-    field(PINI, "YES")
-    field(DTYP, "asynOctetWrite")
-    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))FILE_PATH")
-    field(FTVL, "CHAR")
-    field(NELM, "256")
-    info(autosaveFields, "VAL")
-}
-
-record(waveform, "$(P)$(R)FilePath_RBV")
-{
-    field(DTYP, "asynOctetRead")
-    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))FILE_PATH")
-    field(FTVL, "CHAR")
-    field(NELM, "256")
-    field(SCAN, "I/O Intr")
-}
-
-record(bi, "$(P)$(R)FilePathExists_RBV")
-{
-    field(DTYP, "asynInt32")
-    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))FILE_PATH_EXISTS")
-    field(ZNAM, "No")
-    field(ZSV,  "MAJOR")
-    field(ONAM, "Yes")
-    field(OSV,  "NO_ALARM")
-    field(SCAN, "I/O Intr")
-}
-
-record(longout, "$(P)$(R)CreateDirectory")
-{
-    field(PINI, "YES")
-    field(DTYP, "asynInt32")
-    field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))CREATE_DIR")
-    field(VAL,  "0" )
-    info(autosaveFields, "VAL")
-}
-
-record(longin, "$(P)$(R)CreateDirectory_RBV")
-{
-    field(DTYP, "asynInt32")
-    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))CREATE_DIR")
-    field(VAL,  "")
-    field(SCAN, "I/O Intr")
-}
 
 # Filename
-record(waveform, "$(P)$(R)FileName")
-{
-    field(PINI, "YES")
-    field(DTYP, "asynOctetWrite")
-    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))FILE_NAME")
-    field(FTVL, "CHAR")
-    field(NELM, "256")
-    info(autosaveFields, "VAL")
-}
-
-record(waveform, "$(P)$(R)FileName_RBV")
-{
-    field(DTYP, "asynOctetRead")
-    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))FILE_NAME")
-    field(FTVL, "CHAR")
-    field(NELM, "256")
-    field(SCAN, "I/O Intr")
-}
-
-record(longout, "$(P)$(R)FileNumber")
-{
-    field(PINI, "YES")
-    field(DTYP, "asynInt32")
-    field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))FILE_NUMBER")
-    field(VAL,  "1")
-    info(asyn:READBACK, "1")
-    info(autosaveFields, "VAL")
-}
-
-record(longin, "$(P)$(R)FileNumber_RBV")
-{
-    field(DTYP, "asynInt32")
-    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))FILE_NUMBER")
-    field(SCAN, "I/O Intr")
-}
 
 # Autoincrement flag
-record(bo, "$(P)$(R)AutoIncrement")
-{
-    field(PINI, "YES")
-    field(DTYP, "asynInt32")
-    field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))AUTO_INCREMENT")
-    field(VAL,  "1")
-    field(ZNAM, "No")
-    field(ONAM, "Yes")
-    info(autosaveFields, "VAL")
-}
-
-record(bi, "$(P)$(R)AutoIncrement_RBV")
-{
-    field(DTYP, "asynInt32")
-    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))AUTO_INCREMENT")
-    field(ZNAM, "No")
-    field(ONAM, "Yes")
-    field(SCAN, "I/O Intr")
-}
 
 # File template
-record(waveform, "$(P)$(R)FileTemplate")
-{
-    field(PINI, "YES")
-    field(DTYP, "asynOctetWrite")
-    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))FILE_TEMPLATE")
-    field(FTVL, "CHAR")
-    field(NELM, "256")
-    info(autosaveFields, "VAL")
-}
-
-record(waveform, "$(P)$(R)FileTemplate_RBV")
-{
-    field(DTYP, "asynOctetRead")
-    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))FILE_TEMPLATE")
-    field(FTVL, "CHAR")
-    field(NELM, "256")
-    field(SCAN, "I/O Intr")
-}
 
 # Full filename, including path
-record(waveform, "$(P)$(R)FullFileName_RBV")
-{
-    field(DTYP, "asynOctetRead")
-    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))FULL_FILE_NAME")
-    field(FTVL, "CHAR")
-    field(NELM, "512")
-    field(SCAN, "I/O Intr")
-}
 
 # Autosave flag
-record(bo, "$(P)$(R)AutoSave")
-{
-    field(PINI, "YES")
-    field(DTYP, "asynInt32")
-    field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))AUTO_SAVE")
-    field(ZNAM, "No")
-    field(ONAM, "Yes")
-    info(autosaveFields, "VAL")
-}
-
-record(bi, "$(P)$(R)AutoSave_RBV")
-{
-    field(DTYP, "asynInt32")
-    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))AUTO_SAVE")
-    field(ZNAM, "No")
-    field(ONAM, "Yes")
-    field(SCAN, "I/O Intr")
-}
 
 # Write file
-record(busy, "$(P)$(R)WriteFile")
-{
-    field(DTYP, "asynInt32")
-    field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))WRITE_FILE")
-    field(ZNAM, "Done")
-    field(ONAM, "Write")
-}
-
-record(bi, "$(P)$(R)WriteFile_RBV")
-{
-    field(DTYP, "asynInt32")
-    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))WRITE_FILE")
-    field(ZNAM, "Done")
-    field(ZSV,  "NO_ALARM")
-    field(ONAM, "Writing")
-    field(OSV,  "MINOR")
-    field(SCAN, "I/O Intr")
-}
 
 
 # Read file
+
+# File data format
+
+# File save mode
+
+# Capture data
+
+# Delete driver file flag
+# Overriding value in auto-generated template
+record(busy, "$(P)$(R)WriteFile")
+{
+    field(ONAM, "Write")
+}
+
+# Overriding value in auto-generated template
 record(busy, "$(P)$(R)ReadFile")
 {
-    field(DTYP, "asynInt32")
-    field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))READ_FILE")
-    field(ZNAM, "Done")
     field(ONAM, "Read")
 }
 
-record(bi, "$(P)$(R)ReadFile_RBV")
-{
-    field(DTYP, "asynInt32")
-    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))READ_FILE")
-    field(ZNAM, "Done")
-    field(ZSV,  "NO_ALARM")
-    field(ONAM, "Reading")
-    field(OSV,  "MINOR")
-    field(SCAN, "I/O Intr")
-}
-
-# File data format 
+# Overriding value in auto-generated template
 record(mbbo, "$(P)$(R)FileFormat")
 {
-    field(PINI, "YES")
-    field(DTYP, "asynInt32")
-    field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))FILE_FORMAT")
-    field(VAL,  "0")
     field(ZRST, "Undefined")
-    field(ZRVL, "0")
     field(ONST, "Invalid")
-    field(ONVL, "1")
-    info(autosaveFields, "VAL")
 }
 
-record(mbbi, "$(P)$(R)FileFormat_RBV")
-{
-    field(DTYP, "asynInt32")
-    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))FILE_FORMAT")
-    field(ZRST, "netCDF")
-    field(ZRVL, "0")
-    field(ONST, "Undefined")
-    field(ONVL, "1")
-    field(SCAN, "I/O Intr")
-}
-
-# File save mode 
-record(mbbo, "$(P)$(R)FileWriteMode")
-{
-    field(PINI, "YES")
-    field(DTYP, "asynInt32")
-    field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))WRITE_MODE")
-    field(VAL,  "0")
-    field(ZRST, "Single")
-    field(ZRVL, "0")
-    field(ONST, "Capture")
-    field(ONVL, "1")
-    field(TWST, "Stream")
-    field(TWVL, "2")
-    info(autosaveFields, "VAL")
-}
-
-record(mbbi, "$(P)$(R)FileWriteMode_RBV")
-{
-    field(DTYP, "asynInt32")
-    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))WRITE_MODE")
-    field(ZRST, "Single")
-    field(ZRVL, "0")
-    field(ONST, "Capture")
-    field(ONVL, "1")
-    field(TWST, "Stream")
-    field(TWVL, "2")
-    field(SCAN, "I/O Intr")
-}
-
-# Capture data
+# Overriding value in auto-generated template
 record(busy, "$(P)$(R)Capture")
 {
-    field(DTYP, "asynInt32")
-    field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))CAPTURE")
-    field(ZNAM, "Done")
     field(ONAM, "Capture")
-}
-
-record(bi, "$(P)$(R)Capture_RBV")
-{
-    field(DTYP, "asynInt32")
-    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))CAPTURE")
-    field(ZNAM, "Done")
-    field(ZSV,  "NO_ALARM")
-    field(ONAM, "Capturing")
-    field(OSV,  "MINOR")
-    field(SCAN, "I/O Intr")
-}
-
-record(longout, "$(P)$(R)NumCapture")
-{
-    field(PINI, "YES")
-    field(DTYP, "asynInt32")
-    field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))NUM_CAPTURE")
-    field(VAL,  "1")
-    info(autosaveFields, "VAL")
-}
-
-record(longin, "$(P)$(R)NumCapture_RBV")
-{
-    field(DTYP, "asynInt32")
-    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))NUM_CAPTURE")
-    field(SCAN, "I/O Intr")
-}
-
-record(longin, "$(P)$(R)NumCaptured_RBV")
-{
-    field(DTYP, "asynInt32")
-    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))NUM_CAPTURED")
-    field(SCAN, "$(SCANRATE=I/O Intr)")
-}
-
-# Delete driver file flag
-record(bo, "$(P)$(R)DeleteDriverFile")
-{
-    field(PINI, "YES")
-    field(DTYP, "asynInt32")
-    field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))DELETE_DRIVER_FILE")
-    field(VAL,  "0")
-    field(ZNAM, "No")
-    field(ONAM, "Yes")
-    info(autosaveFields, "VAL")
-}
-
-record(bi, "$(P)$(R)DeleteDriverFile_RBV")
-{
-    field(DTYP, "asynInt32")
-    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))DELETE_DRIVER_FILE")
-    field(ZNAM, "No")
-    field(ONAM, "Yes")
-    field(SCAN, "I/O Intr")
-}
-
-record(bi, "$(P)$(R)WriteStatus")
-{
-    field(DTYP, "asynInt32")
-    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))WRITE_STATUS")
-    field(ZNAM, "Write OK")
-    field(ZSV,  "NO_ALARM")
-    field(ONAM, "Write error")
-    field(OSV,  "MAJOR")
-    field(SCAN, "I/O Intr")
-}
-
-record(waveform, "$(P)$(R)WriteMessage")
-{
-    field(DTYP, "asynOctetRead")
-    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))WRITE_MESSAGE")
-    field(FTVL, "CHAR")
-    field(NELM, "256")
-    field(SCAN, "I/O Intr")
-}
-
-record(bo, "$(P)$(R)LazyOpen")
-{
-    field(PINI, "YES")
-    field(DTYP, "asynInt32")
-    field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))FILE_LAZY_OPEN")
-    field(VAL,  "0")
-    field(ZNAM, "No")
-    field(ONAM, "Yes")
-    info(autosaveFields, "VAL")
-}
-
-record(bi, "$(P)$(R)LazyOpen_RBV")
-{
-    field(DTYP, "asynInt32")
-    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))FILE_LAZY_OPEN")
-    field(ZNAM, "No")
-    field(ONAM, "Yes")
-    field(SCAN, "I/O Intr")
-}
-
-record(stringout, "$(P)$(R)TempSuffix")
-{
-    field(PINI, "YES")
-    field(DTYP, "asynOctetWrite")
-    field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))FILE_TEMP_SUFFIX")
-    field(VAL,  "")
-}
-
-record(stringin, "$(P)$(R)TempSuffix_RBV")
-{
-    field(DTYP, "asynOctetRead")
-    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))FILE_TEMP_SUFFIX")
-    field(VAL,  "")
-    field(SCAN, "I/O Intr")
 }

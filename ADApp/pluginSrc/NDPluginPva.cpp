@@ -152,7 +152,7 @@ NDPluginPva::NDPluginPva(const char *portName, int queueSize,
         int blockingCallbacks, const char *NDArrayPort, int NDArrayAddr,
         const char *pvName, int maxBuffers, size_t maxMemory, int priority, int stackSize)
     /* Invoke the base class constructor */
-    : NDPluginDriver(portName, queueSize, blockingCallbacks,
+    : NDPluginDriver(static_cast<NDPluginDriverParamSet*>(this), portName, queueSize, blockingCallbacks,
             NDArrayPort, NDArrayAddr, 1, maxBuffers, maxMemory, 0, 0,
             0, 1, priority, stackSize, 1, true),
             m_record(NTNDArrayRecord::create(pvName))

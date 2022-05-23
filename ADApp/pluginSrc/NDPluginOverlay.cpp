@@ -399,7 +399,7 @@ NDPluginOverlay::NDPluginOverlay(const char *portName, int queueSize, int blocki
              int maxBuffers, size_t maxMemory,
              int priority, int stackSize, int maxThreads)
   /* Invoke the base class constructor */
-  : NDPluginDriver(portName, queueSize, blockingCallbacks,
+  : NDPluginDriver(static_cast<NDPluginDriverParamSet*>(this), portName, queueSize, blockingCallbacks,
            NDArrayPort, NDArrayAddr, maxOverlays, maxBuffers, maxMemory,
            asynGenericPointerMask,
            asynGenericPointerMask,

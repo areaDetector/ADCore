@@ -88,10 +88,10 @@ bool asynNDArrayDriver::checkPath(std::string &filePath)
 }
 
 
-/** Checks whether the directory specified NDFilePath parameter exists.
+/** Checks whether the directory specified paramSet->NDFilePath parameter exists.
   *
-  * This is a convenience function that determines the directory specified NDFilePath parameter exists.
-  * It sets the value of NDFilePathExists to 0 (does not exist) or 1 (exists).
+  * This is a convenience function that determines the directory specified paramSet->NDFilePath parameter exists.
+  * It sets the value of paramSet->NDFilePathExists to 0 (does not exist) or 1 (exists).
   * It also adds a trailing '/' character to the path if one is not present.
   * Returns a error status if the directory does not exist.
   */
@@ -101,12 +101,12 @@ asynStatus asynNDArrayDriver::checkPath()
     std::string filePath;
     int pathExists;
 
-    getStringParam(NDFilePath, filePath);
+    getStringParam(paramSet->NDFilePath, filePath);
     if (filePath.size() == 0) return asynSuccess;
     pathExists = checkPath(filePath);
     status = pathExists ? asynSuccess : asynError;
-    setStringParam(NDFilePath, filePath);
-    setIntegerParam(NDFilePathExists, pathExists);
+    setStringParam(paramSet->NDFilePath, filePath);
+    setIntegerParam(paramSet->NDFilePathExists, pathExists);
     return status;
 }
 
@@ -185,9 +185,9 @@ asynStatus asynNDArrayDriver::createFilePath(const char *path, int pathDepth)
   * \param[out] fullFileName The constructed file name including the file path.
   *
   * This is a convenience function that constructs a complete file name
-  * from the NDFilePath, NDFileName, NDFileNumber, and
-  * NDFileTemplate parameters. If NDAutoIncrement is true then it increments the
-  * NDFileNumber after creating the file name.
+  * from the paramSet->NDFilePath, paramSet->NDFileName, paramSet->NDFileNumber, and
+  * paramSet->NDFileTemplate parameters. If paramSet->NDAutoIncrement is true then it increments the
+  * paramSet->NDFileNumber after creating the file name.
   */
 asynStatus asynNDArrayDriver::createFileName(int maxChars, char *fullFileName)
 {
@@ -201,11 +201,11 @@ asynStatus asynNDArrayDriver::createFileName(int maxChars, char *fullFileName)
     int len;
 
     this->checkPath();
-    status |= getStringParam(NDFilePath, sizeof(filePath), filePath);
-    status |= getStringParam(NDFileName, sizeof(fileName), fileName);
-    status |= getStringParam(NDFileTemplate, sizeof(fileTemplate), fileTemplate);
-    status |= getIntegerParam(NDFileNumber, &fileNumber);
-    status |= getIntegerParam(NDAutoIncrement, &autoIncrement);
+    status |= getStringParam(paramSet->NDFilePath, sizeof(filePath), filePath);
+    status |= getStringParam(paramSet->NDFileName, sizeof(fileName), fileName);
+    status |= getStringParam(paramSet->NDFileTemplate, sizeof(fileTemplate), fileTemplate);
+    status |= getIntegerParam(paramSet->NDFileNumber, &fileNumber);
+    status |= getIntegerParam(paramSet->NDAutoIncrement, &autoIncrement);
     if (status) return (asynStatus) status;
     len = epicsSnprintf(fullFileName, maxChars, fileTemplate,
                         filePath, fileName, fileNumber);
@@ -215,7 +215,7 @@ asynStatus asynNDArrayDriver::createFileName(int maxChars, char *fullFileName)
     }
     if (autoIncrement) {
         fileNumber++;
-        status |= setIntegerParam(NDFileNumber, fileNumber);
+        status |= setIntegerParam(paramSet->NDFileNumber, fileNumber);
     }
     return (asynStatus) status;
 }
@@ -226,9 +226,9 @@ asynStatus asynNDArrayDriver::createFileName(int maxChars, char *fullFileName)
   * \param[out] fileName The constructed file name without file file path.
   *
   * This is a convenience function that constructs a file path and file name
-  * from the NDFilePath, NDFileName, NDFileNumber, and
-  * NDFileTemplate parameters. If NDAutoIncrement is true then it increments the
-  * NDFileNumber after creating the file name.
+  * from the paramSet->NDFilePath, paramSet->NDFileName, paramSet->NDFileNumber, and
+  * paramSet->NDFileTemplate parameters. If paramSet->NDAutoIncrement is true then it increments the
+  * paramSet->NDFileNumber after creating the file name.
   */
 asynStatus asynNDArrayDriver::createFileName(int maxChars, char *filePath, char *fileName)
 {
@@ -241,11 +241,11 @@ asynStatus asynNDArrayDriver::createFileName(int maxChars, char *filePath, char 
     int len;
 
     this->checkPath();
-    status |= getStringParam(NDFilePath, maxChars, filePath);
-    status |= getStringParam(NDFileName, sizeof(name), name);
-    status |= getStringParam(NDFileTemplate, sizeof(fileTemplate), fileTemplate);
-    status |= getIntegerParam(NDFileNumber, &fileNumber);
-    status |= getIntegerParam(NDAutoIncrement, &autoIncrement);
+    status |= getStringParam(paramSet->NDFilePath, maxChars, filePath);
+    status |= getStringParam(paramSet->NDFileName, sizeof(name), name);
+    status |= getStringParam(paramSet->NDFileTemplate, sizeof(fileTemplate), fileTemplate);
+    status |= getIntegerParam(paramSet->NDFileNumber, &fileNumber);
+    status |= getIntegerParam(paramSet->NDAutoIncrement, &autoIncrement);
     if (status) return (asynStatus) status;
     len = epicsSnprintf(fileName, maxChars, fileTemplate,
                         name, fileNumber);
@@ -255,7 +255,7 @@ asynStatus asynNDArrayDriver::createFileName(int maxChars, char *filePath, char 
     }
     if (autoIncrement) {
         fileNumber++;
-        status |= setIntegerParam(NDFileNumber, fileNumber);
+        status |= setIntegerParam(paramSet->NDFileNumber, fileNumber);
     }
     return (asynStatus) status;
 }
@@ -319,8 +319,8 @@ asynStatus asynNDArrayDriver::readNDAttributesFile()
     int status;
     static const char *functionName = "readNDAttributesFile";
 
-    getStringParam(NDAttributesFile, fileName);
-    getStringParam(NDAttributesMacros, attributesMacros);
+    getStringParam(paramSet->NDAttributesFile, fileName);
+    getStringParam(paramSet->NDAttributesMacros, attributesMacros);
 
     /* Clear any existing attributes */
     this->pAttributeList->clear();
@@ -331,7 +331,7 @@ asynStatus asynNDArrayDriver::readNDAttributesFile()
         asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
             "%s::%s error opening file %s\n",
             driverName, functionName, fileName.c_str());
-        setIntegerParam(NDAttributesStatus, NDAttributesFileNotFound);
+        setIntegerParam(paramSet->NDAttributesStatus, NDAttributesFileNotFound);
         return asynError;
     }
     buff << infile.rdbuf();
@@ -375,12 +375,12 @@ done_macros:
         macDeleteHandle(macHandle);
         free(tmpBuffer);
         if (status < 0) {
-            setIntegerParam(NDAttributesStatus, NDAttributesMacroError);
+            setIntegerParam(paramSet->NDAttributesStatus, NDAttributesMacroError);
             return asynError;
         }
     }
     // Assume failure
-    setIntegerParam(NDAttributesStatus, NDAttributesXMLSyntaxError);
+    setIntegerParam(paramSet->NDAttributesStatus, NDAttributesXMLSyntaxError);
     doc = xmlReadMemory(buffer.c_str(), (int)buffer.length(), "noname.xml", NULL, 0);
     if (doc == NULL) {
         asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
@@ -463,7 +463,7 @@ done_macros:
             return asynError;
         }
     }
-    setIntegerParam(NDAttributesStatus, NDAttributesOK);
+    setIntegerParam(paramSet->NDAttributesStatus, NDAttributesOK);
     // Wait a short while for channel access callbacks on EPICS PVs
     epicsThreadSleep(0.5);
     // Get the initial values
@@ -493,7 +493,7 @@ asynStatus asynNDArrayDriver::getAttributes(NDAttributeList *pList)
 }
 
 /** Called when asyn clients call pasynOctet->write().
-  * This function performs actions for some parameters, including NDAttributesFile.
+  * This function performs actions for some parameters, including paramSet->NDAttributesFile.
   * For all parameters it sets the value in the parameter library and calls any registered callbacks..
   * \param[in] pasynUser pasynUser structure that encodes the reason and address.
   * \param[in] value Address of the string to write.
@@ -514,15 +514,15 @@ asynStatus asynNDArrayDriver::writeOctet(asynUser *pasynUser, const char *value,
     /* Set the parameter in the parameter library. */
     status = (asynStatus)setStringParam(addr, function, (char *)value);
 
-    if ((function == NDAttributesFile) ||
-        (function == NDAttributesMacros)) {
+    if ((function == paramSet->NDAttributesFile) ||
+        (function == paramSet->NDAttributesMacros)) {
         this->readNDAttributesFile();
-    } else if (function == NDFilePath) {
+    } else if (function == paramSet->NDFilePath) {
         status = this->checkPath();
         if (status == asynError) {
             // If the directory does not exist then try to create it
             int pathDepth;
-            getIntegerParam(NDFileCreateDir, &pathDepth);
+            getIntegerParam(paramSet->NDFileCreateDir, &pathDepth);
             status = createFilePath(value, pathDepth);
             status = this->checkPath();
         }
@@ -617,37 +617,37 @@ asynStatus asynNDArrayDriver::setIntegerParam(int index, int value)
   * \param[in] list The parameter list number.  Must be < maxAddr passed to asynPortDriver::asynPortDriver.
   * \param[in] index The parameter number
   * \param[in] value Value to set.
-  * This function was added to trap the driver setting ADAcquire to 0 and
+  * This function was added to trap the driver setting paramSet->ADAcquire to 0 and
   * setting NumQueuedArrays.  It implements the logic of
-  * setting ADAcquireBusy to reflect whether acquisition is done.
+  * setting paramSet->ADAcquireBusy to reflect whether acquisition is done.
   * If WaitForPlugins is true then this includes waiting for NumQueuedArrays to be 0.
-  * When ADAcquire goes to 0 it must use getQueuedArrayCount rather then NumQueuedArrays
+  * When paramSet->ADAcquire goes to 0 it must use getQueuedArrayCount rather then NumQueuedArrays
   * from the parameter library, because NumQueuedArrays is updated in a separate thread
   * and might not have been set yet.  getQueuedArrayCount updates immediately. */
 asynStatus asynNDArrayDriver::setIntegerParam(int list, int index, int value)
 {
 
-    if (index == ADAcquire) {
+    if (index == paramSet->ADAcquire) {
         if (value == 0) {
             int waitForPlugins;
-            getIntegerParam(list, ADWaitForPlugins, &waitForPlugins);
+            getIntegerParam(list, paramSet->ADWaitForPlugins, &waitForPlugins);
             if (waitForPlugins) {
                 int count = getQueuedArrayCount();
                 if (count == 0) {
-                    asynPortDriver::setIntegerParam(list, ADAcquireBusy, 0);
+                    asynPortDriver::setIntegerParam(list, paramSet->ADAcquireBusy, 0);
                 }
             } else {
-                asynPortDriver::setIntegerParam(list, ADAcquireBusy, 0);
+                asynPortDriver::setIntegerParam(list, paramSet->ADAcquireBusy, 0);
             }
         } else {
-            asynPortDriver::setIntegerParam(list, ADAcquireBusy, 1);
+            asynPortDriver::setIntegerParam(list, paramSet->ADAcquireBusy, 1);
         }
     }
-    else if ((index == NDNumQueuedArrays) && (value == 0)) {
+    else if ((index == paramSet->NDNumQueuedArrays) && (value == 0)) {
         int acquire;
-        getIntegerParam(list, ADAcquire, &acquire);
+        getIntegerParam(list, paramSet->ADAcquire, &acquire);
         if (acquire == 0) {
-            asynPortDriver::setIntegerParam(list, ADAcquireBusy, 0);
+            asynPortDriver::setIntegerParam(list, paramSet->ADAcquireBusy, 0);
         }
     }
     return asynPortDriver::setIntegerParam(list, index, value);
@@ -671,7 +671,7 @@ asynStatus asynNDArrayDriver::writeInt32(asynUser *pasynUser, epicsInt32 value)
 
     status = setIntegerParam(addr, function, value);
 
-    if (function == NDPoolEmptyFreeList) {
+    if (function == paramSet->NDPoolEmptyFreeList) {
         this->pNDArrayPool->emptyFreeList();
     }
 
@@ -700,9 +700,9 @@ asynStatus asynNDArrayDriver::readInt32(asynUser *pasynUser, epicsInt32 *value)
     if (status != asynSuccess) return status;
 
     // Just read the status of the NDArrayPool
-    if (function == NDPoolAllocBuffers) {
+    if (function == paramSet->NDPoolAllocBuffers) {
         setIntegerParam(addr, function, this->pNDArrayPool->getNumBuffers());
-    } else if (function == NDPoolFreeBuffers) {
+    } else if (function == paramSet->NDPoolFreeBuffers) {
         setIntegerParam(addr, function, this->pNDArrayPool->getNumFree());
     }
 
@@ -723,9 +723,9 @@ asynStatus asynNDArrayDriver::readFloat64(asynUser *pasynUser, epicsFloat64 *val
     if (status != asynSuccess) return status;
 
     // Just read the status of the NDArrayPool
-    if (function == NDPoolMaxMemory) {
+    if (function == paramSet->NDPoolMaxMemory) {
         setDoubleParam(addr, function, this->pNDArrayPool->getMaxMemory() / MEGABYTE_DBL);
-    } else if (function == NDPoolUsedMemory) {
+    } else if (function == paramSet->NDPoolUsedMemory) {
         setDoubleParam(addr, function, this->pNDArrayPool->getMemorySize() / MEGABYTE_DBL);
     }
 
@@ -780,7 +780,7 @@ void asynNDArrayDriver::updateQueuedArrayCount()
             break;
 
         lock();
-        setIntegerParam(NDNumQueuedArrays, getQueuedArrayCount());
+        setIntegerParam(paramSet->NDNumQueuedArrays, getQueuedArrayCount());
         callParamCallbacks();
         unlock();
     }
@@ -843,15 +843,16 @@ asynStatus asynNDArrayDriver::decrementQueuedArrayCount()
   *            This value should also be used for any other threads this object creates.
   */
 
-asynNDArrayDriver::asynNDArrayDriver(const char *portName, int maxAddr, int maxBuffers,
+asynNDArrayDriver::asynNDArrayDriver(asynNDArrayDriverParamSet* paramSet, const char *portName, int maxAddr, int maxBuffers,
                                      size_t maxMemory, int interfaceMask, int interruptMask,
                                      int asynFlags, int autoConnect, int priority, int stackSize)
-    : asynPortDriver(portName, maxAddr,
+    : asynPortDriver(static_cast<asynParamSet*>(paramSet), portName, maxAddr,
                      interfaceMask | asynInt32Mask | asynFloat64Mask | asynOctetMask | asynInt32ArrayMask | asynGenericPointerMask | asynDrvUserMask,
                      interruptMask | asynInt32Mask | asynFloat64Mask | asynOctetMask | asynInt32ArrayMask | asynGenericPointerMask,
                      asynFlags, autoConnect, priority, stackSize),
       pNDArrayPool(NULL), queuedArrayCountMutex_(NULL), queuedArrayCount_(0),
-      queuedArrayUpdateRun_(true)
+      queuedArrayUpdateRun_(true),
+    paramSet(paramSet)
 {
     char versionString[20];
     static const char *functionName = "asynNDArrayDriver";
@@ -870,66 +871,7 @@ asynNDArrayDriver::asynNDArrayDriver(const char *portName, int maxAddr, int maxB
     this->pArrays = (NDArray **)calloc(maxAddr, sizeof(NDArray *));
     this->pAttributeList = new NDAttributeList();
 
-    createParam(NDPortNameSelfString,         asynParamOctet,           &NDPortNameSelf);
-    createParam(NDADCoreVersionString,        asynParamOctet,           &NDADCoreVersion);
-    createParam(NDDriverVersionString,        asynParamOctet,           &NDDriverVersion);
-    createParam(ADManufacturerString,         asynParamOctet,           &ADManufacturer);
-    createParam(ADModelString,                asynParamOctet,           &ADModel);
-    createParam(ADSerialNumberString,         asynParamOctet,           &ADSerialNumber);
-    createParam(ADSDKVersionString,           asynParamOctet,           &ADSDKVersion);
-    createParam(ADFirmwareVersionString,      asynParamOctet,           &ADFirmwareVersion);
-    createParam(ADAcquireString,              asynParamInt32,           &ADAcquire);
-    createParam(ADAcquireBusyString,          asynParamInt32,           &ADAcquireBusy);
-    createParam(ADWaitForPluginsString,       asynParamInt32,           &ADWaitForPlugins);
-    createParam(NDArraySizeXString,           asynParamInt32,           &NDArraySizeX);
-    createParam(NDArraySizeYString,           asynParamInt32,           &NDArraySizeY);
-    createParam(NDArraySizeZString,           asynParamInt32,           &NDArraySizeZ);
-    createParam(NDArraySizeString,            asynParamInt32,           &NDArraySize);
-    createParam(NDNDimensionsString,          asynParamInt32,           &NDNDimensions);
-    createParam(NDDimensionsString,           asynParamInt32,           &NDDimensions);
-    createParam(NDDataTypeString,             asynParamInt32,           &NDDataType);
-    createParam(NDColorModeString,            asynParamInt32,           &NDColorMode);
-    createParam(NDUniqueIdString,             asynParamInt32,           &NDUniqueId);
-    createParam(NDTimeStampString,            asynParamFloat64,         &NDTimeStamp);
-    createParam(NDEpicsTSSecString,           asynParamInt32,           &NDEpicsTSSec);
-    createParam(NDEpicsTSNsecString,          asynParamInt32,           &NDEpicsTSNsec);
-    createParam(NDBayerPatternString,         asynParamInt32,           &NDBayerPattern);
-    createParam(NDCodecString,                asynParamOctet,           &NDCodec);
-    createParam(NDCompressedSizeString,       asynParamInt32,           &NDCompressedSize);
-    createParam(NDArrayCounterString,         asynParamInt32,           &NDArrayCounter);
-    createParam(NDFilePathString,             asynParamOctet,           &NDFilePath);
-    createParam(NDFilePathExistsString,       asynParamInt32,           &NDFilePathExists);
-    createParam(NDFileNameString,             asynParamOctet,           &NDFileName);
-    createParam(NDFileNumberString,           asynParamInt32,           &NDFileNumber);
-    createParam(NDFileTemplateString,         asynParamOctet,           &NDFileTemplate);
-    createParam(NDAutoIncrementString,        asynParamInt32,           &NDAutoIncrement);
-    createParam(NDFullFileNameString,         asynParamOctet,           &NDFullFileName);
-    createParam(NDFileFormatString,           asynParamInt32,           &NDFileFormat);
-    createParam(NDAutoSaveString,             asynParamInt32,           &NDAutoSave);
-    createParam(NDWriteFileString,            asynParamInt32,           &NDWriteFile);
-    createParam(NDReadFileString,             asynParamInt32,           &NDReadFile);
-    createParam(NDFileWriteModeString,        asynParamInt32,           &NDFileWriteMode);
-    createParam(NDFileWriteStatusString,      asynParamInt32,           &NDFileWriteStatus);
-    createParam(NDFileWriteMessageString,     asynParamOctet,           &NDFileWriteMessage);
-    createParam(NDFileNumCaptureString,       asynParamInt32,           &NDFileNumCapture);
-    createParam(NDFileNumCapturedString,      asynParamInt32,           &NDFileNumCaptured);
-    createParam(NDFileCaptureString,          asynParamInt32,           &NDFileCapture);
-    createParam(NDFileDeleteDriverFileString, asynParamInt32,           &NDFileDeleteDriverFile);
-    createParam(NDFileLazyOpenString,         asynParamInt32,           &NDFileLazyOpen);
-    createParam(NDFileCreateDirString,        asynParamInt32,           &NDFileCreateDir);
-    createParam(NDFileTempSuffixString,       asynParamOctet,           &NDFileTempSuffix);
-    createParam(NDAttributesFileString,       asynParamOctet,           &NDAttributesFile);
-    createParam(NDAttributesStatusString,     asynParamInt32,           &NDAttributesStatus);
-    createParam(NDAttributesMacrosString,     asynParamOctet,           &NDAttributesMacros);
-    createParam(NDArrayDataString,            asynParamGenericPointer,  &NDArrayData);
-    createParam(NDArrayCallbacksString,       asynParamInt32,           &NDArrayCallbacks);
     createParam(NDPoolMaxBuffersString,       asynParamInt32,           &NDPoolMaxBuffers);
-    createParam(NDPoolAllocBuffersString,     asynParamInt32,           &NDPoolAllocBuffers);
-    createParam(NDPoolFreeBuffersString,      asynParamInt32,           &NDPoolFreeBuffers);
-    createParam(NDPoolMaxMemoryString,        asynParamFloat64,         &NDPoolMaxMemory);
-    createParam(NDPoolUsedMemoryString,       asynParamFloat64,         &NDPoolUsedMemory);
-    createParam(NDPoolEmptyFreeListString,    asynParamInt32,           &NDPoolEmptyFreeList);
-    createParam(NDNumQueuedArraysString,      asynParamInt32,           &NDNumQueuedArrays);
 
     /* Here we set the values of read-only parameters and of read/write parameters that cannot
      * or should not get their values from the database.  Note that values set here will override
@@ -937,51 +879,51 @@ asynNDArrayDriver::asynNDArrayDriver(const char *portName, int maxAddr, int maxB
      * the driver with no error during initialization then it sets the output record to that value.
      * If a value is not set here then the read request will return an error (uninitialized).
      * Values set here will be overridden by values from save/restore if they exist. */
-    setStringParam (NDPortNameSelf, portName);
+    setStringParam (paramSet->NDPortNameSelf, portName);
     epicsSnprintf(versionString, sizeof(versionString), "%d.%d.%d",
                   ADCORE_VERSION, ADCORE_REVISION, ADCORE_MODIFICATION);
-    setStringParam(NDADCoreVersion, versionString);
+    setStringParam(paramSet->NDADCoreVersion, versionString);
     // We set the driver version to the same thing, which is appropriate for plugins in ADCore
     // Other drivers need to set this after this constructor
-    setStringParam(NDDriverVersion, versionString);
-    setIntegerParam(NDArraySizeX,   0);
-    setIntegerParam(NDArraySizeY,   0);
-    setIntegerParam(NDArraySizeZ,   0);
-    setIntegerParam(NDArraySize,    0);
-    setIntegerParam(NDNDimensions,  0);
-    setIntegerParam(NDColorMode,    NDColorModeMono);
-    setIntegerParam(NDUniqueId,     0);
-    setDoubleParam (NDTimeStamp,    0.);
-    setIntegerParam(NDEpicsTSSec,   0);
-    setIntegerParam(NDEpicsTSNsec,  0);
-    setIntegerParam(NDBayerPattern, 0);
-    setIntegerParam(NDArrayCounter, 0);
+    setStringParam(paramSet->NDDriverVersion, versionString);
+    setIntegerParam(paramSet->NDArraySizeX,   0);
+    setIntegerParam(paramSet->NDArraySizeY,   0);
+    setIntegerParam(paramSet->NDArraySizeZ,   0);
+    setIntegerParam(paramSet->NDArraySize,    0);
+    setIntegerParam(paramSet->NDNDimensions,  0);
+    setIntegerParam(paramSet->NDColorMode,    NDColorModeMono);
+    setIntegerParam(paramSet->NDUniqueId,     0);
+    setDoubleParam (paramSet->NDTimeStamp,    0.);
+    setIntegerParam(paramSet->NDEpicsTSSec,   0);
+    setIntegerParam(paramSet->NDEpicsTSNsec,  0);
+    setIntegerParam(paramSet->NDBayerPattern, 0);
+    setIntegerParam(paramSet->NDArrayCounter, 0);
     /* Set the initial values of FileSave, FileRead, and FileCapture so the readbacks are initialized */
-    setIntegerParam(NDWriteFile, 0);
-    setIntegerParam(NDReadFile, 0);
-    setIntegerParam(NDFileCapture, 0);
-    setIntegerParam(NDFileWriteStatus, 0);
-    setStringParam (NDFileWriteMessage, "");
+    setIntegerParam(paramSet->NDWriteFile, 0);
+    setIntegerParam(paramSet->NDReadFile, 0);
+    setIntegerParam(paramSet->NDFileCapture, 0);
+    setIntegerParam(paramSet->NDFileWriteStatus, 0);
+    setStringParam (paramSet->NDFileWriteMessage, "");
     /* We set FileTemplate to a reasonable value because it cannot be defined in the database, since it is a
      * waveform record. However, the waveform record does not currently read the driver value for initialization! */
-    setStringParam (NDFilePath, "");
-    setStringParam (NDFileName, "");
-    setIntegerParam(NDFileNumber, 0);
-    setIntegerParam(NDAutoIncrement, 0);
-    setStringParam (NDFileTemplate, "%s%s_%3.3d.dat");
-    setIntegerParam(NDFileNumCaptured, 0);
-    setIntegerParam(NDFileCreateDir, 0);
-    setStringParam (NDFileTempSuffix, "");
-    setStringParam (NDAttributesFile, "");
-    setIntegerParam(NDAttributesStatus, NDAttributesFileNotFound);
-    setStringParam (NDAttributesMacros, "");
+    setStringParam (paramSet->NDFilePath, "");
+    setStringParam (paramSet->NDFileName, "");
+    setIntegerParam(paramSet->NDFileNumber, 0);
+    setIntegerParam(paramSet->NDAutoIncrement, 0);
+    setStringParam (paramSet->NDFileTemplate, "%s%s_%3.3d.dat");
+    setIntegerParam(paramSet->NDFileNumCaptured, 0);
+    setIntegerParam(paramSet->NDFileCreateDir, 0);
+    setStringParam (paramSet->NDFileTempSuffix, "");
+    setStringParam (paramSet->NDAttributesFile, "");
+    setIntegerParam(paramSet->NDAttributesStatus, NDAttributesFileNotFound);
+    setStringParam (paramSet->NDAttributesMacros, "");
 
-    setIntegerParam(NDPoolAllocBuffers, this->pNDArrayPool->getNumBuffers());
-    setIntegerParam(NDPoolFreeBuffers, this->pNDArrayPool->getNumFree());
-    setDoubleParam(NDPoolMaxMemory, 0);
-    setDoubleParam(NDPoolUsedMemory, 0);
+    setIntegerParam(paramSet->NDPoolAllocBuffers, this->pNDArrayPool->getNumBuffers());
+    setIntegerParam(paramSet->NDPoolFreeBuffers, this->pNDArrayPool->getNumFree());
+    setDoubleParam(paramSet->NDPoolMaxMemory, 0);
+    setDoubleParam(paramSet->NDPoolUsedMemory, 0);
 
-    setIntegerParam(NDNumQueuedArrays, 0);
+    setIntegerParam(paramSet->NDNumQueuedArrays, 0);
 
     queuedArrayEvent_ = epicsEventCreate(epicsEventEmpty);
     queuedArrayUpdateDone_ = epicsEventCreate(epicsEventEmpty);
@@ -1013,4 +955,3 @@ asynNDArrayDriver::~asynNDArrayDriver()
     delete this->pAttributeList;
     delete this->queuedArrayCountMutex_;
 }
-

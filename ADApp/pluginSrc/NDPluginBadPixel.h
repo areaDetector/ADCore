@@ -50,7 +50,7 @@ typedef std::set<badPixel> badPixelList_t;
 /* Bad pixel file*/
 #define NDPluginBadPixelFileNameString "BAD_PIXEL_FILE_NAME"    /* (asynOctet,   r/w) Name of the bad pixel file */
 
-class NDPLUGIN_API NDPluginBadPixel : public NDPluginDriver {
+class NDPLUGIN_API NDPluginBadPixel : public NDPluginDriverParamSet, public NDPluginDriver {
 public:
     NDPluginBadPixel(const char *portName, int queueSize, int blockingCallbacks,
                      const char *NDArrayPort, int NDArrayAddr,

@@ -5,6 +5,7 @@
 #include <epicsMessageQueue.h>
 #include <epicsTime.h>
 
+#include "ADDriverParamSet.h"
 #include "asynNDArrayDriver.h"
 
 
@@ -74,65 +75,31 @@ typedef enum
   * standard asyn interface methods are called. */
  /*                               String                 asyn interface  access   Description  */
 
-#define ADGainString                "GAIN"                  /**< (asynFloat64,  r/w) Gain */
 
     /* Parameters that control the detector binning */
-#define ADBinXString                "BIN_X"                 /**< (asynInt32,    r/w) Binning in the X direction */
-#define ADBinYString                "BIN_Y"                 /**< (asynInt32,    r/w) Binning in the Y direction */
 
     /* Parameters the control the region of the detector to be read out.
     * ADMinX, ADMinY, ADSizeX, and ADSizeY are in unbinned pixel units */
-#define ADMinXString                "MIN_X"                 /**< (asynInt32,    r/w) First pixel in the X direction; 0 is the first pixel on the detector */
-#define ADMinYString                "MIN_Y"                 /**< (asynInt32,    r/w) First pixel in the Y direction; 0 is the first pixel on the detector */
-#define ADSizeXString               "SIZE_X"                /**< (asynInt32,    r/w) Size of the region to read in the X direction */
-#define ADSizeYString               "SIZE_Y"                /**< (asynInt32,    r/w) Size of the region to read in the Y direction */
-#define ADMaxSizeXString            "MAX_SIZE_X"            /**< (asynInt32,    r/o) Maximum (sensor) size in the X direction */
-#define ADMaxSizeYString            "MAX_SIZE_Y"            /**< (asynInt32,    r/o) Maximum (sensor) size in the Y direction */
 
     /* Parameters that control the orientation of the image */
-#define ADReverseXString            "REVERSE_X"             /**< (asynInt32,    r/w) Reverse image in the X direction (0=No, 1=Yes) */
-#define ADReverseYString            "REVERSE_Y"             /**< (asynInt32,    r/w) Reverse image in the Y direction (0=No, 1=Yes) */
 
     /* Parameters defining the acquisition parameters. */
-#define ADFrameTypeString           "FRAME_TYPE"            /**< (asynInt32,    r/w) Frame type (ADFrameType_t) */
-#define ADImageModeString           "IMAGE_MODE"            /**< (asynInt32,    r/w) Image mode (ADImageMode_t) */
-#define ADTriggerModeString         "TRIGGER_MODE"          /**< (asynInt32,    r/w) Trigger mode (ADTriggerMode_t) */
-#define ADNumExposuresString        "NEXPOSURES"            /**< (asynInt32,    r/w) Number of exposures per image to acquire */
-#define ADNumImagesString           "NIMAGES"               /**< (asynInt32,    r/w) Number of images to acquire in one acquisition sequence */
-#define ADAcquireTimeString         "ACQ_TIME"              /**< (asynFloat64,  r/w) Acquisition time per image */
-#define ADAcquirePeriodString       "ACQ_PERIOD"            /**< (asynFloat64,  r/w) Acquisition period between images */
-#define ADStatusString              "STATUS"                /**< (asynInt32,    r/o) Acquisition status (ADStatus_t) */
 
     /* Shutter parameters */
-#define ADShutterControlString      "SHUTTER_CONTROL"       /**< (asynInt32,    r/w) (ADShutterStatus_t) Open (1) or Close(0) shutter */
-#define ADShutterControlEPICSString "SHUTTER_CONTROL_EPICS" /**< (asynInt32, r/o) (ADShutterStatus_t) Open (1) or Close(0) EPICS shutter */
-#define ADShutterStatusString       "SHUTTER_STATUS"        /**< (asynInt32,    r/o) (ADShutterStatus_t) Shutter Open (1) or Closed(0) */
-#define ADShutterModeString         "SHUTTER_MODE"          /**< (asynInt32,    r/w) (ADShutterMode_t) Use EPICS or detector shutter */
-#define ADShutterOpenDelayString    "SHUTTER_OPEN_DELAY"    /**< (asynFloat64,  r/w) Time for shutter to open */
-#define ADShutterCloseDelayString   "SHUTTER_CLOSE_DELAY"   /**< (asynFloat64,  r/w) Time for shutter to close */
 
     /* Temperature parameters */
-#define ADTemperatureString         "TEMPERATURE"           /**< (asynFloat64,  r/w) Detector temperature */
-#define ADTemperatureActualString   "TEMPERATURE_ACTUAL"    /**< (asynFloat64,  r/o) Actual detector temperature */
 
     /* Statistics on number of images collected and the image rate */
-#define ADNumImagesCounterString    "NIMAGES_COUNTER"       /**< (asynInt32,    r/o) Number of images collected in current acquisition sequence */
-#define ADNumExposuresCounterString "NEXPOSURES_COUNTER"    /**< (asynInt32, r/o) Number of exposures collected for current image */
-#define ADTimeRemainingString       "TIME_REMAINING"        /**< (asynFloat64,  r/o) Acquisition time remaining */
 
     /* Status reading */
-#define ADReadStatusString          "READ_STATUS"           /**< (asynInt32,     r/w) Write 1 to force a read of detector status */
 
     /* Status message strings */
-#define ADStatusMessageString       "STATUS_MESSAGE"        /**< (asynOctet,    r/o) Status message */
-#define ADStringToServerString      "STRING_TO_SERVER"      /**< (asynOctet,    r/o) String sent to server for message-based drivers */
-#define ADStringFromServerString    "STRING_FROM_SERVER"    /**< (asynOctet,    r/o) String received from server for message-based drivers */
 
 /** Class from which areaDetector drivers are directly derived. */
 class ADCORE_API ADDriver : public asynNDArrayDriver {
 public:
     /* This is the constructor for the class. */
-    ADDriver(const char *portName, int maxAddr, int numParams, int maxBuffers, size_t maxMemory,
+    ADDriver(ADDriverParamSet* paramSet, const char *portName, int maxAddr, int numParams, int maxBuffers, size_t maxMemory,
              int interfaceMask, int interruptMask,
              int asynFlags, int autoConnect, int priority, int stackSize);
 
@@ -144,41 +111,8 @@ public:
     virtual void setShutter(int open);
 
 protected:
-    int ADGain;
-    #define FIRST_AD_PARAM ADGain
-    int ADBinX;
-    int ADBinY;
-    int ADMinX;
-    int ADMinY;
-    int ADSizeX;
-    int ADSizeY;
-    int ADMaxSizeX;
-    int ADMaxSizeY;
-    int ADReverseX;
-    int ADReverseY;
-    int ADFrameType;
-    int ADImageMode;
-    int ADNumExposures;
-    int ADNumExposuresCounter;
-    int ADNumImages;
-    int ADNumImagesCounter;
-    int ADAcquireTime;
-    int ADAcquirePeriod;
-    int ADTimeRemaining;
-    int ADStatus;
-    int ADTriggerMode;
-    int ADShutterControl;
-    int ADShutterControlEPICS;
-    int ADShutterStatus;
-    int ADShutterMode;
-    int ADShutterOpenDelay;
-    int ADShutterCloseDelay;
-    int ADTemperature;
-    int ADTemperatureActual;
-    int ADReadStatus;
-    int ADStatusMessage;
-    int ADStringToServer;
-    int ADStringFromServer;
+    ADDriverParamSet* paramSet;
+    #define FIRST_AD_PARAM paramSet->FIRST_ADDRIVERPARAMSET_PARAM
     
     bool deviceIsReachable;
 };

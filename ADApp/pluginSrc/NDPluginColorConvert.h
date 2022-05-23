@@ -23,7 +23,7 @@
   * It also applies a false color map if requested for 8 bit data
   * If the conversion required by the input color mode and output color mode are not
   * in this supported list then the NDArray is passed on without conversion. */
-class NDPLUGIN_API NDPluginColorConvert : public NDPluginDriver {
+class NDPLUGIN_API NDPluginColorConvert : public NDPluginDriverParamSet, public NDPluginDriver {
 public:
     NDPluginColorConvert(const char *portName, int queueSize, int blockingCallbacks,
                          const char *NDArrayPort, int NDArrayAddr,

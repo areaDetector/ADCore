@@ -154,7 +154,7 @@ typedef struct NDStats {
   * X and Y centroid and sigma
   * Histogram
   */
-class NDPLUGIN_API NDPluginStats : public NDPluginDriver {
+class NDPLUGIN_API NDPluginStats : public NDPluginDriverParamSet, public NDPluginDriver {
 public:
     NDPluginStats(const char *portName, int queueSize, int blockingCallbacks,
                  const char *NDArrayPort, int NDArrayAddr,

@@ -7,7 +7,7 @@
 #define NDPluginScatterMethodString          "SCATTER_METHOD"            /* (asynInt32,        r/w) Algorithm for scatter */
 
 /** A plugin that does callbacks in round-robin fashion rather than passing every NDArray to every callback client  */
-class NDPLUGIN_API NDPluginScatter : public NDPluginDriver {
+class NDPLUGIN_API NDPluginScatter : public NDPluginDriverParamSet, public NDPluginDriver {
 public:
     NDPluginScatter(const char *portName, int queueSize, int blockingCallbacks,
                       const char *NDArrayPort, int NDArrayAddr,

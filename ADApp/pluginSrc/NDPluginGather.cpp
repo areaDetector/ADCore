@@ -41,7 +41,7 @@ NDPluginGather::NDPluginGather(const char *portName, int queueSize, int blocking
                                      int maxBuffers, size_t maxMemory,
                                      int priority, int stackSize)
     /* Invoke the base class constructor */
-    : NDPluginDriver(portName, queueSize, blockingCallbacks,
+    : NDPluginDriver(static_cast<NDPluginDriverParamSet*>(this), portName, queueSize, blockingCallbacks,
                    "", 0, maxPorts, maxBuffers, maxMemory,
                    asynInt32Mask | asynFloat64Mask | asynGenericPointerMask,
                    asynInt32Mask | asynFloat64Mask | asynGenericPointerMask,

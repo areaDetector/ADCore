@@ -60,7 +60,7 @@
 #define NDPOS_IDLE    0
 #define NDPOS_RUNNING 1
 
-class NDPLUGIN_API NDPosPlugin : public NDPluginDriver
+class NDPLUGIN_API NDPosPlugin : public NDPluginDriverParamSet, public NDPluginDriver
 {
 
 public:

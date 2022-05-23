@@ -361,7 +361,7 @@ NDPosPlugin::NDPosPlugin(const char *portName,
                          size_t maxMemory,
                          int priority,
                          int stackSize)
-  : NDPluginDriver(portName,
+  : NDPluginDriver(static_cast<NDPluginDriverParamSet*>(this), portName,
                    queueSize,
                    blockingCallbacks,
                    NDArrayPort,

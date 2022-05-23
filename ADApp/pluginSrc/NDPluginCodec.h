@@ -64,7 +64,7 @@ NDArray *compressBSLZ4(NDArray *input, NDCodecStatus_t *status, char *errorMessa
 NDArray *decompressBSLZ4(NDArray *input, NDCodecStatus_t *status, char *errorMessage);
 
 
-class NDPLUGIN_API NDPluginCodec : public NDPluginDriver {
+class NDPLUGIN_API NDPluginCodec : public NDPluginDriverParamSet, public NDPluginDriver {
 public:
     NDPluginCodec(const char *portName, int queueSize, int blockingCallbacks,
                   const char *NDArrayPort, int NDArrayAddr,

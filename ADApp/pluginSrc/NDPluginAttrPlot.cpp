@@ -40,6 +40,7 @@ NDPluginAttrPlot::NDPluginAttrPlot(const char * port, int n_attributes,
         int cache_size, int n_data_blocks, const char * in_port, int in_addr,
         int queue_size, int blocking_callbacks, int priority, int stackSize)
     : NDPluginDriver (
+                static_cast<NDPluginDriverParamSet*>(this),
                 port,  // The name of the asyn port driver to be created
                 queue_size, // The number of NDArrays that the input queue
                 blocking_callbacks, // NDPluginDriverBlockingCallbacks flag

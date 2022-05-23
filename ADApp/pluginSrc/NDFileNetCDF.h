@@ -26,7 +26,7 @@
   * If also can store all of the attributes associated with an NDArray.
   * This class implements the 4 pure virtual functions from
   * NDPluginFile: openFile, readFile, writeFile and closeFile. */
-class NDPLUGIN_API NDFileNetCDF : public NDPluginFile {
+class NDPLUGIN_API NDFileNetCDF : public NDPluginFileParamSet, public NDPluginFile {
 public:
     NDFileNetCDF(const char *portName, int queueSize, int blockingCallbacks,
                  const char *NDArrayPort, int NDArrayAddr,

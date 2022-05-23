@@ -1,3 +1,4 @@
+include "NDPluginDriverParameters.template"
 #=================================================================#
 # Template file: NDPluginBase.template
 # Database for NDPluginBase, i.e. records common to all plugins
@@ -10,97 +11,16 @@ include "NDArrayBase.template"
 #  This record contains the type of plugin                        #
 ###################################################################
 
-record(stringin, "$(P)$(R)PluginType_RBV")
-{
-   field(DTYP, "asynOctetRead")
-   field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))PLUGIN_TYPE")
-   field(VAL,  "Unknown")
-   field(SCAN, "I/O Intr")
-}
-
 ###################################################################
 #  These records control the connection of the server to          #
 #  an NDArray driver port and address                             #
 ###################################################################
 # Array port name
-record(stringout, "$(P)$(R)NDArrayPort")
-{
-    field(PINI, "YES")
-    field(DTYP, "asynOctetWrite")
-    field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))NDARRAY_PORT")
-    field(VAL,  "$(NDARRAY_PORT)")
-    info(autosaveFields, "VAL")
-}
-
-record(stringin, "$(P)$(R)NDArrayPort_RBV")
-{
-    field(DTYP, "asynOctetRead")
-    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))NDARRAY_PORT")
-    field(SCAN, "I/O Intr")
-}
-
-record(longout, "$(P)$(R)NDArrayAddress")
-{
-    field(PINI, "YES")
-    field(DTYP, "asynInt32")
-    field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))NDARRAY_ADDR")
-    field(VAL,  "$(NDARRAY_ADDR=0)")
-    info(autosaveFields, "VAL")
-}
-
-record(longin, "$(P)$(R)NDArrayAddress_RBV")
-{
-    field(DTYP, "asynInt32")
-    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))NDARRAY_ADDR")
-    field(SCAN, "I/O Intr")
-}
 
 ###################################################################
 #  These records control whether callbacks are enabled and        #
 #  minimum time between callbacks                                 #
 ###################################################################
-record(bo, "$(P)$(R)EnableCallbacks")
-{
-    field(PINI, "YES")
-    field(DTYP, "asynInt32")
-    field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))ENABLE_CALLBACKS")
-    field(ZNAM, "Disable")
-    field(ONAM, "Enable")
-    field(VAL,  "$(ENABLED=0)")
-    info(autosaveFields, "VAL")
-}
-
-record(bi, "$(P)$(R)EnableCallbacks_RBV")
-{
-    field(DTYP, "asynInt32")
-    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))ENABLE_CALLBACKS")
-    field(ZNAM, "Disable")
-    field(ONAM, "Enable")
-    field(ZSV,  "NO_ALARM")
-    field(OSV,  "MINOR")
-    field(SCAN, "I/O Intr")
-}
-
-record(ao, "$(P)$(R)MinCallbackTime")
-{
-    field(PINI, "YES")
-    field(DTYP, "asynFloat64")
-    field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))MIN_CALLBACK_TIME")
-    field(EGU,  "s")
-    field(PREC, "3")
-    field(VAL,  "0.0")
-    field(DRVL, "0")
-    info(autosaveFields, "VAL")
-}
-
-record(ai, "$(P)$(R)MinCallbackTime_RBV")
-{
-    field(DTYP, "asynFloat64")
-    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))MIN_CALLBACK_TIME")
-    field(EGU,  "s")
-    field(PREC, "3")
-    field(SCAN, "I/O Intr")
-}
 
 record(ao, "$(P)$(R)MaxArrayRate")
 {
@@ -128,103 +48,18 @@ record(calc, "$(P)$(R)MaxArrayRate_RBV")
     field(SCAN, "Passive")
 }
 
-record(ao, "$(P)$(R)MaxByteRate")
-{
-    field(PINI, "YES")
-    field(DTYP, "asynFloat64")
-    field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))MAX_BYTE_RATE")
-    field(EGU,  "s")
-    field(PREC, "3")
-    field(VAL,  "0.0")
-    field(DRVL, "0")
-    info(autosaveFields, "VAL")
-}
-
-record(ai, "$(P)$(R)MaxByteRate_RBV")
-{
-    field(DTYP, "asynFloat64")
-    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))MAX_BYTE_RATE")
-    field(EGU,  "s")
-    field(PREC, "3")
-    field(SCAN, "I/O Intr")
-}
-
 ###################################################################
 #  This record contains the last execution time of the plugin     #
 ###################################################################
-record(ai, "$(P)$(R)ExecutionTime_RBV")
-{
-    field(DTYP, "asynFloat64")
-    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))EXECUTION_TIME")
-    field(EGU,  "ms")
-    field(PREC, "3")
-    field(SCAN, "I/O Intr")
-}
 
 ###################################################################
 #  This record requests that the plugin execute again with the    #
 #  same NDArray                                                   #
 ###################################################################
-record(bo, "$(P)$(R)ProcessPlugin")
-{
-    field(DTYP, "asynInt32")
-    field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))PROCESS_PLUGIN")
-    field(VAL,  "1")
-}
 
 ###################################################################
 #  These records control whether callbacks block or not           #
 ###################################################################
-record(bo, "$(P)$(R)BlockingCallbacks")
-{
-    field(PINI, "YES")
-    field(DTYP, "asynInt32")
-    field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))BLOCKING_CALLBACKS")
-    field(ZNAM, "No")
-    field(ONAM, "Yes")
-    field(VAL,  "0")
-    info(autosaveFields, "VAL")
-}
-
-record(bi, "$(P)$(R)BlockingCallbacks_RBV")
-{
-    field(DTYP, "asynInt32")
-    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))BLOCKING_CALLBACKS")
-    field(ZNAM, "No")
-    field(ONAM, "Yes")
-    field(SCAN, "I/O Intr")
-}
-
-
-record(longout, "$(P)$(R)DroppedArrays")
-{
-    field(PINI, "YES")
-    field(DTYP, "asynInt32")
-    field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))DROPPED_ARRAYS")
-    field(VAL,  "0")
-}
-
-record(longin, "$(P)$(R)DroppedArrays_RBV")
-{
-    field(DTYP, "asynInt32")
-    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))DROPPED_ARRAYS")
-    field(SCAN, "I/O Intr")
-}
-
-record(longout, "$(P)$(R)QueueSize")
-{
-    field(DTYP, "asynInt32")
-    field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))QUEUE_SIZE")
-    field(PINI, "YES")
-}
-
-record(longin, "$(P)$(R)QueueSize_RBV")
-{
-    field(DTYP, "asynInt32")
-    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))QUEUE_SIZE")
-    field(FLNK, "$(P)$(R)QueueFreeLow")
-    field(SCAN, "I/O Intr")
-}
 
 record(calcout, "$(P)$(R)QueueFreeLow") {
     field(CALC, "A*0.25")
@@ -250,17 +85,6 @@ record(calcout, "$(P)$(R)QueueUseHIHI") {
    field(OUT,  "$(P)$(R)QueueUse.HIHI")
 }
 
-record(longin, "$(P)$(R)QueueFree")
-{
-    field(DTYP, "asynInt32")
-    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))QUEUE_FREE")
-    field(LLSV, "MAJOR")
-    field(LSV,  "MINOR")
-    field(LOLO, "0")
-    field(HYST, "1")
-    field(SCAN, "$(SCANRATE=I/O Intr)")
-}
-
 # Display the fill level on the plugins input queue
 record(calc, "$(P)$(R)QueueUse") {
     field(CALC, "A-B")
@@ -272,125 +96,14 @@ record(calc, "$(P)$(R)QueueUse") {
     field(HYST, "1")
 }
 
-record(longout, "$(P)$(R)NumThreads")
-{
-    field(DTYP, "asynInt32")
-    field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))NUM_THREADS")
-    field(VAL,  "1")
-    field(PINI, "YES")
-}
-
-record(longin, "$(P)$(R)NumThreads_RBV")
-{
-    field(DTYP, "asynInt32")
-    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))NUM_THREADS")
-    field(SCAN, "I/O Intr")
-}
-
-record(longin, "$(P)$(R)MaxThreads_RBV")
-{
-    field(DTYP, "asynInt32")
-    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))MAX_THREADS")
-    field(SCAN, "I/O Intr")
-}
-
 ###################################################################
 #  These records control output array sorting                     #
 ###################################################################
-record(mbbo, "$(P)$(R)SortMode") {
-    field(PINI, "YES")
-    field(DTYP, "asynInt32")
-    field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))SORT_MODE")
-    field(ZRVL, "0")
-    field(ZRST, "Unsorted")
-    field(ONVL, "1")
-    field(ONST, "Sorted")
-}
-
-record(mbbi, "$(P)$(R)SortMode_RBV") {
-    field(DTYP, "asynInt32")
-    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))SORT_MODE")
-    field(ZRVL, "0")
-    field(ZRST, "Unsorted")
-    field(ONVL, "1")
-    field(ONST, "Sorted")
-    field(SCAN, "I/O Intr")
-}
-
-record(ao, "$(P)$(R)SortTime") {
-    field(PINI, "YES")
-    field(DTYP, "asynFloat64")
-    field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))SORT_TIME")
-    field(PREC, "3")
-    field(VAL, "0.1")
-}
-
-record(ai, "$(P)$(R)SortTime_RBV") {
-    field(DTYP, "asynFloat64")
-    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))SORT_TIME")
-    field(PREC, "3")
-    field(SCAN, "I/O Intr")
-}
-
-record(longout, "$(P)$(R)SortSize")
-{
-    field(DTYP, "asynInt32")
-    field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))SORT_SIZE")
-    field(VAL,  "20")
-    field(PINI, "YES")
-}
-
-record(longin, "$(P)$(R)SortSize_RBV")
-{
-    field(DTYP, "asynInt32")
-    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))SORT_SIZE")
-    field(FLNK, "$(P)$(R)SortFreeLow")
-    field(SCAN, "I/O Intr")
-}
-
-record(longin, "$(P)$(R)SortFree") {
-    field(DTYP, "asynInt32")
-    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))SORT_FREE")
-    field(LLSV, "MAJOR")
-    field(LSV,  "MINOR")
-    field(LOLO, "0")
-    field(HYST, "1")
-    field(SCAN, "I/O Intr")
-}
 
 record(calcout, "$(P)$(R)SortFreeLow") {
     field(CALC, "A*0.25")
     field(INPA, "$(P)$(R)SortSize")
     field(OUT,  "$(P)$(R)SortFree.LOW")
-}
-
-record(longout, "$(P)$(R)DroppedOutputArrays")
-{
-    field(PINI, "YES")
-    field(DTYP, "asynInt32")
-    field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))DROPPED_OUTPUT_ARRAYS")
-    field(VAL,  "0")
-}
-
-record(longin, "$(P)$(R)DroppedOutputArrays_RBV")
-{
-    field(DTYP, "asynInt32")
-    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))DROPPED_OUTPUT_ARRAYS")
-    field(SCAN, "I/O Intr")
-}
-
-record(longout, "$(P)$(R)DisorderedArrays")
-{
-    field(DTYP, "asynInt32")
-    field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))DISORDERED_ARRAYS")
-    field(PINI, "YES")
-}
-
-record(longin, "$(P)$(R)DisorderedArrays_RBV")
-{
-    field(DTYP, "asynInt32")
-    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))DISORDERED_ARRAYS")
-    field(SCAN, "I/O Intr")
 }
 
 

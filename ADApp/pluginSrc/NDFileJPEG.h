@@ -32,7 +32,7 @@ typedef struct {
 /** Writes NDArrays in the JPEG file format, which is a lossy compression format.
   * This plugin was developed using the libjpeg library to write the file.
   */
-class NDPLUGIN_API NDFileJPEG : public NDPluginFile {
+class NDPLUGIN_API NDFileJPEG : public NDPluginFileParamSet, public NDPluginFile {
 public:
     NDFileJPEG(const char *portName, int queueSize, int blockingCallbacks,
                const char *NDArrayPort, int NDArrayAddr,

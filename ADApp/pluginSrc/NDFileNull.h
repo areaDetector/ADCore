@@ -14,7 +14,7 @@
 
 /** Writes NDArrays in the Null file format. */
 
-class NDPLUGIN_API NDFileNull : public NDPluginFile {
+class NDPLUGIN_API NDFileNull : public NDPluginFileParamSet, public NDPluginFile {
 public:
     NDFileNull(const char *portName, int queueSize, int blockingCallbacks,
                  const char *NDArrayPort, int NDArrayAddr,

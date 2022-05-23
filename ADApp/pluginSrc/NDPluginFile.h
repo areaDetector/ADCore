@@ -4,6 +4,7 @@
 #include <epicsTypes.h>
 #include <epicsMutex.h>
 
+#include "NDPluginFileParamSet.h"
 #include "NDPluginDriver.h"
 
 /** Mask to open file for reading */
@@ -26,8 +27,10 @@ typedef int NDFileOpenMode_t;
   * to a single file.
   * Derived classes must implement the 4 pure virtual functions: openFile, readFile, writeFile and closeFile. */
 class NDPLUGIN_API NDPluginFile : public NDPluginDriver {
+protected:
+    NDPluginFileParamSet* paramSet;
 public:
-    NDPluginFile(const char *portName, int queueSize, int blockingCallbacks,
+    NDPluginFile(NDPluginFileParamSet* paramSet, const char *portName, int queueSize, int blockingCallbacks,
                  const char *NDArrayPort, int NDArrayAddr, int maxAddr,
                  int maxBuffers, size_t maxMemory, int interfaceMask, int interruptMask,
                  int asynFlags, int autoConnect, int priority, int stackSize, int maxThreads,

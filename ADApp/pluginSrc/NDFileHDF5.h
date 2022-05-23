@@ -10,7 +10,8 @@
 #include <list>
 #include <string.h>
 #include <hdf5.h>
-#include <NDPluginFile.h>
+#include "NDFileHDF5ParamSet.h"
+#include "NDPluginFile.h"
 #include <NDArray.h>
 #include "NDFileHDF5Layout.h"
 #include "NDFileHDF5Dataset.h"
@@ -22,45 +23,8 @@
 #define MAXEXTRADIMS 10
 #define MAX_CHUNK_DIMS ND_ARRAY_MAX_DIMS
 
-#define str_NDFileHDF5_chunkSizeAuto     "HDF5_chunkSizeAuto"
-#define str_NDFileHDF5_nFramesChunks     "HDF5_nFramesChunks"
-#define str_NDFileHDF5_chunkBoundaryAlign "HDF5_chunkBoundaryAlign"
-#define str_NDFileHDF5_chunkBoundaryThreshold "HDF5_chunkBoundaryThreshold"
-#define str_NDFileHDF5_NDAttributeChunk  "HDF5_NDAttributeChunk"
-#define str_NDFileHDF5_nExtraDims        "HDF5_nExtraDims"
 #define str_NDFileHDF5_extraDimOffsetX   "HDF5_extraDimOffsetX"
 #define str_NDFileHDF5_extraDimOffsetY   "HDF5_extraDimOffsetY"
-#define str_NDFileHDF5_storeAttributes   "HDF5_storeAttributes"
-#define str_NDFileHDF5_storePerformance  "HDF5_storePerformance"
-#define str_NDFileHDF5_totalRuntime      "HDF5_totalRuntime"
-#define str_NDFileHDF5_totalIoSpeed      "HDF5_totalIoSpeed"
-#define str_NDFileHDF5_flushNthFrame     "HDF5_flushNthFrame"
-#define str_NDFileHDF5_compressionType   "HDF5_compressionType"
-#define str_NDFileHDF5_nbitsPrecision    "HDF5_nbitsPrecision"
-#define str_NDFileHDF5_nbitsOffset       "HDF5_nbitsOffset"
-#define str_NDFileHDF5_szipNumPixels     "HDF5_szipNumPixels"
-#define str_NDFileHDF5_zCompressLevel    "HDF5_zCompressLevel"
-#define str_NDFileHDF5_bloscShuffleType  "HDF5_bloscShuffleType"
-#define str_NDFileHDF5_bloscCompressor   "HDF5_bloscCompressor"
-#define str_NDFileHDF5_bloscCompressLevel "HDF5_bloscCompressLevel"
-#define str_NDFileHDF5_jpegQuality       "HDF5_jpegQuality"
-#define str_NDFileHDF5_dimAttDatasets    "HDF5_dimAttDatasets"
-#define str_NDFileHDF5_layoutErrorMsg    "HDF5_layoutErrorMsg"
-#define str_NDFileHDF5_layoutValid       "HDF5_layoutValid"
-#define str_NDFileHDF5_layoutFilename    "HDF5_layoutFilename"
-#define str_NDFileHDF5_posRunning        "HDF5_posRunning"
-#define str_NDFileHDF5_posNameDimN       "HDF5_posNameDimN"
-#define str_NDFileHDF5_posNameDimX       "HDF5_posNameDimX"
-#define str_NDFileHDF5_posNameDimY       "HDF5_posNameDimY"
-#define str_NDFileHDF5_posIndexDimN      "HDF5_posIndexDimN"
-#define str_NDFileHDF5_posIndexDimX      "HDF5_posIndexDimX"
-#define str_NDFileHDF5_posIndexDimY      "HDF5_posIndexDimY"
-#define str_NDFileHDF5_fillValue         "HDF5_fillValue"
-#define str_NDFileHDF5_SWMRFlushNow      "HDF5_SWMRFlushNow"
-#define str_NDFileHDF5_SWMRCbCounter     "HDF5_SWMRCbCounter"
-#define str_NDFileHDF5_SWMRSupported     "HDF5_SWMRSupported"
-#define str_NDFileHDF5_SWMRMode          "HDF5_SWMRMode"
-#define str_NDFileHDF5_SWMRRunning       "HDF5_SWMRRunning"
 
 /** Writes NDArrays in the HDF5 file format; an XML file can control the structure of the HDF5 file.
   */
@@ -74,7 +38,7 @@ class NDPLUGIN_API NDFileHDF5 : public NDPluginFile
     static const char *str_NDFileHDF5_posName[MAXEXTRADIMS];
     static const char *str_NDFileHDF5_posIndex[MAXEXTRADIMS];
 
-    NDFileHDF5(const char *portName, int queueSize, int blockingCallbacks,
+    NDFileHDF5(NDFileHDF5ParamSet* paramSet, const char *portName, int queueSize, int blockingCallbacks,
                const char *NDArrayPort, int NDArrayAddr,
                int priority, int stackSize);
 
@@ -130,47 +94,17 @@ class NDPLUGIN_API NDFileHDF5 : public NDPluginFile
     Codec_t                                    codec;       // Definition of codec used to compress the data.
 
   protected:
+    NDFileHDF5ParamSet* paramSet;
     /* plugin parameters */
-    int NDFileHDF5_chunkSizeAuto;
-    #define FIRST_NDFILE_HDF5_PARAM NDFileHDF5_chunkSizeAuto
-    int NDFileHDF5_nFramesChunks;
+    #define FIRST_NDFILE_HDF5_PARAM paramSet->FIRST_NDFILEHDF5PARAMSET_PARAM
     int NDFileHDF5_chunkSize[MAX_CHUNK_DIMS];
-    int NDFileHDF5_chunkBoundaryAlign;
-    int NDFileHDF5_chunkBoundaryThreshold;
-    int NDFileHDF5_NDAttributeChunk;
-    int NDFileHDF5_nExtraDims;
     int NDFileHDF5_extraDimOffsetX;
     int NDFileHDF5_extraDimOffsetY;
     int NDFileHDF5_extraDimSize[MAXEXTRADIMS];
     int NDFileHDF5_extraDimName[MAXEXTRADIMS];
     int NDFileHDF5_extraDimChunk[MAXEXTRADIMS];
-    int NDFileHDF5_storeAttributes;
-    int NDFileHDF5_storePerformance;
-    int NDFileHDF5_totalRuntime;
-    int NDFileHDF5_totalIoSpeed;
-    int NDFileHDF5_flushNthFrame;
-    int NDFileHDF5_compressionType;
-    int NDFileHDF5_nbitsPrecision;
-    int NDFileHDF5_nbitsOffset;
-    int NDFileHDF5_szipNumPixels;
-    int NDFileHDF5_zCompressLevel;
-    int NDFileHDF5_bloscCompressor;
-    int NDFileHDF5_bloscCompressLevel;
-    int NDFileHDF5_bloscShuffleType;
-    int NDFileHDF5_jpegQuality;
-    int NDFileHDF5_dimAttDatasets;
-    int NDFileHDF5_layoutErrorMsg;
-    int NDFileHDF5_layoutValid;
-    int NDFileHDF5_layoutFilename;
-    int NDFileHDF5_posRunning;
     int NDFileHDF5_posName[MAXEXTRADIMS];
     int NDFileHDF5_posIndex[MAXEXTRADIMS];
-    int NDFileHDF5_fillValue;
-    int NDFileHDF5_SWMRFlushNow;
-    int NDFileHDF5_SWMRCbCounter;
-    int NDFileHDF5_SWMRSupported;
-    int NDFileHDF5_SWMRMode;
-    int NDFileHDF5_SWMRRunning;
 
     asynStatus configureDims(NDArray *pArray);
     void calcNumFrames();
@@ -268,4 +202,3 @@ class NDPLUGIN_API NDFileHDF5 : public NDPluginFile
 };
 
 #endif
-

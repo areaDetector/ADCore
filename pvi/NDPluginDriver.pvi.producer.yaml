@@ -1,0 +1,221 @@
+type: AsynProducer
+prefix: $(P)$(R)
+label: NDPluginBase
+asyn_port: $(PORT)
+address: $(ADDR=0)
+timeout: $(TIMEOUT=1)
+parent: asynNDArrayDriver
+parameters:
+
+- type: Group
+  name: ComponentGroupOne
+  layout:
+    type: Grid
+  children:
+
+  - type: AsynBinary
+    name: ProcessPlugin
+    description: ProcessPlugin
+    index_name: NDPluginDriverProcessPlugin
+    drv_info: PROCESS_PLUGIN
+    access: W
+    initial: '1'
+
+  - type: AsynString
+    name: PluginType
+    description: PluginType_RBV
+    index_name: NDPluginDriverPluginType
+    drv_info: PLUGIN_TYPE
+    access: R
+    record_fields:
+      SCAN: I/O Intr
+
+  - type: AsynFloat64
+    name: ExecutionTime
+    description: ExecutionTime_RBV
+    index_name: NDPluginDriverExecutionTime
+    drv_info: EXECUTION_TIME
+    access: R
+    record_fields:
+      SCAN: I/O Intr
+      PREC: '3'
+      EGU: ms
+
+  - type: AsynLong
+    name: QueueFree
+    description: QueueFree
+    index_name: NDPluginDriverQueueFree
+    drv_info: QUEUE_FREE
+    access: R
+    read_record_suffix: QueueFree
+    record_fields:
+      SCAN: $(SCANRATE=I/O Intr)
+      LOLO: '0'
+      LLSV: MAJOR
+      LSV: MINOR
+      HYST: '1'
+
+  - type: AsynLong
+    name: MaxThreads
+    description: MaxThreads_RBV
+    index_name: NDPluginDriverMaxThreads
+    drv_info: MAX_THREADS
+    access: R
+    record_fields:
+      SCAN: I/O Intr
+
+  - type: AsynLong
+    name: SortFree
+    description: SortFree
+    index_name: NDPluginDriverSortFree
+    drv_info: SORT_FREE
+    access: R
+    read_record_suffix: SortFree
+    record_fields:
+      SCAN: I/O Intr
+      LOLO: '0'
+      LLSV: MAJOR
+      LSV: MINOR
+      HYST: '1'
+
+  - type: AsynString
+    name: NDArrayPort
+    description: NDArrayPort
+    index_name: NDPluginDriverArrayPort
+    drv_info: NDARRAY_PORT
+    initial: $(NDARRAY_PORT)
+    record_fields:
+      SCAN: I/O Intr
+
+  - type: AsynLong
+    name: NDArrayAddress
+    description: NDArrayAddress
+    index_name: NDPluginDriverArrayAddr
+    drv_info: NDARRAY_ADDR
+    initial: $(NDARRAY_ADDR=0)
+    record_fields:
+      SCAN: I/O Intr
+
+  - type: AsynBinary
+    name: EnableCallbacks
+    description: EnableCallbacks
+    index_name: NDPluginDriverEnableCallbacks
+    drv_info: ENABLE_CALLBACKS
+    initial: $(ENABLED=0)
+    record_fields:
+      SCAN: I/O Intr
+      ZSV: NO_ALARM
+      OSV: MINOR
+      ZNAM: Disable
+      ONAM: Enable
+
+  - type: AsynFloat64
+    name: MinCallbackTime
+    description: MinCallbackTime
+    index_name: NDPluginDriverMinCallbackTime
+    drv_info: MIN_CALLBACK_TIME
+    initial: '0.0'
+    record_fields:
+      SCAN: I/O Intr
+      PREC: '3'
+      EGU: s
+      DRVL: '0'
+
+  - type: AsynFloat64
+    name: MaxByteRate
+    description: MaxByteRate
+    index_name: NDPluginDriverMaxByteRate
+    drv_info: MAX_BYTE_RATE
+    initial: '0.0'
+    record_fields:
+      SCAN: I/O Intr
+      PREC: '3'
+      EGU: s
+      DRVL: '0'
+
+  - type: AsynBinary
+    name: BlockingCallbacks
+    description: BlockingCallbacks
+    index_name: NDPluginDriverBlockingCallbacks
+    drv_info: BLOCKING_CALLBACKS
+    initial: '0'
+    record_fields:
+      SCAN: I/O Intr
+      ZNAM: No
+      ONAM: Yes
+
+  - type: AsynLong
+    name: DroppedArrays
+    description: DroppedArrays
+    index_name: NDPluginDriverDroppedArrays
+    drv_info: DROPPED_ARRAYS
+    initial: '0'
+    record_fields:
+      SCAN: I/O Intr
+
+  - type: AsynLong
+    name: QueueSize
+    description: QueueSize
+    index_name: NDPluginDriverQueueSize
+    drv_info: QUEUE_SIZE
+    record_fields:
+      SCAN: I/O Intr
+      FLNK: $(P)$(R)QueueFreeLow
+
+  - type: AsynLong
+    name: NumThreads
+    description: NumThreads
+    index_name: NDPluginDriverNumThreads
+    drv_info: NUM_THREADS
+    initial: '1'
+    record_fields:
+      SCAN: I/O Intr
+
+  - type: AsynMultiBitBinary
+    name: SortMode
+    description: SortMode
+    index_name: NDPluginDriverSortMode
+    drv_info: SORT_MODE
+    record_fields:
+      SCAN: I/O Intr
+      ZRVL: '0'
+      ONVL: '1'
+      ZRST: Unsorted
+      ONST: Sorted
+
+  - type: AsynFloat64
+    name: SortTime
+    description: SortTime
+    index_name: NDPluginDriverSortTime
+    drv_info: SORT_TIME
+    initial: '0.1'
+    record_fields:
+      SCAN: I/O Intr
+      PREC: '3'
+
+  - type: AsynLong
+    name: SortSize
+    description: SortSize
+    index_name: NDPluginDriverSortSize
+    drv_info: SORT_SIZE
+    initial: '20'
+    record_fields:
+      SCAN: I/O Intr
+      FLNK: $(P)$(R)SortFreeLow
+
+  - type: AsynLong
+    name: DroppedOutputArrays
+    description: DroppedOutputArrays
+    index_name: NDPluginDriverDroppedOutputArrays
+    drv_info: DROPPED_OUTPUT_ARRAYS
+    initial: '0'
+    record_fields:
+      SCAN: I/O Intr
+
+  - type: AsynLong
+    name: DisorderedArrays
+    description: DisorderedArrays
+    index_name: NDPluginDriverDisorderedArrays
+    drv_info: DISORDERED_ARRAYS
+    record_fields:
+      SCAN: I/O Intr
