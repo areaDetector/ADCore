@@ -18,7 +18,7 @@ static const char *NDAttrSourceStrings[] = {
     "PARAM",
     "EPICS_PV",
     "FUNCTION",
-	"CONST"
+    "CONST"
 };
 
 const char *NDAttribute::attrSourceString(NDAttrSource_t type)
