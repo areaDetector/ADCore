@@ -460,7 +460,7 @@ done_macros:
         } 
         else if (strcmp(pAttrType, NDAttribute::attrSourceString(NDAttrSourceConst)) == 0) {
 #ifndef EPICS_LIBCOM_ONLY			
-			this->pAttributeList->add(pName, pDescription, NDAttrString, pSource);
+			this->pAttributeList->add(pName, pDescription, NDAttrString, (void*) pSource);
 #endif
         } else { 
             asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
