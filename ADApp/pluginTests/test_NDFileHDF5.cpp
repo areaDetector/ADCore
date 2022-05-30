@@ -26,7 +26,9 @@ static  NDArrayPool *arrayPool;
 
 struct NDFileHDF5TestFixture
 {
+  asynNDArrayDriverParamSet* asynParamSet;
   asynNDArrayDriver* dummy_driver;
+  NDFileHDF5ParamSet* HDF5ParamSet;
   boost::shared_ptr<HDF5PluginWrapper> hdf5;
 
   static int testCase;
@@ -43,18 +45,22 @@ struct NDFileHDF5TestFixture
     // We need some upstream driver for our test plugin so that calls to connectToArrayPort don't fail, but we can then ignore it and send
     // arrays by calling processCallbacks directly.
     // Thus we instansiate a basic asynPortDriver object which is never used.
-    dummy_driver = new asynNDArrayDriver(dummy_port.c_str(), 1, 0, 0, asynGenericPointerMask, asynGenericPointerMask, 0, 0, 0, 0);
+    asynParamSet = new asynNDArrayDriverParamSet();
+    dummy_driver = new asynNDArrayDriver(asynParamSet, dummy_port.c_str(), 1, 0, 0, asynGenericPointerMask, asynGenericPointerMask, 0, 0, 0, 0);
     arrayPool = dummy_driver->pNDArrayPool;
 
-    // This is the plugin under test
-    hdf5 = boost::shared_ptr<HDF5PluginWrapper>(new HDF5PluginWrapper(testport.c_str(),
-                                                                         50,
-                                                                         1,
-                                                                         dummy_port.c_str(),
-                                                                         0,
-                                                                         0,
-                                                                         2000000));
+    HDF5ParamSet = new NDFileHDF5ParamSet();
 
+    // This is the plugin under test
+    hdf5 = boost::shared_ptr<HDF5PluginWrapper>(new HDF5PluginWrapper(HDF5ParamSet,
+                                                                      testport.c_str(),
+                                                                      50,
+                                                                      1,
+                                                                      dummy_port.c_str(),
+                                                                      0,
+                                                                      0,
+                                                                      2000000));
+ 
 
     // Enable the plugin
     hdf5->start(); // start the plugin thread although not required for this unittesting
@@ -66,6 +72,8 @@ struct NDFileHDF5TestFixture
   {
     hdf5.reset();
     delete dummy_driver;
+    delete asynParamSet;
+    //delete HDF5ParamSet;
   }
 
   void setup_hdf_stream()
@@ -187,9 +195,9 @@ BOOST_AUTO_TEST_CASE(test_DatasetLayout1)
   fillNDArraysFromPool(dims, NDUInt32, arrays, arrayPool);
 
   hdf5->write(NDFileWriteModeString, NDFileModeStream);
-  hdf5->write(str_NDFileHDF5_storeAttributes, 1);
+  hdf5->write(NDFileHDF5_storeAttributesString, 1);
   hdf5->write(NDFileNumberString, 1);
-  hdf5->write(str_NDFileHDF5_layoutFilename, "<?xml version=\"1.0\" standalone=\"no\" ?>\
+  hdf5->write(NDFileHDF5_layoutFilenameString, "<?xml version=\"1.0\" standalone=\"no\" ?>\
 <hdf5_layout>\
   <group name=\"example\">\
     <attribute name=\"version\" source=\"constant\" value=\"2015.0225.01\" type=\"string\" />\

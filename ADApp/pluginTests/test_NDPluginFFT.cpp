@@ -42,6 +42,7 @@ void FFT_callback(void *userPvt, asynUser *pasynUser, void *pointer)
 struct FFTPluginTestFixture
 {
   NDArrayPool *arrayPool;
+  asynNDArrayDriverParamSet* paramSet;
   boost::shared_ptr<asynNDArrayDriver> driver;
   boost::shared_ptr<FFTPluginWrapper> fft;
   boost::shared_ptr<asynGenericPointerClient> client;
@@ -66,7 +67,8 @@ struct FFTPluginTestFixture
 
     // We need some upstream driver for our test plugin so that calls to connectArrayPort
     // don't fail, but we can then ignore it and send arrays by calling processCallbacks directly.
-    driver = boost::shared_ptr<asynNDArrayDriver>(new asynNDArrayDriver(simport.c_str(),
+    paramSet = new asynNDArrayDriverParamSet();
+    driver = boost::shared_ptr<asynNDArrayDriver>(new asynNDArrayDriver(paramSet, simport.c_str(),
                                                                      1, 0, 0,
                                                                      asynGenericPointerMask,
                                                                      asynGenericPointerMask,
@@ -117,6 +119,7 @@ struct FFTPluginTestFixture
   {
     client.reset();
     fft.reset();
+    delete paramSet;
     driver.reset();
     //delete downstream_plugin; // TODO: We can't delete a TestingPlugin because it tries to delete an asyn port which doesnt work
   }

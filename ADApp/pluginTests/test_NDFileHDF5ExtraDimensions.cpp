@@ -372,6 +372,8 @@ BOOST_AUTO_TEST_CASE(test_TenExtraDimensions)
 
 BOOST_AUTO_TEST_CASE(test_PluginExtraDimensions)
 {
+  asynNDArrayDriverParamSet* paramSet = new asynNDArrayDriverParamSet();
+  NDFileHDF5ParamSet* HDF5ParamSet = new NDFileHDF5ParamSet();
   boost::shared_ptr<asynNDArrayDriver> driver;
   boost::shared_ptr<HDF5PluginWrapper> hdf5;
 
@@ -384,17 +386,18 @@ BOOST_AUTO_TEST_CASE(test_PluginExtraDimensions)
 
   // We need some upstream driver for our test plugin so that calls to connectArrayPort don't fail, but we can then ignore it and send
   // arrays by calling processCallbacks directly.
-  driver = boost::shared_ptr<asynNDArrayDriver>(new asynNDArrayDriver(simport.c_str(), 1, 0, 0, asynGenericPointerMask, asynGenericPointerMask, 0, 0, 0, 0));
+  driver = boost::shared_ptr<asynNDArrayDriver>(new asynNDArrayDriver(paramSet, simport.c_str(), 1, 0, 0, asynGenericPointerMask, asynGenericPointerMask, 0, 0, 0, 0));
   NDArrayPool *arrayPool = driver->pNDArrayPool;
 
   // This is the plugin under test
-  hdf5 = boost::shared_ptr<HDF5PluginWrapper>(new HDF5PluginWrapper(testport.c_str(),
-                                                                       50,
-                                                                       1,
-                                                                       simport.c_str(),
-                                                                       0,
-                                                                       0,
-                                                                       2000000));
+  hdf5 = boost::shared_ptr<HDF5PluginWrapper>(new HDF5PluginWrapper(HDF5ParamSet,
+                                                                      testport.c_str(),
+                                                                      50,
+                                                                      1,
+                                                                      simport.c_str(),
+                                                                      0,
+                                                                      0,
+                                                                      2000000));
 
 
   // Enable the plugin
@@ -414,7 +417,7 @@ BOOST_AUTO_TEST_CASE(test_PluginExtraDimensions)
 
   int numCapture = 0;
   // First try 1 extra dim, (n)4x6
-  hdf5->write(str_NDFileHDF5_nExtraDims, 1);
+  hdf5->write(NDFileHDF5_nExtraDimsString, 1);
   hdf5->write(NDFileHDF5::str_NDFileHDF5_extraDimSize[0], 4);
   hdf5->write(NDFileHDF5::str_NDFileHDF5_extraDimSize[1], 6);
   hdf5->testCalcNumFrames();
@@ -423,7 +426,7 @@ BOOST_AUTO_TEST_CASE(test_PluginExtraDimensions)
 
   // Try 2 extra dims, 5x7x9
   numCapture = 0;
-  hdf5->write(str_NDFileHDF5_nExtraDims, 2);
+  hdf5->write(NDFileHDF5_nExtraDimsString, 2);
   hdf5->write(NDFileHDF5::str_NDFileHDF5_extraDimSize[0], 5);
   hdf5->write(NDFileHDF5::str_NDFileHDF5_extraDimSize[1], 7);
   hdf5->write(NDFileHDF5::str_NDFileHDF5_extraDimSize[2], 9);
@@ -433,7 +436,7 @@ BOOST_AUTO_TEST_CASE(test_PluginExtraDimensions)
 
   // Try 3 extra dims, 2x3x4x5
   numCapture = 0;
-  hdf5->write(str_NDFileHDF5_nExtraDims, 3);
+  hdf5->write(NDFileHDF5_nExtraDimsString, 3);
   hdf5->write(NDFileHDF5::str_NDFileHDF5_extraDimSize[0], 2);
   hdf5->write(NDFileHDF5::str_NDFileHDF5_extraDimSize[1], 3);
   hdf5->write(NDFileHDF5::str_NDFileHDF5_extraDimSize[2], 4);
@@ -444,7 +447,7 @@ BOOST_AUTO_TEST_CASE(test_PluginExtraDimensions)
 
   // Try 4 extra dims, 2x4x6x8x10
   numCapture = 0;
-  hdf5->write(str_NDFileHDF5_nExtraDims, 4);
+  hdf5->write(NDFileHDF5_nExtraDimsString, 4);
   hdf5->write(NDFileHDF5::str_NDFileHDF5_extraDimSize[0], 2);
   hdf5->write(NDFileHDF5::str_NDFileHDF5_extraDimSize[1], 4);
   hdf5->write(NDFileHDF5::str_NDFileHDF5_extraDimSize[2], 6);
@@ -456,7 +459,7 @@ BOOST_AUTO_TEST_CASE(test_PluginExtraDimensions)
 
   // Try 5 extra dims, 2x3x4x5x6x7
   numCapture = 0;
-  hdf5->write(str_NDFileHDF5_nExtraDims, 5);
+  hdf5->write(NDFileHDF5_nExtraDimsString, 5);
   hdf5->write(NDFileHDF5::str_NDFileHDF5_extraDimSize[0], 2);
   hdf5->write(NDFileHDF5::str_NDFileHDF5_extraDimSize[1], 3);
   hdf5->write(NDFileHDF5::str_NDFileHDF5_extraDimSize[2], 4);
@@ -469,7 +472,7 @@ BOOST_AUTO_TEST_CASE(test_PluginExtraDimensions)
 
   // Try 6 extra dims, 2x3x4x5x6x7x8
   numCapture = 0;
-  hdf5->write(str_NDFileHDF5_nExtraDims, 6);
+  hdf5->write(NDFileHDF5_nExtraDimsString, 6);
   hdf5->write(NDFileHDF5::str_NDFileHDF5_extraDimSize[0], 2);
   hdf5->write(NDFileHDF5::str_NDFileHDF5_extraDimSize[1], 3);
   hdf5->write(NDFileHDF5::str_NDFileHDF5_extraDimSize[2], 4);
@@ -483,7 +486,7 @@ BOOST_AUTO_TEST_CASE(test_PluginExtraDimensions)
 
   // Try 7 extra dims, 2x3x4x5x6x7x8x9
   numCapture = 0;
-  hdf5->write(str_NDFileHDF5_nExtraDims, 7);
+  hdf5->write(NDFileHDF5_nExtraDimsString, 7);
   hdf5->write(NDFileHDF5::str_NDFileHDF5_extraDimSize[0], 2);
   hdf5->write(NDFileHDF5::str_NDFileHDF5_extraDimSize[1], 3);
   hdf5->write(NDFileHDF5::str_NDFileHDF5_extraDimSize[2], 4);
@@ -498,7 +501,7 @@ BOOST_AUTO_TEST_CASE(test_PluginExtraDimensions)
 
   // Try 8 extra dims, 2x3x4x5x6x7x8x9x10
   numCapture = 0;
-  hdf5->write(str_NDFileHDF5_nExtraDims, 8);
+  hdf5->write(NDFileHDF5_nExtraDimsString, 8);
   hdf5->write(NDFileHDF5::str_NDFileHDF5_extraDimSize[0], 2);
   hdf5->write(NDFileHDF5::str_NDFileHDF5_extraDimSize[1], 3);
   hdf5->write(NDFileHDF5::str_NDFileHDF5_extraDimSize[2], 4);
@@ -514,7 +517,7 @@ BOOST_AUTO_TEST_CASE(test_PluginExtraDimensions)
 
   // Try 9 extra dims, 2x3x4x5x6x7x8x9x10x11
   numCapture = 0;
-  hdf5->write(str_NDFileHDF5_nExtraDims, 9);
+  hdf5->write(NDFileHDF5_nExtraDimsString, 9);
   hdf5->write(NDFileHDF5::str_NDFileHDF5_extraDimSize[0], 2);
   hdf5->write(NDFileHDF5::str_NDFileHDF5_extraDimSize[1], 3);
   hdf5->write(NDFileHDF5::str_NDFileHDF5_extraDimSize[2], 4);
@@ -532,7 +535,7 @@ BOOST_AUTO_TEST_CASE(test_PluginExtraDimensions)
   // Test method: NDFileHDF5::configureDims()
 
   // Set 2 extra dims
-  hdf5->write(str_NDFileHDF5_nExtraDims, 2);
+  hdf5->write(NDFileHDF5_nExtraDimsString, 2);
   // Set multiframe true
   hdf5->testSetMultiFrameFile(true);
   // Set extra dim sizes n=2 x=3 y=4
@@ -540,7 +543,7 @@ BOOST_AUTO_TEST_CASE(test_PluginExtraDimensions)
   hdf5->write(NDFileHDF5::str_NDFileHDF5_extraDimSize[1], 3);
   hdf5->write(NDFileHDF5::str_NDFileHDF5_extraDimSize[2], 4);
   // Set nFrameChunks = 1
-  hdf5->write(str_NDFileHDF5_nFramesChunks, 1);
+  hdf5->write(NDFileHDF5_nFramesChunksString, 1);
   // Set nRowChunks = 512
   hdf5->write(NDFileHDF5::str_NDFileHDF5_chunkSize[1], 512);
   // Set nColChunks = 1024
@@ -580,7 +583,7 @@ BOOST_AUTO_TEST_CASE(test_PluginExtraDimensions)
 
 
   // Set 9 extra dims
-  hdf5->write(str_NDFileHDF5_nExtraDims, 9);
+  hdf5->write(NDFileHDF5_nExtraDimsString, 9);
   // Set multiframe true
   hdf5->testSetMultiFrameFile(true);
   // Set extra dim sizes 1st=2 2nd=3 3rd=4 4th=5 5th=6 6th=7 7th=8 8th=9 9th=10 10th=11
@@ -595,7 +598,7 @@ BOOST_AUTO_TEST_CASE(test_PluginExtraDimensions)
   hdf5->write(NDFileHDF5::str_NDFileHDF5_extraDimSize[8], 10);
   hdf5->write(NDFileHDF5::str_NDFileHDF5_extraDimSize[9], 11);
   // Set nFrameChunks = 1
-  hdf5->write(str_NDFileHDF5_nFramesChunks, 1);
+  hdf5->write(NDFileHDF5_nFramesChunksString, 1);
   // Set nRowChunks = 512
   hdf5->write(NDFileHDF5::str_NDFileHDF5_chunkSize[1], 512);
   // Set nColChunks = 1024
@@ -668,5 +671,6 @@ BOOST_AUTO_TEST_CASE(test_PluginExtraDimensions)
   BOOST_REQUIRE_EQUAL(hdf5->getVirtualDim(8), 3);
   BOOST_REQUIRE_EQUAL(hdf5->getVirtualDim(9), 2);
 
+  delete paramSet;
 }
 

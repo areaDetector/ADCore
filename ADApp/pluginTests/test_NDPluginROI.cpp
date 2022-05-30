@@ -88,6 +88,7 @@ static void appendTestCase(std::vector<ROITestCaseStr> *pOut, ROITempCaseStr *pI
 
 struct ROIPluginTestFixture
 {
+  asynNDArrayDriverParamSet* paramSet;
   boost::shared_ptr<asynNDArrayDriver> driver;
   boost::shared_ptr<ROIPluginWrapper> roi;
   boost::shared_ptr<asynGenericPointerClient> client;
@@ -110,7 +111,8 @@ struct ROIPluginTestFixture
 
     // We need some upstream driver for our test plugin so that calls to connectArrayPort
     // don't fail, but we can then ignore it and send arrays by calling processCallbacks directly.
-    driver = boost::shared_ptr<asynNDArrayDriver>(new asynNDArrayDriver(simport.c_str(),
+    paramSet = new asynNDArrayDriverParamSet();
+    driver = boost::shared_ptr<asynNDArrayDriver>(new asynNDArrayDriver(paramSet, simport.c_str(),
                                                                      1, 0, 0,
                                                                      asynGenericPointerMask,
                                                                      asynGenericPointerMask,
@@ -155,6 +157,7 @@ struct ROIPluginTestFixture
   {
     client.reset();
     roi.reset();
+    delete paramSet;
     driver.reset();
     //delete downstream_plugin; // TODO: We can't delete a TestingPlugin because it tries to delete an asyn port which doesnt work
   }

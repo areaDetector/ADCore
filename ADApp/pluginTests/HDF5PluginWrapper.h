@@ -14,8 +14,8 @@
 class HDF5PluginWrapper : public NDFileHDF5, public AsynPortClientContainer
 {
 public:
-  HDF5PluginWrapper(const std::string& port, const std::string& detectorPort);
-  HDF5PluginWrapper(const std::string& port,
+  HDF5PluginWrapper(NDFileHDF5ParamSet* paramSet, const std::string& port, const std::string& detectorPort);
+  HDF5PluginWrapper(NDFileHDF5ParamSet* paramSet, const std::string& port,
                     int queueSize,
                     int blocking,
                     const std::string& detectorPort,

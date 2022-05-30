@@ -18,6 +18,7 @@ using namespace std;
 
 struct NDArrayPoolFixture
 {
+    asynNDArrayDriverParamSet* paramSet;
     NDArrayPool *pPool;
     asynNDArrayDriver *dummy_driver;
     #define MAX_MEMORY 60000
@@ -31,12 +32,14 @@ struct NDArrayPoolFixture
         uniqueAsynPortName(dummy_port);
 
         // Thus we instantiate a basic asynPortDriver object which is used for the NDArrayPool
-        dummy_driver = new asynNDArrayDriver(dummy_port.c_str(), 1, 0, MAX_MEMORY, asynGenericPointerMask, asynGenericPointerMask, 0, 0, 0, 0);
+        paramSet = new asynNDArrayDriverParamSet();
+        dummy_driver = new asynNDArrayDriver(paramSet, dummy_port.c_str(), 1, 0, MAX_MEMORY, asynGenericPointerMask, asynGenericPointerMask, 0, 0, 0, 0);
         pPool = dummy_driver->pNDArrayPool;
 
     }
     ~NDArrayPoolFixture()
     {
+        delete paramSet;
         delete dummy_driver;
     }
 };

@@ -44,6 +44,7 @@ static NDArrayPool *arrayPool;
 
 struct PosPluginTestFixture
 {
+  asynNDArrayDriverParamSet* paramSet;
   boost::shared_ptr<asynNDArrayDriver> driver;
   boost::shared_ptr<PosPluginWrapper> pos;
   boost::shared_ptr<asynGenericPointerClient> client;
@@ -61,7 +62,8 @@ struct PosPluginTestFixture
 
     // We need some upstream driver for our test plugin so that calls to connectArrayPort don't fail, but we can then ignore it and send
     // arrays by calling processCallbacks directly.
-    driver = boost::shared_ptr<asynNDArrayDriver>(new asynNDArrayDriver(simport.c_str(), 1, 0, 0, asynGenericPointerMask, asynGenericPointerMask, 0, 0, 0, 0));
+    paramSet = new asynNDArrayDriverParamSet();
+    driver = boost::shared_ptr<asynNDArrayDriver>(new asynNDArrayDriver(paramSet, simport.c_str(), 1, 0, 0, asynGenericPointerMask, asynGenericPointerMask, 0, 0, 0, 0));
     arrayPool = driver->pNDArrayPool;
 
     // This is the plugin under test
@@ -88,6 +90,7 @@ struct PosPluginTestFixture
   {
     client.reset();
     pos.reset();
+    delete paramSet;
     driver.reset();
   }
 
