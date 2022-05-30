@@ -78,76 +78,76 @@ static herr_t cFlushCallback(hid_t objectID, void *data)
 #endif
 
 const char *NDFileHDF5::str_NDFileHDF5_chunkSize[MAX_CHUNK_DIMS] = {
-    "HDF5_nColChunks",
-    "HDF5_nRowChunks",
-    "HDF5_chunkSize2",
-    "HDF5_chunkSize3",
-    "HDF5_chunkSize4",
-    "HDF5_chunkSize5",
-    "HDF5_chunkSize6",
-    "HDF5_chunkSize7",
-    "HDF5_chunkSize8",
-    "HDF5_chunkSize9"
+    NDFileHDF5_nColChunksString,
+    NDFileHDF5_nRowChunksString,
+    NDFileHDF5_chunkSize2String,
+    NDFileHDF5_chunkSize3String,
+    NDFileHDF5_chunkSize4String,
+    NDFileHDF5_chunkSize5String,
+    NDFileHDF5_chunkSize6String,
+    NDFileHDF5_chunkSize7String,
+    NDFileHDF5_chunkSize8String,
+    NDFileHDF5_chunkSize9String
 };
 const char *NDFileHDF5::str_NDFileHDF5_extraDimSize[MAXEXTRADIMS] = {
-    "HDF5_extraDimSizeN",
-    "HDF5_extraDimSizeX",
-    "HDF5_extraDimSizeY",
-    "HDF5_extraDimSize3",
-    "HDF5_extraDimSize4",
-    "HDF5_extraDimSize5",
-    "HDF5_extraDimSize6",
-    "HDF5_extraDimSize7",
-    "HDF5_extraDimSize8",
-    "HDF5_extraDimSize9"
+    NDFileHDF5_ExtraDimSizeNString,
+    NDFileHDF5_ExtraDimSizeXString,
+    NDFileHDF5_ExtraDimSizeYString,
+    NDFileHDF5_ExtraDimSize3String,
+    NDFileHDF5_ExtraDimSize4String,
+    NDFileHDF5_ExtraDimSize5String,
+    NDFileHDF5_ExtraDimSize6String,
+    NDFileHDF5_ExtraDimSize7String,
+    NDFileHDF5_ExtraDimSize8String,
+    NDFileHDF5_ExtraDimSize9String
 };
 const char *NDFileHDF5::str_NDFileHDF5_extraDimName[MAXEXTRADIMS] = {
-    "HDF5_extraDimNameN",
-    "HDF5_extraDimNameX",
-    "HDF5_extraDimNameY",
-    "HDF5_extraDimName3",
-    "HDF5_extraDimName4",
-    "HDF5_extraDimName5",
-    "HDF5_extraDimName6",
-    "HDF5_extraDimName7",
-    "HDF5_extraDimName8",
-    "HDF5_extraDimName9"
+    NDFileHDF5_extraDimNameNString,
+    NDFileHDF5_extraDimNameXString,
+    NDFileHDF5_extraDimNameYString,
+    NDFileHDF5_extraDimName3String,
+    NDFileHDF5_extraDimName4String,
+    NDFileHDF5_extraDimName5String,
+    NDFileHDF5_extraDimName6String,
+    NDFileHDF5_extraDimName7String,
+    NDFileHDF5_extraDimName8String,
+    NDFileHDF5_extraDimName9String
 };
 const char *NDFileHDF5::str_NDFileHDF5_extraDimChunk[MAXEXTRADIMS] = {
-    "HDF5_extraDimChunkN",
-    "HDF5_extraDimChunkX",
-    "HDF5_extraDimChunkY",
-    "HDF5_extraDimChunk3",
-    "HDF5_extraDimChunk4",
-    "HDF5_extraDimChunk5",
-    "HDF5_extraDimChunk6",
-    "HDF5_extraDimChunk7",
-    "HDF5_extraDimChunk8",
-    "HDF5_extraDimChunk9"
+    NDFileHDF5_extraDimChunkNString,
+    NDFileHDF5_extraDimChunkXString,
+    NDFileHDF5_extraDimChunkYString,
+    NDFileHDF5_extraDimChunk3String,
+    NDFileHDF5_extraDimChunk4String,
+    NDFileHDF5_extraDimChunk5String,
+    NDFileHDF5_extraDimChunk6String,
+    NDFileHDF5_extraDimChunk7String,
+    NDFileHDF5_extraDimChunk8String,
+    NDFileHDF5_extraDimChunk9String
 };
 const char *NDFileHDF5::str_NDFileHDF5_posName[MAXEXTRADIMS] = {
-    "HDF5_posNameDimN",
-    "HDF5_posNameDimX",
-    "HDF5_posNameDimY",
-    "HDF5_posNameDim3",
-    "HDF5_posNameDim4",
-    "HDF5_posNameDim5",
-    "HDF5_posNameDim6",
-    "HDF5_posNameDim7",
-    "HDF5_posNameDim8",
-    "HDF5_posNameDim9"
+    NDFileHDF5_posNameDimNString,
+    NDFileHDF5_posNameDimXString,
+    NDFileHDF5_posNameDimYString,
+    NDFileHDF5_posNameDim3String,
+    NDFileHDF5_posNameDim4String,
+    NDFileHDF5_posNameDim5String,
+    NDFileHDF5_posNameDim6String,
+    NDFileHDF5_posNameDim7String,
+    NDFileHDF5_posNameDim8String,
+    NDFileHDF5_posNameDim9String
 };
 const char *NDFileHDF5::str_NDFileHDF5_posIndex[MAXEXTRADIMS] = {
-    "HDF5_posIndexDimN",
-    "HDF5_posIndexDimX",
-    "HDF5_posIndexDimY",
-    "HDF5_posIndexDim3",
-    "HDF5_posIndexDim4",
-    "HDF5_posIndexDim5",
-    "HDF5_posIndexDim6",
-    "HDF5_posIndexDim7",
-    "HDF5_posIndexDim8",
-    "HDF5_posIndexDim9"
+    NDFileHDF5_posIndexDimNString,
+    NDFileHDF5_posIndexDimXString,
+    NDFileHDF5_posIndexDimYString,
+    NDFileHDF5_posIndexDim3String,
+    NDFileHDF5_posIndexDim4String,
+    NDFileHDF5_posIndexDim5String,
+    NDFileHDF5_posIndexDim6String,
+    NDFileHDF5_posIndexDim7String,
+    NDFileHDF5_posIndexDim8String,
+    NDFileHDF5_posIndexDim9String
 };
 
 /** The task to run the thread for flush commands
@@ -2271,20 +2271,77 @@ NDFileHDF5::NDFileHDF5(NDFileHDF5ParamSet* paramSet, const char *portName, int q
   static const char *functionName = "NDFileHDF5";
   int status = asynSuccess;
 
-  for (int chunkIndex = 0; chunkIndex < MAX_CHUNK_DIMS; chunkIndex++){
-    this->createParam(str_NDFileHDF5_chunkSize[chunkIndex],   asynParamInt32,   &NDFileHDF5_chunkSize[chunkIndex]);
-  }
-  this->createParam(str_NDFileHDF5_extraDimOffsetX, asynParamInt32,   &NDFileHDF5_extraDimOffsetX);
-  this->createParam(str_NDFileHDF5_extraDimOffsetY, asynParamInt32,   &NDFileHDF5_extraDimOffsetY);
-  for (int extraDimIndex = 0; extraDimIndex < MAXEXTRADIMS; extraDimIndex++){
-    this->createParam(str_NDFileHDF5_extraDimSize[extraDimIndex],   asynParamInt32,   &NDFileHDF5_extraDimSize[extraDimIndex]);
-    this->createParam(str_NDFileHDF5_extraDimName[extraDimIndex],   asynParamOctet,   &NDFileHDF5_extraDimName[extraDimIndex]);
-    this->createParam(str_NDFileHDF5_extraDimChunk[extraDimIndex],  asynParamInt32,   &NDFileHDF5_extraDimChunk[extraDimIndex]);
-  }
-  for (int extraDimIndex = 0; extraDimIndex < MAXEXTRADIMS; extraDimIndex++){
-    this->createParam(str_NDFileHDF5_posName[extraDimIndex],    asynParamOctet,   &NDFileHDF5_posName[extraDimIndex]);
-    this->createParam(str_NDFileHDF5_posIndex[extraDimIndex],   asynParamOctet,   &NDFileHDF5_posIndex[extraDimIndex]);
-  }
+  // Store indexes of dimensional parameters in arrays to loop over
+  // chunkSize
+  NDFileHDF5_chunkSize[0] = paramSet->NDFileHDF5_nRowChunks;
+  NDFileHDF5_chunkSize[1] = paramSet->NDFileHDF5_nColChunks;
+  NDFileHDF5_chunkSize[2] = paramSet->NDFileHDF5_chunkSize2;
+  NDFileHDF5_chunkSize[3] = paramSet->NDFileHDF5_chunkSize3;
+  NDFileHDF5_chunkSize[4] = paramSet->NDFileHDF5_chunkSize4;
+  NDFileHDF5_chunkSize[5] = paramSet->NDFileHDF5_chunkSize5;
+  NDFileHDF5_chunkSize[6] = paramSet->NDFileHDF5_chunkSize6;
+  NDFileHDF5_chunkSize[7] = paramSet->NDFileHDF5_chunkSize7;
+  NDFileHDF5_chunkSize[8] = paramSet->NDFileHDF5_chunkSize8;
+  NDFileHDF5_chunkSize[9] = paramSet->NDFileHDF5_chunkSize9;
+  // extraDimSize
+  NDFileHDF5_extraDimSize[0] = paramSet->NDFileHDF5_ExtraDimSizeN;
+  NDFileHDF5_extraDimSize[1] = paramSet->NDFileHDF5_ExtraDimSizeX;
+  NDFileHDF5_extraDimSize[2] = paramSet->NDFileHDF5_ExtraDimSizeY;
+  NDFileHDF5_extraDimSize[3] = paramSet->NDFileHDF5_ExtraDimSize3;
+  NDFileHDF5_extraDimSize[4] = paramSet->NDFileHDF5_ExtraDimSize4;
+  NDFileHDF5_extraDimSize[5] = paramSet->NDFileHDF5_ExtraDimSize5;
+  NDFileHDF5_extraDimSize[6] = paramSet->NDFileHDF5_ExtraDimSize6;
+  NDFileHDF5_extraDimSize[7] = paramSet->NDFileHDF5_ExtraDimSize7;
+  NDFileHDF5_extraDimSize[8] = paramSet->NDFileHDF5_ExtraDimSize8;
+  NDFileHDF5_extraDimSize[9] = paramSet->NDFileHDF5_ExtraDimSize9;
+  // extraDimName
+  NDFileHDF5_extraDimName[0] = paramSet->NDFileHDF5_extraDimNameN;
+  NDFileHDF5_extraDimName[1] = paramSet->NDFileHDF5_extraDimNameX;
+  NDFileHDF5_extraDimName[2] = paramSet->NDFileHDF5_extraDimNameY;
+  NDFileHDF5_extraDimName[3] = paramSet->NDFileHDF5_extraDimName3;
+  NDFileHDF5_extraDimName[4] = paramSet->NDFileHDF5_extraDimName4;
+  NDFileHDF5_extraDimName[5] = paramSet->NDFileHDF5_extraDimName5;
+  NDFileHDF5_extraDimName[6] = paramSet->NDFileHDF5_extraDimName6;
+  NDFileHDF5_extraDimName[7] = paramSet->NDFileHDF5_extraDimName7;
+  NDFileHDF5_extraDimName[8] = paramSet->NDFileHDF5_extraDimName8;
+  NDFileHDF5_extraDimName[9] = paramSet->NDFileHDF5_extraDimName9;
+  // extraDimChunk
+  NDFileHDF5_extraDimChunk[0] = paramSet->NDFileHDF5_extraDimChunkN;
+  NDFileHDF5_extraDimChunk[1] = paramSet->NDFileHDF5_extraDimChunkX;
+  NDFileHDF5_extraDimChunk[2] = paramSet->NDFileHDF5_extraDimChunkY;
+  NDFileHDF5_extraDimChunk[3] = paramSet->NDFileHDF5_extraDimChunk3;
+  NDFileHDF5_extraDimChunk[4] = paramSet->NDFileHDF5_extraDimChunk4;
+  NDFileHDF5_extraDimChunk[5] = paramSet->NDFileHDF5_extraDimChunk5;
+  NDFileHDF5_extraDimChunk[6] = paramSet->NDFileHDF5_extraDimChunk6;
+  NDFileHDF5_extraDimChunk[7] = paramSet->NDFileHDF5_extraDimChunk7;
+  NDFileHDF5_extraDimChunk[8] = paramSet->NDFileHDF5_extraDimChunk8;
+  NDFileHDF5_extraDimChunk[9] = paramSet->NDFileHDF5_extraDimChunk9;
+  // posName
+  NDFileHDF5_posName[0] = paramSet->NDFileHDF5_posNameDimN;
+  NDFileHDF5_posName[1] = paramSet->NDFileHDF5_posNameDimX;
+  NDFileHDF5_posName[2] = paramSet->NDFileHDF5_posNameDimY;
+  NDFileHDF5_posName[3] = paramSet->NDFileHDF5_posNameDim3;
+  NDFileHDF5_posName[4] = paramSet->NDFileHDF5_posNameDim4;
+  NDFileHDF5_posName[5] = paramSet->NDFileHDF5_posNameDim5;
+  NDFileHDF5_posName[6] = paramSet->NDFileHDF5_posNameDim6;
+  NDFileHDF5_posName[7] = paramSet->NDFileHDF5_posNameDim7;
+  NDFileHDF5_posName[8] = paramSet->NDFileHDF5_posNameDim8;
+  NDFileHDF5_posName[9] = paramSet->NDFileHDF5_posNameDim9;
+  // posIndex
+  NDFileHDF5_posIndex[0] = paramSet->NDFileHDF5_posIndexDimN;
+  NDFileHDF5_posIndex[1] = paramSet->NDFileHDF5_posIndexDimX;
+  NDFileHDF5_posIndex[2] = paramSet->NDFileHDF5_posIndexDimY;
+  NDFileHDF5_posIndex[3] = paramSet->NDFileHDF5_posIndexDim3;
+  NDFileHDF5_posIndex[4] = paramSet->NDFileHDF5_posIndexDim4;
+  NDFileHDF5_posIndex[5] = paramSet->NDFileHDF5_posIndexDim5;
+  NDFileHDF5_posIndex[6] = paramSet->NDFileHDF5_posIndexDim6;
+  NDFileHDF5_posIndex[7] = paramSet->NDFileHDF5_posIndexDim7;
+  NDFileHDF5_posIndex[8] = paramSet->NDFileHDF5_posIndexDim8;
+  NDFileHDF5_posIndex[9] = paramSet->NDFileHDF5_posIndexDim9;
+
+  // These are internal parameters and don't have records
+  this->createParam(str_NDFileHDF5_extraDimOffsetX, asynParamInt32, &NDFileHDF5_extraDimOffsetX);
+  this->createParam(str_NDFileHDF5_extraDimOffsetY, asynParamInt32, &NDFileHDF5_extraDimOffsetY);
 
   setIntegerParam(paramSet->NDFileHDF5_chunkSizeAuto, 1);
   for (int chunkIndex = 0; chunkIndex < MAX_CHUNK_DIMS; chunkIndex++){
