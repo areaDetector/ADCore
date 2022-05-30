@@ -33,7 +33,6 @@ class sortedListElement {
         epicsTimeStamp insertionTime_;
 };
 
-                                                                         *to execute plugin code */
 /** Class from which actual plugin drivers are derived; derived from asynNDArrayDriver */
 class NDPLUGIN_API NDPluginDriver : public asynNDArrayDriver, public epicsThreadRunable {
 public:
