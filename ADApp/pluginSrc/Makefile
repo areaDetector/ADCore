@@ -238,6 +238,11 @@ ifeq (vxWorks,$(findstring vxWorks, $(T_A)))
   CODE_CXXFLAGS=
 endif
 
+# Hack to allow multiple definition of _Unwind_Resume produced by MingW on Linux.
+ifeq (mingw,$(findstring mingw, $(T_A)))
+  USR_LDFLAGS += -Wl,-allow-multiple-definition
+endif
+
 include $(TOP)/ADApp/commonLibraryMakefile
 
 include $(TOP)/configure/RULES

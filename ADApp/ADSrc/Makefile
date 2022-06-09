@@ -11,6 +11,11 @@ ifeq (vxWorks,$(findstring vxWorks, $(T_A)))
 CODE_CXXFLAGS=
 endif
 
+ifneq ($(SHARED_LIBRARIES), YES)
+   USR_CFLAGS_WIN32 += -DLIBXML_STATIC
+   USR_CXXFLAGS_WIN32 += -DLIBXML_STATIC
+endif
+
 # The following flag is need to compile/link NDArray.cpp on Solaris
 ifeq ($(GNU),NO)
   NDArray_CXXFLAGS_solaris += -features=tmplrefstatic
