@@ -101,7 +101,7 @@ ifeq ($(WITH_NEXUS),YES)
     PROD_LIBS += NeXus
   else
     ifdef NEXUS_LIB
-      nexus_DIR    = $(NEXUS_LIB)
+      NeXus_DIR    = $(NEXUS_LIB)
       PROD_LIBS     += NeXus
     else
       PROD_SYS_LIBS += NeXus
