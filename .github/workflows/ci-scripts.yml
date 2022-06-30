@@ -1,0 +1,163 @@
+name: ADCore
+
+# Trigger on pushes and PRs to any branch
+on:
+  push:
+    paths-ignore:
+      - '**/*.md'
+      - '**/*.txt'
+  pull_request:
+
+env:
+  SETUP_PATH: .ci-local
+
+jobs:
+  test:
+    name: ${{ matrix.os }}/${{ matrix.deps }}/${{ matrix.base }}/${{ matrix.cmp }}/${{ matrix.configuration }}
+    runs-on: ${{ matrix.os }}
+    env:
+      CMP: ${{ matrix.cmp }}
+      BCFG: ${{ matrix.configuration }}
+      BASE: ${{ matrix.base }}
+      SET: ${{ matrix.deps }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        # Job names also name artifacts, character limitations apply
+        include:
+          - os: ubuntu-latest
+            cmp: gcc
+            configuration: default
+            base: "7.0"
+            deps: os
+            test: true
+
+          - os: ubuntu-latest
+            cmp: gcc
+            configuration: static
+            base: "7.0"
+            deps: os
+            test: true
+
+          - os: ubuntu-latest
+            cmp: gcc
+            configuration: static
+            base: "7.0"
+            deps: adsupport
+
+          - os: ubuntu-latest
+            cmp: gcc
+            configuration: default
+            base: "3.15"
+            deps: os
+
+          - os: ubuntu-latest
+            cmp: gcc
+            configuration: static
+            base: "3.15"
+            deps: os
+
+#          - os: windows-2019
+#            cmp: vs2019
+#            configuration: default
+#            base: "7.0"
+#            deps: adsupport
+
+          - os: windows-2019
+            cmp: vs2019
+            configuration: static
+            base: "7.0"
+            deps: adsupport
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: true
+
+    - name: "Linux OS Deps"
+      if: ${{ matrix.deps == 'os' && matrix.os == 'ubuntu-latest' }}
+      shell: bash
+      run: |
+        sudo apt-get update
+        sudo apt-get -y install \
+          libgraphicsmagick++-dev libhdf5-dev libjpeg-dev libnetcdf-dev libtiff-dev libxml2-dev libz-dev \
+          libblosc-dev libnexus-dev libnetcdf-dev libusb-1.0-0-dev libboost-test-dev libboost-system-dev
+
+        cat <<EOF > configure/CONFIG_SITE.linux-x86_64.Common
+        WITH_PVA=YES
+
+        WITH_BOOST=YES
+        BOOST_EXTERNAL=YES
+
+        WITH_HDF5=YES
+        HDF5_EXTERNAL=YES
+        USR_CPPFLAGS+=-I/usr/include/hdf5/serial
+        USR_LDFLAGS+=-L/usr/lib/x86_64-linux-gnu/hdf5/serial
+
+        XML2_EXTERNAL=YES
+        XML2_INCLUDE=/usr/include/libxml2
+
+        WITH_NETCDF=YES
+        NETCDF_EXTERNAL=YES
+
+        WITH_NEXUS=YES
+        NEXUS_EXTERNAL=YES
+        USR_CPPFLAGS+=-I/usr/include/nexus
+
+        WITH_TIFF=YES
+        TIFF_EXTERNAL=YES
+
+        WITH_JPEG=YES
+        JPEG_EXTERNAL=YES
+
+        WITH_SZIP=NO
+
+        WITH_ZLIB=YES
+        ZLIB_EXTERNAL=YES
+
+        WITH_BLOSC=YES
+        BLOSC_EXTERNAL=YES
+
+        WITH_BITSHUFFLE=NO
+
+        EOF
+        cat configure/CONFIG_SITE.linux-x86_64.Common
+
+    - name: Prepare and compile EPICS dependencies
+      run: python .ci/cue.py prepare
+
+    - name: "ADSupport Deps"
+      if: ${{ matrix.deps == 'adsupport' }}
+      shell: bash
+      run: |
+        cat <<EOF >> configure/CONFIG_SITE.local
+        WITH_PVA=YES
+        WITH_BOOST=NO
+        WITH_HDF5=YES
+        HDF5_EXTERNAL=NO
+        XML2_EXTERNAL=NO
+        WITH_NETCDF=YES
+        NETCDF_EXTERNAL=NO
+        WITH_NEXUS=YES
+        NEXUS_EXTERNAL=NO
+        WITH_TIFF=YES
+        TIFF_EXTERNAL=NO
+        WITH_JPEG=YES
+        JPEG_EXTERNAL=NO
+        WITH_SZIP=YES
+        SZIP_EXTERNAL=NO
+        WITH_ZLIB=YES
+        ZLIB_EXTERNAL=NO
+        WITH_BLOSC=YES
+        BLOSC_EXTERNAL=NO
+        WITH_BITSHUFFLE=YES
+        BITSHUFFLE_EXTERNAL=NO
+        EOF
+
+    - name: Build main module
+      run: python .ci/cue.py build
+
+    - name: Run test
+      if: ${{ matrix.test }}
+      shell: bash
+      run: ./bin/*/plugin-test
