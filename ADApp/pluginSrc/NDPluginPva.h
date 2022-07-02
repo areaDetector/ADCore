@@ -23,6 +23,7 @@ public:
     NDPluginPva(const char *portName, int queueSize, int blockingCallbacks,
                  const char *NDArrayPort, int NDArrayAddr, const char *pvName,
                  int maxBuffers, size_t maxMemory, int priority, int stackSize);
+    virtual ~NDPluginPva();
 
     /* These methods override the virtual methods in the base class */
     void processCallbacks(NDArray *pArray);

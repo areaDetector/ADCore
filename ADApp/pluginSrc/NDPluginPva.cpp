@@ -2,9 +2,10 @@
 #include <string.h>
 #include <stdio.h>
 
-#include <pv/pvDatabase.h>
+#include <pv/pvAccess.h>
+#include <pva/server.h>
+#include <pva/sharedstate.h>
 #include <pv/nt.h>
-#include <pv/channelProviderLocal.h>
 
 #include <iocsh.h>
 
@@ -16,74 +17,87 @@
 
 static const char *driverName="NDPluginPva";
 
-using namespace epics;
-using namespace epics::pvData;
-using namespace epics::pvAccess;
-using namespace epics::pvDatabase;
-using namespace epics::nt;
-using namespace std;
+namespace pvd = epics::pvData;
+namespace pva = epics::pvAccess;
+namespace nt = epics::nt;
 
-class NDPLUGIN_API NTNDArrayRecord :
-    public PVRecord
-{
+namespace {
+/* pvDatabase compatibility
+ * Sends all fields which are assigned by NTNDArrayConverter,
+ * regardless of whether they change.
+ */
+struct BitMarker : public pvd::PostHandler {
+    const pvd::PVFieldPtr fld;
+    const pvd::BitSetPtr mask;
 
-private:
-    NTNDArrayRecord(string const & name, PVStructurePtr const & pvStructure)
-    :PVRecord(name, pvStructure) {}
+    BitMarker(const pvd::PVFieldPtr& fld,
+              const pvd::BitSetPtr& mask)
+        :fld(fld)
+        ,mask(mask)
+    {}
+    virtual ~BitMarker() {}
 
-    NTNDArrayPtr m_ntndArray;
-    NTNDArrayConverterPtr m_converter;
-
-public:
-    POINTER_DEFINITIONS(NTNDArrayRecord);
-
-    virtual ~NTNDArrayRecord () {}
-    static NTNDArrayRecordPtr create (string const & name);
-    virtual bool init ();
-    virtual void process () {}
-    void update (NDArray *pArray);
+    virtual void postPut() OVERRIDE FINAL
+    {
+        mask->set(fld->getFieldOffset());
+    }
 };
-
-NTNDArrayRecordPtr NTNDArrayRecord::create (string const & name)
-{
-    NTNDArrayBuilderPtr builder = NTNDArray::createBuilder();
-    builder->addDescriptor()->addTimeStamp()->addAlarm()->addDisplay();
-
-    NTNDArrayRecordPtr pvRecord(new NTNDArrayRecord(name,
-            builder->createPVStructure()));
-
-    if(!pvRecord->init())
-        pvRecord.reset();
-
-    return pvRecord;
 }
 
-bool NTNDArrayRecord::init ()
+class NTNDArrayRecord
 {
-    initPVRecord();
-    m_ntndArray = NTNDArray::wrap(getPVStructure());
-    m_converter.reset(new NTNDArrayConverter(m_ntndArray));
-    return true;
-}
+public:
+    pvas::StaticProvider provider;
+    pvas::SharedPV::shared_pointer pv;
 
-void NTNDArrayRecord::update(NDArray *pArray)
-{
-    lock();
+    const pvd::PVStructurePtr current;
+    // wraps 'current'
+    const nt::NTNDArrayPtr m_ntndArray;
+    NTNDArrayConverter m_converter;
 
-    try
+    pvd::BitSetPtr changes;
+
+    NTNDArrayRecord(const std::string& name)
+        :provider(pvas::StaticProvider(name))
+        ,current(nt::NTNDArray::createBuilder()
+                 ->addDescriptor()->addTimeStamp()->addAlarm()->addDisplay()
+                 ->createPVStructure())
+        ,m_ntndArray(nt::NTNDArray::wrap(current))
+        ,m_converter(m_ntndArray)
+        ,changes(new pvd::BitSet(current->getNumberFields()))
     {
-        beginGroupPut();
-        m_converter->fromArray(pArray);
-        endGroupPut();
+        pvas::SharedPV::Config pv_conf;
+        // pvDatabase compatibility mode for pvRequest handling
+        pv_conf.mapperMode = pvd::PVRequestMapper::Slice;
+
+        pv = pvas::SharedPV::buildReadOnly(&pv_conf);
+        pv->open(*current);
+        provider.add(name, pv);
+
+        {
+            std::tr1::shared_ptr<BitMarker> temp(new BitMarker(current, changes));
+            current->setPostHandler(temp);
+        }
+        for(size_t i=current->getFieldOffset()+1u, N=current->getNextFieldOffset(); i<N; i++) {
+            pvd::PVFieldPtr fld(current->getSubFieldT(i));
+            std::tr1::shared_ptr<BitMarker> temp(new BitMarker(fld, changes));
+            fld->setPostHandler(temp);
+        }
     }
-    catch(...)
+
+    void update(NDArray *pArray)
     {
-        endGroupPut();
-        unlock();
-        throw;
+        changes->clear();
+        // through several levels of indirection, updates this->current
+        // and through several more, updates this->changes
+        m_converter.fromArray(pArray);
+
+        // SharedPV::post() makes a lightweight copy of *current,
+        // so we may safely continue to change it.
+
+        pv->post(*current, *changes);
     }
-    unlock();
-}
+};
 
 /** Callback function that is called by the NDArray driver with new NDArray
   * data.
@@ -155,12 +169,12 @@ NDPluginPva::NDPluginPva(const char *portName, int queueSize,
     : NDPluginDriver(portName, queueSize, blockingCallbacks,
             NDArrayPort, NDArrayAddr, 1, maxBuffers, maxMemory, 0, 0,
             0, 1, priority, stackSize, 1, true),
-            m_record(NTNDArrayRecord::create(pvName))
+            m_record(new NTNDArrayRecord(pvName))
 {
     createParam(NDPluginPvaPvNameString, asynParamOctet, &NDPluginPvaPvName);
 
     if(!m_record.get())
-        throw runtime_error("failed to create NTNDArrayRecord");
+        throw std::runtime_error("failed to create NTNDArrayRecord");
 
     /* Set the plugin type string */
     setStringParam(NDPluginDriverPluginType, "NDPluginPva");
@@ -171,12 +185,11 @@ NDPluginPva::NDPluginPva(const char *portName, int queueSize,
     /* Try to connect to the NDArray port */
     connectToArrayPort();
 
-    PVDatabasePtr master = PVDatabase::getMaster();
-    ChannelProviderLocalPtr channelProvider = getChannelProviderLocal();
-
-    if(!master->addRecord(m_record))
-        throw runtime_error("couldn't add record to master database");
+    pva::ChannelProviderRegistry::servers()
+            ->addSingleton(m_record->provider.provider());
 }
+
+NDPluginPva::~NDPluginPva() {}
 
 /* Configuration routine.  Called directly, or from the iocsh function */
 extern "C" int NDPvaConfigure(const char *portName, int queueSize,
