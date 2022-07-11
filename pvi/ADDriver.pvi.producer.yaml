@@ -6,406 +6,419 @@ address: $(ADDR=0)
 timeout: $(TIMEOUT=1)
 parent: asynNDArrayDriver
 parameters:
+  - type: Group
+    name: ADReadout
+    layout:
+      type: Grid
+    children:
+      - type: AsynLong
+        name: MaxSizeX
+        description: MaxSizeX_RBV
+        index_name: ADMaxSizeX
+        drv_info: MAX_SIZE_X
+        access: R
+        record_fields:
+          SCAN: I/O Intr
 
-- type: Group
-  name: ComponentGroupOne
-  layout:
-    type: Grid
-  children:
+      - type: AsynLong
+        name: MaxSizeY
+        description: MaxSizeY_RBV
+        index_name: ADMaxSizeY
+        drv_info: MAX_SIZE_Y
+        access: R
+        record_fields:
+          SCAN: I/O Intr
 
-  - type: AsynBinary
-    name: ReadStatus
-    description: ReadStatus
-    index_name: ADReadStatus
-    drv_info: READ_STATUS
-    access: W
-    initial: '1'
-    record_fields:
-      SCAN: Passive
+      - type: AsynLong
+        name: BinX
+        description: BinX
+        index_name: ADBinX
+        drv_info: BIN_X
+        initial: "1"
+        record_fields:
+          SCAN: I/O Intr
 
-  - type: AsynLong
-    name: MaxSizeX
-    description: MaxSizeX_RBV
-    index_name: ADMaxSizeX
-    drv_info: MAX_SIZE_X
-    access: R
-    record_fields:
-      SCAN: I/O Intr
+      - type: AsynLong
+        name: BinY
+        description: BinY
+        index_name: ADBinY
+        drv_info: BIN_Y
+        initial: "1"
+        record_fields:
+          SCAN: I/O Intr
 
-  - type: AsynLong
-    name: MaxSizeY
-    description: MaxSizeY_RBV
-    index_name: ADMaxSizeY
-    drv_info: MAX_SIZE_Y
-    access: R
-    record_fields:
-      SCAN: I/O Intr
+      - type: AsynLong
+        name: MinY
+        description: MinY
+        index_name: ADMinY
+        drv_info: MIN_Y
+        initial: "0"
+        record_fields:
+          SCAN: I/O Intr
 
-  - type: AsynFloat64
-    name: TimeRemaining
-    description: TimeRemaining_RBV
-    index_name: ADTimeRemaining
-    drv_info: TIME_REMAINING
-    access: R
-    record_fields:
-      SCAN: I/O Intr
-      PREC: '3'
+      - type: AsynLong
+        name: MinX
+        description: MinX
+        index_name: ADMinX
+        drv_info: MIN_X
+        initial: "0"
+        record_fields:
+          SCAN: I/O Intr
 
-  - type: AsynLong
-    name: NumExposuresCounter
-    description: NumExposuresCounter_RBV
-    index_name: ADNumExposuresCounter
-    drv_info: NEXPOSURES_COUNTER
-    access: R
-    record_fields:
-      SCAN: I/O Intr
+      - type: AsynBinary
+        name: ReverseX
+        description: ReverseX
+        index_name: ADReverseX
+        drv_info: REVERSE_X
+        initial: "0"
+        record_fields:
+          SCAN: I/O Intr
+          ZNAM: No
+          ONAM: Yes
 
-  - type: AsynLong
-    name: NumImagesCounter
-    description: NumImagesCounter_RBV
-    index_name: ADNumImagesCounter
-    drv_info: NIMAGES_COUNTER
-    access: R
-    record_fields:
-      SCAN: $(SCANRATE=I/O Intr)
+      - type: AsynBinary
+        name: ReverseY
+        description: ReverseY
+        index_name: ADReverseY
+        drv_info: REVERSE_Y
+        initial: "0"
+        record_fields:
+          SCAN: I/O Intr
+          ZNAM: No
+          ONAM: Yes
 
-  - type: AsynMultiBitBinary
-    name: DetectorState
-    description: DetectorState_RBV
-    index_name: ADStatus
-    drv_info: STATUS
-    access: R
-    record_fields:
-      SCAN: I/O Intr
-      ZRVL: '0'
-      ONVL: '1'
-      TWVL: '2'
-      THVL: '3'
-      FRVL: '4'
-      FVVL: '5'
-      SXVL: '6'
-      SVVL: '7'
-      EIVL: '8'
-      NIVL: '9'
-      TEVL: '10'
-      ZRST: Idle
-      ONST: Acquire
-      TWST: Readout
-      THST: Correct
-      FRST: Saving
-      FVST: Aborting
-      SXST: Error
-      SVST: Waiting
-      EIST: Initializing
-      NIST: Disconnected
-      TEST: Aborted
-      ZRSV: NO_ALARM
-      ONSV: NO_ALARM
-      TWSV: NO_ALARM
-      THSV: NO_ALARM
-      FRSV: NO_ALARM
-      FVSV: MINOR
-      SXSV: MAJOR
-      SVSV: NO_ALARM
-      EISV: NO_ALARM
-      NISV: INVALID
-      TESV: MINOR
+      - type: AsynLong
+        name: SizeX
+        description: SizeX
+        index_name: ADSizeX
+        drv_info: SIZE_X
+        initial: "1"
+        record_fields:
+          SCAN: I/O Intr
 
-  - type: AsynWaveform
-    name: StatusMessage
-    description: StatusMessage_RBV
-    index_name: ADStatusMessage
-    drv_info: STATUS_MESSAGE
-    access: R
-    record_fields:
-      SCAN: I/O Intr
-      NELM: '256'
-      FTVL: CHAR
+      - type: AsynLong
+        name: SizeY
+        description: SizeY
+        index_name: ADSizeY
+        drv_info: SIZE_Y
+        initial: "1"
+        record_fields:
+          SCAN: I/O Intr
 
-  - type: AsynWaveform
-    name: StringToServer
-    description: StringToServer_RBV
-    index_name: ADStringToServer
-    drv_info: STRING_TO_SERVER
-    access: R
-    record_fields:
-      SCAN: I/O Intr
-      NELM: '256'
-      FTVL: CHAR
+      - type: AsynFloat64
+        name: Gain
+        description: Gain
+        index_name: ADGain
+        drv_info: GAIN
+        initial: "1.0"
+        record_fields:
+          SCAN: I/O Intr
+          PREC: "3"
 
-  - type: AsynWaveform
-    name: StringFromServer
-    description: StringFromServer_RBV
-    index_name: ADStringFromServer
-    drv_info: STRING_FROM_SERVER
-    access: R
-    record_fields:
-      SCAN: I/O Intr
-      NELM: '256'
-      FTVL: CHAR
+  - type: Group
+    name: ADShutter
+    layout:
+      type: Grid
+    children:
+      - type: AsynMultiBitBinary
+        name: ShutterMode
+        description: ShutterMode
+        index_name: ADShutterMode
+        drv_info: SHUTTER_MODE
+        initial: "0"
+        record_fields:
+          SCAN: I/O Intr
+          ZRVL: "0"
+          ONVL: "1"
+          TWVL: "2"
+          ZRST: None
+          ONST: EPICS PV
+          TWST: Camera output
 
-  - type: AsynBinary
-    name: ShutterStatus
-    description: ShutterStatus_RBV
-    index_name: ADShutterStatus
-    drv_info: SHUTTER_STATUS
-    access: R
-    record_fields:
-      SCAN: I/O Intr
-      ZSV: NO_ALARM
-      OSV: MINOR
-      ZNAM: Closed
-      ONAM: Open
+      - type: AsynBinary
+        name: ShutterStatus
+        description: ShutterStatus_RBV
+        index_name: ADShutterStatus
+        drv_info: SHUTTER_STATUS
+        access: R
+        record_fields:
+          SCAN: I/O Intr
+          ZSV: NO_ALARM
+          OSV: MINOR
+          ZNAM: Closed
+          ONAM: Open
 
-  - type: AsynBinary
-    name: ShutterControlEPICS
-    description: ShutterControlEPICS
-    index_name: ADShutterControlEPICS
-    drv_info: SHUTTER_CONTROL_EPICS
-    access: R
-    read_record_suffix: ShutterControlEPICS
-    record_fields:
-      SCAN: I/O Intr
-      FLNK: $(P)$(R)ShutterFanout.PROC
-      ZSV: NO_ALARM
-      OSV: MINOR
-      ZNAM: Closed
-      ONAM: Open
+      - type: AsynBinary
+        name: ShutterControl
+        description: ShutterControl
+        index_name: ADShutterControl
+        drv_info: SHUTTER_CONTROL
+        initial: "0"
+        record_fields:
+          SCAN: I/O Intr
+          ZNAM: Close
+          ONAM: Open
 
-  - type: AsynFloat64
-    name: TemperatureActual
-    description: TemperatureActual
-    index_name: ADTemperatureActual
-    drv_info: TEMPERATURE_ACTUAL
-    access: R
-    read_record_suffix: TemperatureActual
-    record_fields:
-      SCAN: I/O Intr
-      PREC: '1'
-      EGU: C
+      - type: AsynFloat64
+        name: ShutterOpenDelay
+        description: ShutterOpenDelay
+        index_name: ADShutterOpenDelay
+        drv_info: SHUTTER_OPEN_DELAY
+        initial: "0.0"
+        record_fields:
+          SCAN: I/O Intr
+          PREC: "3"
 
-  - type: AsynLong
-    name: BinX
-    description: BinX
-    index_name: ADBinX
-    drv_info: BIN_X
-    initial: '1'
-    record_fields:
-      SCAN: I/O Intr
+      - type: AsynFloat64
+        name: ShutterCloseDelay
+        description: ShutterCloseDelay
+        index_name: ADShutterCloseDelay
+        drv_info: SHUTTER_CLOSE_DELAY
+        initial: "0.0"
+        record_fields:
+          SCAN: I/O Intr
+          PREC: "3"
 
-  - type: AsynLong
-    name: BinY
-    description: BinY
-    index_name: ADBinY
-    drv_info: BIN_Y
-    initial: '1'
-    record_fields:
-      SCAN: I/O Intr
+  - type: Group
+    name: ADCollect
+    layout:
+      type: Grid
+    children:
+      - type: AsynFloat64
+        name: AcquireTime
+        description: AcquireTime
+        index_name: ADAcquireTime
+        drv_info: ACQ_TIME
+        initial: "1.0"
+        record_fields:
+          SCAN: I/O Intr
+          PREC: "3"
 
-  - type: AsynLong
-    name: MinX
-    description: MinX
-    index_name: ADMinX
-    drv_info: MIN_X
-    initial: '0'
-    record_fields:
-      SCAN: I/O Intr
+      - type: AsynFloat64
+        name: AcquirePeriod
+        description: AcquirePeriod
+        index_name: ADAcquirePeriod
+        drv_info: ACQ_PERIOD
+        initial: "0"
+        record_fields:
+          SCAN: I/O Intr
+          PREC: "3"
 
-  - type: AsynLong
-    name: MinY
-    description: MinY
-    index_name: ADMinY
-    drv_info: MIN_Y
-    initial: '0'
-    record_fields:
-      SCAN: I/O Intr
+      - type: AsynLong
+        name: NumImagesCounter
+        description: NumImagesCounter_RBV
+        index_name: ADNumImagesCounter
+        drv_info: NIMAGES_COUNTER
+        access: R
+        record_fields:
+          SCAN: $(SCANRATE=I/O Intr)
 
-  - type: AsynLong
-    name: SizeX
-    description: SizeX
-    index_name: ADSizeX
-    drv_info: SIZE_X
-    initial: '1'
-    record_fields:
-      SCAN: I/O Intr
+      - type: AsynLong
+        name: NumImages
+        description: NumImages
+        index_name: ADNumImages
+        drv_info: NIMAGES
+        initial: "1"
+        record_fields:
+          SCAN: I/O Intr
 
-  - type: AsynLong
-    name: SizeY
-    description: SizeY
-    index_name: ADSizeY
-    drv_info: SIZE_Y
-    initial: '1'
-    record_fields:
-      SCAN: I/O Intr
+      - type: AsynLong
+        name: NumExposures
+        description: NumExposures
+        index_name: ADNumExposures
+        drv_info: NEXPOSURES
+        initial: "1"
+        record_fields:
+          SCAN: I/O Intr
 
-  - type: AsynBinary
-    name: ReverseX
-    description: ReverseX
-    index_name: ADReverseX
-    drv_info: REVERSE_X
-    initial: '0'
-    record_fields:
-      SCAN: I/O Intr
-      ZNAM: No
-      ONAM: Yes
+      - type: AsynMultiBitBinary
+        name: ImageMode
+        description: ImageMode
+        index_name: ADImageMode
+        drv_info: IMAGE_MODE
+        initial: "2"
+        record_fields:
+          SCAN: I/O Intr
+          ZRVL: "0"
+          ONVL: "1"
+          TWVL: "2"
+          ZRST: Single
+          ONST: Multiple
+          TWST: Continuous
 
-  - type: AsynBinary
-    name: ReverseY
-    description: ReverseY
-    index_name: ADReverseY
-    drv_info: REVERSE_Y
-    initial: '0'
-    record_fields:
-      SCAN: I/O Intr
-      ZNAM: No
-      ONAM: Yes
+      - type: AsynMultiBitBinary
+        name: TriggerMode
+        description: TriggerMode
+        index_name: ADTriggerMode
+        drv_info: TRIGGER_MODE
+        initial: "0"
+        record_fields:
+          SCAN: I/O Intr
+          ZRVL: "0"
+          ONVL: "1"
+          ZRST: Internal
+          ONST: External
 
-  - type: AsynFloat64
-    name: AcquireTime
-    description: AcquireTime
-    index_name: ADAcquireTime
-    drv_info: ACQ_TIME
-    initial: '1.0'
-    record_fields:
-      SCAN: I/O Intr
-      PREC: '3'
+      - type: AsynMultiBitBinary
+        name: DetectorState
+        description: DetectorState_RBV
+        index_name: ADStatus
+        drv_info: STATUS
+        access: R
+        record_fields:
+          SCAN: I/O Intr
+          ZRVL: "0"
+          ONVL: "1"
+          TWVL: "2"
+          THVL: "3"
+          FRVL: "4"
+          FVVL: "5"
+          SXVL: "6"
+          SVVL: "7"
+          EIVL: "8"
+          NIVL: "9"
+          TEVL: "10"
+          ZRST: Idle
+          ONST: Acquire
+          TWST: Readout
+          THST: Correct
+          FRST: Saving
+          FVST: Aborting
+          SXST: Error
+          SVST: Waiting
+          EIST: Initializing
+          NIST: Disconnected
+          TEST: Aborted
+          ZRSV: NO_ALARM
+          ONSV: NO_ALARM
+          TWSV: NO_ALARM
+          THSV: NO_ALARM
+          FRSV: NO_ALARM
+          FVSV: MINOR
+          SXSV: MAJOR
+          SVSV: NO_ALARM
+          EISV: NO_ALARM
+          NISV: INVALID
+          TESV: MINOR
 
-  - type: AsynFloat64
-    name: AcquirePeriod
-    description: AcquirePeriod
-    index_name: ADAcquirePeriod
-    drv_info: ACQ_PERIOD
-    initial: '0'
-    record_fields:
-      SCAN: I/O Intr
-      PREC: '3'
+      - type: AsynWaveform
+        name: StatusMessage
+        description: StatusMessage_RBV
+        index_name: ADStatusMessage
+        drv_info: STATUS_MESSAGE
+        access: R
+        record_fields:
+          SCAN: I/O Intr
+          NELM: "256"
+          FTVL: CHAR
 
-  - type: AsynFloat64
-    name: Gain
-    description: Gain
-    index_name: ADGain
-    drv_info: GAIN
-    initial: '1.0'
-    record_fields:
-      SCAN: I/O Intr
-      PREC: '3'
+      - type: AsynFloat64
+        name: TimeRemaining
+        description: TimeRemaining_RBV
+        index_name: ADTimeRemaining
+        drv_info: TIME_REMAINING
+        access: R
+        record_fields:
+          SCAN: I/O Intr
+          PREC: "3"
 
-  - type: AsynMultiBitBinary
-    name: FrameType
-    description: FrameType
-    index_name: ADFrameType
-    drv_info: FRAME_TYPE
-    initial: '0'
-    record_fields:
-      SCAN: I/O Intr
-      ZRVL: '0'
-      ONVL: '1'
-      TWVL: '2'
-      THVL: '3'
-      ZRST: Normal
-      ONST: Background
-      TWST: FlatField
-      THST: DblCorrelation
+  - type: Group
+    name: ADBaseMisc
+    layout:
+      type: Grid
+    children:
+      - type: AsynBinary
+        name: ReadStatus
+        description: ReadStatus
+        index_name: ADReadStatus
+        drv_info: READ_STATUS
+        access: W
+        initial: "1"
+        record_fields:
+          SCAN: Passive
 
-  - type: AsynMultiBitBinary
-    name: ImageMode
-    description: ImageMode
-    index_name: ADImageMode
-    drv_info: IMAGE_MODE
-    initial: '2'
-    record_fields:
-      SCAN: I/O Intr
-      ZRVL: '0'
-      ONVL: '1'
-      TWVL: '2'
-      ZRST: Single
-      ONST: Multiple
-      TWST: Continuous
+      - type: AsynLong
+        name: NumExposuresCounter
+        description: NumExposuresCounter_RBV
+        index_name: ADNumExposuresCounter
+        drv_info: NEXPOSURES_COUNTER
+        access: R
+        record_fields:
+          SCAN: I/O Intr
 
-  - type: AsynMultiBitBinary
-    name: TriggerMode
-    description: TriggerMode
-    index_name: ADTriggerMode
-    drv_info: TRIGGER_MODE
-    initial: '0'
-    record_fields:
-      SCAN: I/O Intr
-      ZRVL: '0'
-      ONVL: '1'
-      ZRST: Internal
-      ONST: External
+      - type: AsynWaveform
+        name: StringToServer
+        description: StringToServer_RBV
+        index_name: ADStringToServer
+        drv_info: STRING_TO_SERVER
+        access: R
+        record_fields:
+          SCAN: I/O Intr
+          NELM: "256"
+          FTVL: CHAR
 
-  - type: AsynLong
-    name: NumExposures
-    description: NumExposures
-    index_name: ADNumExposures
-    drv_info: NEXPOSURES
-    initial: '1'
-    record_fields:
-      SCAN: I/O Intr
+      - type: AsynWaveform
+        name: StringFromServer
+        description: StringFromServer_RBV
+        index_name: ADStringFromServer
+        drv_info: STRING_FROM_SERVER
+        access: R
+        record_fields:
+          SCAN: I/O Intr
+          NELM: "256"
+          FTVL: CHAR
 
-  - type: AsynLong
-    name: NumImages
-    description: NumImages
-    index_name: ADNumImages
-    drv_info: NIMAGES
-    initial: '1'
-    record_fields:
-      SCAN: I/O Intr
+      - type: AsynBinary
+        name: ShutterControlEPICS
+        description: ShutterControlEPICS
+        index_name: ADShutterControlEPICS
+        drv_info: SHUTTER_CONTROL_EPICS
+        access: R
+        read_record_suffix: ShutterControlEPICS
+        record_fields:
+          SCAN: I/O Intr
+          FLNK: $(P)$(R)ShutterFanout.PROC
+          ZSV: NO_ALARM
+          OSV: MINOR
+          ZNAM: Closed
+          ONAM: Open
 
-  - type: AsynMultiBitBinary
-    name: ShutterMode
-    description: ShutterMode
-    index_name: ADShutterMode
-    drv_info: SHUTTER_MODE
-    initial: '0'
-    record_fields:
-      SCAN: I/O Intr
-      ZRVL: '0'
-      ONVL: '1'
-      TWVL: '2'
-      ZRST: None
-      ONST: EPICS PV
-      TWST: Camera output
+      - type: AsynFloat64
+        name: TemperatureActual
+        description: TemperatureActual
+        index_name: ADTemperatureActual
+        drv_info: TEMPERATURE_ACTUAL
+        access: R
+        read_record_suffix: TemperatureActual
+        record_fields:
+          SCAN: I/O Intr
+          PREC: "1"
+          EGU: C
 
-  - type: AsynBinary
-    name: ShutterControl
-    description: ShutterControl
-    index_name: ADShutterControl
-    drv_info: SHUTTER_CONTROL
-    initial: '0'
-    record_fields:
-      SCAN: I/O Intr
-      ZNAM: Close
-      ONAM: Open
+      - type: AsynMultiBitBinary
+        name: FrameType
+        description: FrameType
+        index_name: ADFrameType
+        drv_info: FRAME_TYPE
+        initial: "0"
+        record_fields:
+          SCAN: I/O Intr
+          ZRVL: "0"
+          ONVL: "1"
+          TWVL: "2"
+          THVL: "3"
+          ZRST: Normal
+          ONST: Background
+          TWST: FlatField
+          THST: DblCorrelation
 
-  - type: AsynFloat64
-    name: ShutterOpenDelay
-    description: ShutterOpenDelay
-    index_name: ADShutterOpenDelay
-    drv_info: SHUTTER_OPEN_DELAY
-    initial: '0.0'
-    record_fields:
-      SCAN: I/O Intr
-      PREC: '3'
-
-  - type: AsynFloat64
-    name: ShutterCloseDelay
-    description: ShutterCloseDelay
-    index_name: ADShutterCloseDelay
-    drv_info: SHUTTER_CLOSE_DELAY
-    initial: '0.0'
-    record_fields:
-      SCAN: I/O Intr
-      PREC: '3'
-
-  - type: AsynFloat64
-    name: Temperature
-    description: Temperature
-    index_name: ADTemperature
-    drv_info: TEMPERATURE
-    initial: '25.0'
-    record_fields:
-      SCAN: I/O Intr
-      PREC: '1'
-      EGU: C
+      - type: AsynFloat64
+        name: Temperature
+        description: Temperature
+        index_name: ADTemperature
+        drv_info: TEMPERATURE
+        initial: "25.0"
+        record_fields:
+          SCAN: I/O Intr
+          PREC: "1"
+          EGU: C
