@@ -25,21 +25,21 @@ ifeq ($(WITH_NETCDF),YES)
 endif
 
 ifeq ($(WITH_GRAPHICSMAGICK), YES)
-  LIB_LIBS += nanohttp_stream
   ifeq ($(GRAPHICSMAGICK_EXTERNAL),NO)
-    LIB_LIBS               += Magick++ coders Magick jbig jp2 bzlib png webp lcms ttf wmf filters
+    LIB_LIBS += nanohttp_stream
+    LIB_LIBS += Magick++ coders Magick jbig jp2 bzlib png webp lcms ttf wmf filters
   else
     ifdef GRAPHICSMAGICK_LIB
       GraphicsMagick_DIR     = $(GRAPHICSMAGICK_LIB)
       GraphicsMagick++_DIR   = $(GRAPHICSMAGICK_LIB)
       GraphicsMagickWand_DIR = $(GRAPHICSMAGICK_LIB)
-      LIB_LIBS             += GraphicsMagick++ GraphicsMagick
+      LIB_LIBS               += GraphicsMagick++ GraphicsMagick
     else
-      LIB_SYS_LIBS         += GraphicsMagick++ GraphicsMagick
+      LIB_SYS_LIBS           += GraphicsMagick++ GraphicsMagick
     endif
   endif
   # The following system libraries must be installed to use GraphicsMagick
-  LIB_SYS_LIBS_Linux    += X11 Xext
+  LIB_SYS_LIBS_Linux += X11 Xext
 endif
 
 ifeq ($(WITH_TIFF),YES)
