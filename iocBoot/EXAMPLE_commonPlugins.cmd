@@ -203,18 +203,18 @@ startPVAServer
 #set_requestfile_path("$(ADPLUGINBAR)/db")
 
 # Optional: load scan records
-#dbLoadRecords("$(SSCAN)/sscanApp/Db/scan.db", "P=$(PREFIX),MAXPTS1=2000,MAXPTS2=200,MAXPTS3=20,MAXPTS4=10,MAXPTSH=10")
-#set_requestfile_path("$(SSCAN)/sscanApp/Db")
+#dbLoadRecords("$(SSCAN)/db/scan.db", "P=$(PREFIX),MAXPTS1=2000,MAXPTS2=200,MAXPTS3=20,MAXPTS4=10,MAXPTSH=10")
+#set_requestfile_path("$(SSCAN)/db")
 
 # Optional: load sseq record for acquisition sequence
-#dbLoadRecords("$(CALC)/calcApp/Db/sseqRecord.db", "P=$(PREFIX), S=AcquireSequence")
-#set_requestfile_path("$(CALC)/calcApp/Db")
+#dbLoadRecords("$(CALC)/db/sseqRecord.db", "P=$(PREFIX), S=AcquireSequence")
+#set_requestfile_path("$(CALC)/db")
 
 # Optional: load devIocStats records (requires DEVIOCSTATS module)
 #dbLoadRecords("$(DEVIOCSTATS)/db/iocAdminSoft.db", "IOC=$(PREFIX)")
 
 # Optional: load alive record (requires ALIVE module)
-#dbLoadRecords("$(ALIVE)/aliveApp/Db/alive.db", "P=$(PREFIX),RHOST=192.168.1.254")
+#dbLoadRecords("$(ALIVE)/db/alive.db", "P=$(PREFIX),RHOST=192.168.1.254")
 
 # Set the callback queue size to 5000, up from default of 2000 in base.
 # This can be needed to avoid errors "callbackRequest: cbLow ring buffer full".
