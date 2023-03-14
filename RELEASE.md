@@ -58,7 +58,7 @@ files respectively, in the configure/ directory of the appropriate release of th
     in a JSON text file.  Each bad pixel can be replaced with a fixed value,
     replaced with the value of a nearby single pixel, or replaced by the
     median value of nearby pixels.
-    The documentation is [here](https://areadetector.github.io/master/ADCore/NDPluginBadPixel.html).
+    The documentation is [here](https://areadetector.github.io/areaDetector/ADCore/NDPluginBadPixel.html).
 
 ### NDFileHDF
   * Fixed a problem with writing constant string datasets and HDF5 string attributes.
