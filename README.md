@@ -10,5 +10,5 @@ The home of the core components of the
 software.  It includes base classes for drivers and code for all of the standard plugins.
 
 Additional information:
-* [Documentation](https://areadetector.github.io)
+* [Documentation](https://areadetector.github.io/areaDetector)
 * [Release notes and links to source and binary releases](RELEASE.md)
