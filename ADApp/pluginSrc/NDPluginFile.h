@@ -73,6 +73,7 @@ private:
     asynStatus closeFileBase();
     asynStatus doCapture(int capture);
     void       freeCaptureBuffer(int numCapture);
+    void       resetCaptureBuffer();
     asynStatus attrFileCloseCheck();
     asynStatus attrFileNameCheck();
     asynStatus attrFileNameSet();

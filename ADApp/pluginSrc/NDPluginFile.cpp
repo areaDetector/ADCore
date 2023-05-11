@@ -401,6 +401,18 @@ void NDPluginFile::freeCaptureBuffer(int numCapture)
     this->pCapture = NULL;
 }
 
+/** Resets the capture buffer so that it looks like there hasn't been any capture.
+ *  This ensures no memory is leaked when setting NDFileNumCaptured to zero. */
+void NDPluginFile::resetCaptureBuffer()
+{
+    int prevNumCaptures = 0;
+    getIntegerParam(NDFileNumCaptured, &prevNumCaptures);
+    if (prevNumCaptures != 0)
+        this->freeCaptureBuffer(prevNumCaptures);
+
+    setIntegerParam(NDFileNumCaptured, 0);
+}
+
 /** Handles the logic for when NDFileCapture changes state, starting or stopping capturing or streaming NDArrays
   * to a file.
   * \param[in] capture Flag to start or stop capture; 1=start capture, 0=stop capture. */
@@ -448,7 +460,7 @@ asynStatus NDPluginFile::doCapture(int capture)
         case NDFileModeCapture:
             if (capture) {
                 /* Capturing was just started */
-                setIntegerParam(NDFileNumCaptured, 0);
+                this->resetCaptureBuffer();
                 if (!pArray) {
                     asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
                         "%s::%s ERROR: No arrays collected: cannot allocate capture buffer\n",
@@ -474,7 +486,7 @@ asynStatus NDPluginFile::doCapture(int capture)
                 /* Streaming was just started */
                 if (this->supportsMultipleArrays && !this->useAttrFilePrefix && !this->lazyOpen)
                     status = this->openFileBase(NDFileModeWrite | NDFileModeMultiple, pArray);
-                setIntegerParam(NDFileNumCaptured, 0);
+                this->resetCaptureBuffer();
                 setIntegerParam(NDWriteFile, 1);
             } else {
                 /* Streaming was just stopped */
