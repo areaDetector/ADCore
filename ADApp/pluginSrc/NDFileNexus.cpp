@@ -884,6 +884,8 @@ NDFileNexus::NDFileNexus(const char *portName, int queueSize, int blockingCallba
   this->imageNumber = 0;
   setIntegerParam(NDFileNexusTemplateValid, 0);
 
+  /* Set the plugin type string */
+  setStringParam(NDPluginDriverPluginType, "NDFileNexus");
   this->supportsMultipleArrays = 1;
 }
 
