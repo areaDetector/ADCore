@@ -397,7 +397,7 @@ static const iocshArg * const initArgs[] = {&initArg0,
                                             &initArg5,
                                             &initArg6,
                                             &initArg7,
-                                            &initArg9,
+                                            &initArg8,
                                             &initArg9};
 static const iocshFuncDef initFuncDef = {"NDBadPixelConfigure",9,initArgs};
 static void initCallFunc(const iocshArgBuf *args)
