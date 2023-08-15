@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--Saved on 2023-08-15 13:45:53 by epics-->
 <display version="2.0.0">
   <name>NDProcess</name>
   <x>10</x>
   <y>31</y>
   <width>1150</width>
-  <height>660</height>
+  <height>665</height>
   <background_color>
     <color red="187" green="187" blue="187">
     </color>
@@ -46,7 +47,7 @@
     <x>390</x>
     <y>40</y>
     <width>350</width>
-    <height>570</height>
+    <height>620</height>
     <line_width>1</line_width>
     <line_color>
       <color red="0" green="0" blue="0">
@@ -1338,86 +1339,6 @@
   </widget>
   <widget type="label" version="2.0.0">
     <name>text #289</name>
-    <text>Data type</text>
-    <x>473</x>
-    <y>585</y>
-    <width>90</width>
-    <font>
-      <font family="Liberation Sans" style="REGULAR" size="16.0">
-      </font>
-    </font>
-    <horizontal_alignment>2</horizontal_alignment>
-  </widget>
-  <widget type="combo" version="2.0.0">
-    <name>menu #292</name>
-    <pv_name>$(P)$(R)DataTypeOut</pv_name>
-    <x>574</x>
-    <y>586</y>
-    <width>80</width>
-    <height>18</height>
-    <background_color>
-      <color red="115" green="223" blue="255">
-      </color>
-    </background_color>
-    <border_alarm_sensitive>false</border_alarm_sensitive>
-  </widget>
-  <widget type="textupdate" version="2.0.0">
-    <name>text update #295</name>
-    <pv_name>$(P)$(R)DataTypeOut_RBV</pv_name>
-    <x>660</x>
-    <y>586</y>
-    <width>62</width>
-    <height>18</height>
-    <font>
-      <font family="Liberation Sans" style="REGULAR" size="16.0">
-      </font>
-    </font>
-    <foreground_color>
-      <color red="10" green="0" blue="184">
-      </color>
-    </foreground_color>
-    <background_color>
-      <color red="187" green="187" blue="187">
-      </color>
-    </background_color>
-    <format>6</format>
-    <show_units>false</show_units>
-    <horizontal_alignment>1</horizontal_alignment>
-    <border_alarm_sensitive>false</border_alarm_sensitive>
-  </widget>
-  <widget type="rectangle" version="2.0.0">
-    <name>rectangle #299</name>
-    <x>442</x>
-    <y>560</y>
-    <width>280</width>
-    <height>21</height>
-    <line_color>
-      <color red="218" green="218" blue="218">
-      </color>
-    </line_color>
-    <background_color>
-      <color red="218" green="218" blue="218">
-      </color>
-    </background_color>
-  </widget>
-  <widget type="label" version="2.0.0">
-    <name>text #302</name>
-    <text>Output data type</text>
-    <x>502</x>
-    <y>560</y>
-    <width>160</width>
-    <font>
-      <font family="Liberation Sans" style="REGULAR" size="16.0">
-      </font>
-    </font>
-    <foreground_color>
-      <color red="10" green="0" blue="184">
-      </color>
-    </foreground_color>
-    <horizontal_alignment>1</horizontal_alignment>
-  </widget>
-  <widget type="label" version="2.0.0">
-    <name>text #305</name>
     <text>Enable low clip</text>
     <x>421</x>
     <y>450</y>
@@ -1429,7 +1350,7 @@
     <horizontal_alignment>2</horizontal_alignment>
   </widget>
   <widget type="textupdate" version="2.0.0">
-    <name>text update #308</name>
+    <name>text update #292</name>
     <pv_name>$(P)$(R)EnableLowClip_RBV</pv_name>
     <x>668</x>
     <y>451</y>
@@ -1451,115 +1372,8 @@
     <show_units>false</show_units>
     <horizontal_alignment>1</horizontal_alignment>
   </widget>
-  <widget type="label" version="2.0.0">
-    <name>text #312</name>
-    <text>Low clip value</text>
-    <x>431</x>
-    <y>475</y>
-    <width>140</width>
-    <font>
-      <font family="Liberation Sans" style="REGULAR" size="16.0">
-      </font>
-    </font>
-    <horizontal_alignment>2</horizontal_alignment>
-  </widget>
-  <widget type="textupdate" version="2.0.0">
-    <name>text update #315</name>
-    <pv_name>$(P)$(R)LowClip_RBV</pv_name>
-    <x>668</x>
-    <y>476</y>
-    <width>62</width>
-    <height>18</height>
-    <font>
-      <font family="Liberation Sans" style="REGULAR" size="16.0">
-      </font>
-    </font>
-    <foreground_color>
-      <color red="10" green="0" blue="184">
-      </color>
-    </foreground_color>
-    <background_color>
-      <color red="187" green="187" blue="187">
-      </color>
-    </background_color>
-    <format>1</format>
-    <show_units>false</show_units>
-    <horizontal_alignment>1</horizontal_alignment>
-    <border_alarm_sensitive>false</border_alarm_sensitive>
-  </widget>
-  <widget type="label" version="2.0.0">
-    <name>text #319</name>
-    <text>Enable high clip</text>
-    <x>411</x>
-    <y>500</y>
-    <width>160</width>
-    <font>
-      <font family="Liberation Sans" style="REGULAR" size="16.0">
-      </font>
-    </font>
-    <horizontal_alignment>2</horizontal_alignment>
-  </widget>
-  <widget type="textupdate" version="2.0.0">
-    <name>text update #322</name>
-    <pv_name>$(P)$(R)EnableHighClip_RBV</pv_name>
-    <x>668</x>
-    <y>501</y>
-    <width>62</width>
-    <height>18</height>
-    <font>
-      <font family="Liberation Sans" style="REGULAR" size="16.0">
-      </font>
-    </font>
-    <foreground_color>
-      <color red="10" green="0" blue="184">
-      </color>
-    </foreground_color>
-    <background_color>
-      <color red="70" green="70" blue="70">
-      </color>
-    </background_color>
-    <format>6</format>
-    <show_units>false</show_units>
-    <horizontal_alignment>1</horizontal_alignment>
-  </widget>
-  <widget type="textupdate" version="2.0.0">
-    <name>text update #326</name>
-    <pv_name>$(P)$(R)HighClip_RBV</pv_name>
-    <x>668</x>
-    <y>525</y>
-    <width>62</width>
-    <height>18</height>
-    <font>
-      <font family="Liberation Sans" style="REGULAR" size="16.0">
-      </font>
-    </font>
-    <foreground_color>
-      <color red="10" green="0" blue="184">
-      </color>
-    </foreground_color>
-    <background_color>
-      <color red="187" green="187" blue="187">
-      </color>
-    </background_color>
-    <format>1</format>
-    <show_units>false</show_units>
-    <horizontal_alignment>1</horizontal_alignment>
-    <border_alarm_sensitive>false</border_alarm_sensitive>
-  </widget>
-  <widget type="label" version="2.0.0">
-    <name>text #330</name>
-    <text>High clip value</text>
-    <x>421</x>
-    <y>525</y>
-    <width>150</width>
-    <font>
-      <font family="Liberation Sans" style="REGULAR" size="16.0">
-      </font>
-    </font>
-    <horizontal_alignment>2</horizontal_alignment>
-  </widget>
   <widget type="combo" version="2.0.0">
-    <name>menu #333</name>
+    <name>menu #296</name>
     <pv_name>$(P)$(R)EnableLowClip</pv_name>
     <x>582</x>
     <y>451</y>
@@ -1571,59 +1385,8 @@
     </background_color>
     <border_alarm_sensitive>false</border_alarm_sensitive>
   </widget>
-  <widget type="textentry" version="3.0.0">
-    <name>text entry #336</name>
-    <pv_name>$(P)$(R)LowClip</pv_name>
-    <x>582</x>
-    <y>476</y>
-    <width>80</width>
-    <height>19</height>
-    <font>
-      <font family="Liberation Sans" style="REGULAR" size="16.0">
-      </font>
-    </font>
-    <background_color>
-      <color red="115" green="223" blue="255">
-      </color>
-    </background_color>
-    <format>1</format>
-    <show_units>false</show_units>
-    <border_alarm_sensitive>false</border_alarm_sensitive>
-  </widget>
-  <widget type="combo" version="2.0.0">
-    <name>menu #340</name>
-    <pv_name>$(P)$(R)EnableHighClip</pv_name>
-    <x>582</x>
-    <y>501</y>
-    <width>80</width>
-    <height>19</height>
-    <background_color>
-      <color red="115" green="223" blue="255">
-      </color>
-    </background_color>
-    <border_alarm_sensitive>false</border_alarm_sensitive>
-  </widget>
-  <widget type="textentry" version="3.0.0">
-    <name>text entry #343</name>
-    <pv_name>$(P)$(R)HighClip</pv_name>
-    <x>582</x>
-    <y>525</y>
-    <width>80</width>
-    <height>19</height>
-    <font>
-      <font family="Liberation Sans" style="REGULAR" size="16.0">
-      </font>
-    </font>
-    <background_color>
-      <color red="115" green="223" blue="255">
-      </color>
-    </background_color>
-    <format>1</format>
-    <show_units>false</show_units>
-    <border_alarm_sensitive>false</border_alarm_sensitive>
-  </widget>
   <widget type="rectangle" version="2.0.0">
-    <name>rectangle #347</name>
+    <name>rectangle #299</name>
     <x>442</x>
     <y>425</y>
     <width>280</width>
@@ -1638,7 +1401,7 @@
     </background_color>
   </widget>
   <widget type="label" version="2.0.0">
-    <name>text #350</name>
+    <name>text #302</name>
     <text>Low/High Clipping</text>
     <x>497</x>
     <y>425</y>
@@ -1654,7 +1417,7 @@
     <horizontal_alignment>1</horizontal_alignment>
   </widget>
   <widget type="label" version="2.0.0">
-    <name>text #353</name>
+    <name>text #305</name>
     <text>Save flat field</text>
     <x>421</x>
     <y>180</y>
@@ -1666,7 +1429,7 @@
     <horizontal_alignment>2</horizontal_alignment>
   </widget>
   <widget type="textupdate" version="2.0.0">
-    <name>text update #356</name>
+    <name>text update #308</name>
     <pv_name>$(P)$(R)ValidFlatField_RBV</pv_name>
     <x>668</x>
     <y>181</y>
@@ -1689,7 +1452,7 @@
     <border_alarm_sensitive>false</border_alarm_sensitive>
   </widget>
   <widget type="label" version="2.0.0">
-    <name>text #360</name>
+    <name>text #312</name>
     <text>Enable flat field</text>
     <x>401</x>
     <y>205</y>
@@ -1701,7 +1464,7 @@
     <horizontal_alignment>2</horizontal_alignment>
   </widget>
   <widget type="textupdate" version="2.0.0">
-    <name>text update #363</name>
+    <name>text update #315</name>
     <pv_name>$(P)$(R)EnableFlatField_RBV</pv_name>
     <x>668</x>
     <y>206</y>
@@ -1724,7 +1487,7 @@
     <horizontal_alignment>1</horizontal_alignment>
   </widget>
   <widget type="label" version="2.0.0">
-    <name>text #367</name>
+    <name>text #319</name>
     <text>Scale flat field</text>
     <x>411</x>
     <y>230</y>
@@ -1736,7 +1499,7 @@
     <horizontal_alignment>2</horizontal_alignment>
   </widget>
   <widget type="textupdate" version="2.0.0">
-    <name>text update #370</name>
+    <name>text update #322</name>
     <pv_name>$(P)$(R)ScaleFlatField_RBV</pv_name>
     <x>668</x>
     <y>231</y>
@@ -1759,7 +1522,7 @@
     <border_alarm_sensitive>false</border_alarm_sensitive>
   </widget>
   <widget type="action_button" version="3.0.0">
-    <name>message button #374</name>
+    <name>message button #326</name>
     <actions>
       <action type="write_pv">
         <pv_name>$(P)$(R)SaveFlatField</pv_name>
@@ -1779,7 +1542,7 @@
     </background_color>
   </widget>
   <widget type="combo" version="2.0.0">
-    <name>menu #377</name>
+    <name>menu #329</name>
     <pv_name>$(P)$(R)EnableFlatField</pv_name>
     <x>582</x>
     <y>206</y>
@@ -1792,7 +1555,7 @@
     <border_alarm_sensitive>false</border_alarm_sensitive>
   </widget>
   <widget type="textentry" version="3.0.0">
-    <name>text entry #380</name>
+    <name>text entry #332</name>
     <pv_name>$(P)$(R)ScaleFlatField</pv_name>
     <x>582</x>
     <y>231</y>
@@ -1811,7 +1574,7 @@
     <border_alarm_sensitive>false</border_alarm_sensitive>
   </widget>
   <widget type="rectangle" version="2.0.0">
-    <name>rectangle #384</name>
+    <name>rectangle #336</name>
     <x>437</x>
     <y>155</y>
     <width>280</width>
@@ -1826,7 +1589,7 @@
     </background_color>
   </widget>
   <widget type="label" version="2.0.0">
-    <name>text #387</name>
+    <name>text #339</name>
     <text>Flat field normalization</text>
     <x>457</x>
     <y>155</y>
@@ -1842,7 +1605,7 @@
     <horizontal_alignment>1</horizontal_alignment>
   </widget>
   <widget type="rectangle" version="2.0.0">
-    <name>rectangle #390</name>
+    <name>rectangle #342</name>
     <x>442</x>
     <y>290</y>
     <width>280</width>
@@ -1857,7 +1620,7 @@
     </background_color>
   </widget>
   <widget type="label" version="2.0.0">
-    <name>text #393</name>
+    <name>text #345</name>
     <text>Scale and Offset</text>
     <x>502</x>
     <y>290</y>
@@ -1873,7 +1636,7 @@
     <horizontal_alignment>1</horizontal_alignment>
   </widget>
   <widget type="label" version="2.0.0">
-    <name>text #396</name>
+    <name>text #348</name>
     <text>Scale value</text>
     <x>461</x>
     <y>365</y>
@@ -1885,7 +1648,7 @@
     <horizontal_alignment>2</horizontal_alignment>
   </widget>
   <widget type="textupdate" version="2.0.0">
-    <name>text update #399</name>
+    <name>text update #351</name>
     <pv_name>$(P)$(R)Scale_RBV</pv_name>
     <x>668</x>
     <y>366</y>
@@ -1909,7 +1672,7 @@
     <border_alarm_sensitive>false</border_alarm_sensitive>
   </widget>
   <widget type="textentry" version="3.0.0">
-    <name>text entry #403</name>
+    <name>text entry #355</name>
     <pv_name>$(P)$(R)Scale</pv_name>
     <x>582</x>
     <y>366</y>
@@ -1928,7 +1691,7 @@
     <border_alarm_sensitive>false</border_alarm_sensitive>
   </widget>
   <widget type="label" version="2.0.0">
-    <name>text #407</name>
+    <name>text #359</name>
     <text>Offset value</text>
     <x>451</x>
     <y>390</y>
@@ -1940,7 +1703,7 @@
     <horizontal_alignment>2</horizontal_alignment>
   </widget>
   <widget type="textentry" version="3.0.0">
-    <name>text entry #410</name>
+    <name>text entry #362</name>
     <pv_name>$(P)$(R)Offset</pv_name>
     <x>582</x>
     <y>390</y>
@@ -1959,7 +1722,7 @@
     <border_alarm_sensitive>false</border_alarm_sensitive>
   </widget>
   <widget type="textupdate" version="2.0.0">
-    <name>text update #414</name>
+    <name>text update #366</name>
     <pv_name>$(P)$(R)Offset_RBV</pv_name>
     <x>668</x>
     <y>390</y>
@@ -1983,7 +1746,7 @@
     <border_alarm_sensitive>false</border_alarm_sensitive>
   </widget>
   <widget type="label" version="2.0.0">
-    <name>text #418</name>
+    <name>text #370</name>
     <text>Enable scale/off.</text>
     <x>401</x>
     <y>315</y>
@@ -1995,7 +1758,7 @@
     <horizontal_alignment>2</horizontal_alignment>
   </widget>
   <widget type="combo" version="2.0.0">
-    <name>menu #421</name>
+    <name>menu #373</name>
     <pv_name>$(P)$(R)EnableOffsetScale</pv_name>
     <x>582</x>
     <y>316</y>
@@ -2008,7 +1771,7 @@
     <border_alarm_sensitive>false</border_alarm_sensitive>
   </widget>
   <widget type="textupdate" version="2.0.0">
-    <name>text update #424</name>
+    <name>text update #376</name>
     <pv_name>$(P)$(R)EnableOffsetScale_RBV</pv_name>
     <x>668</x>
     <y>316</y>
@@ -2031,7 +1794,7 @@
     <horizontal_alignment>1</horizontal_alignment>
   </widget>
   <widget type="label" version="2.0.0">
-    <name>text #428</name>
+    <name>text #380</name>
     <text>Auto scale/off.</text>
     <x>421</x>
     <y>340</y>
@@ -2043,7 +1806,7 @@
     <horizontal_alignment>2</horizontal_alignment>
   </widget>
   <widget type="action_button" version="3.0.0">
-    <name>message button #431</name>
+    <name>message button #383</name>
     <actions>
       <action type="write_pv">
         <pv_name>$(P)$(R)AutoOffsetScale</pv_name>
@@ -2063,7 +1826,7 @@
     </background_color>
   </widget>
   <widget type="label" version="2.0.0">
-    <name>text #434</name>
+    <name>text #386</name>
     <text>Save background</text>
     <x>421</x>
     <y>70</y>
@@ -2075,7 +1838,7 @@
     <horizontal_alignment>2</horizontal_alignment>
   </widget>
   <widget type="action_button" version="3.0.0">
-    <name>message button #437</name>
+    <name>message button #389</name>
     <actions>
       <action type="write_pv">
         <pv_name>$(P)$(R)SaveBackground</pv_name>
@@ -2095,7 +1858,7 @@
     </background_color>
   </widget>
   <widget type="textupdate" version="2.0.0">
-    <name>text update #440</name>
+    <name>text update #392</name>
     <pv_name>$(P)$(R)ValidBackground_RBV</pv_name>
     <x>668</x>
     <y>71</y>
@@ -2118,7 +1881,7 @@
     <border_alarm_sensitive>false</border_alarm_sensitive>
   </widget>
   <widget type="label" version="2.0.0">
-    <name>text #444</name>
+    <name>text #396</name>
     <text>Read TIFF file</text>
     <x>431</x>
     <y>120</y>
@@ -2130,7 +1893,7 @@
     <horizontal_alignment>2</horizontal_alignment>
   </widget>
   <widget type="action_button" version="3.0.0">
-    <name>message button #447</name>
+    <name>message button #399</name>
     <actions>
       <action type="write_pv">
         <pv_name>$(P)$(R)ReadBackgroundTIFFSeq.PROC</pv_name>
@@ -2150,7 +1913,7 @@
     </background_color>
   </widget>
   <widget type="action_button" version="3.0.0">
-    <name>related display #450</name>
+    <name>related display #402</name>
     <actions>
       <action type="open_display">
         <file>NDProcessTIFF.opi</file>
@@ -2172,7 +1935,7 @@
     </background_color>
   </widget>
   <widget type="label" version="2.0.0">
-    <name>text #453</name>
+    <name>text #405</name>
     <text>Read TIFF file</text>
     <x>431</x>
     <y>255</y>
@@ -2184,7 +1947,7 @@
     <horizontal_alignment>2</horizontal_alignment>
   </widget>
   <widget type="action_button" version="3.0.0">
-    <name>message button #456</name>
+    <name>message button #408</name>
     <actions>
       <action type="write_pv">
         <pv_name>$(P)$(R)ReadFlatFieldTIFFSeq</pv_name>
@@ -2204,7 +1967,7 @@
     </background_color>
   </widget>
   <widget type="action_button" version="3.0.0">
-    <name>related display #459</name>
+    <name>related display #411</name>
     <actions>
       <action type="open_display">
         <file>NDProcessTIFF.opi</file>
@@ -2224,5 +1987,359 @@
       <color red="115" green="223" blue="255">
       </color>
     </background_color>
+  </widget>
+  <widget type="label" version="2.0.0">
+    <name>text #414</name>
+    <text>Enable high clip</text>
+    <x>411</x>
+    <y>525</y>
+    <width>160</width>
+    <font>
+      <font family="Liberation Sans" style="REGULAR" size="16.0">
+      </font>
+    </font>
+    <horizontal_alignment>2</horizontal_alignment>
+  </widget>
+  <widget type="textupdate" version="2.0.0">
+    <name>text update #417</name>
+    <pv_name>$(P)$(R)EnableHighClip_RBV</pv_name>
+    <x>668</x>
+    <y>526</y>
+    <width>62</width>
+    <height>18</height>
+    <font>
+      <font family="Liberation Sans" style="REGULAR" size="16.0">
+      </font>
+    </font>
+    <foreground_color>
+      <color red="10" green="0" blue="184">
+      </color>
+    </foreground_color>
+    <background_color>
+      <color red="70" green="70" blue="70">
+      </color>
+    </background_color>
+    <format>6</format>
+    <show_units>false</show_units>
+    <horizontal_alignment>1</horizontal_alignment>
+  </widget>
+  <widget type="combo" version="2.0.0">
+    <name>menu #421</name>
+    <pv_name>$(P)$(R)EnableHighClip</pv_name>
+    <x>582</x>
+    <y>526</y>
+    <width>80</width>
+    <height>19</height>
+    <background_color>
+      <color red="115" green="223" blue="255">
+      </color>
+    </background_color>
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+  </widget>
+  <widget type="group" version="2.0.0">
+    <name>composite #424</name>
+    <x>442</x>
+    <y>610</y>
+    <width>280</width>
+    <height>45</height>
+    <style>3</style>
+    <transparent>true</transparent>
+    <widget type="label" version="2.0.0">
+      <name>text #427</name>
+      <text>Data type</text>
+      <x>31</x>
+      <y>25</y>
+      <width>90</width>
+      <font>
+        <font family="Liberation Sans" style="REGULAR" size="16.0">
+        </font>
+      </font>
+      <horizontal_alignment>2</horizontal_alignment>
+    </widget>
+    <widget type="combo" version="2.0.0">
+      <name>menu #430</name>
+      <pv_name>$(P)$(R)DataTypeOut</pv_name>
+      <x>132</x>
+      <y>26</y>
+      <width>80</width>
+      <height>18</height>
+      <background_color>
+        <color red="115" green="223" blue="255">
+        </color>
+      </background_color>
+      <border_alarm_sensitive>false</border_alarm_sensitive>
+    </widget>
+    <widget type="textupdate" version="2.0.0">
+      <name>text update #433</name>
+      <pv_name>$(P)$(R)DataTypeOut_RBV</pv_name>
+      <x>218</x>
+      <y>26</y>
+      <width>62</width>
+      <height>18</height>
+      <font>
+        <font family="Liberation Sans" style="REGULAR" size="16.0">
+        </font>
+      </font>
+      <foreground_color>
+        <color red="10" green="0" blue="184">
+        </color>
+      </foreground_color>
+      <background_color>
+        <color red="187" green="187" blue="187">
+        </color>
+      </background_color>
+      <format>6</format>
+      <show_units>false</show_units>
+      <horizontal_alignment>1</horizontal_alignment>
+      <border_alarm_sensitive>false</border_alarm_sensitive>
+    </widget>
+    <widget type="rectangle" version="2.0.0">
+      <name>rectangle #437</name>
+      <width>280</width>
+      <height>21</height>
+      <line_color>
+        <color red="218" green="218" blue="218">
+        </color>
+      </line_color>
+      <background_color>
+        <color red="218" green="218" blue="218">
+        </color>
+      </background_color>
+    </widget>
+    <widget type="label" version="2.0.0">
+      <name>text #440</name>
+      <text>Output data type</text>
+      <x>60</x>
+      <width>160</width>
+      <font>
+        <font family="Liberation Sans" style="REGULAR" size="16.0">
+        </font>
+      </font>
+      <foreground_color>
+        <color red="10" green="0" blue="184">
+        </color>
+      </foreground_color>
+      <horizontal_alignment>1</horizontal_alignment>
+    </widget>
+  </widget>
+  <widget type="label" version="2.0.0">
+    <name>text #443</name>
+    <text>Low clip thresh.</text>
+    <x>431</x>
+    <y>475</y>
+    <width>140</width>
+    <font>
+      <font family="Liberation Sans" style="REGULAR" size="16.0">
+      </font>
+    </font>
+    <horizontal_alignment>2</horizontal_alignment>
+  </widget>
+  <widget type="textupdate" version="2.0.0">
+    <name>text update #446</name>
+    <pv_name>$(P)$(R)LowClipThresh_RBV</pv_name>
+    <x>668</x>
+    <y>476</y>
+    <width>62</width>
+    <height>18</height>
+    <font>
+      <font family="Liberation Sans" style="REGULAR" size="16.0">
+      </font>
+    </font>
+    <foreground_color>
+      <color red="10" green="0" blue="184">
+      </color>
+    </foreground_color>
+    <background_color>
+      <color red="187" green="187" blue="187">
+      </color>
+    </background_color>
+    <format>1</format>
+    <show_units>false</show_units>
+    <horizontal_alignment>1</horizontal_alignment>
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+  </widget>
+  <widget type="textentry" version="3.0.0">
+    <name>text entry #450</name>
+    <pv_name>$(P)$(R)LowClipThresh</pv_name>
+    <x>582</x>
+    <y>476</y>
+    <width>80</width>
+    <height>19</height>
+    <font>
+      <font family="Liberation Sans" style="REGULAR" size="16.0">
+      </font>
+    </font>
+    <background_color>
+      <color red="115" green="223" blue="255">
+      </color>
+    </background_color>
+    <format>1</format>
+    <show_units>false</show_units>
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+  </widget>
+  <widget type="label" version="2.0.0">
+    <name>text #454</name>
+    <text>Low clip value</text>
+    <x>431</x>
+    <y>500</y>
+    <width>140</width>
+    <font>
+      <font family="Liberation Sans" style="REGULAR" size="16.0">
+      </font>
+    </font>
+    <horizontal_alignment>2</horizontal_alignment>
+  </widget>
+  <widget type="textupdate" version="2.0.0">
+    <name>text update #457</name>
+    <pv_name>$(P)$(R)LowClipValue_RBV</pv_name>
+    <x>668</x>
+    <y>501</y>
+    <width>62</width>
+    <height>18</height>
+    <font>
+      <font family="Liberation Sans" style="REGULAR" size="16.0">
+      </font>
+    </font>
+    <foreground_color>
+      <color red="10" green="0" blue="184">
+      </color>
+    </foreground_color>
+    <background_color>
+      <color red="187" green="187" blue="187">
+      </color>
+    </background_color>
+    <format>1</format>
+    <show_units>false</show_units>
+    <horizontal_alignment>1</horizontal_alignment>
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+  </widget>
+  <widget type="textentry" version="3.0.0">
+    <name>text entry #461</name>
+    <pv_name>$(P)$(R)LowClipValue</pv_name>
+    <x>582</x>
+    <y>501</y>
+    <width>80</width>
+    <height>19</height>
+    <font>
+      <font family="Liberation Sans" style="REGULAR" size="16.0">
+      </font>
+    </font>
+    <background_color>
+      <color red="115" green="223" blue="255">
+      </color>
+    </background_color>
+    <format>1</format>
+    <show_units>false</show_units>
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+  </widget>
+  <widget type="textupdate" version="2.0.0">
+    <name>text update #465</name>
+    <pv_name>$(P)$(R)HighClipThresh_RBV</pv_name>
+    <x>668</x>
+    <y>550</y>
+    <width>62</width>
+    <height>18</height>
+    <font>
+      <font family="Liberation Sans" style="REGULAR" size="16.0">
+      </font>
+    </font>
+    <foreground_color>
+      <color red="10" green="0" blue="184">
+      </color>
+    </foreground_color>
+    <background_color>
+      <color red="187" green="187" blue="187">
+      </color>
+    </background_color>
+    <format>1</format>
+    <show_units>false</show_units>
+    <horizontal_alignment>1</horizontal_alignment>
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+  </widget>
+  <widget type="label" version="2.0.0">
+    <name>text #469</name>
+    <text>High clip thresh.</text>
+    <x>421</x>
+    <y>550</y>
+    <width>150</width>
+    <font>
+      <font family="Liberation Sans" style="REGULAR" size="16.0">
+      </font>
+    </font>
+    <horizontal_alignment>2</horizontal_alignment>
+  </widget>
+  <widget type="textentry" version="3.0.0">
+    <name>text entry #472</name>
+    <pv_name>$(P)$(R)HighClipThresh</pv_name>
+    <x>582</x>
+    <y>550</y>
+    <width>80</width>
+    <height>19</height>
+    <font>
+      <font family="Liberation Sans" style="REGULAR" size="16.0">
+      </font>
+    </font>
+    <background_color>
+      <color red="115" green="223" blue="255">
+      </color>
+    </background_color>
+    <format>1</format>
+    <show_units>false</show_units>
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+  </widget>
+  <widget type="textupdate" version="2.0.0">
+    <name>text update #476</name>
+    <pv_name>$(P)$(R)HighClipValue_RBV</pv_name>
+    <x>668</x>
+    <y>575</y>
+    <width>62</width>
+    <height>18</height>
+    <font>
+      <font family="Liberation Sans" style="REGULAR" size="16.0">
+      </font>
+    </font>
+    <foreground_color>
+      <color red="10" green="0" blue="184">
+      </color>
+    </foreground_color>
+    <background_color>
+      <color red="187" green="187" blue="187">
+      </color>
+    </background_color>
+    <format>1</format>
+    <show_units>false</show_units>
+    <horizontal_alignment>1</horizontal_alignment>
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+  </widget>
+  <widget type="label" version="2.0.0">
+    <name>text #480</name>
+    <text>High clip value</text>
+    <x>421</x>
+    <y>575</y>
+    <width>150</width>
+    <font>
+      <font family="Liberation Sans" style="REGULAR" size="16.0">
+      </font>
+    </font>
+    <horizontal_alignment>2</horizontal_alignment>
+  </widget>
+  <widget type="textentry" version="3.0.0">
+    <name>text entry #483</name>
+    <pv_name>$(P)$(R)HighClipValue</pv_name>
+    <x>582</x>
+    <y>575</y>
+    <width>80</width>
+    <height>19</height>
+    <font>
+      <font family="Liberation Sans" style="REGULAR" size="16.0">
+      </font>
+    </font>
+    <background_color>
+      <color red="115" green="223" blue="255">
+      </color>
+    </background_color>
+    <format>1</format>
+    <show_units>false</show_units>
+    <border_alarm_sensitive>false</border_alarm_sensitive>
   </widget>
 </display>

@@ -1,14 +1,14 @@
 
 file {
-	name="/home/epics/devel/areaDetector-3-2/ADCore/ADApp/op/adl/NDProcess.adl"
-	version=030109
+	name="/home/epics/devel/areaDetector-3-12-1/ADCore/ADApp/op/adl/NDProcess.adl"
+	version=030117
 }
 display {
 	object {
 		x=10
 		y=31
 		width=1150
-		height=660
+		height=665
 	}
 	clr=14
 	bclr=4
@@ -116,7 +116,7 @@ rectangle {
 		x=390
 		y=40
 		width=350
-		height=570
+		height=620
 	}
 	"basic attribute" {
 		clr=14
@@ -1219,73 +1219,6 @@ text {
 }
 text {
 	object {
-		x=473
-		y=585
-		width=90
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Data type"
-	align="horiz. right"
-}
-menu {
-	object {
-		x=574
-		y=586
-		width=80
-		height=18
-	}
-	control {
-		chan="$(P)$(R)DataTypeOut"
-		clr=14
-		bclr=51
-	}
-}
-"text update" {
-	object {
-		x=660
-		y=586
-		width=62
-		height=18
-	}
-	monitor {
-		chan="$(P)$(R)DataTypeOut_RBV"
-		clr=54
-		bclr=4
-	}
-	align="horiz. centered"
-	format="string"
-	limits {
-	}
-}
-rectangle {
-	object {
-		x=442
-		y=560
-		width=280
-		height=21
-	}
-	"basic attribute" {
-		clr=2
-	}
-}
-text {
-	object {
-		x=502
-		y=560
-		width=160
-		height=20
-	}
-	"basic attribute" {
-		clr=54
-	}
-	textix="Output data type"
-	align="horiz. centered"
-}
-text {
-	object {
 		x=421
 		y=450
 		width=150
@@ -1315,95 +1248,6 @@ text {
 	limits {
 	}
 }
-text {
-	object {
-		x=431
-		y=475
-		width=140
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Low clip value"
-	align="horiz. right"
-}
-"text update" {
-	object {
-		x=668
-		y=476
-		width=62
-		height=18
-	}
-	monitor {
-		chan="$(P)$(R)LowClip_RBV"
-		clr=54
-		bclr=4
-	}
-	align="horiz. centered"
-	limits {
-	}
-}
-text {
-	object {
-		x=411
-		y=500
-		width=160
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Enable high clip"
-	align="horiz. right"
-}
-"text update" {
-	object {
-		x=668
-		y=501
-		width=62
-		height=18
-	}
-	monitor {
-		chan="$(P)$(R)EnableHighClip_RBV"
-		clr=54
-		bclr=12
-	}
-	clrmod="alarm"
-	align="horiz. centered"
-	format="string"
-	limits {
-	}
-}
-"text update" {
-	object {
-		x=668
-		y=525
-		width=62
-		height=18
-	}
-	monitor {
-		chan="$(P)$(R)HighClip_RBV"
-		clr=54
-		bclr=4
-	}
-	align="horiz. centered"
-	limits {
-	}
-}
-text {
-	object {
-		x=421
-		y=525
-		width=150
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="High clip value"
-	align="horiz. right"
-}
 menu {
 	object {
 		x=582
@@ -1415,49 +1259,6 @@ menu {
 		chan="$(P)$(R)EnableLowClip"
 		clr=14
 		bclr=51
-	}
-}
-"text entry" {
-	object {
-		x=582
-		y=476
-		width=80
-		height=19
-	}
-	control {
-		chan="$(P)$(R)LowClip"
-		clr=14
-		bclr=51
-	}
-	limits {
-	}
-}
-menu {
-	object {
-		x=582
-		y=501
-		width=80
-		height=19
-	}
-	control {
-		chan="$(P)$(R)EnableHighClip"
-		clr=14
-		bclr=51
-	}
-}
-"text entry" {
-	object {
-		x=582
-		y=525
-		width=80
-		height=19
-	}
-	control {
-		chan="$(P)$(R)HighClip"
-		clr=14
-		bclr=51
-	}
-	limits {
 	}
 }
 rectangle {
@@ -1954,4 +1755,302 @@ text {
 	clr=14
 	bclr=51
 	label="Setup"
+}
+text {
+	object {
+		x=411
+		y=525
+		width=160
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Enable high clip"
+	align="horiz. right"
+}
+"text update" {
+	object {
+		x=668
+		y=526
+		width=62
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)EnableHighClip_RBV"
+		clr=54
+		bclr=12
+	}
+	clrmod="alarm"
+	align="horiz. centered"
+	format="string"
+	limits {
+	}
+}
+menu {
+	object {
+		x=582
+		y=526
+		width=80
+		height=19
+	}
+	control {
+		chan="$(P)$(R)EnableHighClip"
+		clr=14
+		bclr=51
+	}
+}
+composite {
+	object {
+		x=442
+		y=610
+		width=280
+		height=45
+	}
+	"composite name"=""
+	children {
+		text {
+			object {
+				x=473
+				y=635
+				width=90
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Data type"
+			align="horiz. right"
+		}
+		menu {
+			object {
+				x=574
+				y=636
+				width=80
+				height=18
+			}
+			control {
+				chan="$(P)$(R)DataTypeOut"
+				clr=14
+				bclr=51
+			}
+		}
+		"text update" {
+			object {
+				x=660
+				y=636
+				width=62
+				height=18
+			}
+			monitor {
+				chan="$(P)$(R)DataTypeOut_RBV"
+				clr=54
+				bclr=4
+			}
+			align="horiz. centered"
+			format="string"
+			limits {
+			}
+		}
+		rectangle {
+			object {
+				x=442
+				y=610
+				width=280
+				height=21
+			}
+			"basic attribute" {
+				clr=2
+			}
+		}
+		text {
+			object {
+				x=502
+				y=610
+				width=160
+				height=20
+			}
+			"basic attribute" {
+				clr=54
+			}
+			textix="Output data type"
+			align="horiz. centered"
+		}
+	}
+}
+text {
+	object {
+		x=431
+		y=475
+		width=140
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Low clip thresh."
+	align="horiz. right"
+}
+"text update" {
+	object {
+		x=668
+		y=476
+		width=62
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)LowClipThresh_RBV"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
+	limits {
+	}
+}
+"text entry" {
+	object {
+		x=582
+		y=476
+		width=80
+		height=19
+	}
+	control {
+		chan="$(P)$(R)LowClipThresh"
+		clr=14
+		bclr=51
+	}
+	limits {
+	}
+}
+text {
+	object {
+		x=431
+		y=500
+		width=140
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Low clip value"
+	align="horiz. right"
+}
+"text update" {
+	object {
+		x=668
+		y=501
+		width=62
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)LowClipValue_RBV"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
+	limits {
+	}
+}
+"text entry" {
+	object {
+		x=582
+		y=501
+		width=80
+		height=19
+	}
+	control {
+		chan="$(P)$(R)LowClipValue"
+		clr=14
+		bclr=51
+	}
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=668
+		y=550
+		width=62
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)HighClipThresh_RBV"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
+	limits {
+	}
+}
+text {
+	object {
+		x=421
+		y=550
+		width=150
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="High clip thresh."
+	align="horiz. right"
+}
+"text entry" {
+	object {
+		x=582
+		y=550
+		width=80
+		height=19
+	}
+	control {
+		chan="$(P)$(R)HighClipThresh"
+		clr=14
+		bclr=51
+	}
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=668
+		y=575
+		width=62
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)HighClipValue_RBV"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
+	limits {
+	}
+}
+text {
+	object {
+		x=421
+		y=575
+		width=150
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="High clip value"
+	align="horiz. right"
+}
+"text entry" {
+	object {
+		x=582
+		y=575
+		width=80
+		height=19
+	}
+	control {
+		chan="$(P)$(R)HighClipValue"
+		clr=14
+		bclr=51
+	}
+	limits {
+	}
 }
