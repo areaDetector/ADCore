@@ -335,19 +335,35 @@ record(bi, "$(P)$(R)EnableLowClip_RBV")
     field(SCAN, "I/O Intr")
 }
 
-record(ao, "$(P)$(R)LowClip")
+record(ao, "$(P)$(R)LowClipThresh")
 {
     field(PINI, "YES")
     field(DTYP, "asynFloat64")
-    field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))LOW_CLIP")
+    field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))LOW_CLIP_THRESH")
     field(VAL,  "0.0")
     info(autosaveFields, "VAL")
 }
 
-record(ai, "$(P)$(R)LowClip_RBV")
+record(ai, "$(P)$(R)LowClipThresh_RBV")
 {
     field(DTYP, "asynFloat64")
-    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))LOW_CLIP")
+    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))LOW_CLIP_THRESH")
+    field(SCAN, "I/O Intr")
+}
+
+record(ao, "$(P)$(R)LowClipValue")
+{
+    field(PINI, "YES")
+    field(DTYP, "asynFloat64")
+    field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))LOW_CLIP_VALUE")
+    field(VAL,  "0.0")
+    info(autosaveFields, "VAL")
+}
+
+record(ai, "$(P)$(R)LowClipValue_RBV")
+{
+    field(DTYP, "asynFloat64")
+    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))LOW_CLIP_VALUE")
     field(SCAN, "I/O Intr")
 }
 
@@ -372,19 +388,35 @@ record(bi, "$(P)$(R)EnableHighClip_RBV")
     field(SCAN, "I/O Intr")
 }
 
-record(ao, "$(P)$(R)HighClip")
+record(ao, "$(P)$(R)HighClipThresh")
 {
     field(PINI, "YES")
     field(DTYP, "asynFloat64")
-    field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))HIGH_CLIP")
+    field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))HIGH_CLIP_THRESH")
     field(VAL,  "100.0")
     info(autosaveFields, "VAL")
 }
 
-record(ai, "$(P)$(R)HighClip_RBV")
+record(ai, "$(P)$(R)HighClipThresh_RBV")
 {
     field(DTYP, "asynFloat64")
-    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))HIGH_CLIP")
+    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))HIGH_CLIP_THRESH")
+    field(SCAN, "I/O Intr")
+}
+
+record(ao, "$(P)$(R)HighClipValue")
+{
+    field(PINI, "YES")
+    field(DTYP, "asynFloat64")
+    field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))HIGH_CLIP_VALUE")
+    field(VAL,  "100.0")
+    info(autosaveFields, "VAL")
+}
+
+record(ai, "$(P)$(R)HighClipValue_RBV")
+{
+    field(DTYP, "asynFloat64")
+    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))HIGH_CLIP_VALUE")
     field(SCAN, "I/O Intr")
 }
 
