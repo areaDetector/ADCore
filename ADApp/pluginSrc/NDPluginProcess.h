@@ -21,9 +21,11 @@
 #define NDPluginProcessOffsetString             "OFFSET"            /* (asynFloat64, r/w) Offset value */
 
 /* High and low clipping */
-#define NDPluginProcessLowClipString            "LOW_CLIP"          /* (asynFloat64, r/w) Low clip value */
+#define NDPluginProcessLowClipThreshString      "LOW_CLIP_THRESH"   /* (asynFloat64, r/w) Low clip threshold */
+#define NDPluginProcessLowClipValueString       "LOW_CLIP_VALUE"    /* (asynFloat64, r/w) Low clip replacement value */
 #define NDPluginProcessEnableLowClipString      "ENABLE_LOW_CLIP"   /* (asynInt32,   r/w) Enable low clipping? */
-#define NDPluginProcessHighClipString           "HIGH_CLIP"         /* (asynFloat64, r/w) High clip value */
+#define NDPluginProcessHighClipThreshString     "HIGH_CLIP_THRESH"  /* (asynFloat64, r/w) High clip threshold */
+#define NDPluginProcessHighClipValueString      "HIGH_CLIP_VALUE"   /* (asynFloat64, r/w) High clip replacement value */
 #define NDPluginProcessEnableHighClipString     "ENABLE_HIGH_CLIP"  /* (asynInt32,   r/w) Enable high clipping? */
 
 /* Recursive filter */
@@ -89,9 +91,11 @@ protected:
     int NDPluginProcessOffset;
 
     /* High and low clipping */
-    int NDPluginProcessLowClip;
+    int NDPluginProcessLowClipThresh;
+    int NDPluginProcessLowClipValue;
     int NDPluginProcessEnableLowClip;
-    int NDPluginProcessHighClip;
+    int NDPluginProcessHighClipThresh;
+    int NDPluginProcessHighClipValue;
     int NDPluginProcessEnableHighClip;
 
     /* Frame filtering */

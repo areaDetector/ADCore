@@ -40,7 +40,8 @@ void NDPluginProcess::processCallbacks(NDArray *pArray)
     double  scaleFlatField;
     int     enableOffsetScale, autoOffsetScale;
     double  offset, scale, minValue, maxValue;
-    double  lowClip=0, highClip=0;
+    double  lowClipThresh=0, highClipThresh=0;
+    double  lowClipValue=0, highClipValue=0;
     int     enableLowClip, enableHighClip;
     int     resetFilter, autoResetFilter, filterCallbacks, doCallbacks=1;
     int     enableFilter, numFilter;
@@ -79,9 +80,11 @@ void NDPluginProcess::processCallbacks(NDArray *pArray)
         getDoubleParam (NDPluginProcessOffset,          &offset);
     }
     if (enableLowClip)
-        getDoubleParam (NDPluginProcessLowClip,         &lowClip);
+        getDoubleParam (NDPluginProcessLowClipThresh,   &lowClipThresh);
+        getDoubleParam (NDPluginProcessLowClipValue,    &lowClipValue);
     if (enableHighClip)
-        getDoubleParam (NDPluginProcessHighClip,        &highClip);
+        getDoubleParam (NDPluginProcessHighClipThresh,  &highClipThresh);
+        getDoubleParam (NDPluginProcessHighClipValue,   &highClipValue);
     if (resetFilter)
         setIntegerParam(NDPluginProcessResetFilter, 0);
     if (enableFilter) {
@@ -166,8 +169,8 @@ void NDPluginProcess::processCallbacks(NDArray *pArray)
             if (flatField[i] != 0.) value *= scaleFlatField / flatField[i];
         }
         if (enableOffsetScale) value = (value + offset)*scale;
-        if (enableHighClip && (value > highClip)) value = highClip;
-        if (enableLowClip  && (value < lowClip))  value = lowClip;
+        if (enableHighClip && (value > highClipThresh)) value = highClipValue;
+        if (enableLowClip  && (value < lowClipThresh))  value = lowClipValue;
         data[i] = value;
     }
 
@@ -236,8 +239,8 @@ void NDPluginProcess::processCallbacks(NDArray *pArray)
         offset = -minValue;
         setDoubleParam (NDPluginProcessScale,             scale);
         setDoubleParam (NDPluginProcessOffset,            offset);
-        setDoubleParam (NDPluginProcessLowClip,           0);
-        setDoubleParam (NDPluginProcessHighClip,          maxScale);
+        setDoubleParam (NDPluginProcessLowClipThresh,     0);
+        setDoubleParam (NDPluginProcessHighClipThresh,    maxScale);
         setIntegerParam(NDPluginProcessEnableOffsetScale, 1);
         setIntegerParam(NDPluginProcessEnableLowClip,     1);
         setIntegerParam(NDPluginProcessEnableHighClip,    1);
@@ -369,9 +372,11 @@ NDPluginProcess::NDPluginProcess(const char *portName, int queueSize, int blocki
     createParam(NDPluginProcessScaleFlatFieldString,    asynParamFloat64,   &NDPluginProcessScaleFlatField);
 
     /* High and low clipping */
-    createParam(NDPluginProcessLowClipString,           asynParamFloat64,   &NDPluginProcessLowClip);
+    createParam(NDPluginProcessLowClipThreshString,     asynParamFloat64,   &NDPluginProcessLowClipThresh);
+    createParam(NDPluginProcessLowClipValueString,      asynParamFloat64,   &NDPluginProcessLowClipValue);
     createParam(NDPluginProcessEnableLowClipString,     asynParamInt32,     &NDPluginProcessEnableLowClip);
-    createParam(NDPluginProcessHighClipString,          asynParamFloat64,   &NDPluginProcessHighClip);
+    createParam(NDPluginProcessHighClipThreshString,    asynParamFloat64,   &NDPluginProcessHighClipThresh);
+    createParam(NDPluginProcessHighClipValueString,     asynParamFloat64,   &NDPluginProcessHighClipValue);
     createParam(NDPluginProcessEnableHighClipString,    asynParamInt32,     &NDPluginProcessEnableHighClip);
 
     /* Scale and offset */
