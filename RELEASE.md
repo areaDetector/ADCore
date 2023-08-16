@@ -19,6 +19,21 @@ the EXAMPLE_RELEASE_PATHS.local, EXAMPLE_RELEASE_LIBS.local, and EXAMPLE_RELEASE
 files respectively, in the configure/ directory of the appropriate release of the
 [top-level areaDetector](https://github.com/areaDetector/areaDetector) repository.
 
+## __R3-13 (August XXX, 2023)__
+
+### NDPluginProcess
+  * Improved the logic for high and low clipping so that both the threshold
+    and the replacement value can be independently specified.
+    Previously these were always the same value.
+    - LowClip has been renamed to LowClipThresh.
+    - HighClip has been renamed to HighClipThresh.
+    - LowClipValue and HighClipValue have been added.
+    - **This change is not backwards compatible, the value of Low/HighClipValue must now be specified.**
+  * Fixed typos in commonDriverMakefile and commonLibraryMakefile for the NeXus library.
+  * Set the plugin type string in NDFileNexus.
+  * Fixed typo in arguments to constructor in NDPluginBadPixel.
+  * Improved paths for databases and autosave in iocBoot/EXAMPLE_commonPlugins.cmd.
+
 ## __R3-12-1 (January 22, 2022)__
 
 ### ADCoreVersion.h
