@@ -924,7 +924,8 @@ NDPluginFile::NDPluginFile(const char *portName, int queueSize, int blockingCall
      * Set autoconnect to 1.  priority and stacksize can be 0, which will use defaults. */
     : NDPluginDriver(portName, queueSize, blockingCallbacks,
                      NDArrayPort, NDArrayAddr, maxAddr, maxBuffers, maxMemory,
-                     asynGenericPointerMask, asynGenericPointerMask,
+                     interfaceMask | asynGenericPointerMask,
+                     interruptMask | asynGenericPointerMask,
                      asynFlags, autoConnect, priority, stackSize, maxThreads, compressionAware),
     pCapture(NULL)
 {
