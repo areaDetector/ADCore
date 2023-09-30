@@ -99,6 +99,7 @@ typedef enum {
 #define NDFileWriteMessageString "WRITE_MESSAGE"    /**< (asynOctet,    r/w) File write message */
 #define NDFileNumCaptureString  "NUM_CAPTURE"       /**< (asynInt32,    r/w) Number of arrays to capture */
 #define NDFileNumCapturedString "NUM_CAPTURED"      /**< (asynInt32,    r/o) Number of arrays already captured */
+#define NDFileFreeCaptureString "FREE_CAPTURE"      /**< (asynInt32,    r/o) Free the capture buffer */
 #define NDFileCaptureString     "CAPTURE"           /**< (asynInt32,    r/w) Start or stop capturing arrays */
 #define NDFileDeleteDriverFileString  "DELETE_DRIVER_FILE"  /**< (asynInt32,    r/w) Delete driver file */
 #define NDFileLazyOpenString    "FILE_LAZY_OPEN"    /**< (asynInt32,    r/w) Don't open file until first frame arrives in Stream mode */
@@ -209,6 +210,7 @@ protected:
     int NDFileWriteMessage;
     int NDFileNumCapture;
     int NDFileNumCaptured;
+    int NDFileFreeCapture;
     int NDFileCapture;
     int NDFileDeleteDriverFile;
     int NDFileLazyOpen;

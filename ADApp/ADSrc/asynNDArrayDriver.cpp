@@ -913,6 +913,7 @@ asynNDArrayDriver::asynNDArrayDriver(const char *portName, int maxAddr, int maxB
     createParam(NDFileWriteMessageString,     asynParamOctet,           &NDFileWriteMessage);
     createParam(NDFileNumCaptureString,       asynParamInt32,           &NDFileNumCapture);
     createParam(NDFileNumCapturedString,      asynParamInt32,           &NDFileNumCaptured);
+    createParam(NDFileFreeCaptureString,      asynParamInt32,           &NDFileFreeCapture);
     createParam(NDFileCaptureString,          asynParamInt32,           &NDFileCapture);
     createParam(NDFileDeleteDriverFileString, asynParamInt32,           &NDFileDeleteDriverFile);
     createParam(NDFileLazyOpenString,         asynParamInt32,           &NDFileLazyOpen);
@@ -970,6 +971,7 @@ asynNDArrayDriver::asynNDArrayDriver(const char *portName, int maxAddr, int maxB
     setIntegerParam(NDAutoIncrement, 0);
     setStringParam (NDFileTemplate, "%s%s_%3.3d.dat");
     setIntegerParam(NDFileNumCaptured, 0);
+    setIntegerParam(NDFileFreeCapture, 0);
     setIntegerParam(NDFileCreateDir, 0);
     setStringParam (NDFileTempSuffix, "");
     setStringParam (NDAttributesFile, "");
