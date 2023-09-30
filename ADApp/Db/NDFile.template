@@ -302,6 +302,15 @@ record(longin, "$(P)$(R)NumCaptured_RBV")
     field(SCAN, "$(SCANRATE=I/O Intr)")
 }
 
+# Free capture buffer
+record(bo, "$(P)$(R)FreeCapture")
+{
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))FREE_CAPTURE")
+    field(ZNAM, "Done")
+    field(ONAM, "Free")
+}
+
 # Delete driver file flag
 record(bo, "$(P)$(R)DeleteDriverFile")
 {
