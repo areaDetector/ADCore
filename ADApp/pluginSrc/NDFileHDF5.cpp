@@ -3550,7 +3550,7 @@ char* NDFileHDF5::getDimsReport()
 
   struct dimsizes_t {
     const char* name;
-    unsigned long long* dimsize;
+    hsize_t* dimsize;
     int nd;
   } dimsizes[7] = {
       {"framesize", this->framesize, this->rank},
@@ -3569,7 +3569,7 @@ char* NDFileHDF5::getDimsReport()
     c = strlen(strdims);
     for(j=0; j<dimsizes[i].nd; j++)
     {
-      epicsSnprintf(strdims+c, maxlen-c, "%6lli,", dimsizes[i].dimsize[j]);
+          epicsSnprintf(strdims+c, maxlen-c, "%6llu,", (unsigned long long) dimsizes[i].dimsize[j]);
       c = strlen(strdims);
     }
     //printf("name=%s c=%d rank=%d strdims: %s\n", dimsizes[i].name, c, dimsizes[i].nd, strdims);
@@ -3771,8 +3771,8 @@ asynStatus NDFileHDF5::createNewFile(const char *fileName)
     hdfstatus = H5Pset_alignment( access_plist, threshold, align );
     if (hdfstatus < 0){
       asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
-          "%s%s Warning: failed to set boundary threshod=%llu and alignment=%llu bytes\n",
-          driverName, functionName, threshold, align);
+          "%s%s Warning: failed to set boundary threshold=%llu and alignment=%llu bytes\n",
+          driverName, functionName, (unsigned long long) threshold, (unsigned long long) align);
       H5Pget_alignment( access_plist, &threshold, &align );
       this->lock();
       setIntegerParam(NDFileHDF5_chunkBoundaryAlign, (int)align);
