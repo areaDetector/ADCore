@@ -72,7 +72,7 @@ private:
     asynStatus writeFileBase();
     asynStatus closeFileBase();
     asynStatus doCapture(int capture);
-    void       freeCaptureBuffer(int numCapture);
+    void       freeCaptureBuffer();
     asynStatus attrFileCloseCheck();
     asynStatus attrFileNameCheck();
     asynStatus attrFileNameSet();
@@ -80,7 +80,7 @@ private:
     void registerInitFrameInfo(NDArray *pArray); /**< Grab a copy of the NDArrayInfo_t structure for future reference */
     bool isFrameValid(NDArray *pArray); /**< Compare pArray dimensions and datatype against latched NDArrayInfo_t structure */
 
-    NDArray **pCapture;
+    std::vector<NDArray*> pCapture;
     epicsMutexId fileMutexId;
     bool useAttrFilePrefix;
     bool lazyOpen;
