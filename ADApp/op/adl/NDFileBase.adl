@@ -1,7 +1,7 @@
 
 file {
 	name="/home/epics/devel/areaDetector/ADCore/ADApp/op/adl/NDFileBase.adl"
-	version=030109
+	version=030117
 }
 display {
 	object {
@@ -768,48 +768,6 @@ text {
 	limits {
 	}
 }
-menu {
-	object {
-		x=511
-		y=326
-		width=64
-		height=20
-	}
-	control {
-		chan="$(P)$(R)DeleteDriverFile"
-		clr=14
-		bclr=51
-	}
-}
-text {
-	object {
-		x=322
-		y=326
-		width=180
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Delete driver file"
-	align="horiz. right"
-}
-"text update" {
-	object {
-		x=580
-		y=327
-		width=80
-		height=18
-	}
-	monitor {
-		chan="$(P)$(R)DeleteDriverFile_RBV"
-		clr=54
-		bclr=4
-	}
-	format="string"
-	limits {
-	}
-}
 text {
 	object {
 		x=36
@@ -924,4 +882,72 @@ menu {
 	clr=14
 	bclr=51
 	label="Help"
+}
+composite {
+	object {
+		x=327
+		y=353
+		width=334
+		height=20
+	}
+	"composite name"=""
+	children {
+		text {
+			object {
+				x=327
+				y=353
+				width=180
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Delete driver file"
+			align="horiz. right"
+		}
+		menu {
+			object {
+				x=512
+				y=353
+				width=64
+				height=20
+			}
+			control {
+				chan="$(P)$(R)DeleteDriverFile"
+				clr=14
+				bclr=51
+			}
+		}
+		"text update" {
+			object {
+				x=581
+				y=354
+				width=80
+				height=18
+			}
+			monitor {
+				chan="$(P)$(R)DeleteDriverFile_RBV"
+				clr=54
+				bclr=4
+			}
+			format="string"
+			limits {
+			}
+		}
+	}
+}
+"message button" {
+	object {
+		x=300
+		y=326
+		width=100
+		height=20
+	}
+	control {
+		chan="$(P)$(R)FreeCapture"
+		clr=14
+		bclr=51
+	}
+	label="Free buffer"
+	press_msg="0"
 }
