@@ -46,6 +46,12 @@ jobs:
             base: "7.0"
             deps: adsupport
 
+          - os: ubuntu-20.04
+            cmp: gcc
+            configuration: default
+            base: "7.0"
+            deps: os
+
           - os: ubuntu-latest
             cmp: gcc
             configuration: default
@@ -74,9 +80,8 @@ jobs:
       with:
         submodules: true
 
-    - name: "Linux OS Deps"
-      if: ${{ matrix.deps == 'os' && matrix.os == 'ubuntu-latest' }}
-      shell: bash
+    - name: "Install Linux OS Deps"
+      if: ${{ matrix.deps == 'os' && runner.os == 'Linux' }}
       run: |
         sudo apt-get update
         sudo apt-get -y install \
@@ -126,7 +131,7 @@ jobs:
     - name: Prepare and compile EPICS dependencies
       run: python .ci/cue.py prepare
 
-    - name: "ADSupport Deps"
+    - name: "Configure ADSupport Deps"
       if: ${{ matrix.deps == 'adsupport' }}
       shell: bash
       run: |
