@@ -5,8 +5,8 @@ include $(TOP)/configure/CONFIG
 #=============================
 
 # Persuade travis (ubuntu 12.04) to use HDF5 API V2 (1.8 rather than default 1.6)
-USR_CXXFLAGS_Linux += -DH5_NO_DEPRECATED_SYMBOLS -DH5Dopen_vers=2 -DH5Gcreate_vers=2
-USR_CFLAGS_Linux   += -DH5_NO_DEPRECATED_SYMBOLS -DH5Dopen_vers=2 -DH5Gcreate_vers=2
+USR_CXXFLAGS_Linux += -DH5Dopen_vers=2 -DH5Gcreate_vers=2
+USR_CFLAGS_Linux   += -DH5Dopen_vers=2 -DH5Gcreate_vers=2
 
 ifeq ($(SHARED_LIBRARIES), YES)
    USR_CXXFLAGS_WIN32 += -DH5_BUILT_AS_DYNAMIC_LIB
