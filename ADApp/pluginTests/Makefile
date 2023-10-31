@@ -4,6 +4,9 @@ include $(TOP)/configure/CONFIG
 #  ADD MACRO DEFINITIONS AFTER THIS LINE
 #=============================
 
+# Only build static version of ADTestUtility (missing dllimport/export)
+SHARED_LIBRARIES=NO
+
 # Persuade travis (ubuntu 12.04) to use HDF5 API V2 (1.8 rather than default 1.6)
 USR_CXXFLAGS_Linux += -DH5Dopen_vers=2 -DH5Gcreate_vers=2
 USR_CFLAGS_Linux   += -DH5Dopen_vers=2 -DH5Gcreate_vers=2
