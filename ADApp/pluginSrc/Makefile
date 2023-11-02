@@ -83,6 +83,10 @@ NDPluginSupport_DBD += NDPluginStats.dbd
 INC      += NDPluginStats.h
 LIB_SRCS += NDPluginStats.cpp
 
+NDPluginSupport_DBD += NDPluginCentroid.dbd
+INC      += NDPluginCentroid.h
+LIB_SRCS += NDPluginCentroid.cpp
+
 NDPluginSupport_DBD += NDPluginStdArrays.dbd
 INC      += NDPluginStdArrays.h
 LIB_SRCS += NDPluginStdArrays.cpp

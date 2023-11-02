@@ -1,0 +1,78 @@
+#=================================================================#
+# Template file: NDCentroid.template
+
+include "NDPluginBase.template"
+
+###################################################################
+#  These records control whether centroid statistics are computed #
+###################################################################
+record(bo, "$(P)$(R)ComputeCentroid")
+{
+   field(PINI, "YES")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))COMPUTE_CENTROID")
+   field(VAL,  "0")
+   field(ZNAM, "No")
+   field(ONAM, "Yes")
+   info(autosaveFields, "VAL")
+}
+
+record(bi, "$(P)$(R)ComputeCentroid_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))COMPUTE_CENTROID")
+   field(ZNAM, "No")
+   field(ONAM, "Yes")
+   field(ZSV,  "NO_ALARM")
+   field(OSV,  "MINOR")
+   field(SCAN, "I/O Intr")
+}
+
+###################################################################
+#  These records contain the centroid statistics                  #
+###################################################################
+record(ao, "$(P)$(R)CentroidThreshold")
+{
+    field(PINI, "YES")
+    field(DTYP, "asynFloat64")
+    field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))CENTROID_THRESHOLD")
+    field(VAL,  "1")
+    info(autosaveFields, "VAL")
+}
+
+record(ai, "$(P)$(R)CentroidThreshold_RBV")
+{
+    field(DTYP, "asynFloat64")
+    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))CENTROID_THRESHOLD")
+    field(VAL,  "0")
+    field(SCAN, "I/O Intr")
+}
+
+record(ao, "$(P)$(R)CentroidX")
+{
+   field(DTYP, "asynFloat64")
+   field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))CENTROIDX_VALUE")
+}
+
+record(ai, "$(P)$(R)CentroidX_RBV")
+{
+   field(DTYP, "asynFloat64")
+   field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))CENTROIDX_VALUE")
+   field(PREC, "1")
+   field(SCAN, "I/O Intr")
+}
+
+record(ao, "$(P)$(R)CentroidY")
+{
+   field(DTYP, "asynFloat64")
+   field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))CENTROIDY_VALUE")
+}
+
+record(ai, "$(P)$(R)CentroidY_RBV")
+{
+   field(DTYP, "asynFloat64")
+   field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))CENTROIDY_VALUE")
+   field(PREC, "1")
+   field(SCAN, "I/O Intr")
+}
+
