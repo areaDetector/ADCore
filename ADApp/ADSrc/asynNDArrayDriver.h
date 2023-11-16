@@ -156,6 +156,7 @@ public:
     virtual asynStatus createFileName(int maxChars, char *filePath, char *fileName);
     virtual asynStatus readNDAttributesFile();
     virtual asynStatus getAttributes(NDAttributeList *pAttributeList);
+    virtual void updateTimeStamps(NDArray *pArray);
 
     asynStatus incrementQueuedArrayCount();
     asynStatus decrementQueuedArrayCount();

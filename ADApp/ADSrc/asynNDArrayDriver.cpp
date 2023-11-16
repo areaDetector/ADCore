@@ -820,6 +820,13 @@ asynStatus asynNDArrayDriver::decrementQueuedArrayCount()
     return asynSuccess;
 }
 
+void asynNDArrayDriver::updateTimeStamps(NDArray *pArray)
+{
+    updateTimeStamp(&pArray->epicsTS);
+    pArray->timeStamp = pArray->epicsTS.secPastEpoch + pArray->epicsTS.nsec/1.e9;
+}
+
+
 
 /** This is the constructor for the asynNDArrayDriver class.
   * portName, maxAddr, interfaceMask, interruptMask, asynFlags, autoConnect, priority and stackSize
