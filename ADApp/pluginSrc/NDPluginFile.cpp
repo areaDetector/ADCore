@@ -388,6 +388,7 @@ void NDPluginFile::freeCaptureBuffer()
 {
     NDArray *pArray;
 
+    setIntegerParam(NDFileNumCaptured, 0);
     if (pCapture.size() == 0) return;
     /* Free the capture buffer */
     for (size_t i=0; i<pCapture.size(); i++) {
@@ -396,7 +397,6 @@ void NDPluginFile::freeCaptureBuffer()
         pArray->release();
     }
     pCapture.clear();
-    setIntegerParam(NDFileNumCaptured, 0);
 }
 
 /** Handles the logic for when NDFileCapture changes state, starting or stopping capturing or streaming NDArrays
