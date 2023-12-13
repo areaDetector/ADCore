@@ -491,7 +491,6 @@ NDArray *compressLZ4(NDArray *input, NDCodecStatus_t *status, char *errorMessage
     return output;
 }
 
-
 NDArray *decompressLZ4(NDArray *input, NDCodecStatus_t *status, char *errorMessage)
 {
     // Sanity check
@@ -635,6 +634,70 @@ NDArray *decompressBSLZ4(NDArray *input, NDCodecStatus_t *status, char *errorMes
 
 #endif // ifdef HAVE_BITSHUFFLE
 
+#ifdef HAVE_VC
+#include <video_compression.h>
+//extern int H264_compress_default(const char*, char*, int, int, int);
+NDArray *compressH264(NDArray *input, NDCodecStatus_t *status, char *errorMessage)
+{
+    //printf("inside compressH264\n");
+    if (!input->codec.empty()) {
+        sprintf(errorMessage, "Array is already compressed");
+        *status = NDCODEC_WARNING;
+        return NULL;
+    }
+
+    switch (input->dataType) {
+        case NDInt8:
+        case NDUInt8:
+        //case NDInt16:
+        //case NDUInt16:
+            break;
+        default:
+            sprintf(errorMessage, "H264 only supports 8-bit data");
+            *status = NDCODEC_ERROR;
+            //goto failure;
+            return NULL;
+    }
+
+
+
+    NDArrayInfo_t info;
+    input->getInfo(&info);
+    int outputSize = LZ4_compressBound((int)info.totalBytes);
+    NDArray *output = allocArray(input, -1, outputSize);
+
+    if (!output) {
+        sprintf(errorMessage, "Failed to allocate H264 output array");
+        *status = NDCODEC_ERROR;
+        return NULL;
+    }
+
+    //int compSize = LZ4_compress_default((const char*)input->pData, (char*)output->pData, (int)info.totalBytes, outputSize);
+    int x_size = input->dims[0].size;
+    int y_size = input->dims[1].size;
+
+    //printf("x_size %d y_size %d\n", x_size, y_size);
+    //printf("before H264 compress default\n"); 
+    //int compSize = H264_compress_default((const char*)input->pData, (char*)output->pData, (int)x_size, (int)y_size, outputSize);
+    int compSize = H264_compress((const char*)input->pData, (char*)output->pData, (int)x_size, (int)y_size);
+
+    if (compSize <= 0) {
+        output->release();
+        sprintf(errorMessage, "Internal H264 error");
+        *status = NDCODEC_ERROR;
+        return NULL;
+    }
+
+    output->codec.name = codecName[NDCODEC_H264];
+    output->compressedSize = compSize;
+    //printf("before return output\n");
+
+    return output;
+}
+#endif
+
+
+
 /** Callback function that is called by the NDArray driver with new NDArray data.
   * Does JPEG or Blosc compression on the array.
   * If compression is None or fails the input array is passed on without
@@ -714,6 +777,14 @@ void NDPluginCodec::processCallbacks(NDArray *pArray)
             unlock();
             result = compressBSLZ4(pArray, &codecStatus, errorMessage);
             lock();
+            break;
+        }
+
+        case NDCODEC_H264: {
+            //commenting out unlock for now - crashes when changing AVCodecContext parameters while acquiring
+            //unlock();
+            result = compressH264(pArray, &codecStatus, errorMessage);
+            //lock();
             break;
         }
 
@@ -807,7 +878,16 @@ asynStatus NDPluginCodec::writeInt32(asynUser *pasynUser, epicsInt32 value)
             value = 1;
     } else if (function < FIRST_NDCODEC_PARAM) {
         status = NDPluginDriver::writeInt32(pasynUser, value);
+    } else if (function == NDCodecGOPSize) {
+        printf("setting GOP Size...\n");
+        set_gop_size(value);
+    } else if (function == NDCodecQMinMax) {
+	//lock();
+        printf("setting qmin and qmax...\n");
+        set_q_min_max(value);
+	//unlock();
     }
+
 
     /* Set the parameter in the parameter library. */
     status = (asynStatus) setIntegerParam(function, value);
@@ -877,6 +957,8 @@ NDPluginCodec::NDPluginCodec(const char *portName, int queueSize, int blockingCa
     createParam(NDCodecBloscCLevelString,     asynParamInt32,   &NDCodecBloscCLevel);
     createParam(NDCodecBloscShuffleString,    asynParamInt32,   &NDCodecBloscShuffle);
     createParam(NDCodecBloscNumThreadsString, asynParamInt32,   &NDCodecBloscNumThreads);
+    createParam(NDCodecGOPSizeString, asynParamInt32,   &NDCodecGOPSize);
+    createParam(NDCodecQMinMaxString, asynParamInt32,   &NDCodecQMinMax);
 
     /* Set the plugin type string */
     setStringParam(NDPluginDriverPluginType, "NDPluginCodec");
