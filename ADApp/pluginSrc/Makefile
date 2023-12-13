@@ -204,6 +204,11 @@ ifeq ($(WITH_BITSHUFFLE), YES)
   USR_CXXFLAGS += -DHAVE_BITSHUFFLE
 endif
 
+ifeq ($(WITH_VC), YES)
+  #INC += video_compression.h
+  USR_CXXFLAGS += -DHAVE_VC
+endif
+
 ifdef BLOSC_INCLUDE
   USR_INCLUDES += $(addprefix -I, $(BLOSC_INCLUDE))
 endif

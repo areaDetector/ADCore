@@ -13,6 +13,8 @@
 #define NDCodecBloscCLevelString      "BLOSC_CLEVEL"     /* (int r/w) Blosc compression level */
 #define NDCodecBloscShuffleString     "BLOSC_SHUFFLE"    /* (bool r/w) Should Blosc apply shuffling? */
 #define NDCodecBloscNumThreadsString  "BLOSC_NUMTHREADS" /* (int r/w) Number of threads to be used by Blosc */
+#define NDCodecGOPSizeString  "GOP_SIZE" /* (int r/w) Group of pictures size for H264 */
+#define NDCodecQMinMaxString  "QMINMAX" /* (int r/w) Sets min and max values for quantizer for H264 */
 
 /** Compress/decompress NDArrays according to available codecs.
   * This plugin is a source of NDArray callbacks, passing the (possibly
@@ -87,6 +89,8 @@ protected:
     int NDCodecBloscCLevel;
     int NDCodecBloscShuffle;
     int NDCodecBloscNumThreads;
+    int NDCodecGOPSize;
+    int NDCodecQMinMax;
 
 };
 

@@ -6,7 +6,8 @@ static std::string codecName[] = {
     "jpeg",
     "blosc",
     "lz4",
-    "bslz4"
+    "bslz4",
+    "h264"
 };
 
 typedef enum {
@@ -14,7 +15,8 @@ typedef enum {
   NDCODEC_JPEG,
   NDCODEC_BLOSC,
   NDCODEC_LZ4,
-  NDCODEC_BSLZ4
+  NDCODEC_BSLZ4,
+  NDCODEC_H264
 } NDCodecCompressor_t;
 
 typedef struct Codec_t {
