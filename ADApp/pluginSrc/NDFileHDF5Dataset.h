@@ -3,12 +3,13 @@
 
 #include <string>
 #include <hdf5.h>
+#include <NDPluginAPI.h>
 #include "NDPluginFile.h"
 #include "NDFileHDF5VersionCheck.h"
 
 /** Class used for writing a Dataset with the NDFileHDF5 plugin.
   */
-class NDFileHDF5Dataset
+class NDPLUGIN_API NDFileHDF5Dataset
 {
   public:
     NDFileHDF5Dataset(asynUser *pAsynUser, const std::string& name, hid_t dataset);

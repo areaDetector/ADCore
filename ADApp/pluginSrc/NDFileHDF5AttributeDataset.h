@@ -12,10 +12,11 @@
 #include <hdf5.h>
 #include <asynDriver.h>
 #include <NDAttribute.h>
+#include <NDPluginAPI.h>
 #include "NDFileHDF5Layout.h"
 #include "NDFileHDF5VersionCheck.h"
 
-class NDFileHDF5AttributeDataset
+class NDPLUGIN_API NDFileHDF5AttributeDataset
 {
 public:
   NDFileHDF5AttributeDataset(hid_t file, const std::string& name, NDAttrDataType_t type);

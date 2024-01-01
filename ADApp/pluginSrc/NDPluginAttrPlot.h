@@ -17,6 +17,7 @@
 
 #include "CircularBuffer.h"
 
+#include <NDPluginAPI.h>
 #include <NDPluginDriver.h>
 #include <epicsThread.h>
 
@@ -42,7 +43,7 @@ class NDPluginAttrPlot;
 /**
  * A task that periodically executes the data exposure method of the plugin.
  */
-class ExposeDataTask : public epicsThreadRunable
+class NDPLUGIN_API ExposeDataTask : public epicsThreadRunable
 {
 public:
     /**

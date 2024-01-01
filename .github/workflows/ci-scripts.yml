@@ -20,6 +20,7 @@ jobs:
       BCFG: ${{ matrix.configuration }}
       BASE: ${{ matrix.base }}
       SET: ${{ matrix.deps }}
+      EXTRA: ${{ matrix.extra }}
 
     strategy:
       fail-fast: false
@@ -31,6 +32,8 @@ jobs:
             configuration: default
             base: "7.0"
             deps: os
+            extra: "CMD_CFLAGS='-fvisibility=hidden'
+                    CMD_CXXFLAGS='-fvisibility=hidden -fvisibility-inlines-hidden'"
             test: true
 
           - os: ubuntu-latest
