@@ -770,6 +770,13 @@ loading ADBase.template.
     - NUM_CAPTURED
     - $(P)$(R)NumCaptured_RBV
     - longin
+  * - NDFileFreeCapture
+    - asynInt32
+    - r/w
+    - Release all of the NDArrays in the capture buffer to the free pool.
+    - FREE_CAPTURE
+    - $(P)$(R)FreeCapture
+    - bo
   * - NDFileDeleteDriverFile
     - asynInt32
     - r/w
