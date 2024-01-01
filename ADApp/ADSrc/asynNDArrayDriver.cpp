@@ -457,7 +457,12 @@ done_macros:
             functAttribute *pFunctAttribute = new functAttribute(pName, pDescription, pSource, pParam);
             this->pAttributeList->add(pFunctAttribute);
 #endif
-        } else {
+        } 
+        else if (strcmp(pAttrType, NDAttribute::attrSourceString(NDAttrSourceConst)) == 0) {
+#ifndef EPICS_LIBCOM_ONLY			
+            this->pAttributeList->add(pName, pDescription, NDAttrString, (void*) pSource);
+#endif
+        } else { 
             asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
                 "%s:%s: unknown attribute type = %s for attribute %s\n", driverName, functionName, pAttrType, pName);
             return asynError;

@@ -64,6 +64,7 @@ typedef enum
     NDAttrSourceParam,     /**< Attribute is obtained from parameter library */
     NDAttrSourceEPICSPV,   /**< Attribute is obtained from an EPICS PV */
     NDAttrSourceFunct,     /**< Attribute is obtained from a user-specified function */
+    NDAttrSourceConst,     /**< Attribute is obtained from a user-specified value in the xml file */
     NDAttrSourceUndefined  /**< Attribute source is undefined */
 } NDAttrSource_t;
 
