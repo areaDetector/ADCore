@@ -29,6 +29,10 @@
 
 static const char *driverName = "NDArrayPool";
 
+// This provides a way of overriding the default memory functions for frame
+// buffer allocation and freeing
+MallocFunc_t defaultFrameMalloc = malloc;
+FreeFunc_t defaultFrameFree = free;
 
 /** eraseNDAttributes is a global flag the controls whether NDArray::clearAttributes() is called
   * each time a new array is allocated with NDArrayPool->alloc().
@@ -51,6 +55,41 @@ NDArrayPool::NDArrayPool(class asynNDArrayDriver *pDriver, size_t maxMemory)
   : numBuffers_(0), maxMemory_(maxMemory), memorySize_(0), pDriver_(pDriver)
 {
   listLock_ = epicsMutexCreate();
+}
+
+/** Set default frame buffer allocation and deallocation functions
+  * \param[in] newMalloc Pointer to a function that will be used by default to
+  *            allocate a frame buffer
+  * \param[in] newFree Pointer to a function that will be used by default to
+  *            deallocate a frame buffer
+ * **/
+void NDArrayPool::setDefaultFrameMemoryFunctions(
+    MallocFunc_t newMalloc, FreeFunc_t newFree)
+{
+    if (newMalloc)
+        defaultFrameMalloc = newMalloc;
+
+    if (newFree)
+        defaultFrameFree = newFree;
+}
+
+/** Used to allocate a frame buffer
+ * This method can be overriden in subclasses to use custom memory allocation
+  * \param[in] size Required buffer size
+  * Returns pointer to buffer of size specified
+ */
+void* NDArrayPool::frameMalloc(size_t size)
+{
+    return defaultFrameMalloc(size);
+}
+
+/** Used to free a frame buffer
+ * This method can be overriden in subclasses to use custom memory deallocation
+  * \param[in] ptr Pointer to memory that will be deallocated
+ */
+void NDArrayPool::frameFree(void *ptr)
+{
+    defaultFrameFree(ptr);
 }
 
 /** Create new NDArray object.
@@ -139,7 +178,7 @@ NDArray* NDArrayPool::alloc(int ndims, size_t *dims, NDDataType_t dataType, size
     if (pData || (pListElement->dataSize_ > (dataSize * THRESHOLD_SIZE_RATIO))) {
       // We found an array but it is too large.  Set the size to 0 so it will be allocated below.
       memorySize_ -= pArray->dataSize;
-      free(pArray->pData);
+      frameFree(pArray->pData);
       pArray->pData = NULL;
     }
     freeList_.erase(pListElement);
@@ -193,7 +232,7 @@ NDArray* NDArrayPool::alloc(int ndims, size_t *dims, NDDataType_t dataType, size
              "%s: error: reached limit of %ld memory (%d buffers)\n",
              functionName, (long)maxMemory_, numBuffers_);
     } else {
-      pArray->pData = malloc(dataSize);
+      pArray->pData = frameMalloc(dataSize);
       if (pArray->pData) {
         pArray->dataSize = dataSize;
         pArray->compressedSize = dataSize;

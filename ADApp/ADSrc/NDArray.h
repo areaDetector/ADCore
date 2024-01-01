@@ -25,6 +25,11 @@
 /** The maximum number of dimensions in an NDArray */
 #define ND_ARRAY_MAX_DIMS 10
 
+typedef void *(*MallocFunc_t)(size_t size);
+typedef void (*FreeFunc_t)(void *ptr);
+extern MallocFunc_t defaultFrameMalloc;
+extern FreeFunc_t defaultFrameFree;
+
 /** Enumeration of color modes for NDArray attribute "colorMode" */
 typedef enum
 {
@@ -182,6 +187,10 @@ public:
     size_t       getMemorySize();
     int          getNumFree();
     void         emptyFreeList();
+    static void  setDefaultFrameMemoryFunctions(MallocFunc_t newMalloc,
+                                                FreeFunc_t newFree);
+    virtual void* frameMalloc(size_t size);
+    virtual void frameFree(void *ptr);
 
 protected:
     /** The following methods should be implemented by a pool class

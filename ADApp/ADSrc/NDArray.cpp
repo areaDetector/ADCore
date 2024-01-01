@@ -64,7 +64,7 @@ NDArray::NDArray(int nDims, size_t *dims, NDDataType_t dataType, size_t dataSize
   if (pData) {
     this->pData = pData;
   } else {
-    this->pData = malloc(dataSize);
+    this->pData = defaultFrameMalloc(dataSize);
     this->dataSize = dataSize;
   }
 }
@@ -73,7 +73,12 @@ NDArray::NDArray(int nDims, size_t *dims, NDDataType_t dataType, size_t dataSize
   * Frees the data array, deletes all attributes, frees the attribute list and destroys the mutex. */
 NDArray::~NDArray()
 {
-  if (this->pData) free(this->pData);
+  if (this->pData) {
+      if (this->pNDArrayPool)
+        this->pNDArrayPool->frameFree(this->pData);
+      else
+        defaultFrameFree(this->pData);
+  }
   delete this->pAttributeList;
 }
 
