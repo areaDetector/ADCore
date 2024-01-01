@@ -19,8 +19,20 @@ the EXAMPLE_RELEASE_PATHS.local, EXAMPLE_RELEASE_LIBS.local, and EXAMPLE_RELEASE
 files respectively, in the configure/ directory of the appropriate release of the
 [top-level areaDetector](https://github.com/areaDetector/areaDetector) repository.
 
-## __R3-13 (August XXX, 2023)__
+## __R3-13 (January XXX, 2024)__
 
+### asynNDArrayDriver
+  * Added UpdateTimeStamps method.
+  * Added NDFileFreeCapture parameter to manually free the capture buffer.
+### NDPluginFile
+  * Change capture buffer to use std::vector which is simpler and cleaner.
+  * Free capture buffer when capture or streaming start to prevent memory leak.
+  * Added FreeCapture record to manually free the capture buffer.
+  * Include the interface and interrupt masks passed to the constructor in the masks passed to NDPluginDriver.
+### NDFileNexus
+  * Set the plugin type.
+### NDPluginBadPixel
+  * Fix missing argument to constructor from configuration command.
 ### NDPluginProcess
   * Improved the logic for high and low clipping so that both the threshold
     and the replacement value can be independently specified.
@@ -33,6 +45,16 @@ files respectively, in the configure/ directory of the appropriate release of th
   * Set the plugin type string in NDFileNexus.
   * Fixed typo in arguments to constructor in NDPluginBadPixel.
   * Improved paths for databases and autosave in iocBoot/EXAMPLE_commonPlugins.cmd.
+### commonDriverMakefile, commonLibraryMakefile
+  * Fix error in upper/lower case of NeXus_DIR.
+  * Fix error with nanohttp_stream library.
+### Continuous integration
+  * Added Github Actions builds.  Thanks to Ralph Lange and Michael Davidsaver for this.
+### validateXML.sh
+  * Fix location of iocimDetector.
+### EXAMPLE_commonPlugins.cmd
+  * Load NDPluginPva by default.
+  * Fix path to support module .template and .req files to be $(MODULE)/db rather than $(MODULE)/moduleApp/Db. 
 
 ## __R3-12-1 (January 22, 2022)__
 
