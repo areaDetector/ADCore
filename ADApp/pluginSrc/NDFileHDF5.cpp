@@ -3569,7 +3569,7 @@ char* NDFileHDF5::getDimsReport()
     c = strlen(strdims);
     for(j=0; j<dimsizes[i].nd; j++)
     {
-          epicsSnprintf(strdims+c, maxlen-c, "%6llu,", (unsigned long long) dimsizes[i].dimsize[j]);
+      epicsSnprintf(strdims+c, maxlen-c, "%6llu,", (unsigned long long) dimsizes[i].dimsize[j]);
       c = strlen(strdims);
     }
     //printf("name=%s c=%d rank=%d strdims: %s\n", dimsizes[i].name, c, dimsizes[i].nd, strdims);
