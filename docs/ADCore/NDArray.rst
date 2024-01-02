@@ -177,6 +177,11 @@ demonstates how to write such functions. The `functAttribute class
 documentation <../areaDetectorDoxygenHTML/classfunct_attribute.html>`__
 describes this class in detail.
 
+constAttribute
+--------------
+
+This type of attribute obtains its value directly from the "source" value in the XML file.
+
 asynNDArrayDriver
 -----------------
 
