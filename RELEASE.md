@@ -21,9 +21,15 @@ files respectively, in the configure/ directory of the appropriate release of th
 
 ## __R3-13 (January XXX, 2024)__
 
+### NDArrayPool
+  * Provide a mechanism to override the default memory allocator for NDArrays.
+  * Thanks to Emilio PJ on Github for this.
 ### asynNDArrayDriver
   * Added UpdateTimeStamps method.
   * Added NDFileFreeCapture parameter to manually free the capture buffer.
+### NDAttribute
+  * Added support for attribute type CONST, where the value is the "source" value specified in the XML file.
+    Thanks to Keenan Lang for this.
 ### NDPluginFile
   * Change capture buffer to use std::vector which is simpler and cleaner.
   * Free capture buffer when capture or streaming start to prevent memory leak.
