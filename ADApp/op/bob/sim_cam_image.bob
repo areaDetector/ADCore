@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--Saved on 2024-01-03 16:56:56 by prjemian-->
+<display version="2.0.0">
+  <name>Display</name>
+  <width>400</width>
+  <widget type="label" version="2.0.0">
+    <name>Label</name>
+    <class>TITLE</class>
+    <text>Image - $(P)</text>
+    <x use_class="true">0</x>
+    <y use_class="true">0</y>
+    <width>400</width>
+    <height>31</height>
+    <font use_class="true">
+      <font name="Header 1" family="Liberation Sans" style="BOLD" size="22.0">
+      </font>
+    </font>
+    <foreground_color use_class="true">
+      <color name="Text" red="0" green="0" blue="0">
+      </color>
+    </foreground_color>
+    <transparent use_class="true">true</transparent>
+    <horizontal_alignment>1</horizontal_alignment>
+  </widget>
+  <widget type="textupdate" version="2.0.0">
+    <name>Text Update</name>
+    <pv_name>$(P)$(R)DetectorState_RBV</pv_name>
+    <x>120</x>
+    <y>31</y>
+  </widget>
+  <widget type="image" version="2.0.0">
+    <name>Image_1</name>
+    <pv_name>pva://$(P)Pva1:Image</pv_name>
+    <y>70</y>
+    <height>400</height>
+    <color_map>
+      <name>GRAY</name>
+    </color_map>
+    <x_axis>
+      <visible>true</visible>
+      <title>X</title>
+      <minimum>0.0</minimum>
+      <maximum>1023.0</maximum>
+      <title_font>
+        <font name="Default Bold" family="Liberation Sans" style="BOLD" size="14.0">
+        </font>
+      </title_font>
+      <scale_font>
+        <font name="Default" family="Liberation Sans" style="REGULAR" size="14.0">
+        </font>
+      </scale_font>
+    </x_axis>
+    <y_axis>
+      <visible>true</visible>
+      <title>Y</title>
+      <minimum>0.0</minimum>
+      <maximum>1023.0</maximum>
+      <title_font>
+        <font name="Default Bold" family="Liberation Sans" style="BOLD" size="14.0">
+        </font>
+      </title_font>
+      <scale_font>
+        <font name="Default" family="Liberation Sans" style="REGULAR" size="14.0">
+        </font>
+      </scale_font>
+    </y_axis>
+    <data_width>1024</data_width>
+    <data_height>1024</data_height>
+    <unsigned>true</unsigned>
+  </widget>
+  <widget type="textupdate" version="2.0.0">
+    <name>Text Update_1</name>
+    <pv_name>$(P)cam1:StatusMessage_RBV</pv_name>
+    <x>240</x>
+    <y>31</y>
+    <width>150</width>
+    <format>6</format>
+  </widget>
+  <widget type="led" version="2.0.0">
+    <name>LED</name>
+    <pv_name>$(P)$(R)Acquire</pv_name>
+    <x>160</x>
+    <y>480</y>
+  </widget>
+  <widget type="checkbox" version="2.0.0">
+    <name>Check Box</name>
+    <pv_name>$(P)Pva1:EnableCallbacks</pv_name>
+    <label>PVA</label>
+    <x>10</x>
+    <y>510</y>
+    <width>70</width>
+  </widget>
+  <widget type="action_button" version="3.0.0">
+    <name>Action Button</name>
+    <actions>
+      <action type="write_pv">
+        <pv_name>$(pv_name)</pv_name>
+        <value>1</value>
+        <description>Start</description>
+      </action>
+    </actions>
+    <pv_name>$(P)$(R)Acquire</pv_name>
+    <x>100</x>
+    <y>480</y>
+    <width>50</width>
+    <height>20</height>
+    <tooltip>$(actions)</tooltip>
+  </widget>
+  <widget type="action_button" version="3.0.0">
+    <name>Action Button_1</name>
+    <actions>
+      <action type="write_pv">
+        <pv_name>$(pv_name)</pv_name>
+        <value>0</value>
+        <description>Stop</description>
+      </action>
+    </actions>
+    <pv_name>$(P)$(R)Acquire</pv_name>
+    <x>100</x>
+    <y>510</y>
+    <width>50</width>
+    <height>20</height>
+    <tooltip>$(actions)</tooltip>
+  </widget>
+  <widget type="textentry" version="3.0.0">
+    <name>Text Entry</name>
+    <pv_name>$(P)$(R)AcquireTime</pv_name>
+    <x>200</x>
+    <y>480</y>
+    <width>70</width>
+  </widget>
+  <widget type="label" version="2.0.0">
+    <name>Label_1</name>
+    <text>exposure, s</text>
+    <x>180</x>
+    <y>510</y>
+    <width>90</width>
+    <horizontal_alignment>2</horizontal_alignment>
+  </widget>
+  <widget type="textupdate" version="2.0.0">
+    <name>Text Update_2</name>
+    <pv_name>$(P)$(R)ArrayCounter_RBV</pv_name>
+    <x>290</x>
+    <y>480</y>
+    <horizontal_alignment>2</horizontal_alignment>
+  </widget>
+  <widget type="textupdate" version="2.0.0">
+    <name>Text Update_3</name>
+    <pv_name>$(P)$(R)ArrayRate_RBV</pv_name>
+    <x>290</x>
+    <y>510</y>
+    <horizontal_alignment>2</horizontal_alignment>
+  </widget>
+  <widget type="action_button" version="3.0.0">
+    <name>Action Button_3</name>
+    <actions>
+      <action type="open_display">
+        <file>/mnt/iocad/tmp/screens/bob/simDetector.bob</file>
+        <macros>
+          <P>$(P)</P>
+          <R>$(R)</R>
+        </macros>
+        <target>tab</target>
+        <description>ADSimDetector</description>
+      </action>
+      <action type="open_display">
+        <file>/mnt/iocad/tmp/screens/bob/ADBase.bob</file>
+        <macros>
+          <P>$(P)</P>
+          <R>$(R)</R>
+        </macros>
+        <target>tab</target>
+        <description>ADBase</description>
+      </action>
+      <action type="open_display">
+        <file>/mnt/iocad/tmp/screens/bob/commonPlugins.bob</file>
+        <macros>
+          <P>$(P)</P>
+        </macros>
+        <target>tab</target>
+        <description>common plugins</description>
+      </action>
+    </actions>
+    <text>more ...</text>
+    <x>10</x>
+    <y>480</y>
+    <width>60</width>
+    <height>20</height>
+    <tooltip>$(actions)</tooltip>
+  </widget>
+</display>
