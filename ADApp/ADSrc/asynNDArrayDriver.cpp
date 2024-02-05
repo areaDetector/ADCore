@@ -326,16 +326,21 @@ asynStatus asynNDArrayDriver::readNDAttributesFile()
     this->pAttributeList->clear();
     if (fileName.length() == 0) return asynSuccess;
 
-    infile.open(fileName.c_str());
-    if (infile.fail()) {
-        asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
-            "%s::%s error opening file %s\n",
-            driverName, functionName, fileName.c_str());
-        setIntegerParam(NDAttributesStatus, NDAttributesFileNotFound);
-        return asynError;
+    // Fill input buffer by XML string or reading from a file
+    if (fileName.find("<Attributes>") != std::string::npos){
+        buffer = fileName;
+    } else {
+        infile.open(fileName.c_str());
+        if (infile.fail()) {
+            asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
+                "%s::%s error opening file %s\n",
+                driverName, functionName, fileName.c_str());
+            setIntegerParam(NDAttributesStatus, NDAttributesFileNotFound);
+            return asynError;
+        }
+        buff << infile.rdbuf();
+        buffer = buff.str();
     }
-    buff << infile.rdbuf();
-    buffer = buff.str();
 
     // We now have file in memory.  Do macro substitution if required
     if (attributesMacros.length() > 0) {
