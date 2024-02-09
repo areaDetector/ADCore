@@ -19,11 +19,11 @@ the EXAMPLE_RELEASE_PATHS.local, EXAMPLE_RELEASE_LIBS.local, and EXAMPLE_RELEASE
 files respectively, in the configure/ directory of the appropriate release of the
 [top-level areaDetector](https://github.com/areaDetector/areaDetector) repository.
 
-## __R3-13 (January XXX, 2024)__
+## __R3-13 (February 9, 2024)__
 
 ### NDArrayPool
   * Provide a mechanism to override the default memory allocator for NDArrays.
-  * Thanks to Emilio PJ on Github for this.
+    Thanks to Emilio PJ on Github for this.
 ### asynNDArrayDriver
   * Added UpdateTimeStamps method.
   * Added NDFileFreeCapture parameter to manually free the capture buffer.
@@ -49,10 +49,6 @@ files respectively, in the configure/ directory of the appropriate release of th
     - HighClip has been renamed to HighClipThresh.
     - LowClipValue and HighClipValue have been added.
     - **This change is not backwards compatible, the value of Low/HighClipValue must now be specified.**
-  * Fixed typos in commonDriverMakefile and commonLibraryMakefile for the NeXus library.
-  * Set the plugin type string in NDFileNexus.
-  * Fixed typo in arguments to constructor in NDPluginBadPixel.
-  * Improved paths for databases and autosave in iocBoot/EXAMPLE_commonPlugins.cmd.
 ### commonDriverMakefile, commonLibraryMakefile
   * Fix error in upper/lower case of NeXus_DIR.
   * Fix error with nanohttp_stream library.
