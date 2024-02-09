@@ -58,7 +58,7 @@ files respectively, in the configure/ directory of the appropriate release of th
   * Fix location of iocimDetector.
 ### EXAMPLE_commonPlugins.cmd
   * Load NDPluginPva by default.
-  * Fix path to support module .template and .req files to be $(MODULE)/db rather than $(MODULE)/moduleApp/Db. 
+  * Fix path to support module .template and .req files to be \$(MODULE)/db rather than \$(MODULE)/moduleApp/Db. 
 
 ## __R3-12-1 (January 22, 2022)__
 
