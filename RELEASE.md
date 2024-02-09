@@ -27,6 +27,8 @@ files respectively, in the configure/ directory of the appropriate release of th
 ### asynNDArrayDriver
   * Added UpdateTimeStamps method.
   * Added NDFileFreeCapture parameter to manually free the capture buffer.
+  * Allow the filename in readNDAttributes file to be an XML string rather than a file name.
+    This allows Channel Access clients to write the XML directly. Thanks to Marcell Nagy for this.
 ### NDAttribute
   * Added support for attribute type CONST, where the value is the "source" value specified in the XML file.
     Thanks to Keenan Lang for this.
