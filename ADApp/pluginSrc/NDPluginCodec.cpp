@@ -694,6 +694,32 @@ NDArray *compressH264(NDArray *input, NDCodecStatus_t *status, char *errorMessag
 
     return output;
 }
+
+#else
+
+NDArray *compressH264(NDArray *input, NDCodecStatus_t *status, char *errorMessage)
+{
+    sprintf(errorMessage, "No H264 support");
+    *status = NDCODEC_ERROR;
+    return NULL;
+}
+
+NDArray *decompressH264(NDArray *input, NDCodecStatus_t *status, char *errorMessage)
+{
+    sprintf(errorMessage, "No H264 support");
+    *status = NDCODEC_ERROR;
+    return NULL;
+}
+
+
+void set_gop_size(int value){
+    printf("unable to set gop size to %d\n", value);
+}
+
+void set_q_min_max(int value){
+    printf("unable to set q min max to %d\n", value);
+}
+
 #endif
 
 
