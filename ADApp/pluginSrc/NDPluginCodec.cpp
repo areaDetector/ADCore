@@ -807,10 +807,9 @@ void NDPluginCodec::processCallbacks(NDArray *pArray)
         }
 
         case NDCODEC_H264: {
-            //commenting out unlock for now - crashes when changing AVCodecContext parameters while acquiring
-            //unlock();
+            unlock();
             result = compressH264(pArray, &codecStatus, errorMessage);
-            //lock();
+            lock();
             break;
         }
 
