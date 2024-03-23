@@ -28,8 +28,8 @@
   <snap_to_geometry>false</snap_to_geometry>
   <widget_type>Display</widget_type>
   <width>225</width>
-  <x>280</x>
-  <y>87</y>
+  <x>180</x>
+  <y>72</y>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0.0">
     <actions hook="false" hook_all="false" />
     <auto_size>false</auto_size>
@@ -3290,7 +3290,7 @@ $(pv_value)</tooltip>
     <x>68</x>
     <y>209</y>
   </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="2.0.0">
+  <widget typeId="org.csstudio.opibuilder.widgets.MenuButton" version="1.0.0">
     <actions hook="false" hook_all="false">
       <action type="OPEN_DISPLAY">
         <path>ADBitFlow.opi</path>
@@ -3303,7 +3303,19 @@ $(pv_value)</tooltip>
         <mode>1</mode>
         <description>Mikrotron MC2066</description>
       </action>
+      <action type="OPEN_DISPLAY">
+        <path>ADBitFlow.opi</path>
+        <macros>
+          <include_parent_macros>true</include_parent_macros>
+          <P>13BF1:</P>
+          <R>cam1:</R>
+          <C>Adimec_Q12A180CXP_1_1_5</C>
+        </macros>
+        <mode>1</mode>
+        <description>Adimec Q-12A180</description>
+      </action>
     </actions>
+    <actions_from_pv>false</actions_from_pv>
     <alarm_pulsing>false</alarm_pulsing>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <background_color>
@@ -3313,7 +3325,7 @@ $(pv_value)</tooltip>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
-    <border_style>0</border_style>
+    <border_style>6</border_style>
     <border_width>1</border_width>
     <enabled>true</enabled>
     <font>
@@ -3324,9 +3336,8 @@ $(pv_value)</tooltip>
       <color red="0" green="0" blue="0" />
     </foreground_color>
     <height>20</height>
-    <image></image>
-    <name>Action Button</name>
-    <push_action_index>0</push_action_index>
+    <label></label>
+    <name>Menu Button</name>
     <pv_name></pv_name>
     <pv_value />
     <rules />
@@ -3336,13 +3347,12 @@ $(pv_value)</tooltip>
       <keep_wh_ratio>false</keep_wh_ratio>
     </scale_options>
     <scripts />
-    <style>0</style>
-    <text></text>
-    <toggle_button>false</toggle_button>
+    <show_down_arrow>false</show_down_arrow>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
+    <transparent>false</transparent>
     <visible>true</visible>
-    <widget_type>Action Button</widget_type>
+    <widget_type>Menu Button</widget_type>
     <width>64</width>
     <x>143</x>
     <y>209</y>
