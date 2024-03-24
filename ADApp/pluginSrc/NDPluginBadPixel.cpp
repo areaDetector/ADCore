@@ -289,7 +289,7 @@ asynStatus NDPluginBadPixel::readBadPixelFile(const char *fileName)
             "%s::%s JSON error parsing bad pixel file: %s\n", driverName, functionName, e.what());
         return asynError;
     }
-    catch (std::exception e) {
+    catch (std::exception& e) {
         asynPrint(pasynUserSelf, ASYN_TRACE_ERROR, 
             "%s::%s other error parsing bad pixel file: %s\n", driverName, functionName, e.what());
         return asynError;
