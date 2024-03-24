@@ -203,7 +203,6 @@ asynStatus NDPluginFile::writeFileBase()
     int status = asynSuccess;
     int fileWriteMode;
     int numCapture, numCaptured;
-    int i;
     bool doLazyOpen;
     int deleteDriverFile;
     NDArray *pArray;
@@ -281,7 +280,13 @@ asynStatus NDPluginFile::writeFileBase()
             if (this->supportsMultipleArrays)
                 status = this->openFileBase(NDFileModeWrite | NDFileModeMultiple, pArrayOut);
             if (status == asynSuccess) {
-                for (i=0; i<pCapture.size(); i++) {
+                int arrayCounter, arrayCounterStart;
+                // We temporarily increment array counter when saving so the user can see the array rate
+                getIntegerParam(NDArrayCounter, &arrayCounter);
+                arrayCounterStart = arrayCounter;
+                getIntegerParam(NDFileNumCaptured, &numCaptured);
+                for (size_t i=0; i<pCapture.size(); i++) {
+                    epicsTime tStart = epicsTime::getCurrent();
                     pArray = pCapture[i];
                     if (!this->supportsMultipleArrays)
                         status = this->openFileBase(NDFileModeWrite, pArray);
@@ -307,7 +312,15 @@ asynStatus NDPluginFile::writeFileBase()
                                 status = this->closeFileBase();
                         }
                     }
+                    numCaptured--;
+                    setIntegerParam(NDFileNumCaptured, numCaptured);
+                    arrayCounter++;
+                    setIntegerParam(NDArrayCounter, arrayCounter);
+                    epicsTime tEnd = epicsTime::getCurrent();
+                    setDoubleParam(NDPluginDriverExecutionTime, (tEnd-tStart)*1000.);
+                    callParamCallbacks();
                 }
+                setIntegerParam(NDArrayCounter, arrayCounterStart);
             }
             freeCaptureBuffer();
             if ((status == asynSuccess) && this->supportsMultipleArrays)
