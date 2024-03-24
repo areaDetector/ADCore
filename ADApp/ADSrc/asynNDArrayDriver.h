@@ -99,7 +99,7 @@ typedef enum {
 #define NDFileWriteMessageString "WRITE_MESSAGE"    /**< (asynOctet,    r/w) File write message */
 #define NDFileNumCaptureString  "NUM_CAPTURE"       /**< (asynInt32,    r/w) Number of arrays to capture */
 #define NDFileNumCapturedString "NUM_CAPTURED"      /**< (asynInt32,    r/o) Number of arrays already captured */
-#define NDFileFreeCaptureString "FREE_CAPTURE"      /**< (asynInt32,    r/o) Free the capture buffer */
+#define NDFileFreeCaptureString "FREE_CAPTURE"      /**< (asynInt32,    r/w) Free the capture buffer */
 #define NDFileCaptureString     "CAPTURE"           /**< (asynInt32,    r/w) Start or stop capturing arrays */
 #define NDFileDeleteDriverFileString  "DELETE_DRIVER_FILE"  /**< (asynInt32,    r/w) Delete driver file */
 #define NDFileLazyOpenString    "FILE_LAZY_OPEN"    /**< (asynInt32,    r/w) Don't open file until first frame arrives in Stream mode */
@@ -115,12 +115,15 @@ typedef enum {
 #define NDArrayCallbacksString  "ARRAY_CALLBACKS"   /**< (asynInt32,    r/w) Do callbacks with array data (0=No, 1=Yes) */
 
 /* NDArray Pool status and control */
-#define NDPoolMaxBuffersString      "POOL_MAX_BUFFERS"
-#define NDPoolAllocBuffersString    "POOL_ALLOC_BUFFERS"
-#define NDPoolFreeBuffersString     "POOL_FREE_BUFFERS"
-#define NDPoolMaxMemoryString       "POOL_MAX_MEMORY"
-#define NDPoolUsedMemoryString      "POOL_USED_MEMORY"
-#define NDPoolEmptyFreeListString   "POOL_EMPTY_FREELIST"
+#define NDPoolMaxBuffersString          "POOL_MAX_BUFFERS"
+#define NDPoolAllocBuffersString        "POOL_ALLOC_BUFFERS"
+#define NDPoolPreAllocBuffersString     "POOL_PRE_ALLOC_BUFFERS"
+#define NDPoolNumPreAllocBuffersString  "POOL_NUM_PRE_ALLOC_BUFFERS"
+#define NDPoolFreeBuffersString         "POOL_FREE_BUFFERS"
+#define NDPoolMaxMemoryString           "POOL_MAX_MEMORY"
+#define NDPoolUsedMemoryString          "POOL_USED_MEMORY"
+#define NDPoolEmptyFreeListString       "POOL_EMPTY_FREELIST"
+#define NDPoolPollStatsString           "POOL_POLL_STATS"
 
 /* Queued arrays */
 #define NDNumQueuedArraysString     "NUM_QUEUED_ARRAYS"
@@ -144,8 +147,6 @@ public:
     virtual asynStatus writeInt32(asynUser *pasynUser, epicsInt32 value);
     virtual asynStatus setIntegerParam(int index, int value);
     virtual asynStatus setIntegerParam(int list, int index, int value);
-    virtual asynStatus readInt32(asynUser *pasynUser, epicsInt32 *value);
-    virtual asynStatus readFloat64(asynUser *pasynUser, epicsFloat64 *value);
     virtual void report(FILE *fp, int details);
 
     /* These are the methods that are new to this class */
@@ -224,10 +225,13 @@ protected:
     int NDArrayCallbacks;
     int NDPoolMaxBuffers;
     int NDPoolAllocBuffers;
+    int NDPoolPreAllocBuffers;
+    int NDPoolNumPreAllocBuffers;
     int NDPoolFreeBuffers;
     int NDPoolMaxMemory;
     int NDPoolUsedMemory;
     int NDPoolEmptyFreeList;
+    int NDPoolPollStats;
     int NDNumQueuedArrays;
 
     class NDArray **pArrays;             /**< An array of NDArray pointers used to store data in the driver */
@@ -236,6 +240,7 @@ protected:
     int threadPriority_;
 
 private:
+    asynStatus preAllocateBuffers();
     NDArrayPool *pNDArrayPoolPvt_;
     epicsMutex *queuedArrayCountMutex_;
     epicsEventId queuedArrayEvent_;

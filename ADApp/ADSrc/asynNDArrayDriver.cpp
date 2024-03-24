@@ -667,6 +667,7 @@ asynStatus asynNDArrayDriver::setIntegerParam(int list, int index, int value)
   * \param[in] value The value for this parameter
   *
   * Takes action if the function code requires it. */
+#define MEGABYTE_DBL 1048576.
 asynStatus asynNDArrayDriver::writeInt32(asynUser *pasynUser, epicsInt32 value)
 {
     int function;
@@ -682,6 +683,14 @@ asynStatus asynNDArrayDriver::writeInt32(asynUser *pasynUser, epicsInt32 value)
 
     if (function == NDPoolEmptyFreeList) {
         this->pNDArrayPool->emptyFreeList();
+    } else if (function == NDPoolPreAllocBuffers) {
+        preAllocateBuffers();
+        setIntegerParam(NDPoolPreAllocBuffers, 0);
+    } else if (function == NDPoolPollStats) {
+        setDoubleParam(NDPoolMaxMemory, this->pNDArrayPool->getMaxMemory() / MEGABYTE_DBL);
+        setDoubleParam(NDPoolUsedMemory, this->pNDArrayPool->getMemorySize() / MEGABYTE_DBL);
+        setIntegerParam(NDPoolAllocBuffers, this->pNDArrayPool->getNumBuffers());
+        setIntegerParam(NDPoolFreeBuffers, this->pNDArrayPool->getNumFree());
     }
 
     /* Do callbacks so higher layers see any changes */
@@ -698,49 +707,40 @@ asynStatus asynNDArrayDriver::writeInt32(asynUser *pasynUser, epicsInt32 value)
     return status;
 }
 
-asynStatus asynNDArrayDriver::readInt32(asynUser *pasynUser, epicsInt32 *value)
+asynStatus asynNDArrayDriver::preAllocateBuffers()
 {
-    int function;
-    int addr;
-    const char *paramName;
-    asynStatus status = asynSuccess;
+    int numBuffers;
+    NDArray *pArray;
+    static const char *functionName = "preAllocateBuffers";
 
-    status = parseAsynUser(pasynUser, &function, &addr, &paramName);
-    if (status != asynSuccess) return status;
-
-    // Just read the status of the NDArrayPool
-    if (function == NDPoolAllocBuffers) {
-        setIntegerParam(addr, function, this->pNDArrayPool->getNumBuffers());
-    } else if (function == NDPoolFreeBuffers) {
-        setIntegerParam(addr, function, this->pNDArrayPool->getNumFree());
+    /* Make sure there is a valid array */
+    if (!this->pArrays[0]) {
+        asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
+            "%s::%s: ERROR, must collect an array to get dimensions first\n",
+            driverName, functionName);
+        return asynError;
     }
-
-    // Call base class
-    status = asynPortDriver::readInt32(pasynUser, value);
-    return status;
-}
-
-#define MEGABYTE_DBL 1048576.
-asynStatus asynNDArrayDriver::readFloat64(asynUser *pasynUser, epicsFloat64 *value)
-{
-    int function;
-    int addr;
-    const char *paramName;
-    asynStatus status = asynSuccess;
-
-    status = parseAsynUser(pasynUser, &function, &addr, &paramName);
-    if (status != asynSuccess) return status;
-
-    // Just read the status of the NDArrayPool
-    if (function == NDPoolMaxMemory) {
-        setDoubleParam(addr, function, this->pNDArrayPool->getMaxMemory() / MEGABYTE_DBL);
-    } else if (function == NDPoolUsedMemory) {
-        setDoubleParam(addr, function, this->pNDArrayPool->getMemorySize() / MEGABYTE_DBL);
+    std::vector<NDArray*> buffVector;
+    getIntegerParam(NDPoolNumPreAllocBuffers, &numBuffers);
+    for (int i=0; i<numBuffers; i++) {
+        pArray = this->pNDArrayPool->copy(this->pArrays[0], NULL, true);
+        if (!pArray) {
+            asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
+                "%s::%s: ERROR, could not allocate array %d\n",
+                driverName, functionName, i);
+            return asynError;
+        }
+        buffVector.push_back(pArray);
+        setIntegerParam(NDPoolAllocBuffers, this->pNDArrayPool->getNumBuffers());
+        setIntegerParam(NDPoolFreeBuffers, this->pNDArrayPool->getNumFree());
+        setDoubleParam(NDPoolUsedMemory, this->pNDArrayPool->getMemorySize() / MEGABYTE_DBL);
+        callParamCallbacks();
     }
-
-    // Call base class
-    status = asynPortDriver::readFloat64(pasynUser, value);
-    return status;
+    // Now release these NDArrays to put them on the free list
+    for (int i=0; i<numBuffers; i++) {
+        buffVector[i]->release();
+    }
+    return asynSuccess;
 }
 
 
@@ -942,10 +942,13 @@ asynNDArrayDriver::asynNDArrayDriver(const char *portName, int maxAddr, int maxB
     createParam(NDArrayCallbacksString,       asynParamInt32,           &NDArrayCallbacks);
     createParam(NDPoolMaxBuffersString,       asynParamInt32,           &NDPoolMaxBuffers);
     createParam(NDPoolAllocBuffersString,     asynParamInt32,           &NDPoolAllocBuffers);
+    createParam(NDPoolPreAllocBuffersString,  asynParamInt32,           &NDPoolPreAllocBuffers);
+    createParam(NDPoolNumPreAllocBuffersString, asynParamInt32,         &NDPoolNumPreAllocBuffers);
     createParam(NDPoolFreeBuffersString,      asynParamInt32,           &NDPoolFreeBuffers);
     createParam(NDPoolMaxMemoryString,        asynParamFloat64,         &NDPoolMaxMemory);
     createParam(NDPoolUsedMemoryString,       asynParamFloat64,         &NDPoolUsedMemory);
     createParam(NDPoolEmptyFreeListString,    asynParamInt32,           &NDPoolEmptyFreeList);
+    createParam(NDPoolPollStatsString,        asynParamInt32,           &NDPoolPollStats);
     createParam(NDNumQueuedArraysString,      asynParamInt32,           &NDNumQueuedArrays);
 
     /* Here we set the values of read-only parameters and of read/write parameters that cannot
