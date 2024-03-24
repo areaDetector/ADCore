@@ -835,35 +835,41 @@ record(ai, "$(P)$(R)PoolMaxMem")
    field(PINI, "YES")
 }
 
+record(bo, "$(P)$(R)PoolPollStats")
+{
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))POOL_POLL_STATS")
+   field(SCAN, "1 second")
+   info(autosaveFields, "SCAN")
+}
+
 record(ai, "$(P)$(R)PoolUsedMem")
 {
    field(DTYP, "asynFloat64")
    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))POOL_USED_MEMORY")
    field(PREC, "1")
    field(EGU,  "MB")
-   field(SCAN, "1 second")
-   field(FLNK, "$(P)$(R)PoolAllocBuffers")
-   info(autosaveFields, "SCAN")
+   field(SCAN, "I/O Intr")
 }
 
 record(longin, "$(P)$(R)PoolAllocBuffers")
 {
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))POOL_ALLOC_BUFFERS")
-   field(FLNK, "$(P)$(R)PoolFreeBuffers")
+   field(SCAN, "I/O Intr")
 }
 
 record(longin, "$(P)$(R)PoolFreeBuffers")
 {
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))POOL_FREE_BUFFERS")
-   field(FLNK, "$(P)$(R)PoolUsedBuffers")
+   field(SCAN, "I/O Intr")
 }
 
 record(calc, "$(P)$(R)PoolUsedBuffers")
 {
-    field(INPA, "$(P)$(R)PoolAllocBuffers NPP MS")
-    field(INPB, "$(P)$(R)PoolFreeBuffers NPP MS")
+    field(INPA, "$(P)$(R)PoolAllocBuffers CP MS")
+    field(INPB, "$(P)$(R)PoolFreeBuffers CP MS")
     field(CALC, "A-B")
 }
 
@@ -871,6 +877,30 @@ record(bo, "$(P)$(R)EmptyFreeList")
 {
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))POOL_EMPTY_FREELIST")
+}
+
+# Pre-allocate buffers
+record(busy, "$(P)$(R)PreAllocBuffers")
+{
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))POOL_PRE_ALLOC_BUFFERS")
+    field(ZNAM, "Done")
+    field(ONAM, "Allocate")
+}
+
+record(longout, "$(P)$(R)NumPreAllocBuffers")
+{
+    field(PINI, "YES")
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))POOL_NUM_PRE_ALLOC_BUFFERS")
+    field(VAL,  "100")
+}
+
+record(longin, "$(P)$(R)NumPreAllocBuffers_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))POOL_NUM_PRE_ALLOC_BUFFERS")
+    field(SCAN, "I/O Intr")
 }
 
 record(longin, "$(P)$(R)NumQueuedArrays")
