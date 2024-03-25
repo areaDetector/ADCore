@@ -24,7 +24,7 @@ files respectively, in the configure/ directory of the appropriate release of th
 ### asynNDArrayDriver and NDPluginBase.template
   * Added support for pre-allocating NDArrays.  
     This is useful for preventing dropped frames on high-speed cameras because of the finite
-    time required for the operating system to allocate memory.  
+    time required for the operating system to allocate memory.
     If a camera is acquiring at high speed and NDArrays are allocated on demand to fill
     plugin buffers during acquisition then the driver can drop frames during an initial acquisition.
     By pre-allocating frames into the NDArrayPool free list this problem can be avoided.
