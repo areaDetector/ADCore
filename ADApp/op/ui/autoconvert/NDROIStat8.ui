@@ -85,6 +85,16 @@ caChoice &gt; QPushButton {
       padding: 1px;
 }
 
+/* when font specified, no font sizing is done any more,  font: 10pt; is not bad. You could Enable this when you converted from .adl files
+caRelatedDisplay  &gt; QPushButton {
+font: 10pt;
+}
+
+caShellCommand  &gt; QPushButton {
+font: 10pt;
+}
+*/
+
 caSlider::groove:horizontal {
 border: 1px solid #bbb;
 background: lightgrey;
@@ -5848,7 +5858,7 @@ border-radius: 2px;
                 <string>ROIStat full</string>
             </property>
             <property name="files">
-                <string>NDROIStatN.adl</string>
+                <string>NDROIStatN.ui </string>
             </property>
             <property name="args">
                 <string>P=$(P),R=$(R),ROI=$(ROI1)</string>
@@ -5887,7 +5897,7 @@ border-radius: 2px;
                 <string>ROIStat full</string>
             </property>
             <property name="files">
-                <string>NDROIStatN.adl</string>
+                <string>NDROIStatN.ui </string>
             </property>
             <property name="args">
                 <string>P=$(P),R=$(R),ROI=$(ROI2)</string>
@@ -5926,7 +5936,7 @@ border-radius: 2px;
                 <string>ROIStat full</string>
             </property>
             <property name="files">
-                <string>NDROIStatN.adl</string>
+                <string>NDROIStatN.ui </string>
             </property>
             <property name="args">
                 <string>P=$(P),R=$(R),ROI=$(ROI3)</string>
@@ -5965,7 +5975,7 @@ border-radius: 2px;
                 <string>ROIStat full</string>
             </property>
             <property name="files">
-                <string>NDROIStatN.adl</string>
+                <string>NDROIStatN.ui </string>
             </property>
             <property name="args">
                 <string>P=$(P),R=$(R),ROI=$(ROI4)</string>
@@ -6004,7 +6014,7 @@ border-radius: 2px;
                 <string>ROIStat full</string>
             </property>
             <property name="files">
-                <string>NDROIStatN.adl</string>
+                <string>NDROIStatN.ui </string>
             </property>
             <property name="args">
                 <string>P=$(P),R=$(R),ROI=$(ROI5)</string>
@@ -6043,7 +6053,7 @@ border-radius: 2px;
                 <string>ROIStat full</string>
             </property>
             <property name="files">
-                <string>NDROIStatN.adl</string>
+                <string>NDROIStatN.ui </string>
             </property>
             <property name="args">
                 <string>P=$(P),R=$(R),ROI=$(ROI6)</string>
@@ -6082,7 +6092,7 @@ border-radius: 2px;
                 <string>ROIStat full</string>
             </property>
             <property name="files">
-                <string>NDROIStatN.adl</string>
+                <string>NDROIStatN.ui </string>
             </property>
             <property name="args">
                 <string>P=$(P),R=$(R),ROI=$(ROI7)</string>
@@ -6121,7 +6131,7 @@ border-radius: 2px;
                 <string>ROIStat full</string>
             </property>
             <property name="files">
-                <string>NDROIStatN.adl</string>
+                <string>NDROIStatN.ui </string>
             </property>
             <property name="args">
                 <string>P=$(P),R=$(R),ROI=$(ROI8)</string>
@@ -6196,7 +6206,7 @@ border-radius: 2px;
                 <string>Time series minimum;Time series maximum;Time series mean;Time series total;Time series net</string>
             </property>
             <property name="files">
-                <string>NDTimeSeries.adl;NDTimeSeries.adl;NDTimeSeries.adl;NDTimeSeries.adl;NDTimeSeries.adl</string>
+                <string>NDTimeSeries.ui ;NDTimeSeries.ui ;NDTimeSeries.ui ;NDTimeSeries.ui ;NDTimeSeries.ui </string>
             </property>
             <property name="args">
                 <string>P=$(P),R=$(R),PLT=$(ROI1)TSMinValue;P=$(P),R=$(R),PLT=$(ROI1)TSMaxValue;P=$(P),R=$(R),PLT=$(ROI1)TSMeanValue;P=$(P),R=$(R),PLT=$(ROI1)TSTotal;P=$(P),R=$(R),PLT=$(ROI1)TSNet</string>
@@ -6235,7 +6245,7 @@ border-radius: 2px;
                 <string>Time series minimum;Time series maximum;Time series mean;Time series total;Time series net</string>
             </property>
             <property name="files">
-                <string>NDTimeSeries.adl;NDTimeSeries.adl;NDTimeSeries.adl;NDTimeSeries.adl;NDTimeSeries.adl</string>
+                <string>NDTimeSeries.ui ;NDTimeSeries.ui ;NDTimeSeries.ui ;NDTimeSeries.ui ;NDTimeSeries.ui </string>
             </property>
             <property name="args">
                 <string>P=$(P),R=$(R),PLT=$(ROI2)TSMinValue;P=$(P),R=$(R),PLT=$(ROI2)TSMaxValue;P=$(P),R=$(R),PLT=$(ROI2)TSMeanValue;P=$(P),R=$(R),PLT=$(ROI2)TSTotal;P=$(P),R=$(R),PLT=$(ROI2)TSNet</string>
@@ -6274,7 +6284,7 @@ border-radius: 2px;
                 <string>Time series minimum;Time series maximum;Time series mean;Time series total;Time series net</string>
             </property>
             <property name="files">
-                <string>NDTimeSeries.adl;NDTimeSeries.adl;NDTimeSeries.adl;NDTimeSeries.adl;NDTimeSeries.adl</string>
+                <string>NDTimeSeries.ui ;NDTimeSeries.ui ;NDTimeSeries.ui ;NDTimeSeries.ui ;NDTimeSeries.ui </string>
             </property>
             <property name="args">
                 <string>P=$(P),R=$(R),PLT=$(ROI3)TSMinValue;P=$(P),R=$(R),PLT=$(ROI3)TSMaxValue;P=$(P),R=$(R),PLT=$(ROI3)TSMeanValue;P=$(P),R=$(R),PLT=$(ROI3)TSTotal;P=$(P),R=$(R),PLT=$(ROI3)TSNet</string>
@@ -6313,7 +6323,7 @@ border-radius: 2px;
                 <string>Time series minimum;Time series maximum;Time series mean;Time series total;Time series net</string>
             </property>
             <property name="files">
-                <string>NDTimeSeries.adl;NDTimeSeries.adl;NDTimeSeries.adl;NDTimeSeries.adl;NDTimeSeries.adl</string>
+                <string>NDTimeSeries.ui ;NDTimeSeries.ui ;NDTimeSeries.ui ;NDTimeSeries.ui ;NDTimeSeries.ui </string>
             </property>
             <property name="args">
                 <string>P=$(P),R=$(R),PLT=$(ROI4)TSMinValue;P=$(P),R=$(R),PLT=$(ROI4)TSMaxValue;P=$(P),R=$(R),PLT=$(ROI4)TSMeanValue;P=$(P),R=$(R),PLT=$(ROI4)TSTotal;P=$(P),R=$(R),PLT=$(ROI4)TSNet</string>
@@ -6352,7 +6362,7 @@ border-radius: 2px;
                 <string>Time series minimum;Time series maximum;Time series mean;Time series total;Time series net</string>
             </property>
             <property name="files">
-                <string>NDTimeSeries.adl;NDTimeSeries.adl;NDTimeSeries.adl;NDTimeSeries.adl;NDTimeSeries.adl</string>
+                <string>NDTimeSeries.ui ;NDTimeSeries.ui ;NDTimeSeries.ui ;NDTimeSeries.ui ;NDTimeSeries.ui </string>
             </property>
             <property name="args">
                 <string>P=$(P),R=$(R),PLT=$(ROI5)TSMinValue;P=$(P),R=$(R),PLT=$(ROI5)TSMaxValue;P=$(P),R=$(R),PLT=$(ROI5)TSMeanValue;P=$(P),R=$(R),PLT=$(ROI5)TSTotal;P=$(P),R=$(R),PLT=$(ROI5)TSNet</string>
@@ -6391,7 +6401,7 @@ border-radius: 2px;
                 <string>Time series minimum;Time series maximum;Time series mean;Time series total;Time series net</string>
             </property>
             <property name="files">
-                <string>NDTimeSeries.adl;NDTimeSeries.adl;NDTimeSeries.adl;NDTimeSeries.adl;NDTimeSeries.adl</string>
+                <string>NDTimeSeries.ui ;NDTimeSeries.ui ;NDTimeSeries.ui ;NDTimeSeries.ui ;NDTimeSeries.ui </string>
             </property>
             <property name="args">
                 <string>P=$(P),R=$(R),PLT=$(ROI6)TSMinValue;P=$(P),R=$(R),PLT=$(ROI6)TSMaxValue;P=$(P),R=$(R),PLT=$(ROI6)TSMeanValue;P=$(P),R=$(R),PLT=$(ROI6)TSTotal;P=$(P),R=$(R),PLT=$(ROI6)TSNet</string>
@@ -6430,7 +6440,7 @@ border-radius: 2px;
                 <string>Time series minimum;Time series maximum;Time series mean;Time series total;Time series net</string>
             </property>
             <property name="files">
-                <string>NDTimeSeries.adl;NDTimeSeries.adl;NDTimeSeries.adl;NDTimeSeries.adl;NDTimeSeries.adl</string>
+                <string>NDTimeSeries.ui ;NDTimeSeries.ui ;NDTimeSeries.ui ;NDTimeSeries.ui ;NDTimeSeries.ui </string>
             </property>
             <property name="args">
                 <string>P=$(P),R=$(R),PLT=$(ROI7)TSMinValue;P=$(P),R=$(R),PLT=$(ROI7)TSMaxValue;P=$(P),R=$(R),PLT=$(ROI7)TSMeanValue;P=$(P),R=$(R),PLT=$(ROI7)TSTotal;P=$(P),R=$(R),PLT=$(ROI7)TSNet</string>
@@ -6469,7 +6479,7 @@ border-radius: 2px;
                 <string>Time series minimum;Time series maximum;Time series mean;Time series total;Time series net</string>
             </property>
             <property name="files">
-                <string>NDTimeSeries.adl;NDTimeSeries.adl;NDTimeSeries.adl;NDTimeSeries.adl;NDTimeSeries.adl</string>
+                <string>NDTimeSeries.ui ;NDTimeSeries.ui ;NDTimeSeries.ui ;NDTimeSeries.ui ;NDTimeSeries.ui </string>
             </property>
             <property name="args">
                 <string>P=$(P),R=$(R),PLT=$(ROI8)TSMinValue;P=$(P),R=$(R),PLT=$(ROI8)TSMaxValue;P=$(P),R=$(R),PLT=$(ROI8)TSMeanValue;P=$(P),R=$(R),PLT=$(ROI8)TSTotal;P=$(P),R=$(R),PLT=$(ROI8)TSNet</string>

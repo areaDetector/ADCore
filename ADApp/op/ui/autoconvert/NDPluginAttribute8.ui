@@ -85,6 +85,16 @@ caChoice &gt; QPushButton {
       padding: 1px;
 }
 
+/* when font specified, no font sizing is done any more,  font: 10pt; is not bad. You could Enable this when you converted from .adl files
+caRelatedDisplay  &gt; QPushButton {
+font: 10pt;
+}
+
+caShellCommand  &gt; QPushButton {
+font: 10pt;
+}
+*/
+
 caSlider::groove:horizontal {
 border: 1px solid #bbb;
 background: lightgrey;
@@ -1646,7 +1656,7 @@ border-radius: 2px;
                 <string>Time series</string>
             </property>
             <property name="files">
-                <string>NDStatsTimeSeriesPlot.adl</string>
+                <string>NDStatsTimeSeriesPlot.ui </string>
             </property>
             <property name="args">
                 <string>P=$(P),R=$(R)TS:,RN=$(R)$(A1)TSArrayValue</string>
@@ -1685,7 +1695,7 @@ border-radius: 2px;
                 <string>Time series</string>
             </property>
             <property name="files">
-                <string>NDStatsTimeSeriesPlot.adl</string>
+                <string>NDStatsTimeSeriesPlot.ui </string>
             </property>
             <property name="args">
                 <string>P=$(P),R=$(R)TS:,RN=$(R)$(A2)TSArrayValue</string>
@@ -1724,7 +1734,7 @@ border-radius: 2px;
                 <string>Time series</string>
             </property>
             <property name="files">
-                <string>NDStatsTimeSeriesPlot.adl</string>
+                <string>NDStatsTimeSeriesPlot.ui </string>
             </property>
             <property name="args">
                 <string>P=$(P),R=$(R)TS:,RN=$(R)$(A3)TSArrayValue</string>
@@ -1763,7 +1773,7 @@ border-radius: 2px;
                 <string>Time series</string>
             </property>
             <property name="files">
-                <string>NDStatsTimeSeriesPlot.adl</string>
+                <string>NDStatsTimeSeriesPlot.ui </string>
             </property>
             <property name="args">
                 <string>P=$(P),R=$(R)TS:,RN=$(R)$(A4)TSArrayValue</string>
@@ -1802,7 +1812,7 @@ border-radius: 2px;
                 <string>Time series</string>
             </property>
             <property name="files">
-                <string>NDStatsTimeSeriesPlot.adl</string>
+                <string>NDStatsTimeSeriesPlot.ui </string>
             </property>
             <property name="args">
                 <string>P=$(P),R=$(R)TS:,RN=$(R)$(A5)TSArrayValue</string>
@@ -1841,7 +1851,7 @@ border-radius: 2px;
                 <string>Time series</string>
             </property>
             <property name="files">
-                <string>NDStatsTimeSeriesPlot.adl</string>
+                <string>NDStatsTimeSeriesPlot.ui </string>
             </property>
             <property name="args">
                 <string>P=$(P),R=$(R)TS:,RN=$(R)$(A6)TSArrayValue</string>
@@ -1880,7 +1890,7 @@ border-radius: 2px;
                 <string>Time series</string>
             </property>
             <property name="files">
-                <string>NDStatsTimeSeriesPlot.adl</string>
+                <string>NDStatsTimeSeriesPlot.ui </string>
             </property>
             <property name="args">
                 <string>P=$(P),R=$(R)TS:,RN=$(R)$(A7)TSArrayValue</string>
@@ -1919,7 +1929,7 @@ border-radius: 2px;
                 <string>Time series</string>
             </property>
             <property name="files">
-                <string>NDStatsTimeSeriesPlot.adl</string>
+                <string>NDStatsTimeSeriesPlot.ui </string>
             </property>
             <property name="args">
                 <string>P=$(P),R=$(R)TS:,RN=$(R)$(A8)TSArrayValue</string>
@@ -3268,7 +3278,7 @@ border-radius: 2px;
                     <string>Time series control</string>
                 </property>
                 <property name="files">
-                    <string>NDPluginTimeSeries.adl</string>
+                    <string>NDPluginTimeSeries.ui </string>
                 </property>
                 <property name="args">
                     <string>P=$(P),R=$(R)TS:</string>

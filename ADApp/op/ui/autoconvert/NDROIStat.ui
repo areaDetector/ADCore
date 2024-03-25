@@ -85,6 +85,16 @@ caChoice &gt; QPushButton {
       padding: 1px;
 }
 
+/* when font specified, no font sizing is done any more,  font: 10pt; is not bad. You could Enable this when you converted from .adl files
+caRelatedDisplay  &gt; QPushButton {
+font: 10pt;
+}
+
+caShellCommand  &gt; QPushButton {
+font: 10pt;
+}
+*/
+
 caSlider::groove:horizontal {
 border: 1px solid #bbb;
 background: lightgrey;
@@ -193,7 +203,7 @@ border-radius: 2px;
                 </rect>
             </property>
             <property name="filename">
-                <string>NDPluginBase.adl</string>
+                <string>NDPluginBase.ui</string>
             </property>
             <property name="macro">
                 <string></string>
@@ -867,7 +877,7 @@ border-radius: 2px;
                 <string>ROI 0;ROI 1;ROI 2;ROI 3;ROI 4;ROI 5;ROI 6;ROI 7</string>
             </property>
             <property name="files">
-                <string>NDROIStatN.adl;NDROIStatN.adl;NDROIStatN.adl;NDROIStatN.adl;NDROIStatN.adl;NDROIStatN.adl;NDROIStatN.adl;NDROIStatN.adl</string>
+                <string>NDROIStatN.ui ;NDROIStatN.ui ;NDROIStatN.ui ;NDROIStatN.ui ;NDROIStatN.ui ;NDROIStatN.ui ;NDROIStatN.ui ;NDROIStatN.ui </string>
             </property>
             <property name="args">
                 <string>P=$(P), R=$(R),ROI=1:;P=$(P), R=$(R),ROI=2:;P=$(P), R=$(R),ROI=3:;P=$(P), R=$(R),ROI=4:;P=$(P), R=$(R),ROI=5:;P=$(P), R=$(R),ROI=6:;P=$(P), R=$(R),ROI=7:;P=$(P), R=$(R),ROI=8:</string>
@@ -945,7 +955,7 @@ border-radius: 2px;
                 <string>ROIS 1-8;ROIS 9-16;ROIS 17-24;ROIS 25-32</string>
             </property>
             <property name="files">
-                <string>NDROIStat8.adl;NDROIStat8.adl;NDROIStat8.adl;NDROIStat8.adl</string>
+                <string>NDROIStat8.ui ;NDROIStat8.ui ;NDROIStat8.ui ;NDROIStat8.ui </string>
             </property>
             <property name="args">
                 <string>P=$(P),R=$(R),ROI1=1:,ROI2=2:,ROI3=3:,ROI4=4:,ROI5=5:,ROI6=6:,ROI7=7:,ROI8=8:;P=$(P),R=$(R),ROI1=9:,ROI2=10:,ROI3=11:,ROI4=12:,ROI5=13:,ROI6=14:,ROI7=15:,ROI8=16:,;P=$(P),R=$(R),ROI1=17:,ROI2=18:,ROI3=19:,ROI4=20:,ROI5=21:,ROI6=22:,ROI7=23:,ROI8=24:,;P=$(P),R=$(R),ROI1=25:,ROI2=26:,ROI3=27:,ROI4=28:,ROI5=29:,ROI6=30:,ROI7=31:,ROI8=32:,</string>

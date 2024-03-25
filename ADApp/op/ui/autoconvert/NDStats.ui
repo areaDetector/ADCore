@@ -85,6 +85,16 @@ caChoice &gt; QPushButton {
       padding: 1px;
 }
 
+/* when font specified, no font sizing is done any more,  font: 10pt; is not bad. You could Enable this when you converted from .adl files
+caRelatedDisplay  &gt; QPushButton {
+font: 10pt;
+}
+
+caShellCommand  &gt; QPushButton {
+font: 10pt;
+}
+*/
+
 caSlider::groove:horizontal {
 border: 1px solid #bbb;
 background: lightgrey;
@@ -193,7 +203,7 @@ border-radius: 2px;
                 </rect>
             </property>
             <property name="filename">
-                <string>NDPluginBase.adl</string>
+                <string>NDPluginBase.ui</string>
             </property>
             <property name="macro">
                 <string></string>
@@ -1404,7 +1414,7 @@ border-radius: 2px;
                 <string>Average X;Average Y;Threshold X;Threshold Y;Centroid X;Centroid Y;Cursor X;Cursor Y</string>
             </property>
             <property name="files">
-                <string>NDPlot.adl;NDPlot.adl;NDPlot.adl;NDPlot.adl;NDPlot.adl;NDPlot.adl;NDPlot.adl;NDPlot.adl</string>
+                <string>NDPlot.ui ;NDPlot.ui ;NDPlot.ui ;NDPlot.ui ;NDPlot.ui ;NDPlot.ui ;NDPlot.ui ;NDPlot.ui </string>
             </property>
             <property name="args">
                 <string>P=$(P),R=$(R),DATA=ProfileAverageX_RBV,TITLE=AverageX,XLABEL=Pixel,YLABEL=Counts;P=$(P),R=$(R),DATA=ProfileAverageY_RBV,TITLE=AverageY,XLABEL=Pixel,YLABEL=Counts;P=$(P),R=$(R),DATA=ProfileThresholdX_RBV,TITLE=ThresholdX,XLABEL=Pixel,YLABEL=Counts;P=$(P),R=$(R),DATA=ProfileThresholdY_RBV,TITLE=ThresholdY,XLABEL=Pixel,YLABEL=Counts;P=$(P),R=$(R),DATA=ProfileCentroidX_RBV,TITLE=CentroidX,XLABEL=Pixel,YLABEL=Counts;P=$(P),R=$(R),DATA=ProfileCentroidY_RBV,TITLE=CentroidY,XLABEL=Pixel,YLABEL=Counts;P=$(P),R=$(R),DATA=ProfileCursorX_RBV,TITLE=CursorX,XLABEL=Pixel,YLABEL=Counts;P=$(P),R=$(R),DATA=ProfileCursorY_RBV,TITLE=CursorY,XLABEL=Pixel,YLABEL=Counts</string>
@@ -2379,7 +2389,7 @@ border-radius: 2px;
                 <string>Total;Net;Min;Min X;Min Y;Max;Max X;Max Y;Mean;Sigma;Time stamp;All</string>
             </property>
             <property name="files">
-                <string>NDStatsTimeSeriesPlot.adl;NDStatsTimeSeriesPlot.adl;NDStatsTimeSeriesPlot.adl;NDStatsTimeSeriesPlot.adl;NDStatsTimeSeriesPlot.adl;NDStatsTimeSeriesPlot.adl;NDStatsTimeSeriesPlot.adl;NDStatsTimeSeriesPlot.adl;NDStatsTimeSeriesPlot.adl;NDStatsTimeSeriesPlot.adl;NDStatsTimeSeriesPlot.adl;NDStatsTimeSeriesBasicAll.adl</string>
+                <string>NDStatsTimeSeriesPlot.ui ;NDStatsTimeSeriesPlot.ui ;NDStatsTimeSeriesPlot.ui ;NDStatsTimeSeriesPlot.ui ;NDStatsTimeSeriesPlot.ui ;NDStatsTimeSeriesPlot.ui ;NDStatsTimeSeriesPlot.ui ;NDStatsTimeSeriesPlot.ui ;NDStatsTimeSeriesPlot.ui ;NDStatsTimeSeriesPlot.ui ;NDStatsTimeSeriesPlot.ui ;NDStatsTimeSeriesBasicAll.ui </string>
             </property>
             <property name="args">
                 <string>P=$(P),R=$(R)TS:,RN=$(R)TSTotal;P=$(P),R=$(R)TS:,RN=$(R)TSNet;P=$(P),R=$(R)TS:,RN=$(R)TSMinValue;P=$(P),R=$(R)TS:,RN=$(R)TSMinX;P=$(P),R=$(R)TS:,RN=$(R)TSMinY;P=$(P),R=$(R)TS:,RN=$(R)TSMaxValue;P=$(P),R=$(R)TS:,RN=$(R)TSMaxX;P=$(P),R=$(R)TS:,RN=$(R)TSMaxY;P=$(P),R=$(R)TS:,RN=$(R)TSMeanValue;P=$(P),R=$(R)TS:,RN=$(R)TSSigma;P=$(P),R=$(R)TS:,RN=$(R)TSTimestamp;P=$(P),R=$(R)</string>
@@ -4370,7 +4380,7 @@ border-radius: 2px;
                 <string>Total;Centroid X;Centroid Y;Sigma X;Sigma Y;Skewness X;Skewness Y;Kurtosis X;Kurtosis Y;Sigma XY;Eccentricity;Orientation;All</string>
             </property>
             <property name="files">
-                <string>NDStatsTimeSeriesPlot.adl;NDStatsTimeSeriesPlot.adl;NDStatsTimeSeriesPlot.adl;NDStatsTimeSeriesPlot.adl;NDStatsTimeSeriesPlot.adl;NDStatsTimeSeriesPlot.adl;NDStatsTimeSeriesPlot.adl;NDStatsTimeSeriesPlot.adl;NDStatsTimeSeriesPlot.adl;NDStatsTimeSeriesPlot.adl;NDStatsTimeSeriesPlot.adl;NDStatsTimeSeriesPlot.adl;NDStatsTimeSeriesCentroidAll.adl</string>
+                <string>NDStatsTimeSeriesPlot.ui ;NDStatsTimeSeriesPlot.ui ;NDStatsTimeSeriesPlot.ui ;NDStatsTimeSeriesPlot.ui ;NDStatsTimeSeriesPlot.ui ;NDStatsTimeSeriesPlot.ui ;NDStatsTimeSeriesPlot.ui ;NDStatsTimeSeriesPlot.ui ;NDStatsTimeSeriesPlot.ui ;NDStatsTimeSeriesPlot.ui ;NDStatsTimeSeriesPlot.ui ;NDStatsTimeSeriesPlot.ui ;NDStatsTimeSeriesCentroidAll.ui </string>
             </property>
             <property name="args">
                 <string>P=$(P),R=$(R)TS:,RN=$(R)TSCentroidTotal;P=$(P),R=$(R)TS:,RN=$(R)TSCentroidX;P=$(P),R=$(R)TS:,RN=$(R)TSCentroidY;P=$(P),R=$(R)TS:,RN=$(R)TSSigmaX;P=$(P),R=$(R)TS:,RN=$(R)TSSigmaY;P=$(P),R=$(R)TS:,RN=$(R)TSSkewX;P=$(P),R=$(R)TS:,RN=$(R)TSSkewY;P=$(P),R=$(R)TS:,RN=$(R)TSKurtosisX;P=$(P),R=$(R)TS:,RN=$(R)TSKurtosisY;P=$(P),R=$(R)TS:,RN=$(R)TSSigmaXY;P=$(P),R=$(R)TS:,RN=$(R)TSEccentricity;P=$(P),R=$(R)TS:,RN=$(R)TSOrientation;P=$(P),R=$(R)</string>
@@ -4895,7 +4905,7 @@ border-radius: 2px;
                 <string>Histogram plot</string>
             </property>
             <property name="files">
-                <string>NDPlotXY.adl</string>
+                <string>NDPlotXY.ui </string>
             </property>
             <property name="args">
                 <string>P=$(P),R=$(R),XDATA=HistogramX_RBV,YDATA=Histogram_RBV,TITLE=Histogram,XLABEL=Intensity,YLABEL=Counts</string>
@@ -5121,7 +5131,7 @@ border-radius: 2px;
                     <string>Reset;Reset1;Reset2</string>
                 </property>
                 <property name="files">
-                    <string>yySseq_full.adl;yySseq_full.adl;yySseq_full.adl</string>
+                    <string>yySseq_full.ui ;yySseq_full.ui ;yySseq_full.ui </string>
                 </property>
                 <property name="args">
                     <string>P=$(P),S=$(R)Reset;P=$(P),S=$(R)Reset1;P=$(P),S=$(R)Reset2</string>
@@ -5795,7 +5805,7 @@ border-radius: 2px;
                 <string>Time series control</string>
             </property>
             <property name="files">
-                <string>NDPluginTimeSeries.adl</string>
+                <string>NDPluginTimeSeries.ui </string>
             </property>
             <property name="args">
                 <string>P=$(P),R=$(R)TS:</string>

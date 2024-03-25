@@ -85,6 +85,16 @@ caChoice &gt; QPushButton {
       padding: 1px;
 }
 
+/* when font specified, no font sizing is done any more,  font: 10pt; is not bad. You could Enable this when you converted from .adl files
+caRelatedDisplay  &gt; QPushButton {
+font: 10pt;
+}
+
+caShellCommand  &gt; QPushButton {
+font: 10pt;
+}
+*/
+
 caSlider::groove:horizontal {
 border: 1px solid #bbb;
 background: lightgrey;
@@ -341,16 +351,16 @@ border-radius: 2px;
                 <enum>Menu</enum>
             </property>
             <property name="labels">
-                <string>netCDF file #1;TIFF file #1;JPEG file #1;NeXus file #1;Magick file #1;HDF5 file #1;Null file #1</string>
+                <string>netCDF file #1;TIFF file #1;JPEG file #1;NeXus file #1;Magick file #1;HDF5 file #1;Null file #1;JRaw file #1;JRaw file #2</string>
             </property>
             <property name="files">
-                <string>NDFileNetCDF.adl;NDFileTIFF.adl;NDFileJPEG.adl;NDFileNexus.adl;NDFileMagick.adl;NDFileHDF5.adl;NDFileNull.adl</string>
+                <string>NDFileNetCDF.ui ;NDFileTIFF.ui ;NDFileJPEG.ui ;NDFileNexus.ui ;NDFileMagick.ui ;NDFileHDF5.ui ;NDFileNull.ui ;NDFileJRaw.ui ;NDFileJRaw.ui </string>
             </property>
             <property name="args">
-                <string>P=$(P), R=netCDF1:, EXT=nc;P=$(P), R=TIFF1:, EXT=tif;P=$(P), R=JPEG1:, EXT=jpg;P=$(P), R=Nexus1:, EXT=h5;P=$(P), R=Magick1:, EXT=tif;P=$(P), R=HDF1:, EXT=h5;P=$(P), R=Null1:, EXT=null</string>
+                <string>P=$(P), R=netCDF1:, EXT=nc;P=$(P), R=TIFF1:, EXT=tif;P=$(P), R=JPEG1:, EXT=jpg;P=$(P), R=Nexus1:, EXT=h5;P=$(P), R=Magick1:, EXT=tif;P=$(P), R=HDF1:, EXT=h5;P=$(P), R=Null1:, EXT=null;P=$(P), R=JRaw1:, EXT=jraw;P=$(P), R=JRaw2:, EXT=jraw</string>
             </property>
             <property name="removeParent">
-                <string>false;false;false;false;false;false;false</string>
+                <string>false;false;false;false;false;false;false;false;false</string>
             </property>
         </widget>
         <widget class="caRelatedDisplay" name="caRelatedDisplay_1">
@@ -383,7 +393,7 @@ border-radius: 2px;
                 <string>ROI #1;ROI #2;ROI #3;ROI #4;ROI 1-4 combined</string>
             </property>
             <property name="files">
-                <string>NDROI.adl;NDROI.adl;NDROI.adl;NDROI.adl;NDROI4.adl</string>
+                <string>NDROI.ui ;NDROI.ui ;NDROI.ui ;NDROI.ui ;NDROI4.ui </string>
             </property>
             <property name="args">
                 <string>P=$(P), R=ROI1:;P=$(P), R=ROI2:;P=$(P), R=ROI3:;P=$(P), R=ROI4:;P=$(P), R1=ROI1:,R2=ROI2:, R3=ROI3:,R4=ROI4:</string>
@@ -425,7 +435,7 @@ border-radius: 2px;
                 <string>Common plugins</string>
             </property>
             <property name="files">
-                <string>commonPlugins.adl</string>
+                <string>commonPlugins.ui </string>
             </property>
             <property name="args">
                 <string>P=$(P)</string>
@@ -500,7 +510,7 @@ border-radius: 2px;
                 <string>Statistics #1;Statistics #2;Statistics #3;Statistics #4;Statistics #5;Statistics 1-5</string>
             </property>
             <property name="files">
-                <string>NDStats.adl;NDStats.adl;NDStats.adl;NDStats.adl;NDStats.adl;NDStats5.adl</string>
+                <string>NDStats.ui ;NDStats.ui ;NDStats.ui ;NDStats.ui ;NDStats.ui ;NDStats5.ui </string>
             </property>
             <property name="args">
                 <string>P=$(P), R=Stats1:;P=$(P), R=Stats2:;P=$(P), R=Stats3:;P=$(P), R=Stats4:;P=$(P), R=Stats5:;P=$(P), R1=Stats1:,R2=Stats2:,R3=Stats3:,R4=Stats4:,R5=Stats5:</string>
@@ -542,7 +552,7 @@ border-radius: 2px;
                 <string>Image #1;Pva #1;Process #1;Transform #1;Color convert #1;Color convert #2;Overlay #1;Overlays 1-8;Circular buffer #1;ROI Statistics #1;Attribute #1;FFT #1;Scatter #1;Gather #1;Codec #1;Codec #2</string>
             </property>
             <property name="files">
-                <string>NDStdArrays.adl;NDPva.adl;NDProcess.adl;NDTransform.adl;NDColorConvert.adl;NDColorConvert.adl;NDOverlay.adl;NDOverlay8.adl;NDCircularBuff.adl;NDROIStat.adl;NDPluginAttribute.adl;NDFFT.adl;NDScatter.adl;NDGather8.adl;NDCodec.adl;NDCodec.adl</string>
+                <string>NDStdArrays.ui ;NDPva.ui ;NDProcess.ui ;NDTransform.ui ;NDColorConvert.ui ;NDColorConvert.ui ;NDOverlay.ui ;NDOverlay8.ui ;NDCircularBuff.ui ;NDROIStat.ui ;NDPluginAttribute.ui ;NDFFT.ui ;NDScatter.ui ;NDGather8.ui ;NDCodec.ui ;NDCodec.ui </string>
             </property>
             <property name="args">
                 <string>P=$(P), R=image1:;P=$(P), R=Pva1:;P=$(P), R=Proc1:;P=$(P), R=Trans1:;P=$(P), R=CC1:;P=$(P), R=CC2:;P=$(P), R=Over1:;P=$(P), R=Over1:,O1=Over1:1:,O2=Over1:2:,O3=Over1:3:,O4=Over1:4:,O5=Over1:5:,O6=Over1:6:,O7=Over1:7:,O8=Over1:8:;P=$(P), R=CB1:;P=$(P), R=ROIStat1:;P=$(P), R=Attr1:;P=$(P), R=FFT1:;P=$(P), R=Scatter1:;P=$(P), R=Gather1:;P=$(P), R=Codec1:;P=$(P), R=Codec2:</string>
@@ -584,7 +594,7 @@ border-radius: 2px;
                 <string>Image #2;Scan #1;Acquire Sequence;devIocStats;Open CV #1;Edge #1;Bad Pixel #1;AS configMenu</string>
             </property>
             <property name="files">
-                <string>NDStdArrays.adl;scan_more.adl;yySseq.adl;ioc_stats_soft.adl;ADCompVision.adl;NDPluginEdge.adl;NDBadPixel.adl;configMenu.adl</string>
+                <string>NDStdArrays.ui ;scan_more.ui ;yySseq.ui ;ioc_stats_soft.ui ;ADCompVision.ui ;NDPluginEdge.ui ;NDBadPixel.ui ;configMenu.ui </string>
             </property>
             <property name="args">
                 <string>P=$(P), R=image2:;P=$(P), S=scan1, N=1;P=$(P), S=AcquireSequence;ioc=$(P);P=$(P), R=CV1:;P=$(P), R=Edge1:;P=$(P), R=BadPix1:;P=$(P), CONFIG=ADAutoSave</string>

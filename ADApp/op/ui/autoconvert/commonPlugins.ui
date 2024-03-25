@@ -85,6 +85,16 @@ caChoice &gt; QPushButton {
       padding: 1px;
 }
 
+/* when font specified, no font sizing is done any more,  font: 10pt; is not bad. You could Enable this when you converted from .adl files
+caRelatedDisplay  &gt; QPushButton {
+font: 10pt;
+}
+
+caShellCommand  &gt; QPushButton {
+font: 10pt;
+}
+*/
+
 caSlider::groove:horizontal {
 border: 1px solid #bbb;
 background: lightgrey;
@@ -697,7 +707,7 @@ border-radius: 2px;
                 <string>image1:</string>
             </property>
             <property name="files">
-                <string>NDStdArrays.adl</string>
+                <string>NDStdArrays.ui </string>
             </property>
             <property name="args">
                 <string>P=$(P),R=image1:</string>
@@ -4522,7 +4532,7 @@ border-radius: 2px;
                 <string>Proc1:</string>
             </property>
             <property name="files">
-                <string>NDProcess.adl</string>
+                <string>NDProcess.ui </string>
             </property>
             <property name="args">
                 <string>P=$(P),R=Proc1:</string>
@@ -4618,7 +4628,7 @@ border-radius: 2px;
                 <string>Trans1:</string>
             </property>
             <property name="files">
-                <string>NDTransform.adl</string>
+                <string>NDTransform.ui </string>
             </property>
             <property name="args">
                 <string>P=$(P),R=Trans1:</string>
@@ -4714,7 +4724,7 @@ border-radius: 2px;
                 <string>CC1:</string>
             </property>
             <property name="files">
-                <string>NDColorConvert.adl</string>
+                <string>NDColorConvert.ui </string>
             </property>
             <property name="args">
                 <string>P=$(P),R=CC1:</string>
@@ -4810,7 +4820,7 @@ border-radius: 2px;
                 <string>CC2:</string>
             </property>
             <property name="files">
-                <string>NDColorConvert.adl</string>
+                <string>NDColorConvert.ui </string>
             </property>
             <property name="args">
                 <string>P=$(P),R=CC2:</string>
@@ -4906,7 +4916,7 @@ border-radius: 2px;
                 <string>Over1:</string>
             </property>
             <property name="files">
-                <string>NDOverlay.adl</string>
+                <string>NDOverlay.ui </string>
             </property>
             <property name="args">
                 <string>P=$(P),R=Over1:</string>
@@ -5002,7 +5012,7 @@ border-radius: 2px;
                 <string>ROI1:</string>
             </property>
             <property name="files">
-                <string>NDROI.adl</string>
+                <string>NDROI.ui </string>
             </property>
             <property name="args">
                 <string>P=$(P),R=ROI1:</string>
@@ -5098,7 +5108,7 @@ border-radius: 2px;
                 <string>ROI2:</string>
             </property>
             <property name="files">
-                <string>NDROI.adl</string>
+                <string>NDROI.ui </string>
             </property>
             <property name="args">
                 <string>P=$(P),R=ROI2:</string>
@@ -5194,7 +5204,7 @@ border-radius: 2px;
                 <string>ROI3:</string>
             </property>
             <property name="files">
-                <string>NDROI.adl</string>
+                <string>NDROI.ui </string>
             </property>
             <property name="args">
                 <string>P=$(P),R=ROI3:</string>
@@ -5290,7 +5300,7 @@ border-radius: 2px;
                 <string>ROI4:</string>
             </property>
             <property name="files">
-                <string>NDROI.adl</string>
+                <string>NDROI.ui </string>
             </property>
             <property name="args">
                 <string>P=$(P),R=ROI4:</string>
@@ -5386,7 +5396,7 @@ border-radius: 2px;
                 <string>Stats1:</string>
             </property>
             <property name="files">
-                <string>NDStats.adl</string>
+                <string>NDStats.ui </string>
             </property>
             <property name="args">
                 <string>P=$(P),R=Stats1:</string>
@@ -5482,7 +5492,7 @@ border-radius: 2px;
                 <string>Stats2:</string>
             </property>
             <property name="files">
-                <string>NDStats.adl</string>
+                <string>NDStats.ui </string>
             </property>
             <property name="args">
                 <string>P=$(P),R=Stats2:</string>
@@ -5578,7 +5588,7 @@ border-radius: 2px;
                 <string>Stats3:</string>
             </property>
             <property name="files">
-                <string>NDStats.adl</string>
+                <string>NDStats.ui </string>
             </property>
             <property name="args">
                 <string>P=$(P),R=Stats3:</string>
@@ -5674,7 +5684,7 @@ border-radius: 2px;
                 <string>Stats4:</string>
             </property>
             <property name="files">
-                <string>NDStats.adl</string>
+                <string>NDStats.ui </string>
             </property>
             <property name="args">
                 <string>P=$(P),R=Stats4:</string>
@@ -7447,7 +7457,7 @@ border-radius: 2px;
                 <string>Stats5:</string>
             </property>
             <property name="files">
-                <string>NDStats.adl</string>
+                <string>NDStats.ui </string>
             </property>
             <property name="args">
                 <string>P=$(P),R=Stats5:</string>
@@ -7924,7 +7934,7 @@ border-radius: 2px;
                 <string>ROI Statistics #1</string>
             </property>
             <property name="files">
-                <string>NDROIStat.adl</string>
+                <string>NDROIStat.ui </string>
             </property>
             <property name="args">
                 <string>P=$(P),R=ROIStat1:</string>
@@ -8401,7 +8411,7 @@ border-radius: 2px;
                 <string>CB1:</string>
             </property>
             <property name="files">
-                <string>NDCircularBuff.adl</string>
+                <string>NDCircularBuff.ui </string>
             </property>
             <property name="args">
                 <string>P=$(P),R=CB1:</string>
@@ -8878,7 +8888,7 @@ border-radius: 2px;
                 <string>Scatter1:</string>
             </property>
             <property name="files">
-                <string>NDScatter.adl</string>
+                <string>NDScatter.ui </string>
             </property>
             <property name="args">
                 <string>P=$(P),R=Scatter1:</string>
@@ -9355,7 +9365,7 @@ border-radius: 2px;
                 <string>Gather1:</string>
             </property>
             <property name="files">
-                <string>NDGather8.adl</string>
+                <string>NDGather8.ui </string>
             </property>
             <property name="args">
                 <string>P=$(P),R=Gather1:</string>
@@ -9832,7 +9842,7 @@ border-radius: 2px;
                 <string>Attr1:;Attributes 1-8</string>
             </property>
             <property name="files">
-                <string>NDPluginAttribute.adl;NDPluginAttribute8.adl</string>
+                <string>NDPluginAttribute.ui ;NDPluginAttribute8.ui </string>
             </property>
             <property name="args">
                 <string>P=$(P),R=Attr1:;P=$(P),R=Attr1:,A1=1:,A2=2:,A3=3:,A4=4:,A5=5:,A6=6:,A7=7:,A8=8:</string>
@@ -10309,7 +10319,7 @@ border-radius: 2px;
                 <string>Pva1:</string>
             </property>
             <property name="files">
-                <string>NDPva.adl</string>
+                <string>NDPva.ui </string>
             </property>
             <property name="args">
                 <string>P=$(P),R=Pva1:,EXT=null</string>
@@ -10786,7 +10796,7 @@ border-radius: 2px;
                 <string>FFT1:</string>
             </property>
             <property name="files">
-                <string>NDFFT.adl</string>
+                <string>NDFFT.ui </string>
             </property>
             <property name="args">
                 <string>P=$(P),R=FFT1:</string>
@@ -11263,7 +11273,7 @@ border-radius: 2px;
                 <string>Codec1:</string>
             </property>
             <property name="files">
-                <string>NDCodec.adl</string>
+                <string>NDCodec.ui </string>
             </property>
             <property name="args">
                 <string>P=$(P),R=Codec1:</string>
@@ -12832,7 +12842,7 @@ border-radius: 2px;
                 <string>netCDF1:</string>
             </property>
             <property name="files">
-                <string>NDFileNetCDF.adl</string>
+                <string>NDFileNetCDF.ui </string>
             </property>
             <property name="args">
                 <string>P=$(P),R=netCDF1:,EXT=nc</string>
@@ -12928,7 +12938,7 @@ border-radius: 2px;
                 <string>TIFF1:</string>
             </property>
             <property name="files">
-                <string>NDFileTIFF.adl</string>
+                <string>NDFileTIFF.ui </string>
             </property>
             <property name="args">
                 <string>P=$(P),R=TIFF1:,EXT=tif</string>
@@ -13024,7 +13034,7 @@ border-radius: 2px;
                 <string>JPEG1:</string>
             </property>
             <property name="files">
-                <string>NDFileJPEG.adl</string>
+                <string>NDFileJPEG.ui </string>
             </property>
             <property name="args">
                 <string>P=$(P),R=JPEG1:,EXT=jpg</string>
@@ -13120,7 +13130,7 @@ border-radius: 2px;
                 <string>Nexus1:</string>
             </property>
             <property name="files">
-                <string>NDFileNexus.adl</string>
+                <string>NDFileNexus.ui </string>
             </property>
             <property name="args">
                 <string>P=$(P),R=Nexus1:,EXT=h5</string>
@@ -13216,7 +13226,7 @@ border-radius: 2px;
                 <string>Magick1:</string>
             </property>
             <property name="files">
-                <string>NDFileMagick.adl</string>
+                <string>NDFileMagick.ui </string>
             </property>
             <property name="args">
                 <string>P=$(P),R=Magick1:,EXT=tif</string>
@@ -14125,7 +14135,7 @@ border-radius: 2px;
                 <string>HDF1:</string>
             </property>
             <property name="files">
-                <string>NDFileHDF5.adl</string>
+                <string>NDFileHDF5.ui </string>
             </property>
             <property name="args">
                 <string>P=$(P),R=HDF1:,EXT=h5</string>
@@ -14602,7 +14612,7 @@ border-radius: 2px;
                 <string>Codec2:</string>
             </property>
             <property name="files">
-                <string>NDCodec.adl</string>
+                <string>NDCodec.ui </string>
             </property>
             <property name="args">
                 <string>P=$(P),R=Codec2:</string>
@@ -15079,7 +15089,7 @@ border-radius: 2px;
                 <string>Bad Pixel 1</string>
             </property>
             <property name="files">
-                <string>NDBadPixel.adl</string>
+                <string>NDBadPixel.ui </string>
             </property>
             <property name="args">
                 <string>P=$(P),R=BadPix1:</string>

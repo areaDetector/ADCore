@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--Saved on 2024-03-25 15:22:20 by epics-->
 <display version="2.0.0">
   <name>ADBuffers</name>
   <x>603</x>
@@ -51,10 +52,10 @@
   </widget>
   <widget type="label" version="2.0.0">
     <name>text #15</name>
-    <text>Buffers used</text>
-    <x>50</x>
+    <text>Pre-allocate</text>
+    <x>10</x>
     <y>30</y>
-    <width>160</width>
+    <width>120</width>
     <font>
       <font family="Liberation Sans" style="REGULAR" size="16.0">
       </font>
@@ -64,8 +65,8 @@
   <widget type="textupdate" version="2.0.0">
     <name>text update #18</name>
     <pv_name>$(P)$(R)PoolUsedBuffers</pv_name>
-    <x>215</x>
-    <y>31</y>
+    <x>165</x>
+    <y>56</y>
     <width>50</width>
     <height>18</height>
     <font>
@@ -87,10 +88,10 @@
   </widget>
   <widget type="label" version="2.0.0">
     <name>text #22</name>
-    <text>Buffers alloc/free</text>
-    <x>30</x>
+    <text>Used/Alloc/Free</text>
+    <x>10</x>
     <y>55</y>
-    <width>180</width>
+    <width>150</width>
     <font>
       <font family="Liberation Sans" style="REGULAR" size="16.0">
       </font>
@@ -100,7 +101,7 @@
   <widget type="textupdate" version="2.0.0">
     <name>text update #25</name>
     <pv_name>$(P)$(R)PoolAllocBuffers</pv_name>
-    <x>215</x>
+    <x>220</x>
     <y>56</y>
     <width>50</width>
     <height>18</height>
@@ -124,7 +125,7 @@
   <widget type="textupdate" version="2.0.0">
     <name>text update #29</name>
     <pv_name>$(P)$(R)PoolFreeBuffers</pv_name>
-    <x>270</x>
+    <x>275</x>
     <y>56</y>
     <width>50</width>
     <height>18</height>
@@ -162,7 +163,7 @@
   </widget>
   <widget type="combo" version="2.0.0">
     <name>menu #36</name>
-    <pv_name>$(P)$(R)PoolUsedMem.SCAN</pv_name>
+    <pv_name>$(P)$(R)PoolPollStats.SCAN</pv_name>
     <x>245</x>
     <y>105</y>
     <width>90</width>
@@ -271,6 +272,43 @@
     <x>215</x>
     <y>130</y>
     <width>83</width>
+    <height>20</height>
+    <background_color>
+      <color red="115" green="223" blue="255">
+      </color>
+    </background_color>
+  </widget>
+  <widget type="textentry" version="3.0.0">
+    <name>text entry #59</name>
+    <pv_name>$(P)$(R)NumPreAllocBuffers</pv_name>
+    <x>135</x>
+    <y>30</y>
+    <font>
+      <font family="Liberation Sans" style="REGULAR" size="16.0">
+      </font>
+    </font>
+    <background_color>
+      <color red="115" green="223" blue="255">
+      </color>
+    </background_color>
+    <format>1</format>
+    <show_units>false</show_units>
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+  </widget>
+  <widget type="action_button" version="3.0.0">
+    <name>message button #63</name>
+    <actions>
+      <action type="write_pv">
+        <pv_name>$(P)$(R)PreAllocBuffers</pv_name>
+        <value>1</value>
+        <description>Write</description>
+      </action>
+    </actions>
+    <pv_name>$(P)$(R)PreAllocBuffers</pv_name>
+    <text>Allocate</text>
+    <x>240</x>
+    <y>30</y>
+    <width>81</width>
     <height>20</height>
     <background_color>
       <color red="115" green="223" blue="255">

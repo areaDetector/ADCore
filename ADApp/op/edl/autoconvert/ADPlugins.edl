@@ -167,8 +167,8 @@ topShadowColor rgb 55808 55808 55808
 botShadowColor rgb 17920 17920 17920
 font "helvetica-medium-r-8.0"
 icon
-numPvs 14
-numDsps 7
+numPvs 18
+numDsps 9
 displayFileName {
   0 "NDFileNetCDF.edl"
   1 "NDFileTIFF.edl"
@@ -177,6 +177,8 @@ displayFileName {
   4 "NDFileMagick.edl"
   5 "NDFileHDF5.edl"
   6 "NDFileNull.edl"
+  7 "NDFileJRaw.edl"
+  8 "NDFileJRaw.edl"
 }
 menuLabel {
   0 "netCDF file #1"
@@ -186,6 +188,8 @@ menuLabel {
   4 "Magick file #1"
   5 "HDF5 file #1"
   6 "Null file #1"
+  7 "JRaw file #1"
+  8 "JRaw file #2"
 }
 symbols {
   0 "P=$(P),R=netCDF1:,EXT=nc"
@@ -195,6 +199,8 @@ symbols {
   4 "P=$(P),R=Magick1:,EXT=tif"
   5 "P=$(P),R=HDF1:,EXT=h5"
   6 "P=$(P),R=Null1:,EXT=null"
+  7 "P=$(P),R=JRaw1:,EXT=jraw"
+  8 "P=$(P),R=JRaw2:,EXT=jraw"
 }
 replaceSymbols {
   0 1
@@ -204,6 +210,8 @@ replaceSymbols {
   4 1
   5 1
   6 1
+  7 1
+  8 1
 }
 endObjectProperties
 

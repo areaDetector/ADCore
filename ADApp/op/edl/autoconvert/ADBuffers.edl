@@ -84,9 +84,9 @@ beginObjectProperties
 major 4
 minor 1
 release 1
-x 50
+x 10
 y 30
-w 160
+w 120
 h 20
 font "helvetica-medium-r-14.0"
 fontAlign "right"
@@ -94,7 +94,7 @@ fgColor rgb 0 0 0
 bgColor index 3
 useDisplayBg
 value {
-  "Buffers used"
+  "Pre-allocate"
 }
 endObjectProperties
 
@@ -104,8 +104,8 @@ beginObjectProperties
 major 4
 minor 7
 release 0
-x 215
-y 31
+x 165
+y 56
 w 50
 h 18
 controlPv "$(P)$(R)PoolUsedBuffers"
@@ -128,9 +128,9 @@ beginObjectProperties
 major 4
 minor 1
 release 1
-x 30
+x 10
 y 55
-w 180
+w 150
 h 20
 font "helvetica-medium-r-14.0"
 fontAlign "right"
@@ -138,7 +138,7 @@ fgColor rgb 0 0 0
 bgColor index 3
 useDisplayBg
 value {
-  "Buffers alloc/free"
+  "Used/Alloc/Free"
 }
 endObjectProperties
 
@@ -148,7 +148,7 @@ beginObjectProperties
 major 4
 minor 7
 release 0
-x 215
+x 220
 y 56
 w 50
 h 18
@@ -172,7 +172,7 @@ beginObjectProperties
 major 4
 minor 7
 release 0
-x 270
+x 275
 y 56
 w 50
 h 18
@@ -312,6 +312,32 @@ value {
   "Empty free list"
 }
 endObjectProperties
+
+# (Text Control)
+object activeXTextDspClass
+beginObjectProperties
+major 4
+minor 7
+release 0
+x 135
+y 30
+w 100
+h 20
+controlPv "$(P)$(R)NumPreAllocBuffers"
+format "decimal"
+font "helvetica-medium-r-12.0"
+fontAlign "left"
+fgColor rgb 0 0 0
+bgColor rgb 29440 57088 65280
+editable
+motifWidget
+limitsFromDb
+nullColor rgb 60928 46592 11008
+smartRefresh
+fastUpdate
+newPos
+objType "controls"
+endObjectProperties
 # (Group)
 object activeGroupClass
 beginObjectProperties
@@ -345,8 +371,8 @@ bgColor rgb 29440 57088 65280
 inconsistentColor rgb 17920 17920 17920
 topShadowColor rgb 55808 55808 55808
 botShadowColor rgb 17920 17920 17920
-controlPv "$(P)$(R)PoolUsedMem.SCAN"
-indicatorPv "$(P)$(R)PoolUsedMem.SCAN"
+controlPv "$(P)$(R)PoolPollStats.SCAN"
+indicatorPv "$(P)$(R)PoolPollStats.SCAN"
 font "helvetica-medium-r-12.0"
 endObjectProperties
 
@@ -370,6 +396,31 @@ pressValue "1"
 releaseValue 
 onLabel "Empty"
 offLabel "Empty"
+3d
+useEnumNumeric
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 240
+y 30
+w 81
+h 20
+fgColor rgb 0 0 0
+onColor rgb 29440 57088 65280
+offColor rgb 29440 57088 65280
+topShadowColor rgb 65280 65280 65280
+botShadowColor rgb 0 0 0
+controlPv "$(P)$(R)PreAllocBuffers"
+pressValue "1"
+releaseValue 
+onLabel "Allocate"
+offLabel "Allocate"
 3d
 useEnumNumeric
 font "helvetica-medium-r-12.0"

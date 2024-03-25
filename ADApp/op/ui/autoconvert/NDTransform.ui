@@ -85,6 +85,16 @@ caChoice &gt; QPushButton {
       padding: 1px;
 }
 
+/* when font specified, no font sizing is done any more,  font: 10pt; is not bad. You could Enable this when you converted from .adl files
+caRelatedDisplay  &gt; QPushButton {
+font: 10pt;
+}
+
+caShellCommand  &gt; QPushButton {
+font: 10pt;
+}
+*/
+
 caSlider::groove:horizontal {
 border: 1px solid #bbb;
 background: lightgrey;
@@ -193,7 +203,7 @@ border-radius: 2px;
                 </rect>
             </property>
             <property name="filename">
-                <string>NDPluginBase.adl</string>
+                <string>NDPluginBase.ui</string>
             </property>
             <property name="macro">
                 <string></string>
@@ -348,7 +358,7 @@ border-radius: 2px;
                     <enum>Solid</enum>
                 </property>
                 <property name="xyPairs">
-                    <string>1,18;</string>
+                    <string>1,1;1,18;</string>
                 </property>
             </widget>
             <widget class="caPolyLine" name="caPolyLine_1">
@@ -388,7 +398,7 @@ border-radius: 2px;
                     <enum>Solid</enum>
                 </property>
                 <property name="xyPairs">
-                    <string>1,1;</string>
+                    <string>12,1;1,1;</string>
                 </property>
             </widget>
             <widget class="caPolyLine" name="caPolyLine_2">
@@ -428,7 +438,7 @@ border-radius: 2px;
                     <enum>Solid</enum>
                 </property>
                 <property name="xyPairs">
-                    <string>1,1;</string>
+                    <string>11,1;1,1;</string>
                 </property>
             </widget>
         </widget>
@@ -478,7 +488,7 @@ border-radius: 2px;
                     <enum>Solid</enum>
                 </property>
                 <property name="xyPairs">
-                    <string>18,1;</string>
+                    <string>1,1;18,1;</string>
                 </property>
             </widget>
             <widget class="caPolyLine" name="caPolyLine_4">
@@ -518,7 +528,7 @@ border-radius: 2px;
                     <enum>Solid</enum>
                 </property>
                 <property name="xyPairs">
-                    <string>1,12;</string>
+                    <string>1,1;1,12;</string>
                 </property>
             </widget>
             <widget class="caPolyLine" name="caPolyLine_5">
@@ -558,7 +568,7 @@ border-radius: 2px;
                     <enum>Solid</enum>
                 </property>
                 <property name="xyPairs">
-                    <string>1,11;</string>
+                    <string>1,1;1,11;</string>
                 </property>
             </widget>
         </widget>
@@ -608,7 +618,7 @@ border-radius: 2px;
                     <enum>Solid</enum>
                 </property>
                 <property name="xyPairs">
-                    <string>1,1;</string>
+                    <string>1,18;1,1;</string>
                 </property>
             </widget>
             <widget class="caPolyLine" name="caPolyLine_7">
@@ -648,7 +658,7 @@ border-radius: 2px;
                     <enum>Solid</enum>
                 </property>
                 <property name="xyPairs">
-                    <string>12,1;</string>
+                    <string>1,1;12,1;</string>
                 </property>
             </widget>
             <widget class="caPolyLine" name="caPolyLine_8">
@@ -688,7 +698,7 @@ border-radius: 2px;
                     <enum>Solid</enum>
                 </property>
                 <property name="xyPairs">
-                    <string>11,1;</string>
+                    <string>1,1;11,1;</string>
                 </property>
             </widget>
         </widget>
@@ -738,7 +748,7 @@ border-radius: 2px;
                     <enum>Solid</enum>
                 </property>
                 <property name="xyPairs">
-                    <string>1,1;</string>
+                    <string>18,1;1,1;</string>
                 </property>
             </widget>
             <widget class="caPolyLine" name="caPolyLine_10">
@@ -778,7 +788,7 @@ border-radius: 2px;
                     <enum>Solid</enum>
                 </property>
                 <property name="xyPairs">
-                    <string>1,1;</string>
+                    <string>1,12;1,1;</string>
                 </property>
             </widget>
             <widget class="caPolyLine" name="caPolyLine_11">
@@ -818,7 +828,7 @@ border-radius: 2px;
                     <enum>Solid</enum>
                 </property>
                 <property name="xyPairs">
-                    <string>1,1;</string>
+                    <string>1,11;1,1;</string>
                 </property>
             </widget>
         </widget>
@@ -1156,7 +1166,7 @@ border-radius: 2px;
                     <enum>Solid</enum>
                 </property>
                 <property name="xyPairs">
-                    <string>1,18;</string>
+                    <string>1,1;1,18;</string>
                 </property>
             </widget>
             <widget class="caPolyLine" name="caPolyLine_13">
@@ -1196,7 +1206,7 @@ border-radius: 2px;
                     <enum>Solid</enum>
                 </property>
                 <property name="xyPairs">
-                    <string>12,1;</string>
+                    <string>1,1;12,1;</string>
                 </property>
             </widget>
             <widget class="caPolyLine" name="caPolyLine_14">
@@ -1236,7 +1246,7 @@ border-radius: 2px;
                     <enum>Solid</enum>
                 </property>
                 <property name="xyPairs">
-                    <string>11,1;</string>
+                    <string>1,1;11,1;</string>
                 </property>
             </widget>
         </widget>
@@ -1286,7 +1296,7 @@ border-radius: 2px;
                     <enum>Solid</enum>
                 </property>
                 <property name="xyPairs">
-                    <string>1,1;</string>
+                    <string>18,1;1,1;</string>
                 </property>
             </widget>
             <widget class="caPolyLine" name="caPolyLine_16">
@@ -1326,7 +1336,7 @@ border-radius: 2px;
                     <enum>Solid</enum>
                 </property>
                 <property name="xyPairs">
-                    <string>1,12;</string>
+                    <string>1,1;1,12;</string>
                 </property>
             </widget>
             <widget class="caPolyLine" name="caPolyLine_17">
@@ -1366,7 +1376,7 @@ border-radius: 2px;
                     <enum>Solid</enum>
                 </property>
                 <property name="xyPairs">
-                    <string>1,11;</string>
+                    <string>1,1;1,11;</string>
                 </property>
             </widget>
         </widget>
@@ -1416,7 +1426,7 @@ border-radius: 2px;
                     <enum>Solid</enum>
                 </property>
                 <property name="xyPairs">
-                    <string>1,1;</string>
+                    <string>1,18;1,1;</string>
                 </property>
             </widget>
             <widget class="caPolyLine" name="caPolyLine_19">
@@ -1456,7 +1466,7 @@ border-radius: 2px;
                     <enum>Solid</enum>
                 </property>
                 <property name="xyPairs">
-                    <string>1,1;</string>
+                    <string>12,1;1,1;</string>
                 </property>
             </widget>
             <widget class="caPolyLine" name="caPolyLine_20">
@@ -1496,7 +1506,7 @@ border-radius: 2px;
                     <enum>Solid</enum>
                 </property>
                 <property name="xyPairs">
-                    <string>1,1;</string>
+                    <string>11,1;1,1;</string>
                 </property>
             </widget>
         </widget>
@@ -1546,7 +1556,7 @@ border-radius: 2px;
                     <enum>Solid</enum>
                 </property>
                 <property name="xyPairs">
-                    <string>18,1;</string>
+                    <string>1,1;18,1;</string>
                 </property>
             </widget>
             <widget class="caPolyLine" name="caPolyLine_22">
@@ -1586,7 +1596,7 @@ border-radius: 2px;
                     <enum>Solid</enum>
                 </property>
                 <property name="xyPairs">
-                    <string>1,1;</string>
+                    <string>1,12;1,1;</string>
                 </property>
             </widget>
             <widget class="caPolyLine" name="caPolyLine_23">
@@ -1626,7 +1636,7 @@ border-radius: 2px;
                     <enum>Solid</enum>
                 </property>
                 <property name="xyPairs">
-                    <string>1,1;</string>
+                    <string>1,11;1,1;</string>
                 </property>
             </widget>
         </widget>
