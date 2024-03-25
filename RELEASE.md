@@ -19,6 +19,47 @@ the EXAMPLE_RELEASE_PATHS.local, EXAMPLE_RELEASE_LIBS.local, and EXAMPLE_RELEASE
 files respectively, in the configure/ directory of the appropriate release of the
 [top-level areaDetector](https://github.com/areaDetector/areaDetector) repository.
 
+## __R3-14 (April XXX, 2024)__
+
+### asynNDArrayDriver and NDPluginBase.template
+  * Added support for pre-allocating NDArrays.  
+    This is useful for preventing dropped frames on high-speed cameras because of the finite
+    time required for the operating system to allocate memory.  
+    If a camera is acquiring at high speed and NDArrays are allocated on demand to fill
+    plugin buffers during acquisition then the driver can drop frames during an initial acquisition.
+    By pre-allocating frames into the NDArrayPool free list this problem can be avoided.
+    There are 2 new records in NDArrayBase.template.
+    
+    - NumPreAllocBuffers  The number of buffer to pre-allocate.
+    - PreAllocBuffers  Processing this record does the pre-allocation.
+    
+    The pre-allocation operation can be time-consuming if a large amount of memory (e.g. 128 GB)
+    is being allocated.
+    The PoolUsedBuffers, PoolAllocBuffers and PoolUsedMem records are updated during
+    this process so the progress is visible on the detector OPI screen in the Buffers sub-screen.
+    PreAllocBuffers is a busy record so clients can determine when the process is complete
+    by using ca_put_callback.
+  * Changed how the NDArrayPool statistics records (PoolAllocBuffers, etc.) are scanned.
+    They were previously only periodically scanned, with PoolUsedMem scanning periodically 
+    and the other records processing via FLNK fields.  
+    This has changed so that a new record, PoolPollStats is periodically scanned,
+    and the other records are I/O Intr scanned.  
+    This allows these records to be updated during the pre-allocation operation described above.
+    PoolPollStats causes callbacks for the I/O Intr scanned records in asynNDArrayDriver.
+### NDPluginFile
+  * Improved the feedback on progress when saving a file in Capture mode.
+    Previously the only indication that the file saving was in progress was the
+    status of the WriteFile_RBV PV.  There was no indication of how many arrays
+    remained to be written to the file, or how many arrays/second were being written.
+    This was changed to add the following progress indicators:
+
+      - ExecutionTime_RBV is updated with the time to write each array.
+      - ArrayCounter_RBV is incrementd as each array is written.
+      - ArrayRate_RBV is updated, so the number of frames/s being written is visible.
+      - NumCaptured_RBV counts down from NumCaptured to 0, so the number
+        of remaining frames is visible.
+
+
 ## __R3-13 (February 9, 2024)__
 
 ### NDArrayPool
