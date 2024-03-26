@@ -22,7 +22,7 @@ files respectively, in the configure/ directory of the appropriate release of th
 ## __R3-14 (April XXX, 2024)__
 
 ### asynNDArrayDriver and NDPluginBase.template
-  * Added support for pre-allocating NDArrays.  
+  * Added support for pre-allocating NDArrays.
     This is useful for preventing dropped frames on high-speed cameras because of the finite
     time required for the operating system to allocate memory.
     If a camera is acquiring at high speed and NDArrays are allocated on demand to fill
@@ -41,9 +41,9 @@ files respectively, in the configure/ directory of the appropriate release of th
     by using ca_put_callback.
   * Changed how the NDArrayPool statistics records (PoolAllocBuffers, etc.) are scanned.
     They were previously only periodically scanned, with PoolUsedMem scanning periodically 
-    and the other records processing via FLNK fields.  
+    and the other records processing via FLNK fields.
     This has changed so that a new record, PoolPollStats is periodically scanned,
-    and the other records are I/O Intr scanned.  
+    and the other records are I/O Intr scanned.
     This allows these records to be updated during the pre-allocation operation described above.
     PoolPollStats causes callbacks for the I/O Intr scanned records in asynNDArrayDriver.
 ### NDPluginFile
