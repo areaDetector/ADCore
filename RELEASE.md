@@ -63,7 +63,7 @@ files respectively, in the configure/ directory of the appropriate release of th
     This was changed to add the following progress indicators:
 
       - ExecutionTime_RBV is updated with the time to write each array.
-      - ArrayCounter_RBV is incrementd as each array is written.
+      - ArrayCounter_RBV is incremented as each array is written.
       - ArrayRate_RBV is updated, so the number of frames/s being written is visible.
       - NumCaptured_RBV counts down from NumCaptured to 0, so the number
         of remaining frames is visible.
