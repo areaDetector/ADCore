@@ -39,6 +39,15 @@ files respectively, in the configure/ directory of the appropriate release of th
     this process so the progress is visible on the detector OPI screen in the Buffers sub-screen.
     PreAllocBuffers is a busy record so clients can determine when the process is complete
     by using ca_put_callback.
+    This feature requires the following:
+
+      - The driver must have collected at least one frame using the current dimensions
+        and data type.
+      - The driver stores the most recent NDArray in this->pArrays[0].
+        Most drivers already do this, but some will need to be updated to implement this.
+    
+    If either of these conditions are not met then there will be an error message saying
+    "ERROR, must collect an array to get dimensions first".
   * Changed how the NDArrayPool statistics records (PoolAllocBuffers, etc.) are scanned.
     They were previously only periodically scanned, with PoolUsedMem scanning periodically 
     and the other records processing via FLNK fields.
