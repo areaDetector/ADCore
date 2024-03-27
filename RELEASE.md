@@ -43,7 +43,7 @@ files respectively, in the configure/ directory of the appropriate release of th
 
       - The driver must have collected at least one frame using the current dimensions
         and data type.
-      - The driver stores the most recent NDArray in this->pArrays[0].
+      - The driver must store the most recent NDArray in this->pArrays[0].
         Most drivers already do this, but some will need to be updated to implement this.
     
     If either of these conditions are not met then there will be an error message saying
