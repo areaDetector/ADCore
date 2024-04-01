@@ -76,6 +76,7 @@ public:
     /* These methods override the virtual methods in the base class */
     void processCallbacks(NDArray *pArray);
     asynStatus writeInt32(asynUser *pasynUser, epicsInt32 value);
+    void* vc_context;
 
 protected:
     int NDCodecMode;

@@ -637,7 +637,7 @@ NDArray *decompressBSLZ4(NDArray *input, NDCodecStatus_t *status, char *errorMes
 #ifdef HAVE_VC
 #include <video_compression.h>
 //extern int H264_compress_default(const char*, char*, int, int, int);
-NDArray *compressH264(NDArray *input, NDCodecStatus_t *status, char *errorMessage)
+NDArray *compressH264(void** vc_context, NDArray *input, NDCodecStatus_t *status, char *errorMessage)
 {
     //printf("inside compressH264\n");
     if (!input->codec.empty()) {
@@ -679,7 +679,8 @@ NDArray *compressH264(NDArray *input, NDCodecStatus_t *status, char *errorMessag
     //printf("x_size %d y_size %d\n", x_size, y_size);
     //printf("before H264 compress default\n"); 
     //int compSize = H264_compress_default((const char*)input->pData, (char*)output->pData, (int)x_size, (int)y_size, outputSize);
-    int compSize = H264_compress((const char*)input->pData, (char*)output->pData, (int)x_size, (int)y_size);
+    //int compSize = H264_compress((const char*)input->pData, (char*)output->pData, (int)x_size, (int)y_size);
+    int compSize = H264_compress(vc_context, (const char*)input->pData, (char*)output->pData, (int)x_size, (int)y_size);
 
     if (compSize <= 0) {
         output->release();
@@ -697,7 +698,7 @@ NDArray *compressH264(NDArray *input, NDCodecStatus_t *status, char *errorMessag
 
 #else
 
-NDArray *compressH264(NDArray *input, NDCodecStatus_t *status, char *errorMessage)
+NDArray *compressH264(void** vc_context, NDArray *input, NDCodecStatus_t *status, char *errorMessage)
 {
     sprintf(errorMessage, "No H264 support");
     *status = NDCODEC_ERROR;
@@ -808,7 +809,7 @@ void NDPluginCodec::processCallbacks(NDArray *pArray)
 
         case NDCODEC_H264: {
             unlock();
-            result = compressH264(pArray, &codecStatus, errorMessage);
+            result = compressH264(&vc_context, pArray, &codecStatus, errorMessage);
             lock();
             break;
         }
@@ -905,11 +906,11 @@ asynStatus NDPluginCodec::writeInt32(asynUser *pasynUser, epicsInt32 value)
         status = NDPluginDriver::writeInt32(pasynUser, value);
     } else if (function == NDCodecGOPSize) {
         printf("setting GOP Size...\n");
-        set_gop_size(value);
+        set_gop_size(vc_context, value);
     } else if (function == NDCodecQMinMax) {
 	//lock();
         printf("setting qmin and qmax...\n");
-        set_q_min_max(value);
+        set_q_min_max(vc_context, value);
 	//unlock();
     }
 
@@ -1000,6 +1001,8 @@ NDPluginCodec::NDPluginCodec(const char *portName, int queueSize, int blockingCa
     // Enable ArrayCallbacks.
     // This plugin currently ignores this setting and always does callbacks, so make the setting reflect the behavior
     setIntegerParam(NDArrayCallbacks, 1);
+
+    void* vc_context=0;
 
     /* Try to connect to the array port */
     connectToArrayPort();
