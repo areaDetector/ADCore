@@ -9,7 +9,7 @@ https://github.com/areaDetector/ADCore.
 
 Tagged source code and pre-built binary releases prior to R2-0 are included
 in the areaDetector releases available via links at
-https://cars.uchicago.edu/software/epics/areaDetector.html.
+https://areadetector.github.io/areaDetector/legacy_versions.html.
 
 Tagged source code releases from R2-0 onward can be obtained at
 https://github.com/areaDetector/ADCore/releases.
