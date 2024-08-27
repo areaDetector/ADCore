@@ -1,0 +1,172 @@
+4 0 1
+beginScreenProperties
+major 4
+minor 0
+release 1
+x 618
+y 199
+w 406
+h 820
+font "helvetica-bold-r-12.0"
+ctlFont "helvetica-bold-r-12.0"
+btnFont "helvetica-bold-r-12.0"
+fgColor index 14
+bgColor index 6
+textColor index 14
+ctlFgColor1 index 25
+ctlFgColor2 index 25
+ctlBgColor1 index 3
+ctlBgColor2 index 3
+topShadowColor index 1
+botShadowColor index 11
+title "$(P)$(R) StdArray plugin"
+showGrid
+snapToGrid
+gridSize 4
+endScreenProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 4
+y 416
+w 380
+h 310
+lineColor index 14
+fill
+fillColor index 3
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 4
+y 408
+w 47
+h 14
+font "helvetica-medium-r-12.0"
+fgColor index 14
+bgColor index 5
+value {
+  "  Array  "
+}
+autoSize
+border
+endObjectProperties
+
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 4
+release 0
+x 12
+y 428
+w 370
+h 290
+fgColor index 14
+bgColor index 3
+topShadowColor index 1
+botShadowColor index 11
+font "helvetica-bold-r-12.0"
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "areaDetectorScreens/NDStdArraysBig.edl"
+}
+endObjectProperties
+
+# (Hoff Video)
+object TwoDProfileMonitorClass
+beginObjectProperties
+major 4
+minor 2
+release 1
+x 12
+y 428
+w 370
+h 290
+dataPvStr "$(P)$(R)ArrayData"
+widthPvStr "$(P)$(R)ArraySize0_RBV"
+heightPvStr "$(P)$(R)ArraySize1_RBV"
+dataWidth 512
+pvBasedDataSize 1
+nBitsPerPixel 12
+endObjectProperties
+
+# (Embedded Window)
+object activePipClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 0
+y 0
+w 390
+h 385
+fgColor index 14
+bgColor index 3
+topShadowColor index 1
+botShadowColor index 11
+displaySource "file"
+file "areaDetectorScreens/NDPluginBase.edl"
+sizeOfs 5
+numDsps 2
+displayFileName {
+  0 "areaDetectorScreens/NDPluginBase.edl"
+  1 "areaDetectorScreens/NDPluginBase.edl"
+}
+noScroll
+endObjectProperties
+
+# (Shell Command)
+object shellCmdClass
+beginObjectProperties
+major 4
+minor 3
+release 0
+x 5
+y 790
+w 380
+h 25
+fgColor index 14
+bgColor index 3
+topShadowColor index 1
+botShadowColor index 11
+font "helvetica-bold-r-12.0"
+buttonLabel "HTML Documentation"
+numCmds 1
+command {
+  0 "firefox --no-remote areaDetectorHelp/NDPluginStdArrays.html &"
+}
+endObjectProperties
+
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 4
+release 0
+x 276
+y 756
+w 105
+h 25
+fgColor index 43
+bgColor index 3
+topShadowColor index 1
+botShadowColor index 11
+font "helvetica-bold-r-14.0"
+buttonLabel "Waveform"
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "areaDetectorScreens/NDStdArraysWf.edl"
+}
+endObjectProperties
+
