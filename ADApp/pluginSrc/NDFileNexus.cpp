@@ -660,7 +660,6 @@ void * NDFileNexus::allocConstValue(int dataType, size_t length ) {
     case NX_CHAR:
       pValue = calloc( length + 1 , sizeof(char) );
       break;
-    case NDAttrUndefined:
     default:
       pValue = NULL;
       break;
@@ -724,7 +723,6 @@ void NDFileNexus::constTextToDataType(char *inText, int dataType, void *pValue) 
       ((char *)pValue)[strlen(inText)] = '\0';
       //sscanf((const char *)inText, "%s", (char *)pValue);
       break;
-    case NDAttrUndefined:
     default:
       break;
   }
