@@ -62,7 +62,8 @@ typedef enum {
     TSEraseStart,
     TSStart,
     TSStop,
-    TSRead
+    TSRead,
+    TSErase
 } NDPluginROIStatsTSControl_t;
 
 /** Structure defining a Region-Of-Interest and Stats */
@@ -140,6 +141,7 @@ private:
     template <typename epicsType> asynStatus doComputeStatisticsT(NDArray *pArray, NDROI_t *pROI);
     asynStatus doComputeStatistics(NDArray *pArray, NDROI_t *pStats);
     asynStatus clear(epicsUInt32 roi);
+    void clearTimeSeries();
     void doTimeSeriesCallbacks();
 
     int maxROIs_;
@@ -149,3 +151,5 @@ private:
 };
 
 #endif //NDPluginROIStat_H
+
+
