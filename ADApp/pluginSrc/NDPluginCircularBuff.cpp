@@ -12,6 +12,7 @@
 #include <stdio.h>
 #include <math.h>
 
+#include <epicsTime.h>
 #include <epicsMath.h>
 #include <iocsh.h>
 
