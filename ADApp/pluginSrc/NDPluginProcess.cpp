@@ -79,14 +79,17 @@ void NDPluginProcess::processCallbacks(NDArray *pArray)
         getDoubleParam (NDPluginProcessScale,           &scale);
         getDoubleParam (NDPluginProcessOffset,          &offset);
     }
-    if (enableLowClip)
+    if (enableLowClip) {
         getDoubleParam (NDPluginProcessLowClipThresh,   &lowClipThresh);
         getDoubleParam (NDPluginProcessLowClipValue,    &lowClipValue);
-    if (enableHighClip)
+    }
+    if (enableHighClip) {
         getDoubleParam (NDPluginProcessHighClipThresh,  &highClipThresh);
         getDoubleParam (NDPluginProcessHighClipValue,   &highClipValue);
-    if (resetFilter)
+    }
+    if (resetFilter) {
         setIntegerParam(NDPluginProcessResetFilter, 0);
+    }
     if (enableFilter) {
         getIntegerParam(NDPluginProcessNumFilter,       &numFilter);
         getDoubleParam (NDPluginProcessOOffset,         &oOffset);
