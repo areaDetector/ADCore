@@ -299,7 +299,7 @@ asynStatus NDFileTIFF::openFile(const char *fileName, NDFileOpenMode_t openMode,
             case NDAttrInt16:
             case NDAttrInt32:
             case NDAttrInt64: {
-                pAttribute->getValue(attrDataType, &value.i64);
+                pAttribute->getValue(NDAttrInt64, &value.i64);
                 epicsSnprintf(tagString, sizeof(tagString)-1, "%s:%lld", attributeName, value.i64);
                 break;
             }
@@ -307,7 +307,7 @@ asynStatus NDFileTIFF::openFile(const char *fileName, NDFileOpenMode_t openMode,
             case NDAttrUInt16:
             case NDAttrUInt32:
             case NDAttrUInt64: {
-                pAttribute->getValue(attrDataType, &value.ui64);
+                pAttribute->getValue(NDAttrUInt64, &value.ui64);
                 epicsSnprintf(tagString, sizeof(tagString)-1, "%s:%llu", attributeName, value.ui64);
                 break;
             }
