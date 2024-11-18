@@ -19,7 +19,7 @@ the EXAMPLE_RELEASE_PATHS.local, EXAMPLE_RELEASE_LIBS.local, and EXAMPLE_RELEASE
 files respectively, in the configure/ directory of the appropriate release of the
 [top-level areaDetector](https://github.com/areaDetector/areaDetector) repository.
 
-## __R3-14 (April XXX, 2024)__
+## __R3-14 (November XXX, 2024)__
 
 ### asynNDArrayDriver and NDPluginBase.template
   * Added support for pre-allocating NDArrays.
@@ -67,6 +67,16 @@ files respectively, in the configure/ directory of the appropriate release of th
       - ArrayRate_RBV is updated, so the number of frames/s being written is visible.
       - NumCaptured_RBV counts down from NumCaptured to 0, so the number
         of remaining frames is visible.
+### NDFileTIFF
+  * Fixed a bug introduced in R3-8.  
+    Integer attributes smaller than Int64 might not be correctly written to the file.
+### NDPluginROIStat
+  * Added the ability to clear the time series data without starting a new acquisition.
+### myAttributeFunctions.cpp
+  * Added code to create NDAttributes of all numeric data types.
+  * These were used to test the fix to NDFileTIFF, and can be generally useful.
+### Documentation
+  * Removed the documentation/ directory, which was obsolete.
 
 
 ## __R3-13 (February 9, 2024)__
