@@ -19,7 +19,7 @@ the EXAMPLE_RELEASE_PATHS.local, EXAMPLE_RELEASE_LIBS.local, and EXAMPLE_RELEASE
 files respectively, in the configure/ directory of the appropriate release of the
 [top-level areaDetector](https://github.com/areaDetector/areaDetector) repository.
 
-## __R3-14 (November XXX, 2024)__
+## __R3-14 (December 1, 2024)__
 
 ### asynNDArrayDriver and NDPluginBase.template
   * Added support for pre-allocating NDArrays.
