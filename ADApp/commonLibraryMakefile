@@ -129,6 +129,20 @@ ifeq ($(WITH_BLOSC),YES)
   endif
 endif
 
+ifeq ($(WITH_VC),YES)
+  ifeq ($(VC_EXTERNAL),NO)
+    PROD_LIBS += videoCompression
+  else
+    ifdef VC_LIB
+      VC_DIR = $(VC_LIB)
+      PROD_LIBS     += videoCompression
+    else
+      PROD_SYS_LIBS += videoCompression
+    endif
+  endif
+endif
+
+
 ifeq ($(WITH_SZIP),YES)
   ifeq ($(SZIP_EXTERNAL),NO)
     LIB_LIBS += szip
