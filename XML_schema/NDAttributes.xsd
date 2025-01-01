@@ -179,6 +179,10 @@
   </xs:simpleType>
   
   <xs:simpleType name="type_source">
+    <xs:union memberTypes="type_EPICS_PV_source type_PARAM_source"/>
+  </xs:simpleType>
+  
+  <xs:simpleType name="type_EPICS_PV_source">
     <!-- EPICS PV name rules
       see: http://www.aps.anl.gov/epics/wiki/index.php/RRM_3-14_Concepts#Database_Addresses
       The record name can be a mix of the following: 
@@ -192,10 +196,6 @@
 
       To support macro expansion, support these symbols: $ ( )
     -->
-    <xs:union memberTypes="type_EPICS_PV_source type_PARAM_source"/>
-  </xs:simpleType>
-  
-  <xs:simpleType name="type_EPICS_PV_source">
     <xs:restriction base="xs:string">
       <xs:pattern value="[\w_\-:.;\$\(\)]+([.][A-Z0-9]+)?"/>
     </xs:restriction>
