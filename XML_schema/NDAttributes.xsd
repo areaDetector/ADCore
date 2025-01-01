@@ -189,13 +189,15 @@
       BUT, cannot express "<" in XML, must use &lt; but that won't parse!
       So, use use a reduced (but very likely) subset of rules.  
       Do not allow these symbols: []<>
+
+      To support macro expansion, support these symbols: $ ( )
     -->
     <xs:union memberTypes="type_EPICS_PV_source type_PARAM_source"/>
   </xs:simpleType>
   
   <xs:simpleType name="type_EPICS_PV_source">
-    <xs:restriction base="xs:NMTOKEN">
-      <xs:pattern value="[\w_\-:.;]+([.][A-Z0-9]+)?"/>
+    <xs:restriction base="xs:string">
+      <xs:pattern value="[\w_\-:.;\$\(\)]+([.][A-Z0-9]+)?"/>
     </xs:restriction>
   </xs:simpleType>
   
