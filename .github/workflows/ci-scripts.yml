@@ -83,6 +83,10 @@ jobs:
       with:
         submodules: true
 
+    - name: "Install TIRPC Headers"
+      if: runner.os == 'Linux'
+      run: sudo apt-get install -y libtirpc-dev
+
     - name: "Install Linux OS Deps"
       if: ${{ matrix.deps == 'os' && runner.os == 'Linux' }}
       run: |
