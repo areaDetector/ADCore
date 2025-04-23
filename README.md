@@ -1,5 +1,5 @@
 
-[![Github Actions](https://github.com/areaDetector/ADCore/actions/workflows/ci-scripts-build.yml/badge.svg)](https://github.com/areaDetector/ADCore/actions/workflows/ci-scripts-build.yml)
+[![Github Actions](https://github.com/areaDetector/ADCore/actions/workflows/ci-scripts.yml/badge.svg)](https://github.com/areaDetector/ADCore/actions/workflows/ci-scripts.yml)
 [![Coverage Status](https://coveralls.io/repos/areaDetector/ADCore/badge.svg?branch=master)](https://coveralls.io/github/areaDetector/ADCore)
 
 ADCore
