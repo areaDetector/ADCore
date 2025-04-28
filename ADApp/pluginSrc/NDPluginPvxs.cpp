@@ -1,10 +1,13 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#include <iostream>
 
-#include <pv/pvDatabase.h>
-#include <pv/nt.h>
-#include <pv/channelProviderLocal.h>
+#include <pvxs/data.h>
+#include <pvxs/server.h>
+#include <pvxs/sharedpv.h>
+#include <pvxs/nt.h>
+#include <pvxs/log.h>
 
 #include <iocsh.h>
 
@@ -16,28 +19,20 @@
 
 static const char *driverName="NDPluginPva";
 
-using namespace epics;
-using namespace epics::pvData;
-using namespace epics::pvAccess;
-using namespace epics::pvDatabase;
-using namespace epics::nt;
 using namespace std;
 
-class NDPLUGIN_API NTNDArrayRecord :
-    public PVRecord
-{
+class NDPLUGIN_API NTNDArrayRecord {
 
 private:
-    NTNDArrayRecord(string const & name, PVStructurePtr const & pvStructure)
-    :PVRecord(name, pvStructure) {}
-
-    NTNDArrayPtr m_ntndArray;
+    NTNDArrayRecord(string const & name, pvxs::Value value) : m_name(name), m_value(value) {};
     NTNDArrayConverterPtr m_converter;
+    pvxs::server::Server m_server;
+    string m_name;
+    pvxs::Value m_value;
+    pvxs::server::SharedPV m_pv;
 
 public:
-    POINTER_DEFINITIONS(NTNDArrayRecord);
-
-    virtual ~NTNDArrayRecord () {}
+    virtual ~NTNDArrayRecord ();
     static NTNDArrayRecordPtr create (string const & name);
     virtual bool init ();
     virtual void process () {}
@@ -46,43 +41,35 @@ public:
 
 NTNDArrayRecordPtr NTNDArrayRecord::create (string const & name)
 {
-    NTNDArrayBuilderPtr builder = NTNDArray::createBuilder();
-    builder->addDescriptor()->addTimeStamp()->addAlarm()->addDisplay();
-
-    NTNDArrayRecordPtr pvRecord(new NTNDArrayRecord(name,
-            builder->createPVStructure()));
-
+    pvxs::Value value = pvxs::nt::NTNDArray{}.build().create();
+    NTNDArrayRecordPtr pvRecord(new NTNDArrayRecord(name, value));
+    
     if(!pvRecord->init())
         pvRecord.reset();
-
+    
     return pvRecord;
 }
 
 bool NTNDArrayRecord::init ()
 {
-    initPVRecord();
-    m_ntndArray = NTNDArray::wrap(getPVStructure());
-    m_converter.reset(new NTNDArrayConverter(m_ntndArray));
+    m_pv = pvxs::server::SharedPV(pvxs::server::SharedPV::buildMailbox());
+    m_pv.open(m_value);
+    m_server = pvxs::server::Server::fromEnv();
+    m_server.addPV(m_name, m_pv);
+    m_server.start(); // start is not blocking
+    m_converter.reset(new NTNDArrayConverter(m_value));
     return true;
 }
 
+NTNDArrayRecord::~NTNDArrayRecord () {
+    m_server.stop();
+}
+
+
 void NTNDArrayRecord::update(NDArray *pArray)
 {
-    lock();
-
-    try
-    {
-        beginGroupPut();
-        m_converter->fromArray(pArray);
-        endGroupPut();
-    }
-    catch(...)
-    {
-        endGroupPut();
-        unlock();
-        throw;
-    }
-    unlock();
+    m_converter->fromArray(pArray);
+    m_pv.post(m_value);
 }
 
 /** Callback function that is called by the NDArray driver with new NDArray
@@ -110,11 +97,8 @@ void NDPluginPva::processCallbacks(NDArray *pArray)
         getIntegerParam(NDArrayCounter, &arrayCounter);
         arrayCounter--;
         setIntegerParam(NDArrayCounter, arrayCounter);
-    } else {
-        this->unlock();             // Function called with the lock taken
-        m_record->update(pArray);
-        this->lock();               // Must return locked
     }
+    m_record->update(pArray);
 
     // Do NDArray callbacks.  We need to copy the array and get the attributes
     NDPluginDriver::endProcessCallbacks(pArray, true, true);
@@ -159,9 +143,6 @@ NDPluginPva::NDPluginPva(const char *portName, int queueSize,
 {
     createParam(NDPluginPvaPvNameString, asynParamOctet, &NDPluginPvaPvName);
 
-    if(!m_record.get())
-        throw runtime_error("failed to create NTNDArrayRecord");
-
     /* Set the plugin type string */
     setStringParam(NDPluginDriverPluginType, "NDPluginPva");
 
@@ -170,12 +151,6 @@ NDPluginPva::NDPluginPva(const char *portName, int queueSize,
 
     /* Try to connect to the NDArray port */
     connectToArrayPort();
-
-    PVDatabasePtr master = PVDatabase::getMaster();
-    ChannelProviderLocalPtr channelProvider = getChannelProviderLocal();
-
-    if(!master->addRecord(m_record))
-        throw runtime_error("couldn't add record to master database");
 }
 
 /* Configuration routine.  Called directly, or from the iocsh function */
