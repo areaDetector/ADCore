@@ -1,41 +1,8 @@
 #include "ntndArrayConverter.h"
-
+#include <stdio.h>
+#include <string.h>
+#include <iostream>
 using namespace std;
-using namespace epics::nt;
-using namespace epics::pvData;
-using tr1::static_pointer_cast;
-
-// Maps ScalarType to NDAttrDataType_t
-static const NDAttrDataType_t scalarToNDAttrDataType[pvString+1] = {
-        NDAttrInt8,     // 0:  pvBoolean (not supported)
-        NDAttrInt8,     // 1:  pvByte
-        NDAttrInt16,    // 2:  pvShort
-        NDAttrInt32,    // 3:  pvInt
-        NDAttrInt64,    // 4:  pvLong
-        NDAttrUInt8,    // 5:  pvUByte
-        NDAttrUInt16,   // 6:  pvUShort
-        NDAttrUInt32,   // 7:  pvUInt
-        NDAttrUInt64,   // 8:  pvULong
-        NDAttrFloat32,  // 9:  pvFloat
-        NDAttrFloat64,  // 10: pvDouble
-        NDAttrString,   // 11: pvString
-};
-
-// Maps NDDataType to ScalarType
-static const ScalarType NDDataTypeToScalar[NDFloat64 + 1] = {
-        pvByte,     // 0:  NDInt8
-        pvUByte,    // 1:  NDUInt8
-        pvShort,    // 2:  NDInt16
-        pvUShort,   // 3:  NDUInt16
-        pvInt,      // 4:  NDInt32
-        pvUInt,     // 5:  NDUInt32
-        pvLong,     // 6:  NDInt32
-        pvULong,    // 7:  NDUInt32
-        pvFloat,    // 8:  NDFloat32
-        pvDouble,   // 9:  NDFloat64
-};
-
-static const PVDataCreatePtr PVDC = getPVDataCreate();
 
 template <typename dataType>
 struct freeNDArray {
@@ -44,45 +11,19 @@ struct freeNDArray {
     void operator()(dataType *data) { array->release(); }
 };
 
-NTNDArrayConverter::NTNDArrayConverter (NTNDArrayPtr array) : m_array(array) {}
-
-ScalarType NTNDArrayConverter::getValueType (void)
-{
-    string fieldName(m_array->getValue()->getSelectedFieldName());
-
-    /*
-     * Check if union field selected. It happens when the driver is run before
-     * the producer. There is a monitor update that is sent on the
-     * initialization of a PVRecord with no real data.
-     */
-    if(fieldName.empty())
-        throw std::runtime_error("no union field selected");
-
-    string typeName(fieldName.substr(0,fieldName.find("Value")));
-    return ScalarTypeFunc::getScalarType(typeName);
-}
+NTNDArrayConverter::NTNDArrayConverter (pvxs::Value value) : m_value(value) {}
 
 NDColorMode_t NTNDArrayConverter::getColorMode (void)
 {
-    NDColorMode_t colorMode = NDColorModeMono;
-    PVStructureArray::const_svector attrs(m_array->getAttribute()->view());
-
-    for(PVStructureArray::const_svector::iterator it(attrs.cbegin());
-            it != attrs.cend(); ++it)
-    {
-        PVStringPtr nameFld((*it)->getSubFieldT<PVString>("name"));
-        if(nameFld->get() == "ColorMode")
-        {
-            PVUnionPtr valueUnion((*it)->getSubFieldT<PVUnion>("value"));
-            PVScalar::shared_pointer valueFld(valueUnion->get<PVScalar>());
-            if(valueFld) {
-                int cm = valueFld->getAs<int32>();
-                colorMode = (NDColorMode_t) cm;
-            } else
-                throw std::runtime_error("Error accessing attribute ColorMode");
+    auto attributes = m_value["attribute"].as<pvxs::shared_array<const pvxs::Value>>();
+    NDColorMode_t colorMode = NDColorMode_t::NDColorModeMono;
+    for (int i=0; i<attributes.size(); i++) {
+        pvxs::Value attribute = attributes[i];
+        if (attribute["name"].as<std::string>() == "ColorMode") {
+            colorMode = (NDColorMode_t) attribute["value"].as<int32_t>();
+            break;
         }
     }
-
     return colorMode;
 }
 
@@ -90,50 +31,40 @@ NTNDArrayInfo_t NTNDArrayConverter::getInfo (void)
 {
     NTNDArrayInfo_t info = {0};
 
-    PVStructureArray::const_svector dims(m_array->getDimension()->view());
-
-    info.ndims     = (int) dims.size();
+    auto dims = m_value["dimension"].as<pvxs::shared_array<const pvxs::Value>>();
+    info.ndims = (int) dims.size();
     info.nElements = 1;
 
     for(int i = 0; i < info.ndims; ++i)
     {
-        info.dims[i]    = (size_t) dims[i]->getSubField<PVInt>("size")->get();
+        info.dims[i]    = dims[i]["size"].as<size_t>();
         info.nElements *= info.dims[i];
     }
 
-    PVStructurePtr codec(m_array->getCodec());
-
-    info.codec = codec->getSubField<PVString>("name")->get();
-
-    ScalarType dataType;
-
-    if (info.codec.empty())
-        dataType = getValueType();
-    else {
-        // Read uncompressed data type
-        PVIntPtr udt(codec->getSubField<PVUnion>("parameters")->get<PVInt>());
-        dataType = static_cast<ScalarType>(udt->get());
-    }
+    info.codec = m_value["codec.name"].as<std::string>();
 
     NDDataType_t dt;
     int bpe;
-    switch(dataType)
-    {
-    case pvByte:    dt = NDInt8;     bpe = sizeof(epicsInt8);    break;
-    case pvUByte:   dt = NDUInt8;    bpe = sizeof(epicsUInt8);   break;
-    case pvShort:   dt = NDInt16;    bpe = sizeof(epicsInt16);   break;
-    case pvUShort:  dt = NDUInt16;   bpe = sizeof(epicsUInt16);  break;
-    case pvInt:     dt = NDInt32;    bpe = sizeof(epicsInt32);   break;
-    case pvUInt:    dt = NDUInt32;   bpe = sizeof(epicsUInt32);  break;
-    case pvLong:    dt = NDInt64;    bpe = sizeof(epicsInt64);   break;
-    case pvULong:   dt = NDUInt64;   bpe = sizeof(epicsUInt64);  break;
-    case pvFloat:   dt = NDFloat32;  bpe = sizeof(epicsFloat32); break;
-    case pvDouble:  dt = NDFloat64;  bpe = sizeof(epicsFloat64); break;
-    case pvBoolean:
-    case pvString:
-    default:
-        throw std::runtime_error("invalid value data type");
-        break;
+
+    if (info.codec.empty()) {
+        // TODO would be nicer as a switch statement
+        std::string fieldName = m_value["value"].nameOf(m_value["value"]["->"]);
+        std::string typeName(fieldName.substr(0, fieldName.find("Value")));
+        if (typeName == "byte")         {dt = NDDataType_t::NDInt8;      bpe = sizeof(int8_t);}
+        else if (typeName == "ubyte")   {dt = NDDataType_t::NDUInt8;     bpe = sizeof(uint8_t);}
+        else if (typeName == "short")   {dt = NDDataType_t::NDInt16;     bpe = sizeof(int16_t);}
+        else if (typeName == "ushort")  {dt = NDDataType_t::NDUInt16;    bpe = sizeof(uint16_t);}
+        else if (typeName == "int")     {dt = NDDataType_t::NDInt32;     bpe = sizeof(int32_t);}
+        else if (typeName == "uint")    {dt = NDDataType_t::NDUInt32;    bpe = sizeof(uint32_t);}
+        else if (typeName == "long")    {dt = NDDataType_t::NDInt64;     bpe = sizeof(int64_t);}
+        else if (typeName == "ulong")   {dt = NDDataType_t::NDUInt64;    bpe = sizeof(uint64_t);}
+        else if (typeName == "float")   {dt = NDDataType_t::NDFloat32;   bpe = sizeof(float_t);}
+        else if (typeName == "double")  {dt = NDDataType_t::NDFloat64;   bpe = sizeof(double_t);}
+        else throw std::runtime_error("invalid value data type");
+        // TODO get datatype
+    } else {
+        throw std::runtime_error("Have not implemeted parsing from known codec type yet");
+        // get datatype from codec.parameters...
     }
 
     info.dataType        = dt;
@@ -212,10 +143,7 @@ void NTNDArrayConverter::toArray (NDArray *dest)
     toDataTimeStamp(dest);
     toAttributes(dest);
 
-    // getUniqueId not implemented yet
-    // dest->uniqueId = m_array->getUniqueId()->get();
-    PVIntPtr uniqueId(m_array->getPVStructure()->getSubField<PVInt>("uniqueId"));
-    dest->uniqueId = uniqueId->get();
+    dest->uniqueId = m_value["uniqueId"].as<int32_t>();
 }
 
 void NTNDArrayConverter::fromArray (NDArray *src)
@@ -226,368 +154,244 @@ void NTNDArrayConverter::fromArray (NDArray *src)
     fromDataTimeStamp(src);
     fromAttributes(src);
 
-    // getUniqueId not implemented yet
-    // m_array->getUniqueId()->put(src->uniqueId);
-    PVIntPtr uniqueId(m_array->getPVStructure()->getSubField<PVInt>("uniqueId"));
-    uniqueId->put(src->uniqueId);
+    m_value["uniqueId"] = src->uniqueId;
 }
 
 template <typename arrayType>
-void NTNDArrayConverter::toValue (NDArray *dest)
+void NTNDArrayConverter::toValue (NDArray *dest, std::string fieldName)
 {
-    typedef typename arrayType::value_type arrayValType;
-    typedef typename arrayType::const_svector arrayVecType;
-
-    PVUnionPtr src(m_array->getValue());
-    arrayVecType srcVec(src->get<arrayType>()->view());
-    memcpy(dest->pData, srcVec.data(), srcVec.size()*sizeof(arrayValType));
-
     NTNDArrayInfo_t info = getInfo();
     dest->codec.name = info.codec;
     dest->dataType = info.dataType;
 
+    auto value = m_value[fieldName].as<pvxs::shared_array<const arrayType>>();
+    memcpy(dest->pData, value.data(), info.totalBytes);
+
     if (!info.codec.empty())
-        dest->compressedSize = srcVec.size()*sizeof(arrayValType);
+        dest->compressedSize = info.totalBytes;
 }
 
 void NTNDArrayConverter::toValue (NDArray *dest)
 {
-    switch(getValueType())
-    {
-    case pvByte:    toValue<PVByteArray>  (dest); break;
-    case pvUByte:   toValue<PVUByteArray> (dest); break;
-    case pvShort:   toValue<PVShortArray> (dest); break;
-    case pvUShort:  toValue<PVUShortArray>(dest); break;
-    case pvInt:     toValue<PVIntArray>   (dest); break;
-    case pvUInt:    toValue<PVUIntArray>  (dest); break;
-    case pvFloat:   toValue<PVFloatArray> (dest); break;
-    case pvDouble:  toValue<PVDoubleArray>(dest); break;
-    case pvBoolean:
-    case pvLong:
-    case pvULong:
-    case pvString:
-    default:
-        throw std::runtime_error("invalid value data type");
-        break;
-    }
-
+    std::string fieldName = m_value["value"].nameOf(m_value["value"]["->"]);
+    std::string typeName(fieldName.substr(0, fieldName.find("Value")));
+    if (typeName == "byte")         {toValue<int8_t>(dest, std::string("value->byteValue"));}
+    else if (typeName == "ubyte")   {toValue<uint8_t>(dest, std::string("value->ubyteValue"));}
+    else if (typeName == "short")   {toValue<int16_t>(dest, std::string("value->shortValue"));}
+    else if (typeName == "ushort")  {toValue<uint16_t>(dest, std::string("value->ushortValue"));}
+    else if (typeName == "int")     {toValue<int32_t>(dest, std::string("value->intValue"));}
+    else if (typeName == "uint")    {toValue<uint32_t>(dest, std::string("value->uintValue"));}
+    else if (typeName == "long")    {toValue<int64_t>(dest, std::string("value->longValue"));}
+    else if (typeName == "ulong")   {toValue<uint64_t>(dest, std::string("value->ulongValue"));}
+    else if (typeName == "float")   {toValue<float_t>(dest, std::string("value->floatValue"));}
+    else if (typeName == "double")  {toValue<double_t>(dest, std::string("value->doubleValue"));}
+    else throw std::runtime_error("invalid value data type");
 }
 
 void NTNDArrayConverter::toDimensions (NDArray *dest)
 {
-    PVStructureArrayPtr src(m_array->getDimension());
-    PVStructureArray::const_svector srcVec(src->view());
+    auto dims = m_value["dimension"].as<pvxs::shared_array<const pvxs::Value>>();
+    dest->ndims = (int)dims.size();
 
-    dest->ndims = (int)srcVec.size();
-
-    for(size_t i = 0; i < srcVec.size(); ++i)
+    for(size_t i = 0; i < dest->ndims; ++i)
     {
         NDDimension_t *d = &dest->dims[i];
-        d->size    = srcVec[i]->getSubField<PVInt>("size")->get();
-        d->offset  = srcVec[i]->getSubField<PVInt>("offset")->get();
-        d->binning = srcVec[i]->getSubField<PVInt>("binning")->get();
-        d->reverse = srcVec[i]->getSubField<PVBoolean>("reverse")->get();
+        d->size    = dims[i]["size"].as<int32_t>();
+        d->offset  = dims[i]["offset"].as<int32_t>();
+        d->binning = dims[i]["binning"].as<int32_t>();
+        d->reverse = dims[i]["reverse"].as<bool>();
     }
 }
 
 void NTNDArrayConverter::toTimeStamp (NDArray *dest)
 {
-    PVStructurePtr src(m_array->getTimeStamp());
-
-    if(!src.get())
-        return;
-
-    PVTimeStamp pvSrc;
-    pvSrc.attach(src);
-
-    TimeStamp ts;
-    pvSrc.get(ts);
-
     // NDArray uses EPICS time, pvAccess uses Posix time, need to convert
-    dest->epicsTS.secPastEpoch = (epicsUInt32)ts.getSecondsPastEpoch() - POSIX_TIME_AT_EPICS_EPOCH;
-    dest->epicsTS.nsec = ts.getNanoseconds();
+    dest->epicsTS.secPastEpoch = (epicsUInt32)
+        m_value["timeStamp.secondsPastEpoch"].as<uint32_t>() - POSIX_TIME_AT_EPICS_EPOCH;
+    dest->epicsTS.nsec = (epicsUInt32)
+        m_value["timeStamp.nanoseconds"].as<uint32_t>();
 }
 
 void NTNDArrayConverter::toDataTimeStamp (NDArray *dest)
 {
-    PVStructurePtr src(m_array->getDataTimeStamp());
-    PVTimeStamp pvSrc;
-    pvSrc.attach(src);
-
-    TimeStamp ts;
-    pvSrc.get(ts);
-
     // NDArray uses EPICS time, pvAccess uses Posix time, need to convert
-    dest->timeStamp = ts.toSeconds() - POSIX_TIME_AT_EPICS_EPOCH;
+    dest->timeStamp = (epicsFloat64) 
+        (m_value["dataTimeStamp.nanoseconds"].as<double_t>() / 1e9) 
+        + m_value["dataTimeStamp.secondsPastEpoch"].as<uint32_t>() 
+        - POSIX_TIME_AT_EPICS_EPOCH;
 }
 
-template <typename pvAttrType, typename valueType>
-void NTNDArrayConverter::toAttribute (NDArray *dest, PVStructurePtr src)
+template <typename valueType>
+void NTNDArrayConverter::toAttribute (NDArray *dest, pvxs::Value attribute, NDAttrDataType_t dataType)
 {
-    const char *name          = src->getSubField<PVString>("name")->get().c_str();
-    const char *desc          = src->getSubField<PVString>("descriptor")->get().c_str();
-    NDAttrSource_t sourceType = (NDAttrSource_t)src->getSubField<PVInt>("sourceType")->get();
-    const char *source        = src->getSubField<PVString>("source")->get().c_str();
-    NDAttrDataType_t dataType = scalarToNDAttrDataType[pvAttrType::typeCode];
-    valueType value           = src->getSubField<PVUnion>("value")->get<pvAttrType>()->get();
+    // TODO, can we make dataType a template parameter?
+    std::string name = attribute["name"].as<std::string>();
+    std::string desc = attribute["descriptor"].as<std::string>();
+    std::string source = attribute["source"].as<std::string>();
+    NDAttrSource_t sourceType = (NDAttrSource_t) attribute["sourceType"].as<int32_t>();
+    valueType value = attribute["value"].as<valueType>();
 
-    NDAttribute *attr = new NDAttribute(name, desc, sourceType, source, dataType, (void*)&value);
+    NDAttribute *attr = new NDAttribute(name.c_str(), desc.c_str(), sourceType, source.c_str(), dataType, (void*)&value);
     dest->pAttributeList->add(attr);
 }
 
-void NTNDArrayConverter::toStringAttribute (NDArray *dest, PVStructurePtr src)
+void NTNDArrayConverter::toStringAttribute (NDArray *dest, pvxs::Value attribute)
 {
-    const char *name          = src->getSubField<PVString>("name")->get().c_str();
-    const char *desc          = src->getSubField<PVString>("descriptor")->get().c_str();
-    NDAttrSource_t sourceType = (NDAttrSource_t)src->getSubField<PVInt>("sourceType")->get();
-    const char *source        = src->getSubField<PVString>("source")->get().c_str();
-    const char *value         = src->getSubField<PVUnion>("value")->get<PVString>()->get().c_str();
+    std::string name = attribute["name"].as<std::string>();
+    std::string desc = attribute["descriptor"].as<std::string>();
+    std::string source = attribute["source"].as<std::string>();
+    NDAttrSource_t sourceType = (NDAttrSource_t) attribute["sourceType"].as<int32_t>();
+    std::string value = attribute["value"].as<std::string>();
 
-    NDAttribute *attr = new NDAttribute(name, desc, sourceType, source, NDAttrString, (void*)value);
+    NDAttribute *attr = new NDAttribute(name.c_str(), desc.c_str(), sourceType, source.c_str(), NDAttrDataType_t::NDAttrString, (void*)value.c_str());
     dest->pAttributeList->add(attr);
 }
 
-void NTNDArrayConverter::toUndefinedAttribute (NDArray *dest, PVStructurePtr src)
-{
-    const char *name          = src->getSubField<PVString>("name")->get().c_str();
-    const char *desc          = src->getSubField<PVString>("descriptor")->get().c_str();
-    NDAttrSource_t sourceType = (NDAttrSource_t)src->getSubField<PVInt>("sourceType")->get();
-    const char *source        = src->getSubField<PVString>("source")->get().c_str();
-
-    NDAttribute *attr = new NDAttribute(name, desc, sourceType, source, NDAttrUndefined, NULL);
-    dest->pAttributeList->add(attr);
-}
+// void NTNDArrayConverter::toUndefinedAttribute (NDArray *dest, pvxs::value attribute)
+// {
+// }
 
 void NTNDArrayConverter::toAttributes (NDArray *dest)
 {
-    typedef PVStructureArray::const_svector::const_iterator VecIt;
-
-    PVStructureArray::const_svector srcVec(m_array->getAttribute()->view());
-
-    for(VecIt it = srcVec.cbegin(); it != srcVec.cend(); ++it)
-    {
-        PVScalarPtr srcScalar((*it)->getSubField<PVUnion>("value")->get<PVScalar>());
-
-        if(!srcScalar)
-            toUndefinedAttribute(dest, *it);
-        else
-        {
-            switch(srcScalar->getScalar()->getScalarType())
-            {
-            case pvByte:   toAttribute<PVByte,   int8_t>  (dest, *it); break;
-            case pvUByte:  toAttribute<PVUByte,  uint8_t> (dest, *it); break;
-            case pvShort:  toAttribute<PVShort,  int16_t> (dest, *it); break;
-            case pvUShort: toAttribute<PVUShort, uint16_t>(dest, *it); break;
-            case pvInt:    toAttribute<PVInt,    int32_t> (dest, *it); break;
-            case pvUInt:   toAttribute<PVUInt,   uint32_t>(dest, *it); break;
-            case pvLong:   toAttribute<PVLong,   int64_t> (dest, *it); break;
-            case pvULong:  toAttribute<PVULong,  uint64_t>(dest, *it); break;
-            case pvFloat:  toAttribute<PVFloat,  float>   (dest, *it); break;
-            case pvDouble: toAttribute<PVDouble, double>  (dest, *it); break;
-            case pvString: toStringAttribute (dest, *it); break;
-            case pvBoolean:
-            default:
-                break;   // ignore invalid types
-            }
+    // TODO, handle undefined attributes?
+    auto attributes = m_value["attribute"].as<pvxs::shared_array<const pvxs::Value>>();
+    for (int i=0; i<attributes.size(); i++) {
+        pvxs::Value value = attributes[i]["value"];
+        switch (attributes[i]["value->"].type().code) {
+            // use indirection on Any container to get specified type
+            case pvxs::TypeCode::Int8:        toAttribute<int8_t>    (dest, attributes[i], NDAttrDataType_t::NDAttrInt8); break;
+            case pvxs::TypeCode::UInt8:       toAttribute<uint8_t>   (dest, attributes[i], NDAttrDataType_t::NDAttrUInt8); break;
+            case pvxs::TypeCode::Int16:       toAttribute<int16_t>   (dest, attributes[i], NDAttrDataType_t::NDAttrInt16); break;
+            case pvxs::TypeCode::UInt16:      toAttribute<uint16_t>  (dest, attributes[i], NDAttrDataType_t::NDAttrUInt16); break;
+            case pvxs::TypeCode::Int32:       toAttribute<int32_t>   (dest, attributes[i], NDAttrDataType_t::NDAttrInt32); break;
+            case pvxs::TypeCode::UInt32:      toAttribute<uint32_t>  (dest, attributes[i], NDAttrDataType_t::NDAttrUInt32); break;
+            case pvxs::TypeCode::Int64:       toAttribute<int64_t>   (dest, attributes[i], NDAttrDataType_t::NDAttrInt64); break;
+            case pvxs::TypeCode::UInt64:      toAttribute<uint64_t>  (dest, attributes[i], NDAttrDataType_t::NDAttrUInt64); break;
+            case pvxs::TypeCode::Float32:     toAttribute<float_t>   (dest, attributes[i], NDAttrDataType_t::NDAttrFloat32); break;
+            case pvxs::TypeCode::Float64:     toAttribute<double_t>  (dest, attributes[i], NDAttrDataType_t::NDAttrFloat64); break;
+            case pvxs::TypeCode::String:      toStringAttribute      (dest, attributes[i]); break;
+            default: throw std::runtime_error("invalid value data type");
         }
     }
 }
 
-template <typename arrayType, typename srcDataType>
-void NTNDArrayConverter::fromValue (NDArray *src)
-{
-    typedef typename arrayType::value_type arrayValType;
-
-    string unionField(string(ScalarTypeFunc::name(arrayType::typeCode)) +
-            string("Value"));
-
+void NTNDArrayConverter::fromValue (NDArray *src) {
     NDArrayInfo_t arrayInfo;
     src->getInfo(&arrayInfo);
 
-    int64 compressedSize = src->compressedSize;
-    int64 uncompressedSize = arrayInfo.totalBytes;
-
-    m_array->getCompressedDataSize()->put(compressedSize);
-    m_array->getUncompressedDataSize()->put(uncompressedSize);
-
+    m_value["compressedSize"] = src->compressedSize;
+    m_value["uncompressedSize"] = arrayInfo.totalBytes;
+    std::string field_name;
+    pvxs::ArrayType arrayType;
+    switch(src->dataType) {
+        case NDDataType_t::NDInt8:      {arrayType = pvxs::ArrayType::Int8;     field_name = std::string("value->byteValue"); break;};
+        case NDDataType_t::NDUInt8:     {arrayType = pvxs::ArrayType::UInt8;    field_name = std::string("value->ubyteValue"); break;};
+        case NDDataType_t::NDInt16:     {arrayType = pvxs::ArrayType::Int16;    field_name = std::string("value->shortValue"); break;};
+        case NDDataType_t::NDInt32:     {arrayType = pvxs::ArrayType::Int32;    field_name = std::string("value->intValue"); break;};
+        case NDDataType_t::NDUInt32:    {arrayType = pvxs::ArrayType::UInt32;   field_name = std::string("value->uintValue"); break;};
+        case NDDataType_t::NDInt64:     {arrayType = pvxs::ArrayType::Int64;    field_name = std::string("value->longValue"); break;};
+        case NDDataType_t::NDUInt64:    {arrayType = pvxs::ArrayType::UInt64;   field_name = std::string("value->ulongValue"); break;};
+        case NDDataType_t::NDFloat32:   {arrayType = pvxs::ArrayType::Float32;  field_name = std::string("value->floatValue"); break;};
+        case NDDataType_t::NDFloat64:   {arrayType = pvxs::ArrayType::Float64;  field_name = std::string("value->doubleValue"); break;};
+        default: {
+            throw std::runtime_error("invalid value data type");
+            break;
+        }
+    }
+    const auto val = pvxs::detail::copyAs(
+        arrayType, arrayType, (const void*) src->pData, arrayInfo.nElements).freeze();    
+    m_value[field_name] = val;
+    m_value["codec.name"] = src->codec.name; // compression codec
     // The uncompressed data type would be lost when converting to NTNDArray,
     // so we must store it somewhere. codec.parameters seems like a good place.
-    PVScalarPtr uncompressedType(PVDC->createPVScalar(pvInt));
-    uncompressedType->putFrom<int32>(NDDataTypeToScalar[src->dataType]);
-
-    PVStructurePtr codec(m_array->getCodec());
-    codec->getSubField<PVUnion>("parameters")->set(uncompressedType);
-    codec->getSubField<PVString>("name")->put(src->codec.name);
-
-    size_t count = src->codec.empty() ? arrayInfo.nElements : (size_t)compressedSize;
-
-    src->reserve();
-    shared_vector<arrayValType> temp((srcDataType*)src->pData,
-            freeNDArray<srcDataType>(src), 0, count);
-
-    PVUnionPtr dest = m_array->getValue();
-    dest->select<arrayType>(unionField)->replace(freeze(temp));
-    dest->postPut();
+    m_value["codec.parameters"] = (int32_t) src->dataType;
 }
 
-void NTNDArrayConverter::fromValue (NDArray *src)
-{
-    // Uncompressed
-    if (src->codec.empty()) {
-        switch(src->dataType)
-        {
-        case NDInt8:    fromValue<PVByteArray,   int8_t>   (src); break;
-        case NDUInt8:   fromValue<PVUByteArray,  uint8_t>  (src); break;
-        case NDInt16:   fromValue<PVShortArray,  int16_t>  (src); break;
-        case NDUInt16:  fromValue<PVUShortArray, uint16_t> (src); break;
-        case NDInt32:   fromValue<PVIntArray,    int32_t>  (src); break;
-        case NDUInt32:  fromValue<PVUIntArray,   uint32_t> (src); break;
-        case NDInt64:   fromValue<PVLongArray,   int64_t>  (src); break;
-        case NDUInt64:  fromValue<PVULongArray,  uint64_t> (src); break;
-        case NDFloat32: fromValue<PVFloatArray,  float>    (src); break;
-        case NDFloat64: fromValue<PVDoubleArray, double>   (src); break;
-        }
-    // Compressed
-    } else {
-        fromValue<PVUByteArray, uint8_t>(src);
+void NTNDArrayConverter::fromDimensions (NDArray *src) {
+    pvxs::shared_array<pvxs::Value> dims;
+    dims.resize(src->ndims);
+
+    for (int i = 0; i < src->ndims; i++) {
+        dims[i] = m_value["dimension"].allocMember();
+        dims[i].update("size", src->dims[i].size);
+        dims[i].update("offset", src->dims[i].offset);
+        dims[i].update("fullSize", src->dims[i].size);
+        dims[i].update("binning", src->dims[i].binning);
+        dims[i].update("reverse", src->dims[i].reverse);
     }
+    m_value["dimension"] = dims.freeze();
 }
 
-void NTNDArrayConverter::fromDimensions (NDArray *src)
-{
-    PVStructureArrayPtr dest(m_array->getDimension());
-    PVStructureArray::svector destVec(dest->reuse());
-    StructureConstPtr dimStructure(dest->getStructureArray()->getStructure());
-
-    destVec.resize(src->ndims);
-    for (int i = 0; i < src->ndims; i++)
-    {
-        if (!destVec[i] || !destVec[i].unique())
-            destVec[i] = PVDC->createPVStructure(dimStructure);
-
-        destVec[i]->getSubField<PVInt>("size")->put((int)src->dims[i].size);
-        destVec[i]->getSubField<PVInt>("offset")->put((int)src->dims[i].offset);
-        destVec[i]->getSubField<PVInt>("fullSize")->put((int)src->dims[i].size);
-        destVec[i]->getSubField<PVInt>("binning")->put(src->dims[i].binning);
-        destVec[i]->getSubField<PVBoolean>("reverse")->put(src->dims[i].reverse);
-    }
-    dest->replace(freeze(destVec));
-}
-
-void NTNDArrayConverter::fromDataTimeStamp (NDArray *src)
-{
-    PVStructurePtr dest(m_array->getDataTimeStamp());
-
+void NTNDArrayConverter::fromDataTimeStamp (NDArray *src) {
     double seconds = floor(src->timeStamp);
     double nanoseconds = (src->timeStamp - seconds)*1e9;
     // pvAccess uses Posix time, NDArray uses EPICS time, need to convert
     seconds += POSIX_TIME_AT_EPICS_EPOCH;
-
-    PVTimeStamp pvDest;
-    pvDest.attach(dest);
-
-    TimeStamp ts((int64_t)seconds, (int32_t)nanoseconds);
-    pvDest.set(ts);
+    m_value["dataTimeStamp.secondsPastEpoch"] = seconds;
+    m_value["dataTimeStamp.nanoseconds"] = nanoseconds;
 }
 
-void NTNDArrayConverter::fromTimeStamp (NDArray *src)
-{
-    PVStructurePtr dest(m_array->getTimeStamp());
-
-    PVTimeStamp pvDest;
-    pvDest.attach(dest);
-
+void NTNDArrayConverter::fromTimeStamp (NDArray *src) {
     // pvAccess uses Posix time, NDArray uses EPICS time, need to convert
-    TimeStamp ts(src->epicsTS.secPastEpoch + POSIX_TIME_AT_EPICS_EPOCH, src->epicsTS.nsec);
-    pvDest.set(ts);
+    m_value["timeStamp.secondsPastEpoch"] = src->epicsTS.secPastEpoch + POSIX_TIME_AT_EPICS_EPOCH;
+    m_value["timeStamp.nanoseconds"] = src->epicsTS.nsec;
 }
 
-template <typename pvAttrType, typename valueType>
-void NTNDArrayConverter::fromAttribute (PVStructurePtr dest, NDAttribute *src)
+template <typename valueType>
+void NTNDArrayConverter::fromAttribute (pvxs::Value dest_value, NDAttribute *src)
 {
     valueType value;
     src->getValue(src->getDataType(), (void*)&value);
-
-    PVUnionPtr destUnion(dest->getSubFieldT<PVUnion>("value"));
-    typename pvAttrType::shared_pointer valueFld(destUnion->get<pvAttrType>());
-    if(!valueFld) {
-        valueFld = PVDC->createPVScalar<pvAttrType>();
-        destUnion->set(valueFld);
-    }
-    valueFld->put(value);
+    dest_value["value"] = value;
 }
 
-void NTNDArrayConverter::fromStringAttribute (PVStructurePtr dest, NDAttribute *src)
+void NTNDArrayConverter::fromStringAttribute (pvxs::Value dest_value, NDAttribute *src)
 {
-    NDAttrDataType_t attrDataType;
-    size_t attrDataSize;
-
-    src->getValueInfo(&attrDataType, &attrDataSize);
-    std::vector<char> value(attrDataSize);
-    src->getValue(attrDataType, &value[0], attrDataSize);
-
-    PVUnionPtr destUnion(dest->getSubFieldT<PVUnion>("value"));
-    PVStringPtr valueFld(destUnion->get<PVString>());
-    if(!valueFld) {
-        valueFld = PVDC->createPVScalar<PVString>();
-        destUnion->set(valueFld);
-    }
-    valueFld->put(&value[0]);
+    const char *value;
+    src->getValue(src->getDataType(), (void*)&value);
+    dest_value["value"] = std::string(value);
 }
 
-void NTNDArrayConverter::fromUndefinedAttribute (PVStructurePtr dest)
-{
-    PVFieldPtr nullPtr;
-    dest->getSubField<PVUnion>("value")->set(nullPtr);
-}
+// void NTNDArrayConverter::fromUndefinedAttribute (PVStructurePtr dest, NDAttribute *src)
+// {
+// }
 
 void NTNDArrayConverter::fromAttributes (NDArray *src)
 {
-    PVStructureArrayPtr dest(m_array->getAttribute());
     NDAttributeList *srcList = src->pAttributeList;
     NDAttribute *attr = NULL;
-    StructureConstPtr structure(dest->getStructureArray()->getStructure());
-    PVStructureArray::svector destVec(dest->reuse());
-
-    destVec.resize(srcList->count());
-
     size_t i = 0;
+    pvxs::shared_array<pvxs::Value> attrs;
+    attrs.resize(src->pAttributeList->count());
     while((attr = srcList->next(attr)))
     {
-        if(!destVec[i].get() || !destVec[i].unique())
-            destVec[i] = PVDC->createPVStructure(structure);
-
-        PVStructurePtr pvAttr(destVec[i]);
-
-        pvAttr->getSubField<PVString>("name")->put(attr->getName());
-        pvAttr->getSubField<PVString>("descriptor")->put(attr->getDescription());
-        pvAttr->getSubField<PVString>("source")->put(attr->getSource());
-
         NDAttrSource_t sourceType;
         attr->getSourceInfo(&sourceType);
-        pvAttr->getSubField<PVInt>("sourceType")->put(sourceType);
+        attrs[i] = m_value["attribute"].allocMember();
+        attrs[i].update("name", attr->getName());
+        attrs[i].update("descriptor", attr->getDescription());
+        attrs[i].update("source", attr->getSource());
+        attrs[i].update("sourceType", sourceType);
 
         switch(attr->getDataType())
         {
-        case NDAttrInt8:      fromAttribute <PVByte,   int8_t>  (pvAttr, attr); break;
-        case NDAttrUInt8:     fromAttribute <PVUByte,  uint8_t> (pvAttr, attr); break;
-        case NDAttrInt16:     fromAttribute <PVShort,  int16_t> (pvAttr, attr); break;
-        case NDAttrUInt16:    fromAttribute <PVUShort, uint16_t>(pvAttr, attr); break;
-        case NDAttrInt32:     fromAttribute <PVInt,    int32_t> (pvAttr, attr); break;
-        case NDAttrUInt32:    fromAttribute <PVUInt,   uint32_t>(pvAttr, attr); break;
-        case NDAttrInt64:     fromAttribute <PVLong,   int64_t> (pvAttr, attr); break;
-        case NDAttrUInt64:    fromAttribute <PVULong,  uint64_t>(pvAttr, attr); break;
-        case NDAttrFloat32:   fromAttribute <PVFloat,  float>   (pvAttr, attr); break;
-        case NDAttrFloat64:   fromAttribute <PVDouble, double>  (pvAttr, attr); break;
-        case NDAttrString:    fromStringAttribute(pvAttr, attr); break;
-        case NDAttrUndefined: fromUndefinedAttribute(pvAttr); break;
+        case NDAttrInt8:      fromAttribute<int8_t>(attrs[i], attr);       break;
+        case NDAttrUInt8:     fromAttribute<uint8_t>(attrs[i], attr);      break;
+        case NDAttrInt16:     fromAttribute<int16_t>(attrs[i], attr);      break;
+        case NDAttrUInt16:    fromAttribute<uint16_t>(attrs[i], attr);     break;
+        case NDAttrInt32:     fromAttribute<int32_t>(attrs[i], attr);      break;
+        case NDAttrUInt32:    fromAttribute<uint32_t>(attrs[i], attr);     break;
+        case NDAttrInt64:     fromAttribute<int64_t>(attrs[i], attr);      break;
+        case NDAttrUInt64:    fromAttribute<uint64_t>(attrs[i], attr);     break;
+        case NDAttrFloat32:   fromAttribute<float>(attrs[i], attr);        break;
+        case NDAttrFloat64:   fromAttribute<double>(attrs[i], attr);       break;
+        case NDAttrString:    fromStringAttribute(attrs[i], attr);         break;
+        // case NDAttrUndefined: fromUndefinedAttribute(attrs[i]); break;
         default:              throw std::runtime_error("invalid attribute data type");
         }
-
         ++i;
     }
-
-    dest->replace(freeze(destVec));
+    m_value["attribute"] = attrs.freeze();
 }
 
 
