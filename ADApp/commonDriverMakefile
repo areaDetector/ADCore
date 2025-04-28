@@ -37,6 +37,12 @@ ifeq ($(WITH_PVA),YES)
   endif
 endif
 
+ifeq ($(WITH_PVXS),YES)
+  $(DBD_NAME)_DBD += NDPluginPvxs.dbd
+  PROD_LIBS += pvxs
+  PROD_LIBS += ntndArrayConverterPvxs
+endif
+
 ifeq ($(WITH_NETCDF),YES)
   $(DBD_NAME)_DBD += NDFileNetCDF.dbd
   ifeq ($(NETCDF_EXTERNAL),NO)
