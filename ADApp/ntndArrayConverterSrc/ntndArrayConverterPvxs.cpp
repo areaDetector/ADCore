@@ -247,13 +247,19 @@ void NTNDArrayConverter::toStringAttribute (NDArray *dest, pvxs::Value attribute
     dest->pAttributeList->add(attr);
 }
 
-// void NTNDArrayConverter::toUndefinedAttribute (NDArray *dest, pvxs::value attribute)
-// {
-// }
+void NTNDArrayConverter::toUndefinedAttribute (NDArray *dest, pvxs::Value attribute)
+{
+    std::string name = attribute["name"].as<std::string>();
+    std::string desc = attribute["descriptor"].as<std::string>();
+    std::string source = attribute["source"].as<std::string>();
+    NDAttrSource_t sourceType = (NDAttrSource_t) attribute["sourceType"].as<int32_t>();
+
+    NDAttribute *attr = new NDAttribute(name.c_str(), desc.c_str(), sourceType, source.c_str(), NDAttrDataType_t::NDAttrUndefined, NULL);
+    dest->pAttributeList->add(attr);
+}
 
 void NTNDArrayConverter::toAttributes (NDArray *dest)
 {
-    // TODO, handle undefined attributes?
     auto attributes = m_value["attribute"].as<pvxs::shared_array<const pvxs::Value>>();
     for (int i=0; i<attributes.size(); i++) {
         pvxs::Value value = attributes[i]["value"];
@@ -270,6 +276,7 @@ void NTNDArrayConverter::toAttributes (NDArray *dest)
             case pvxs::TypeCode::Float32:     toAttribute<float_t>   (dest, attributes[i], NDAttrDataType_t::NDAttrFloat32); break;
             case pvxs::TypeCode::Float64:     toAttribute<double_t>  (dest, attributes[i], NDAttrDataType_t::NDAttrFloat64); break;
             case pvxs::TypeCode::String:      toStringAttribute      (dest, attributes[i]); break;
+            case pvxs::TypeCode::Null:        toUndefinedAttribute   (dest, attributes[i]); break;
             default: throw std::runtime_error("invalid value data type");
         }
     }
@@ -352,6 +359,7 @@ void NTNDArrayConverter::fromStringAttribute (pvxs::Value dest_value, NDAttribut
     dest_value["value"] = std::string(value);
 }
 
+// TODO reimplement if required
 // void NTNDArrayConverter::fromUndefinedAttribute (PVStructurePtr dest, NDAttribute *src)
 // {
 // }

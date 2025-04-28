@@ -45,7 +45,7 @@ private:
     template <typename valueType>
     void toAttribute (NDArray *dest, pvxs::Value attribute, NDAttrDataType_t dataType);
     void toStringAttribute (NDArray *dest, pvxs::Value attribute);
-    // void toUndefinedAttribute (NDArray *dest, epics::pvData::PVStructurePtr src);
+    void toUndefinedAttribute (NDArray *dest, pvxs::Value attribute);
     void toAttributes (NDArray *dest);
 
     // template <typename arrayType>
