@@ -58,7 +58,6 @@ private:
     template <typename valueType>
     void fromAttribute (pvxs::Value dest_value, NDAttribute *src);
     void fromStringAttribute (pvxs::Value dest_value, NDAttribute *src);
-    // void fromUndefinedAttribute (epics::pvData::PVStructurePtr dest);
     void fromAttributes (NDArray *src);
 };
 
