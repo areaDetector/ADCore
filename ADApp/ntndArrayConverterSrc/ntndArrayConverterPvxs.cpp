@@ -225,9 +225,9 @@ template <typename valueType>
 void NTNDArrayConverter::toAttribute (NDArray *dest, pvxs::Value attribute, NDAttrDataType_t dataType)
 {
     // TODO, can we make dataType a template parameter?
-    std::string name = attribute["name"].as<std::string>();
-    std::string desc = attribute["descriptor"].as<std::string>();
-    std::string source = attribute["source"].as<std::string>();
+    auto name = attribute["name"].as<std::string>();
+    auto desc = attribute["descriptor"].as<std::string>();
+    auto source = attribute["source"].as<std::string>();
     NDAttrSource_t sourceType = (NDAttrSource_t) attribute["sourceType"].as<int32_t>();
     valueType value = attribute["value"].as<valueType>();
 
@@ -237,11 +237,11 @@ void NTNDArrayConverter::toAttribute (NDArray *dest, pvxs::Value attribute, NDAt
 
 void NTNDArrayConverter::toStringAttribute (NDArray *dest, pvxs::Value attribute)
 {
-    std::string name = attribute["name"].as<std::string>();
-    std::string desc = attribute["descriptor"].as<std::string>();
-    std::string source = attribute["source"].as<std::string>();
+    auto name = attribute["name"].as<std::string>();
+    auto desc = attribute["descriptor"].as<std::string>();
+    auto source = attribute["source"].as<std::string>();
     NDAttrSource_t sourceType = (NDAttrSource_t) attribute["sourceType"].as<int32_t>();
-    std::string value = attribute["value"].as<std::string>();
+    auto value = attribute["value"].as<std::string>();
 
     NDAttribute *attr = new NDAttribute(name.c_str(), desc.c_str(), sourceType, source.c_str(), NDAttrDataType_t::NDAttrString, (void*)value.c_str());
     dest->pAttributeList->add(attr);
@@ -249,9 +249,9 @@ void NTNDArrayConverter::toStringAttribute (NDArray *dest, pvxs::Value attribute
 
 void NTNDArrayConverter::toUndefinedAttribute (NDArray *dest, pvxs::Value attribute)
 {
-    std::string name = attribute["name"].as<std::string>();
-    std::string desc = attribute["descriptor"].as<std::string>();
-    std::string source = attribute["source"].as<std::string>();
+    auto name = attribute["name"].as<std::string>();
+    auto desc = attribute["descriptor"].as<std::string>();
+    auto source = attribute["source"].as<std::string>();
     NDAttrSource_t sourceType = (NDAttrSource_t) attribute["sourceType"].as<int32_t>();
 
     NDAttribute *attr = new NDAttribute(name.c_str(), desc.c_str(), sourceType, source.c_str(), NDAttrDataType_t::NDAttrUndefined, NULL);
