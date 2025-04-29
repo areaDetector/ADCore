@@ -3,7 +3,6 @@
 #include <ntndArrayConverterAPI.h>
 #include <NDArray.h>
 #include <pvxs/data.h>
-#include <pvxs/nt.h>
 
 typedef struct NTNDArrayInfo
 {
