@@ -359,11 +359,6 @@ void NTNDArrayConverter::fromStringAttribute (pvxs::Value dest_value, NDAttribut
     dest_value["value"] = std::string(value);
 }
 
-// TODO reimplement if required
-// void NTNDArrayConverter::fromUndefinedAttribute (PVStructurePtr dest, NDAttribute *src)
-// {
-// }
-
 void NTNDArrayConverter::fromAttributes (NDArray *src)
 {
     NDAttributeList *srcList = src->pAttributeList;
@@ -394,7 +389,7 @@ void NTNDArrayConverter::fromAttributes (NDArray *src)
         case NDAttrFloat32:   fromAttribute<float>(attrs[i], attr);        break;
         case NDAttrFloat64:   fromAttribute<double>(attrs[i], attr);       break;
         case NDAttrString:    fromStringAttribute(attrs[i], attr);         break;
-        // case NDAttrUndefined: fromUndefinedAttribute(attrs[i]); break;
+        case NDAttrUndefined: break;  // No need to assign value, leave as undefined
         default:              throw std::runtime_error("invalid attribute data type");
         }
         ++i;
