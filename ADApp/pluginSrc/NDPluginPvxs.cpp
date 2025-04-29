@@ -3,11 +3,9 @@
 #include <stdio.h>
 #include <iostream>
 
-#include <pvxs/data.h>
 #include <pvxs/server.h>
 #include <pvxs/sharedpv.h>
 #include <pvxs/nt.h>
-#include <pvxs/log.h>
 
 #include <iocsh.h>
 
