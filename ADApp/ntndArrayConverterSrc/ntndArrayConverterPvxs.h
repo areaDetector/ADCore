@@ -3,6 +3,9 @@
 #include <ntndArrayConverterAPI.h>
 #include <NDArray.h>
 #include <pvxs/data.h>
+#include <typeindex>
+#include <typeinfo>
+#include <unordered_map>
 
 typedef struct NTNDArrayInfo
 {
@@ -31,10 +34,13 @@ public:
 
 private:
     pvxs::Value m_value;
+    std::unordered_map<std::type_index, NDAttrDataType_t> m_typeMap;
+    std::unordered_map<std::type_index, std::string> m_fieldNameMap;
+    std::unordered_map<std::type_index, pvxs::ArrayType> m_arrayTypeMap;
     NDColorMode_t getColorMode (void);
 
     template <typename arrayType>
-    void toValue (NDArray *dest, std::string fieldName);
+    void toValue (NDArray *dest);
     void toValue (NDArray *dest);
 
     void toDimensions (NDArray *dest);
@@ -42,13 +48,13 @@ private:
     void toDataTimeStamp (NDArray *dest);
 
     template <typename valueType>
-    void toAttribute (NDArray *dest, pvxs::Value attribute, NDAttrDataType_t dataType);
+    void toAttribute (NDArray *dest, pvxs::Value attribute);
     void toStringAttribute (NDArray *dest, pvxs::Value attribute);
     void toUndefinedAttribute (NDArray *dest, pvxs::Value attribute);
     void toAttributes (NDArray *dest);
 
-    // template <typename arrayType>
-    // void fromValue (NDArray *src, const char* field_name);
+    template <typename arrayType>
+    void fromValue (NDArray *src);
     void fromValue (NDArray *src);
     
     void fromDimensions (NDArray *src);
