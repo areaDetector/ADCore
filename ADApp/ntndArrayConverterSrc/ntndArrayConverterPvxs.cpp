@@ -47,20 +47,19 @@ NTNDArrayInfo_t NTNDArrayConverter::getInfo (void)
     int bpe;
 
     if (info.codec.empty()) {
-        // TODO would be nicer as a switch statement
-        std::string fieldName = m_value["value"].nameOf(m_value["value"]["->"]);
-        std::string typeName(fieldName.substr(0, fieldName.find("Value")));
-        if (typeName == "byte")         {dt = NDDataType_t::NDInt8;      bpe = sizeof(int8_t);}
-        else if (typeName == "ubyte")   {dt = NDDataType_t::NDUInt8;     bpe = sizeof(uint8_t);}
-        else if (typeName == "short")   {dt = NDDataType_t::NDInt16;     bpe = sizeof(int16_t);}
-        else if (typeName == "ushort")  {dt = NDDataType_t::NDUInt16;    bpe = sizeof(uint16_t);}
-        else if (typeName == "int")     {dt = NDDataType_t::NDInt32;     bpe = sizeof(int32_t);}
-        else if (typeName == "uint")    {dt = NDDataType_t::NDUInt32;    bpe = sizeof(uint32_t);}
-        else if (typeName == "long")    {dt = NDDataType_t::NDInt64;     bpe = sizeof(int64_t);}
-        else if (typeName == "ulong")   {dt = NDDataType_t::NDUInt64;    bpe = sizeof(uint64_t);}
-        else if (typeName == "float")   {dt = NDDataType_t::NDFloat32;   bpe = sizeof(float_t);}
-        else if (typeName == "double")  {dt = NDDataType_t::NDFloat64;   bpe = sizeof(double_t);}
-        else throw std::runtime_error("invalid value data type");
+        switch (m_value["value->"].type().code) {
+        case pvxs::TypeCode::Int8A:      {dt = NDDataType_t::NDInt8;      bpe = sizeof(int8_t);   break;}
+        case pvxs::TypeCode::UInt8A:     {dt = NDDataType_t::NDUInt8;     bpe = sizeof(uint8_t);  break;}
+        case pvxs::TypeCode::Int16A:     {dt = NDDataType_t::NDInt16;     bpe = sizeof(int16_t);  break;}
+        case pvxs::TypeCode::UInt16A:    {dt = NDDataType_t::NDUInt16;    bpe = sizeof(uint16_t); break;}
+        case pvxs::TypeCode::Int32A:     {dt = NDDataType_t::NDInt32;     bpe = sizeof(int32_t);  break;}
+        case pvxs::TypeCode::UInt32A:    {dt = NDDataType_t::NDUInt32;    bpe = sizeof(uint32_t); break;}
+        case pvxs::TypeCode::Int64A:     {dt = NDDataType_t::NDInt64;     bpe = sizeof(int64_t);  break;}
+        case pvxs::TypeCode::UInt64A:    {dt = NDDataType_t::NDUInt64;    bpe = sizeof(uint64_t); break;}
+        case pvxs::TypeCode::Float32A:   {dt = NDDataType_t::NDFloat32;   bpe = sizeof(float_t);  break;}
+        case pvxs::TypeCode::Float64A:   {dt = NDDataType_t::NDFloat64;   bpe = sizeof(double_t); break;}
+        default: throw std::runtime_error("invalid value data type");
+        }
         // TODO get datatype
     } else {
         throw std::runtime_error("Have not implemeted parsing from known codec type yet");
@@ -173,19 +172,19 @@ void NTNDArrayConverter::toValue (NDArray *dest, std::string fieldName)
 
 void NTNDArrayConverter::toValue (NDArray *dest)
 {
-    std::string fieldName = m_value["value"].nameOf(m_value["value"]["->"]);
-    std::string typeName(fieldName.substr(0, fieldName.find("Value")));
-    if (typeName == "byte")         {toValue<int8_t>(dest, std::string("value->byteValue"));}
-    else if (typeName == "ubyte")   {toValue<uint8_t>(dest, std::string("value->ubyteValue"));}
-    else if (typeName == "short")   {toValue<int16_t>(dest, std::string("value->shortValue"));}
-    else if (typeName == "ushort")  {toValue<uint16_t>(dest, std::string("value->ushortValue"));}
-    else if (typeName == "int")     {toValue<int32_t>(dest, std::string("value->intValue"));}
-    else if (typeName == "uint")    {toValue<uint32_t>(dest, std::string("value->uintValue"));}
-    else if (typeName == "long")    {toValue<int64_t>(dest, std::string("value->longValue"));}
-    else if (typeName == "ulong")   {toValue<uint64_t>(dest, std::string("value->ulongValue"));}
-    else if (typeName == "float")   {toValue<float_t>(dest, std::string("value->floatValue"));}
-    else if (typeName == "double")  {toValue<double_t>(dest, std::string("value->doubleValue"));}
-    else throw std::runtime_error("invalid value data type");
+    switch (m_value["value->"].type().code) {
+    case pvxs::TypeCode::Int8A:     {toValue<int8_t>(dest, std::string("value->byteValue")); break;}
+    case pvxs::TypeCode::UInt8A:    {toValue<uint8_t>(dest, std::string("value->ubyteValue")); break;}
+    case pvxs::TypeCode::Int16A:    {toValue<int16_t>(dest, std::string("value->shortValue")); break;}
+    case pvxs::TypeCode::UInt16A:   {toValue<uint16_t>(dest, std::string("value->ushortValue")); break;}
+    case pvxs::TypeCode::Int32A:    {toValue<int32_t>(dest, std::string("value->intValue")); break;}
+    case pvxs::TypeCode::UInt32A:   {toValue<uint32_t>(dest, std::string("value->uintValue")); break;}
+    case pvxs::TypeCode::Int64A:    {toValue<int64_t>(dest, std::string("value->longValue")); break;}
+    case pvxs::TypeCode::UInt64A:   {toValue<uint64_t>(dest, std::string("value->ulongValue")); break;}
+    case pvxs::TypeCode::Float32A:  {toValue<float_t>(dest, std::string("value->floatValue")); break;}
+    case pvxs::TypeCode::Float64A:  {toValue<double_t>(dest, std::string("value->doubleValue")); break;}
+    default: throw std::runtime_error("invalid value data type");
+    }
 }
 
 void NTNDArrayConverter::toDimensions (NDArray *dest)
