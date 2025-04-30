@@ -4,13 +4,6 @@
 #include <iostream>
 using namespace std;
 
-template <typename dataType>
-struct freeNDArray {
-    NDArray *array;
-    freeNDArray(NDArray *array) : array(array) {};
-    void operator()(dataType *data) { array->release(); }
-};
-
 NTNDArrayConverter::NTNDArrayConverter (pvxs::Value value) : m_value(value) {
     m_typeMap = {
         {typeid(int8_t), NDAttrDataType_t::NDAttrInt8},
@@ -87,22 +80,31 @@ NTNDArrayInfo_t NTNDArrayConverter::getInfo (void)
 
     if (info.codec.empty()) {
         switch (m_value["value->"].type().code) {
-        case pvxs::TypeCode::Int8A:      {dt = NDInt8;      bpe = sizeof(int8_t);   break;}
-        case pvxs::TypeCode::UInt8A:     {dt = NDUInt8;     bpe = sizeof(uint8_t);  break;}
-        case pvxs::TypeCode::Int16A:     {dt = NDInt16;     bpe = sizeof(int16_t);  break;}
-        case pvxs::TypeCode::UInt16A:    {dt = NDUInt16;    bpe = sizeof(uint16_t); break;}
-        case pvxs::TypeCode::Int32A:     {dt = NDInt32;     bpe = sizeof(int32_t);  break;}
-        case pvxs::TypeCode::UInt32A:    {dt = NDUInt32;    bpe = sizeof(uint32_t); break;}
-        case pvxs::TypeCode::Int64A:     {dt = NDInt64;     bpe = sizeof(int64_t);  break;}
-        case pvxs::TypeCode::UInt64A:    {dt = NDUInt64;    bpe = sizeof(uint64_t); break;}
-        case pvxs::TypeCode::Float32A:   {dt = NDFloat32;   bpe = sizeof(float_t);  break;}
-        case pvxs::TypeCode::Float64A:   {dt = NDFloat64;   bpe = sizeof(double_t); break;}
-        default: throw std::runtime_error("invalid value data type");
+            case pvxs::TypeCode::Int8A:      {dt = NDInt8;      break;}
+            case pvxs::TypeCode::UInt8A:     {dt = NDUInt8;     break;}
+            case pvxs::TypeCode::Int16A:     {dt = NDInt16;     break;}
+            case pvxs::TypeCode::UInt16A:    {dt = NDUInt16;    break;}
+            case pvxs::TypeCode::Int32A:     {dt = NDInt32;     break;}
+            case pvxs::TypeCode::UInt32A:    {dt = NDUInt32;    break;}
+            case pvxs::TypeCode::Int64A:     {dt = NDInt64;     break;}
+            case pvxs::TypeCode::UInt64A:    {dt = NDUInt64;    break;}
+            case pvxs::TypeCode::Float32A:   {dt = NDFloat32;   break;}
+            case pvxs::TypeCode::Float64A:   {dt = NDFloat64;   break;}
+            default: throw std::runtime_error("invalid value data type");
         }
-        // TODO get datatype
-    } else {
-        throw std::runtime_error("Have not implemeted parsing from known codec type yet");
-        // get datatype from codec.parameters...
+    } else dt = (NDDataType_t) m_value["codec.parameters"].as<int32_t>();
+    switch (dt) {
+        case NDInt8:      {bpe = sizeof(int8_t);   break;}
+        case NDUInt8:     {bpe = sizeof(uint8_t);  break;}
+        case NDInt16:     {bpe = sizeof(int16_t);  break;}
+        case NDUInt16:    {bpe = sizeof(uint16_t); break;}
+        case NDInt32:     {bpe = sizeof(int32_t);  break;}
+        case NDUInt32:    {bpe = sizeof(uint32_t); break;}
+        case NDInt64:     {bpe = sizeof(int64_t);  break;}
+        case NDUInt64:    {bpe = sizeof(uint64_t); break;}
+        case NDFloat32:   {bpe = sizeof(float_t);  break;}
+        case NDFloat64:   {bpe = sizeof(double_t); break;}
+        default: throw std::runtime_error("Could not determine element size.");
     }
 
     info.dataType        = dt;
@@ -343,15 +345,15 @@ void NTNDArrayConverter::fromValue(NDArray *src) {
 
 void NTNDArrayConverter::fromValue (NDArray *src) {
     switch(src->dataType) {
-        case NDDataType_t::NDInt8:      {fromValue<int8_t>(src); break;};
-        case NDDataType_t::NDUInt8:     {fromValue<uint8_t>(src); break;};
-        case NDDataType_t::NDInt16:     {fromValue<int16_t>(src); break;};
-        case NDDataType_t::NDInt32:     {fromValue<int32_t>(src); break;};
-        case NDDataType_t::NDUInt32:    {fromValue<uint32_t>(src); break;};
-        case NDDataType_t::NDInt64:     {fromValue<int64_t>(src); break;};
-        case NDDataType_t::NDUInt64:    {fromValue<uint64_t>(src); break;};
-        case NDDataType_t::NDFloat32:   {fromValue<float_t>(src); break;};
-        case NDDataType_t::NDFloat64:   {fromValue<double_t>(src); break;};
+        case NDInt8:      {fromValue<int8_t>(src); break;};
+        case NDUInt8:     {fromValue<uint8_t>(src); break;};
+        case NDInt16:     {fromValue<int16_t>(src); break;};
+        case NDInt32:     {fromValue<int32_t>(src); break;};
+        case NDUInt32:    {fromValue<uint32_t>(src); break;};
+        case NDInt64:     {fromValue<int64_t>(src); break;};
+        case NDUInt64:    {fromValue<uint64_t>(src); break;};
+        case NDFloat32:   {fromValue<float_t>(src); break;};
+        case NDFloat64:   {fromValue<double_t>(src); break;};
         default: {
             throw std::runtime_error("invalid value data type");
             break;
