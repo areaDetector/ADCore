@@ -391,18 +391,18 @@ void NTNDArrayConverter::fromTimeStamp (NDArray *src) {
 }
 
 template <typename valueType>
-void NTNDArrayConverter::fromAttribute (pvxs::Value dest_value, NDAttribute *src)
+void NTNDArrayConverter::fromAttribute (pvxs::Value destValue, NDAttribute *src)
 {
     valueType value;
     src->getValue(src->getDataType(), (void*)&value);
-    dest_value["value"] = value;
+    destValue["value"] = value;
 }
 
-void NTNDArrayConverter::fromStringAttribute (pvxs::Value dest_value, NDAttribute *src)
+void NTNDArrayConverter::fromStringAttribute (pvxs::Value destValue, NDAttribute *src)
 {
     const char *value;
     src->getValue(src->getDataType(), (void*)&value);
-    dest_value["value"] = std::string(value);
+    destValue["value"] = std::string(value);
 }
 
 void NTNDArrayConverter::fromAttributes (NDArray *src)
