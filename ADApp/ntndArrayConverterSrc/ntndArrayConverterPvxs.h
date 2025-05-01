@@ -62,8 +62,8 @@ private:
     void fromDataTimeStamp (NDArray *src);
 
     template <typename valueType>
-    void fromAttribute (pvxs::Value dest_value, NDAttribute *src);
-    void fromStringAttribute (pvxs::Value dest_value, NDAttribute *src);
+    void fromAttribute (pvxs::Value destValue, NDAttribute *src);
+    void fromStringAttribute (pvxs::Value destValue, NDAttribute *src);
     void fromAttributes (NDArray *src);
 };
 

@@ -50,7 +50,7 @@ NTNDArrayRecordPtr NTNDArrayRecord::create (string const & name)
 
 bool NTNDArrayRecord::init ()
 {
-    m_pv = pvxs::server::SharedPV(pvxs::server::SharedPV::buildMailbox());
+    m_pv = pvxs::server::SharedPV(pvxs::server::SharedPV::buildReadonly());
     m_pv.open(m_value);
     m_server = pvxs::server::Server::fromEnv();
     m_server.addPV(m_name, m_pv);
