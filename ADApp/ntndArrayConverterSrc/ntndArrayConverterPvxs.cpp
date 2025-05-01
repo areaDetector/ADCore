@@ -49,8 +49,7 @@ NDColorMode_t NTNDArrayConverter::getColorMode (void)
 {
     auto attributes = m_value["attribute"].as<pvxs::shared_array<const pvxs::Value>>();
     NDColorMode_t colorMode = NDColorMode_t::NDColorModeMono;
-    for (int i=0; i<attributes.size(); i++) {
-        pvxs::Value attribute = attributes[i];
+    for (auto &attribute : attributes) {
         if (attribute["name"].as<std::string>() == "ColorMode") {
             colorMode = (NDColorMode_t) attribute["value"].as<int32_t>();
             break;
@@ -366,12 +365,12 @@ void NTNDArrayConverter::fromDimensions (NDArray *src) {
     dims.resize(src->ndims);
 
     for (int i = 0; i < src->ndims; i++) {
-        dims[i] = m_value["dimension"].allocMember();
-        dims[i].update("size", src->dims[i].size);
-        dims[i].update("offset", src->dims[i].offset);
-        dims[i].update("fullSize", src->dims[i].size);
-        dims[i].update("binning", src->dims[i].binning);
-        dims[i].update("reverse", src->dims[i].reverse);
+        dims[i] = m_value["dimension"].allocMember()
+        .update("size", src->dims[i].size)
+        .update("offset", src->dims[i].offset)
+        .update("fullSize", src->dims[i].size)
+        .update("binning", src->dims[i].binning)
+        .update("reverse", src->dims[i].reverse);
     }
     m_value["dimension"] = dims.freeze();
 }
@@ -417,11 +416,11 @@ void NTNDArrayConverter::fromAttributes (NDArray *src)
     {
         NDAttrSource_t sourceType;
         attr->getSourceInfo(&sourceType);
-        attrs[i] = m_value["attribute"].allocMember();
-        attrs[i].update("name", attr->getName());
-        attrs[i].update("descriptor", attr->getDescription());
-        attrs[i].update("source", attr->getSource());
-        attrs[i].update("sourceType", sourceType);
+        attrs[i] = m_value["attribute"].allocMember()
+        .update("name", attr->getName())
+        .update("descriptor", attr->getDescription())
+        .update("source", attr->getSource())
+        .update("sourceType", sourceType);
 
         switch(attr->getDataType())
         {
