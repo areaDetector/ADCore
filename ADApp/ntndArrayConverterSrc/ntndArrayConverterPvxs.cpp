@@ -331,11 +331,13 @@ void NTNDArrayConverter::fromValue(NDArray *src) {
 
     m_value["compressedSize"] = src->compressedSize;
     m_value["uncompressedSize"] = arrayInfo.totalBytes;
+
     std::string fieldName = m_fieldNameMap[typeid(dataType)];
     auto arrayType = m_arrayTypeMap[typeid(dataType)];
-    const auto val = pvxs::detail::copyAs(
-        arrayType, arrayType, (const void*) src->pData, arrayInfo.nElements).freeze();
-    m_value[fieldName] = val;
+    auto val = pvxs::allocArray(arrayType, arrayInfo.nElements);
+    memcpy(val.data(), src->pData, arrayInfo.totalBytes);
+    m_value[fieldName] = val.freeze();
+
     m_value["codec.name"] = src->codec.name; // compression codec
     // The uncompressed data type would be lost when converting to NTNDArray,
     // so we must store it somewhere. codec.parameters seems like a good place.
