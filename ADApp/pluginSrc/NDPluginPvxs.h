@@ -1,21 +1,22 @@
-#ifndef NDPluginPva_H
-#define NDPluginPva_H
+#ifndef NDPluginPvxs_H
+#define NDPluginPvxs_H
+
 
 #include "NDPluginDriver.h"
 #include <vector>
 
-#define NDPluginPvaPvNameString "PV_NAME"
+#define NDPluginPvxsPvNameString "PV_NAME"
 
 class NTNDArrayRecord;
 typedef std::shared_ptr<NTNDArrayRecord> NTNDArrayRecordPtr;
 
 /** Converts NDArray callback data into EPICS V4 NTNDArray data and exposes it
   * as an EPICS V4 PV  */
-class NDPLUGIN_API NDPluginPva : public NDPluginDriver,
-                     public std::enable_shared_from_this<NDPluginPva>
+class NDPLUGIN_API NDPluginPvxs : public NDPluginDriver,
+                     public std::enable_shared_from_this<NDPluginPvxs>
 {
 public:
-    NDPluginPva(const char *portName, int queueSize, int blockingCallbacks,
+    NDPluginPvxs(const char *portName, int queueSize, int blockingCallbacks,
                  const char *NDArrayPort, int NDArrayAddr, const char *pvName,
                  int maxBuffers, size_t maxMemory, int priority, int stackSize);
 
@@ -23,7 +24,7 @@ public:
     void processCallbacks(NDArray *pArray);
 
 protected:
-    int NDPluginPvaPvName;
+    int NDPluginPvxsPvName;
 
 private:
     NTNDArrayRecordPtr m_record;

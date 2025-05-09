@@ -1,10 +1,10 @@
-#include "ntndArrayConverter.h"
+#include "ntndArrayConverterPvxs.h"
 #include <stdio.h>
 #include <string.h>
 #include <iostream>
 using namespace std;
 
-NTNDArrayConverter::NTNDArrayConverter (pvxs::Value value) : m_value(value) {
+NTNDArrayConverterPvxs::NTNDArrayConverterPvxs (pvxs::Value value) : m_value(value) {
     m_typeMap = {
         {typeid(int8_t), NDAttrDataType_t::NDAttrInt8},
         {typeid(uint8_t), NDAttrDataType_t::NDAttrUInt8},
@@ -45,7 +45,7 @@ NTNDArrayConverter::NTNDArrayConverter (pvxs::Value value) : m_value(value) {
 
 }
 
-NDColorMode_t NTNDArrayConverter::getColorMode (void)
+NDColorMode_t NTNDArrayConverterPvxs::getColorMode (void)
 {
     auto attributes = m_value["attribute"].as<pvxs::shared_array<const pvxs::Value>>();
     NDColorMode_t colorMode = NDColorMode_t::NDColorModeMono;
@@ -58,7 +58,7 @@ NDColorMode_t NTNDArrayConverter::getColorMode (void)
     return colorMode;
 }
 
-NTNDArrayInfo_t NTNDArrayConverter::getInfo (void)
+NTNDArrayInfo_t NTNDArrayConverterPvxs::getInfo (void)
 {
     NTNDArrayInfo_t info = {0};
 
@@ -174,7 +174,7 @@ NTNDArrayInfo_t NTNDArrayConverter::getInfo (void)
     return info;
 }
 
-void NTNDArrayConverter::toArray (NDArray *dest)
+void NTNDArrayConverterPvxs::toArray (NDArray *dest)
 {
     toValue(dest);
     toDimensions(dest);
@@ -185,7 +185,7 @@ void NTNDArrayConverter::toArray (NDArray *dest)
     dest->uniqueId = m_value["uniqueId"].as<int32_t>();
 }
 
-void NTNDArrayConverter::fromArray (NDArray *src)
+void NTNDArrayConverterPvxs::fromArray (NDArray *src)
 {
     fromValue(src);
     fromDimensions(src);
@@ -197,7 +197,7 @@ void NTNDArrayConverter::fromArray (NDArray *src)
 }
 
 template <typename arrayType>
-void NTNDArrayConverter::toValue (NDArray *dest)
+void NTNDArrayConverterPvxs::toValue (NDArray *dest)
 {
     NTNDArrayInfo_t info = getInfo();
     dest->codec.name = info.codec;
@@ -213,7 +213,7 @@ void NTNDArrayConverter::toValue (NDArray *dest)
         dest->compressedSize = info.totalBytes;
 }
 
-void NTNDArrayConverter::toValue (NDArray *dest)
+void NTNDArrayConverterPvxs::toValue (NDArray *dest)
 {
     switch (m_value["value->"].type().code) {
     case pvxs::TypeCode::Int8A:     {toValue<int8_t>(dest); break;}
@@ -230,7 +230,7 @@ void NTNDArrayConverter::toValue (NDArray *dest)
     }
 }
 
-void NTNDArrayConverter::toDimensions (NDArray *dest)
+void NTNDArrayConverterPvxs::toDimensions (NDArray *dest)
 {
     auto dims = m_value["dimension"].as<pvxs::shared_array<const pvxs::Value>>();
     dest->ndims = (int)dims.size();
@@ -245,7 +245,7 @@ void NTNDArrayConverter::toDimensions (NDArray *dest)
     }
 }
 
-void NTNDArrayConverter::toTimeStamp (NDArray *dest)
+void NTNDArrayConverterPvxs::toTimeStamp (NDArray *dest)
 {
     // NDArray uses EPICS time, pvAccess uses Posix time, need to convert
     dest->epicsTS.secPastEpoch = (epicsUInt32)
@@ -254,7 +254,7 @@ void NTNDArrayConverter::toTimeStamp (NDArray *dest)
         m_value["timeStamp.nanoseconds"].as<uint32_t>();
 }
 
-void NTNDArrayConverter::toDataTimeStamp (NDArray *dest)
+void NTNDArrayConverterPvxs::toDataTimeStamp (NDArray *dest)
 {
     // NDArray uses EPICS time, pvAccess uses Posix time, need to convert
     dest->timeStamp = (epicsFloat64) 
@@ -264,7 +264,7 @@ void NTNDArrayConverter::toDataTimeStamp (NDArray *dest)
 }
 
 template <typename valueType>
-void NTNDArrayConverter::toAttribute (NDArray *dest, pvxs::Value attribute)
+void NTNDArrayConverterPvxs::toAttribute (NDArray *dest, pvxs::Value attribute)
 {
     auto name = attribute["name"].as<std::string>();
     auto desc = attribute["descriptor"].as<std::string>();
@@ -277,7 +277,7 @@ void NTNDArrayConverter::toAttribute (NDArray *dest, pvxs::Value attribute)
     dest->pAttributeList->add(attr);
 }
 
-void NTNDArrayConverter::toStringAttribute (NDArray *dest, pvxs::Value attribute)
+void NTNDArrayConverterPvxs::toStringAttribute (NDArray *dest, pvxs::Value attribute)
 {
     auto name = attribute["name"].as<std::string>();
     auto desc = attribute["descriptor"].as<std::string>();
@@ -289,7 +289,7 @@ void NTNDArrayConverter::toStringAttribute (NDArray *dest, pvxs::Value attribute
     dest->pAttributeList->add(attr);
 }
 
-void NTNDArrayConverter::toUndefinedAttribute (NDArray *dest, pvxs::Value attribute)
+void NTNDArrayConverterPvxs::toUndefinedAttribute (NDArray *dest, pvxs::Value attribute)
 {
     auto name = attribute["name"].as<std::string>();
     auto desc = attribute["descriptor"].as<std::string>();
@@ -300,7 +300,7 @@ void NTNDArrayConverter::toUndefinedAttribute (NDArray *dest, pvxs::Value attrib
     dest->pAttributeList->add(attr);
 }
 
-void NTNDArrayConverter::toAttributes (NDArray *dest)
+void NTNDArrayConverterPvxs::toAttributes (NDArray *dest)
 {
     auto attributes = m_value["attribute"].as<pvxs::shared_array<const pvxs::Value>>();
     for (int i=0; i<attributes.size(); i++) {
@@ -325,7 +325,7 @@ void NTNDArrayConverter::toAttributes (NDArray *dest)
 }
 
 template <typename dataType>
-void NTNDArrayConverter::fromValue(NDArray *src) {
+void NTNDArrayConverterPvxs::fromValue(NDArray *src) {
     NDArrayInfo_t arrayInfo;
     src->getInfo(&arrayInfo);
 
@@ -344,7 +344,7 @@ void NTNDArrayConverter::fromValue(NDArray *src) {
     m_value["codec.parameters"] = (int32_t) src->dataType;
 }
 
-void NTNDArrayConverter::fromValue (NDArray *src) {
+void NTNDArrayConverterPvxs::fromValue (NDArray *src) {
     switch(src->dataType) {
         case NDInt8:      {fromValue<int8_t>(src); break;};
         case NDUInt8:     {fromValue<uint8_t>(src); break;};
@@ -362,7 +362,7 @@ void NTNDArrayConverter::fromValue (NDArray *src) {
     }
 }
 
-void NTNDArrayConverter::fromDimensions (NDArray *src) {
+void NTNDArrayConverterPvxs::fromDimensions (NDArray *src) {
     pvxs::shared_array<pvxs::Value> dims;
     dims.resize(src->ndims);
 
@@ -377,7 +377,7 @@ void NTNDArrayConverter::fromDimensions (NDArray *src) {
     m_value["dimension"] = dims.freeze();
 }
 
-void NTNDArrayConverter::fromDataTimeStamp (NDArray *src) {
+void NTNDArrayConverterPvxs::fromDataTimeStamp (NDArray *src) {
     double seconds = floor(src->timeStamp);
     double nanoseconds = (src->timeStamp - seconds)*1e9;
     // pvAccess uses Posix time, NDArray uses EPICS time, need to convert
@@ -386,28 +386,28 @@ void NTNDArrayConverter::fromDataTimeStamp (NDArray *src) {
     m_value["dataTimeStamp.nanoseconds"] = nanoseconds;
 }
 
-void NTNDArrayConverter::fromTimeStamp (NDArray *src) {
+void NTNDArrayConverterPvxs::fromTimeStamp (NDArray *src) {
     // pvAccess uses Posix time, NDArray uses EPICS time, need to convert
     m_value["timeStamp.secondsPastEpoch"] = src->epicsTS.secPastEpoch + POSIX_TIME_AT_EPICS_EPOCH;
     m_value["timeStamp.nanoseconds"] = src->epicsTS.nsec;
 }
 
 template <typename valueType>
-void NTNDArrayConverter::fromAttribute (pvxs::Value destValue, NDAttribute *src)
+void NTNDArrayConverterPvxs::fromAttribute (pvxs::Value destValue, NDAttribute *src)
 {
     valueType value;
     src->getValue(src->getDataType(), (void*)&value);
     destValue["value"] = value;
 }
 
-void NTNDArrayConverter::fromStringAttribute (pvxs::Value destValue, NDAttribute *src)
+void NTNDArrayConverterPvxs::fromStringAttribute (pvxs::Value destValue, NDAttribute *src)
 {
     const char *value;
     src->getValue(src->getDataType(), (void*)&value);
     destValue["value"] = std::string(value);
 }
 
-void NTNDArrayConverter::fromAttributes (NDArray *src)
+void NTNDArrayConverterPvxs::fromAttributes (NDArray *src)
 {
     NDAttributeList *srcList = src->pAttributeList;
     NDAttribute *attr = NULL;

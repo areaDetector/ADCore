@@ -24,10 +24,10 @@ typedef struct NTNDArrayInfo
     }x, y, color;
 }NTNDArrayInfo_t;
 
-class NTNDARRAYCONVERTER_API NTNDArrayConverter
+class NTNDARRAYCONVERTER_API NTNDArrayConverterPvxs
 {
 public:
-    NTNDArrayConverter(pvxs::Value value);
+    NTNDArrayConverterPvxs(pvxs::Value value);
     NTNDArrayInfo_t getInfo (void);
     void toArray (NDArray *dest);
     void fromArray (NDArray *src);
@@ -67,4 +67,4 @@ private:
     void fromAttributes (NDArray *src);
 };
 
-typedef std::shared_ptr<NTNDArrayConverter> NTNDArrayConverterPtr;
+typedef std::shared_ptr<NTNDArrayConverterPvxs> NTNDArrayConverterPvxsPtr;

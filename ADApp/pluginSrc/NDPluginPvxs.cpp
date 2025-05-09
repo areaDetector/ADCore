@@ -9,13 +9,13 @@
 
 #include <iocsh.h>
 
-#include <ntndArrayConverter.h>
+#include <ntndArrayConverterPvxs.h>
 
-#include "NDPluginPva.h"
+#include "NDPluginPvxs.h"
 
 #include <epicsExport.h>
 
-static const char *driverName="NDPluginPva";
+static const char *driverName="NDPluginPvxs";
 
 using namespace std;
 
@@ -23,7 +23,7 @@ class NDPLUGIN_API NTNDArrayRecord {
 
 private:
     NTNDArrayRecord(string const & name, pvxs::Value value) : m_name(name), m_value(value) {};
-    NTNDArrayConverterPtr m_converter;
+    NTNDArrayConverterPvxsPtr m_converter;
     pvxs::server::Server m_server;
     string m_name;
     pvxs::Value m_value;
@@ -55,7 +55,7 @@ bool NTNDArrayRecord::init ()
     m_server = pvxs::server::Server::fromEnv();
     m_server.addPV(m_name, m_pv);
     m_server.start(); // start is not blocking
-    m_converter.reset(new NTNDArrayConverter(m_value));
+    m_converter.reset(new NTNDArrayConverterPvxs(m_value));
     return true;
 }
 
@@ -74,7 +74,7 @@ void NTNDArrayRecord::update(NDArray *pArray)
   * data.
   * \param[in] pArray  The NDArray from the callback.
   */
-void NDPluginPva::processCallbacks(NDArray *pArray)
+void NDPluginPvxs::processCallbacks(NDArray *pArray)
 {
     static const char *functionName = "processCallbacks";
 
@@ -104,7 +104,7 @@ void NDPluginPva::processCallbacks(NDArray *pArray)
     callParamCallbacks();
 }
 
-/** Constructor for NDPluginPva
+/** Constructor for NDPluginPvxs
   * This plugin cannot block (ASYN_CANBLOCK=0) and is not multi-device (ASYN_MULTIDEVICE=0).
   * \param[in] portName The name of the asyn port driver to be created.
   * \param[in] queueSize The number of NDArrays that the input queue for this
@@ -130,7 +130,7 @@ void NDPluginPva::processCallbacks(NDArray *pArray)
   * \param[in] stackSize The stack size for the asyn port driver thread if ASYN_CANBLOCK is set in asynFlags.
   *            This value should also be used for any other threads this object creates.
   */
-NDPluginPva::NDPluginPva(const char *portName, int queueSize,
+NDPluginPvxs::NDPluginPvxs(const char *portName, int queueSize,
         int blockingCallbacks, const char *NDArrayPort, int NDArrayAddr,
         const char *pvName, int maxBuffers, size_t maxMemory, int priority, int stackSize)
     /* Invoke the base class constructor */
@@ -139,24 +139,24 @@ NDPluginPva::NDPluginPva(const char *portName, int queueSize,
             0, 1, priority, stackSize, 1, true),
             m_record(NTNDArrayRecord::create(pvName))
 {
-    createParam(NDPluginPvaPvNameString, asynParamOctet, &NDPluginPvaPvName);
+    createParam(NDPluginPvxsPvNameString, asynParamOctet, &NDPluginPvxsPvName);
 
     /* Set the plugin type string */
-    setStringParam(NDPluginDriverPluginType, "NDPluginPva");
+    setStringParam(NDPluginDriverPluginType, "NDPluginPvxs");
 
     /* Set PvName */
-    setStringParam(NDPluginPvaPvName, pvName);
+    setStringParam(NDPluginPvxsPvName, pvName);
 
     /* Try to connect to the NDArray port */
     connectToArrayPort();
 }
 
 /* Configuration routine.  Called directly, or from the iocsh function */
-extern "C" int NDPvaConfigure(const char *portName, int queueSize,
+extern "C" int NDPvxsConfigure(const char *portName, int queueSize,
         int blockingCallbacks, const char *NDArrayPort, int NDArrayAddr,
         const char *pvName, int maxBuffers, size_t maxMemory, int priority, int stackSize)
 {
-    NDPluginPva *pPlugin = new NDPluginPva(portName, queueSize, blockingCallbacks, NDArrayPort,
+    NDPluginPvxs *pPlugin = new NDPluginPvxs(portName, queueSize, blockingCallbacks, NDArrayPort,
                                            NDArrayAddr, pvName, maxBuffers, maxMemory, priority, stackSize);
     return pPlugin->start();
 }
@@ -182,20 +182,20 @@ static const iocshArg * const initArgs[] = {&initArg0,
                                             &initArg7,
                                             &initArg8,
                                             &initArg9,};
-static const iocshFuncDef initFuncDef = {"NDPvaConfigure",10,initArgs};
+static const iocshFuncDef initFuncDef = {"NDPvxsConfigure",10,initArgs};
 static void initCallFunc(const iocshArgBuf *args)
 {
-    NDPvaConfigure(args[0].sval, args[1].ival, args[2].ival,
+    NDPvxsConfigure(args[0].sval, args[1].ival, args[2].ival,
                    args[3].sval, args[4].ival, args[5].sval,
                    args[6].ival, args[7].ival, args[8].ival,
                    args[9].ival);
 }
 
-extern "C" void NDPvaRegister(void)
+extern "C" void NDPvxsRegister(void)
 {
     iocshRegister(&initFuncDef,initCallFunc);
 }
 
 extern "C" {
-epicsExportRegistrar(NDPvaRegister);
+epicsExportRegistrar(NDPvxsRegister);
 }
