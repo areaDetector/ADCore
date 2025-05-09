@@ -137,7 +137,7 @@ NDPluginPvxs::NDPluginPvxs(const char *portName, int queueSize,
     : NDPluginDriver(portName, queueSize, blockingCallbacks,
             NDArrayPort, NDArrayAddr, 1, maxBuffers, maxMemory, 0, 0,
             0, 1, priority, stackSize, 1, true),
-            m_record(NTNDArrayRecord::create(pvName))
+      m_record(NTNDArrayRecord::create(pvName))
 {
     createParam(NDPluginPvxsPvNameString, asynParamOctet, &NDPluginPvxsPvName);
 
