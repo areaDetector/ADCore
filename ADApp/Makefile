@@ -16,6 +16,10 @@ ifeq ($(WITH_PVA), YES)
   DIRS += ntndArrayConverterSrc
   ntndArrayConverterSrc_DEPEND_DIRS += ADSrc
   pluginSrc_DEPEND_DIRS += ntndArrayConverterSrc
+else ifeq ($(WITH_PVXS), YES)
+  DIRS += ntndArrayConverterSrc
+  ntndArrayConverterSrc_DEPEND_DIRS += ADSrc
+  pluginSrc_DEPEND_DIRS += ntndArrayConverterSrc
 endif
 
 DIRS += op
