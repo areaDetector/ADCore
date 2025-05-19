@@ -6,6 +6,7 @@
 #include <pvxs/server.h>
 #include <pvxs/sharedpv.h>
 #include <pvxs/nt.h>
+#include <pvxs/iochooks.h>
 
 #include <iocsh.h>
 
@@ -24,13 +25,12 @@ class NDPLUGIN_API NTNDArrayRecord {
 private:
     NTNDArrayRecord(string const & name, pvxs::Value value) : m_name(name), m_value(value) {};
     NTNDArrayConverterPvxsPtr m_converter;
-    pvxs::server::Server m_server;
     string m_name;
     pvxs::Value m_value;
     pvxs::server::SharedPV m_pv;
 
 public:
-    virtual ~NTNDArrayRecord ();
+    virtual ~NTNDArrayRecord () {};
     static NTNDArrayRecordPtr create (string const & name);
     virtual bool init ();
     virtual void process () {}
@@ -52,17 +52,11 @@ bool NTNDArrayRecord::init ()
 {
     m_pv = pvxs::server::SharedPV(pvxs::server::SharedPV::buildReadonly());
     m_pv.open(m_value);
-    m_server = pvxs::server::Server::fromEnv();
-    m_server.addPV(m_name, m_pv);
-    m_server.start(); // start is not blocking
+    // use singleton pvxs server
+    pvxs::ioc::server().addPV(m_name, m_pv);
     m_converter.reset(new NTNDArrayConverterPvxs(m_value));
     return true;
 }
-
-NTNDArrayRecord::~NTNDArrayRecord () {
-    m_server.stop();
-}
-
 
 void NTNDArrayRecord::update(NDArray *pArray)
 {
