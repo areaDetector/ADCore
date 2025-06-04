@@ -614,8 +614,8 @@ loading ADBase.template.
       The value of this record must be set with caution, because too large a value could
       use all memory on the system, resulting serious performance degradation.
     - POOL_NUM_PRE_ALLOC_BUFFERS
-    - $(P)$(R)NumPreAllocBuffers
-    - longout
+    - $(P)$(R)NumPreAllocBuffers, $(P)$(R)NumPreAllocBuffers_RBV
+    - longout, longin
   * - NDPoolPreAllocBuffers
     - asynInt32
     - r/w
