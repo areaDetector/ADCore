@@ -479,7 +479,7 @@ loading ADBase.template.
     - Compressed size of the array data in bytes. Only meaningful if NDCodec is not empty
       string.
     - COMPRESSED_SIZE
-    - $(P)$(R)Compressed_RBV
+    - $(P)$(R)CompressedSize_RBV
     - longin
   * -
     -
