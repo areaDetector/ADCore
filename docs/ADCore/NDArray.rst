@@ -412,6 +412,41 @@ loading ADBase.template.
   * -
     -
     -
+    - **Unique ID and time stamps of the array**
+  * - NDUniqueId
+    - asynInt32
+    - r/o
+    - Unique ID number of array assigned by the EPICS driver.
+    - UNIQUE_ID
+    - $(P)$(R)UniqueId_RBV
+    - longin
+  * - NDTimeStamp
+    - asynFloat64
+    - r/o
+    - Time stamp of array.
+    - TIME_STAMP
+    - $(P)$(R)TimeStamp_RBV
+    - ai
+  * - NDEpicsTSSec
+    - asynInt32
+    - r/o
+    - Seconds past epoch time stamp of array assigned by the EPICS driver. It
+      is based on the EPICS epoch.
+    - EPICS_TS_SEC
+    - $(P)$(R)EpicsTSSec_RBV
+    - longin
+  * - NDEpicsTSNsec
+    - asynInt32
+    - r/o
+    - Nanoseconds time stamp fraction of the EPICS time stamp. It should be
+      composed with $(P)$(R)EpicsTSSec_RBV to get the final time stamp with
+      nanosecond resolution.
+    - EPICS_TS_NSEC
+    - $(P)$(R)EpicsTSNsec_RBV
+    - longin
+  * -
+    -
+    -
     - **Actual dimensions of array data**
   * - NDNDimensions
     - asynInt32
