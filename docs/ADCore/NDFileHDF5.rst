@@ -662,6 +662,12 @@ Parameters and Records
     - HDF5_dimAttDatasets
     - $(P)$(R)DimAttDatasets, $(P)$(R)DimAttDatasets_RBV
     - bo, bi
+  * - asynFloat64
+    - r/w
+    - Fill value for the dataset to be set in its creation property list.
+    - HDF5_fillValue
+    - $(P)$(R)FillValue, $(P)$(R)FillValue_RBV
+    - ao, ai
   * -
     -
     - **SWMR**
