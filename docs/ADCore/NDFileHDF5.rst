@@ -924,7 +924,7 @@ Parameters and Records
     - r/o
     - Total runtime in seconds from first frame to file closed
     - HDF5_totalRuntime
-    - $(P)$(R)Runtime
+    - $(P)$(R)RunTime
     - ai
   * - asynFloat64
     - r/o
