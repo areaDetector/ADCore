@@ -737,18 +737,36 @@ Parameters and Records
     - HDF5_extraDimSizeN
     - $(P)$(R)ExtraDimSizeN, $(P)$(R)ExtraDimSizeN_RBV
     -
+  * - asynOctet
+    - r/o
+    - HDF5_extraDimNameN
+    - Name of extra dimension N
+    - $(P)$(R)ExtraDimNameN_RBV
+    - stringin
   * - asynInt32
     - r/w
     - Size of extra dimension X
     - HDF5_extraDimSizeX
     - $(P)$(R)ExtraDimSizeX, $(P)$(R)ExtraDimSizeX_RBV
     - longout, longin
+  * - asynOctet
+    - r/o
+    - Name of extra dimension X
+    - HDF5_extraDimNameX
+    - $(P)$(R)ExtraDimNameX_RBV
+    - stringin
   * - asynInt32
     - r/w
     - Size of extra dimension Y
     - HDF5_extraDimSizeY
     - $(P)$(R)ExtraDimSizeY, $(P)$(R)ExtraDimSizeY_RBV
     - longout, longin
+  * - asynOctet
+    - r/o
+    - Name of extra dimension Y
+    - HDF5_extraDimNameY
+    - $(P)$(R)ExtraDimNameY_RBV
+    - stringin
   * - asynInt32
     - r/w
     - Size of the K'th extra dimension, for K in [3..9]
@@ -757,6 +775,14 @@ Parameters and Records
 
       E.g. $(P)$(R)ExtraDimSize3_RBV
     - longout, longin
+  * - asynOctet
+    - r/o
+    - Name of the K'th extra dimension, for K in [3..9]
+    - HDF5_extraDimName<K>
+    - $(P)$(R)ExtraDimName<K>_RBV
+
+      E.g $(P)$(R)ExtraDimName8_RBV
+    - stringin
   * -
     -
     - **Positional Placement**
