@@ -677,7 +677,7 @@ Parameters and Records
     - Turn on or off SWMR mode for the next acquisition (1 = On, 0 = Off). Turning on
       will only work if SWMR mode is supported.
     - HDF5_SWMRMode
-    - $(P)$(R)SWMRMode, $(P)$(R)SMWRMode_RBV
+    - $(P)$(R)SWMRMode, $(P)$(R)SWMRMode_RBV
     - bo, bi
   * - asynInt32
     - r/o
