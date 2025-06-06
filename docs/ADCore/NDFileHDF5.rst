@@ -723,7 +723,7 @@ Parameters and Records
     - r/w
     - Number of extra dimensions [0..9]
     - HDF5_nExtraDims
-    - $(P)$(R)NumExtraDims, $(P)$(R)NumExtraDims
+    - $(P)$(R)NumExtraDims, $(P)$(R)NumExtraDims_RBV
     - mbbo, mbbi
   * - asynInt32
     - r/w
