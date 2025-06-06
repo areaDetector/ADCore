@@ -813,17 +813,6 @@ record(bi, "$(P)$(R)DimAttDatasets_RBV")
     field(SCAN, "I/O Intr")
 }
 
-# File path.
-# % autosave 2 
-#record(waveform, "$(P)$(R)XMLPath")
-#{
-#    field(PINI, "YES")
-#    field(DTYP, "asynOctetWrite")
-#    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))HDF5_layoutDirectory")
-#    field(FTVL, "CHAR")
-#    field(NELM, "256")
-#}
-
 record(waveform, "$(P)$(R)XMLErrorMsg_RBV")
 {
     field(DTYP, "asynOctetRead")
