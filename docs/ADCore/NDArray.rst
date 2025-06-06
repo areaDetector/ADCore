@@ -808,7 +808,7 @@ loading ADBase.template.
     - File write status. Gives status information on last file open or file write operation.
       Values are WriteOK (0) and WriteError (1).
     - WRITE_STATUS
-    - $(P)$(R)FileWriteStatus
+    - $(P)$(R)WriteStatus
     - mbbi
   * - NDFileWriteMessage
     - asynOctet
@@ -816,7 +816,7 @@ loading ADBase.template.
     - File write error message. An error message string if the previous file open or file
       write operation resulted in an error.
     - WRITE_MESSAGE
-    - $(P)$(R)FileWriteMessage
+    - $(P)$(R)WriteMessage
     - waveform
   * - NDFileCapture
     - asynInt32
