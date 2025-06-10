@@ -335,8 +335,11 @@ void NTNDArrayConverterPvxs::fromValue(NDArray *src) {
 
     std::string fieldName = m_fieldNameMap[typeid(dataType)];
     auto arrayType = m_arrayTypeMap[typeid(dataType)];
-    auto val = pvxs::allocArray(arrayType, arrayInfo.nElements);
-    memcpy(val.data(), src->pData, arrayInfo.totalBytes);
+    auto val = pvxs::shared_array<dataType>(
+        (dataType*)src->pData,
+        // trivial deletor that does nothing when shared_array goes out of scope
+        [] (dataType *data) {},
+        arrayInfo.nElements);
     m_value[fieldName] = val.freeze();
 
     m_value["codec.name"] = src->codec.name; // compression codec
