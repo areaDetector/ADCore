@@ -36,7 +36,6 @@ private:
     pvxs::Value m_value;
     std::unordered_map<std::type_index, NDAttrDataType_t> m_typeMap;
     std::unordered_map<std::type_index, std::string> m_fieldNameMap;
-    std::unordered_map<std::type_index, pvxs::ArrayType> m_arrayTypeMap;
     NDColorMode_t getColorMode (void);
 
     template <typename arrayType>
