@@ -72,7 +72,8 @@ NTNDArrayInfo_t NTNDArrayConverterPvxs::getInfo (void)
         info.nElements *= info.dims[i];
     }
 
-    info.codec = m_value["codec.name"].as<std::string>();
+    // does not update info.codec if codec.name not found in Value
+    m_value["codec.name"].as<std::string>(info.codec);
 
     NDDataType_t dt;
     int bpe;
