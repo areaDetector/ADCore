@@ -30,19 +30,6 @@ NTNDArrayConverterPvxs::NTNDArrayConverterPvxs (pvxs::Value value) : m_value(val
         {typeid(float_t), "value->floatValue"},
         {typeid(double_t), "value->doubleValue"}
     };
-
-    m_arrayTypeMap = {
-        {typeid(int8_t), pvxs::ArrayType::Int8},
-        {typeid(uint8_t), pvxs::ArrayType::UInt8},
-        {typeid(int16_t), pvxs::ArrayType::Int16},
-        {typeid(int32_t), pvxs::ArrayType::Int32},
-        {typeid(uint32_t), pvxs::ArrayType::UInt32},
-        {typeid(int64_t), pvxs::ArrayType::Int64},
-        {typeid(uint64_t), pvxs::ArrayType::UInt64},
-        {typeid(float_t), pvxs::ArrayType::Float32},
-        {typeid(double_t), pvxs::ArrayType::Float64}
-    };
-
 }
 
 NDColorMode_t NTNDArrayConverterPvxs::getColorMode (void)
@@ -334,7 +321,6 @@ void NTNDArrayConverterPvxs::fromValue(NDArray *src) {
     m_value["uncompressedSize"] = arrayInfo.totalBytes;
 
     std::string fieldName = m_fieldNameMap[typeid(dataType)];
-    auto arrayType = m_arrayTypeMap[typeid(dataType)];
     auto val = pvxs::shared_array<dataType>(
         (dataType*)src->pData,
         // trivial deletor that does nothing when shared_array goes out of scope
