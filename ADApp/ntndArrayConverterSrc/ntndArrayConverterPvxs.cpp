@@ -313,6 +313,17 @@ void NTNDArrayConverterPvxs::toAttributes (NDArray *dest)
 }
 
 template <typename dataType>
+struct freeNDArray {
+    NDArray *array;
+    // increase reference count of array, release on destructor
+    freeNDArray(NDArray *array) : array(array) { array->reserve(); }
+    void operator()(dataType *data) {
+        assert (array->pData == data);
+        array->release();
+    }
+};
+
+template <typename dataType>
 void NTNDArrayConverterPvxs::fromValue(NDArray *src) {
     NDArrayInfo_t arrayInfo;
     src->getInfo(&arrayInfo);
@@ -323,8 +334,8 @@ void NTNDArrayConverterPvxs::fromValue(NDArray *src) {
     std::string fieldName = m_fieldNameMap[typeid(dataType)];
     auto val = pvxs::shared_array<dataType>(
         (dataType*)src->pData,
-        // trivial deletor that does nothing when shared_array goes out of scope
-        [] (dataType *data) {},
+        // custom deletor
+        freeNDArray<dataType>(src),
         arrayInfo.nElements);
     m_value[fieldName] = val.freeze();
 
