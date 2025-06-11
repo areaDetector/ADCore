@@ -223,7 +223,7 @@ void NTNDArrayConverterPvxs::toDimensions (NDArray *dest)
     auto dims = m_value["dimension"].as<pvxs::shared_array<const pvxs::Value>>();
     dest->ndims = (int)dims.size();
 
-    for(size_t i = 0; i < dest->ndims; ++i)
+    for(int i = 0; i < dest->ndims; ++i)
     {
         NDDimension_t *d = &dest->dims[i];
         d->size    = dims[i]["size"].as<int32_t>();
@@ -291,7 +291,7 @@ void NTNDArrayConverterPvxs::toUndefinedAttribute (NDArray *dest, pvxs::Value at
 void NTNDArrayConverterPvxs::toAttributes (NDArray *dest)
 {
     auto attributes = m_value["attribute"].as<pvxs::shared_array<const pvxs::Value>>();
-    for (int i=0; i<attributes.size(); i++) {
+    for (size_t i=0; i < attributes.size(); i++) {
         pvxs::Value value = attributes[i]["value"];
         switch (attributes[i]["value->"].type().code) {
             // use indirection on Any container to get specified type
