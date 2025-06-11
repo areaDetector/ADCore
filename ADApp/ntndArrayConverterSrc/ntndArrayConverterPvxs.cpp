@@ -339,6 +339,7 @@ void NTNDArrayConverterPvxs::fromValue (NDArray *src) {
         case NDInt8:      {fromValue<int8_t>(src); break;};
         case NDUInt8:     {fromValue<uint8_t>(src); break;};
         case NDInt16:     {fromValue<int16_t>(src); break;};
+        case NDUInt16:    {fromValue<uint16_t>(src); break;};
         case NDInt32:     {fromValue<int32_t>(src); break;};
         case NDUInt32:    {fromValue<uint32_t>(src); break;};
         case NDInt64:     {fromValue<int64_t>(src); break;};
