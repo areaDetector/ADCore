@@ -12,11 +12,8 @@ pluginSrc_DEPEND_DIRS += ADSrc
 DIRS += pluginTests
 pluginTests_DEPEND_DIRS += pluginSrc
 
-ifeq ($(WITH_PVA), YES)
-  DIRS += ntndArrayConverterSrc
-  ntndArrayConverterSrc_DEPEND_DIRS += ADSrc
-  pluginSrc_DEPEND_DIRS += ntndArrayConverterSrc
-else ifeq ($(WITH_PVXS), YES)
+# if WITH_PVA or WITH_PVA = YES
+ifeq ($(findstring YES,$(WITH_PVA) $(WITH_PVXS)), YES)
   DIRS += ntndArrayConverterSrc
   ntndArrayConverterSrc_DEPEND_DIRS += ADSrc
   pluginSrc_DEPEND_DIRS += ntndArrayConverterSrc
