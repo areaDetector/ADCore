@@ -67,14 +67,16 @@ jobs:
             base: "3.15"
             deps: os
 
-#          - os: windows-2019
-#            cmp: vs2019
-#            configuration: default
-#            base: "7.0"
-#            deps: adsupport
+          - name: Win2022 Base7.0 DLL
+            os: windows-2022
+            cmp: vs2022
+            configuration: default
+            base: "7.0"
+            deps: adsupport
 
-          - os: windows-2019
-            cmp: vs2019
+          - name: Win2022 Base7.0 static
+            os: windows-2022
+            cmp: vs2022
             configuration: static
             base: "7.0"
             deps: adsupport
