@@ -751,9 +751,11 @@ Parameters and Records
     - longout, longin
   * - asynInt32
     - r/w
-    - Size of the N'th extra dimension, for N in [3..9]
-    - HDF5_extraDimSize[N]
-    - $(P)$(R)ExtraDimSize[N], $(P)$(R)ExtraDimSize[N]_RBV
+    - Size of the K'th extra dimension, for K in [3..9]
+    - HDF5_extraDimSize<K>
+    - $(P)$(R)ExtraDimSize<K>, $(P)$(R)ExtraDimSize<K>_RBV
+
+      E.g. $(P)$(R)ExtraDimSize3_RBV
     - longout, longin
   * -
     -
@@ -784,9 +786,11 @@ Parameters and Records
     - stringout, stringin
   * - asynOctet
     - r/w
-    - Specify the NDAttribute name for the N'th index, for N in [3..9]
-    - HDF5_posNameDim[N]
-    - $(P)$(R)PosNameDim[N], $(P)$(R)PosNameDim[N]_RBV
+    - Specify the NDAttribute name for the K'th index, for K in [3..9]
+    - HDF5_posNameDim<K>
+    - $(P)$(R)PosNameDim<K>, $(P)$(R)PosNameDim<K>_RBV
+
+      E.g. $(P)$(R)PosNameDim5
     - stringout, stringin
   * -
     -
@@ -797,7 +801,7 @@ Parameters and Records
     - HDF5_posIndexDimN
     - $(P)$(R)PosIndexDimN, $(P)$(R)PosIndexDimN_RBV
     - stringout, stringin
-  * - asynOctet
+  * - asynOcte9
     - r/w
     - Specify the NDAttribute index for the X dimension
     - HDF5_posIndexDimX
@@ -811,9 +815,11 @@ Parameters and Records
     - stringout, stringin
   * - asynOctet
     - r/w
-    - Specify the NDAttribute index for the N'th dimension, for N in [3..9]
-    - HDF5_posIndexDim[N]
-    - $(P)$(R)PosIndexDim[N], $(P)$(R)PosIndexDim[N]_RBV
+    - Specify the NDAttribute index for the K'th dimension, for K in [3..9]
+    - HDF5_posIndexDim<K>
+    - $(P)$(R)PosIndexDim<K>, $(P)$(R)PosIndexDim<K>_RBV
+
+      E.g. $(P)$(R)PosIndexDim9_RBV
     - stringout, stringin
   * -
     -

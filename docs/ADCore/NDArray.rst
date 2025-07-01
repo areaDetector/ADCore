@@ -465,13 +465,14 @@ loading ADBase.template.
   * - N.A.
     - N.A
     - r/o
-    - Size of each array dimension, extracted from the $(P)$(R)Dimensions and $(P)$(R)Dimensions_RBV
+    - Size of each array dimension K in [0..9], extracted from the $(P)$(R)Dimensions and $(P)$(R)Dimensions_RBV
       waveform records. Note that these are both longin record, i.e. readonly values using
       subarray records. In the future longout records may be added to write to the individual
       values in $(P)$(R)Dimensions.
     - N.A.
-    - $(P)$(R)ArraySize[N] N=0-9
-      , (P)$(R)ArraySize[N]_RBV
+    - $(P)$(R)ArraySize<K>, $(P)$(R)ArraySize<K>_RBV
+
+      E.g. $(P)$(R)ArraySize0_RBV
     - longin, longin
   * - NDArraySizeX
     - asynInt32
