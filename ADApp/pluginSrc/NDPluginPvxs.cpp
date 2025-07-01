@@ -20,27 +20,27 @@ static const char *driverName="NDPluginPvxs";
 
 using namespace std;
 
-class NDPLUGIN_API NTNDArrayRecord {
+class NDPLUGIN_API NTNDArrayRecordPvxs {
 
 private:
-    NTNDArrayRecord(string const & name, pvxs::Value value) : m_name(name), m_value(value) {};
+    NTNDArrayRecordPvxs(string const & name, pvxs::Value value) : m_name(name), m_value(value) {};
     NTNDArrayConverterPvxsPtr m_converter;
     string m_name;
     pvxs::Value m_value;
     pvxs::server::SharedPV m_pv;
 
 public:
-    virtual ~NTNDArrayRecord () {};
-    static NTNDArrayRecordPtr create (string const & name);
+    virtual ~NTNDArrayRecordPvxs () {};
+    static NTNDArrayRecordPvxsPtr create (string const & name);
     virtual bool init ();
     virtual void process () {}
     void update (NDArray *pArray);
 };
 
-NTNDArrayRecordPtr NTNDArrayRecord::create (string const & name)
+NTNDArrayRecordPvxsPtr NTNDArrayRecordPvxs::create (string const & name)
 {
     pvxs::Value value = pvxs::nt::NTNDArray{}.build().create();
-    NTNDArrayRecordPtr pvRecord(new NTNDArrayRecord(name, value));
+    NTNDArrayRecordPvxsPtr pvRecord(new NTNDArrayRecordPvxs(name, value));
     
     if(!pvRecord->init())
         pvRecord.reset();
@@ -48,7 +48,7 @@ NTNDArrayRecordPtr NTNDArrayRecord::create (string const & name)
     return pvRecord;
 }
 
-bool NTNDArrayRecord::init ()
+bool NTNDArrayRecordPvxs::init ()
 {
     m_pv = pvxs::server::SharedPV(pvxs::server::SharedPV::buildReadonly());
     m_pv.open(m_value);
@@ -58,7 +58,7 @@ bool NTNDArrayRecord::init ()
     return true;
 }
 
-void NTNDArrayRecord::update(NDArray *pArray)
+void NTNDArrayRecordPvxs::update(NDArray *pArray)
 {
     m_converter->fromArray(pArray);
     m_pv.post(m_value);
@@ -131,7 +131,7 @@ NDPluginPvxs::NDPluginPvxs(const char *portName, int queueSize,
     : NDPluginDriver(portName, queueSize, blockingCallbacks,
             NDArrayPort, NDArrayAddr, 1, maxBuffers, maxMemory, 0, 0,
             0, 1, priority, stackSize, 1, true),
-      m_record(NTNDArrayRecord::create(pvName))
+      m_record(NTNDArrayRecordPvxs::create(pvName))
 {
     createParam(NDPluginPvxsPvNameString, asynParamOctet, &NDPluginPvxsPvName);
 

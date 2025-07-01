@@ -7,8 +7,8 @@
 
 #define NDPluginPvxsPvNameString "PV_NAME"
 
-class NTNDArrayRecord;
-typedef std::shared_ptr<NTNDArrayRecord> NTNDArrayRecordPtr;
+class NTNDArrayRecordPvxs;
+typedef std::shared_ptr<NTNDArrayRecordPvxs> NTNDArrayRecordPvxsPtr;
 
 /** Converts NDArray callback data into EPICS V4 NTNDArray data and exposes it
   * as an EPICS V4 PV  */
@@ -27,7 +27,7 @@ protected:
     int NDPluginPvxsPvName;
 
 private:
-    NTNDArrayRecordPtr m_record;
+    NTNDArrayRecordPvxsPtr m_record;
 };
 
 #endif
