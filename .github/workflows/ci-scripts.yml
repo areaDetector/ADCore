@@ -144,7 +144,7 @@ jobs:
       if: ${{ matrix.deps == 'adsupport' }}
       shell: bash
       run: |
-        cat <<EOF >> configure/CONFIG_SITE.local
+        cat <<EOF >> configure/CONFIG_SITE
         WITH_PVA=YES
         WITH_BOOST=NO
         WITH_HDF5=YES
@@ -166,6 +166,7 @@ jobs:
         BLOSC_EXTERNAL=NO
         WITH_BITSHUFFLE=YES
         BITSHUFFLE_EXTERNAL=NO
+        HDF5_STATIC_BUILD=\$(STATIC_BUILD)
         EOF
 
     - name: Build main module
