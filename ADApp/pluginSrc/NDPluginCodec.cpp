@@ -245,6 +245,8 @@ NDArray *compressJPEG(NDArray *input, int quality, NDCodecStatus_t *status, char
 
     output = allocArray(input, -1, outSize, outData);
 
+    jpeg_destroy_compress(&jpegInfo);
+
     if (!output) {
         sprintf(errorMessage, "Failed to allocate JPEG array");
         *status = NDCODEC_ERROR;
@@ -319,6 +321,8 @@ NDArray *decompressJPEG(NDArray *input, NDCodecStatus_t *status, char *errorMess
     output->pAttributeList->add("ColorMode", "Color Mode", NDAttrInt32,
             &colorMode);
     output->codec.clear();
+
+    jpeg_destroy_decompress(&jpegInfo);
 
     return output;
 }
