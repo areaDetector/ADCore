@@ -19,6 +19,19 @@ the EXAMPLE_RELEASE_PATHS.local, EXAMPLE_RELEASE_LIBS.local, and EXAMPLE_RELEASE
 files respectively, in the configure/ directory of the appropriate release of the
 [top-level areaDetector](https://github.com/areaDetector/areaDetector) repository.
 
+## __R3-15 (July XXX 1, 2025)__
+
+### Fixes for Github Actions
+  * Fixed problem with TIRPC in asyn.
+  * Updated from windows-2019 to windows-2022.
+
+### NDPluginCodec
+  * Fixed memory leaks in the JPEG compressor and decompressor. Thanks to Evan Daykin for this.
+
+### ADTop.adl
+  * Added ADHamammatsuDCAM and BlackflyS PGE 23S6C.
+  * Reformatted into 2 columns.
+
 ## __R3-14 (December 1, 2024)__
 
 ### asynNDArrayDriver and NDPluginBase.template
