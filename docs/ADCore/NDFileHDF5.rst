@@ -847,7 +847,7 @@ Parameters and Records
     - HDF5_posIndexDimN
     - $(P)$(R)PosIndexDimN, $(P)$(R)PosIndexDimN_RBV
     - stringout, stringin
-  * - asynOcte9
+  * - asynOctet
     - r/w
     - Specify the NDAttribute index for the X dimension
     - HDF5_posIndexDimX
