@@ -431,7 +431,7 @@ void NDPluginStats::processCallbacks(NDArray *pArray)
     double bgdCounts, avgBgd;
     NDArray *pBgdArray=NULL;
     int computeStatistics, computeCentroid, computeProfiles, computeHistogram;
-    size_t sizeX=0, sizeY=0;
+    size_t sizeX=0, sizeY=0, colorSize=0;
     int i;
     int itemp;
     NDArrayInfo arrayInfo;
@@ -440,7 +440,6 @@ void NDPluginStats::processCallbacks(NDArray *pArray)
     /* Call the base class method */
     NDPluginDriver::beginProcessCallbacks(pArray);
 
-    pArray->getInfo(&arrayInfo);
     getIntegerParam(NDPluginStatsComputeStatistics,  &computeStatistics);
     getIntegerParam(NDPluginStatsComputeCentroid,    &computeCentroid);
     getIntegerParam(NDPluginStatsComputeProfiles,    &computeProfiles);
@@ -453,10 +452,12 @@ void NDPluginStats::processCallbacks(NDArray *pArray)
     getDoubleParam (NDPluginStatsHistMax,  &pStats->histMax);
     getDoubleParam (NDPluginStatsCentroidThreshold,  &pStats->centroidThreshold);
 
-    if (pArray->ndims > 0) sizeX = pArray->dims[0].size;
-    if (pArray->ndims == 1) sizeY = 1;
-    if (pArray->ndims > 1)  sizeY = pArray->dims[1].size;
+    /* Get information about the array */
+    pArray->getInfo(&arrayInfo);
 
+    sizeX = arrayInfo.xDim;
+    sizeY = arrayInfo.yDim;
+    colorSize = arrayInfo.colorDim;
 
     if (computeCentroid || computeProfiles) {
         pStats->profileSizeX = sizeX;
