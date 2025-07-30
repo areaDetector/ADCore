@@ -58,6 +58,11 @@ documentation <../areaDetectorDoxygenHTML/_n_d_plugin_pvxs_8cpp.html>`__ and
 in the documentation for the constructor for the `NDPluginPvxs
 class <../areaDetectorDoxygenHTML/class_n_d_plugin_pvxs.html>`__.
 
+ADCore must be built with `WITH_PVXS=YES` in a CONFIG or CONFIG_SITE file to use `NDPluginPva.` 
+While it is possible to load an `NDPluginPva` and `NDPluginPvxs` in the same IOC, users should be avoid
+building ADCore with `WITH_QSRV=YES` when using `NDPluginPvxs`, as an ioc with `qsrv.dbd` loaded
+`may automatically disable QSRV2. <https://epics-base.github.io/pvxs/ioc.html#qsrv-2>`
+
 Starting the pvxs server
 ----------------------------
 
