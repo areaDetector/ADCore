@@ -240,9 +240,9 @@ ifdef ADPLUGINBAR
   PROD_LIBS	  += NDPluginBar
   ifdef OPENCV_LIB
     opencv_core_DIR +=$(OPENCV_LIB)
-    PROD_LIBS       += opencv_core opencv_imgproc opencv_highgui zbar
+    PROD_LIBS       += opencv_core opencv_imgproc zbar
   else
-    PROD_SYS_LIBS   += opencv_core opencv_imgproc opencv_highgui zbar
+    PROD_SYS_LIBS   += opencv_core opencv_imgproc zbar
   endif
 endif
 
@@ -251,12 +251,12 @@ ifdef ADCOMPVISION
   PROD_LIBS     += NDPluginCV
   ifdef OPENCV_LIB
     opencv_core_DIR += $(OPENCV_LIB)
-    PROD_LIBS       += opencv_core opencv_imgproc opencv_highgui
+    PROD_LIBS       += opencv_core opencv_imgproc
     ifeq ($(WITH_OPENCV_VIDEO), YES)
       PROD_LIBS     += opencv_video opencv_videoio
     endif
   else
-    PROD_SYS_LIBS   += opencv_core opencv_imgproc opencv_highgui
+    PROD_SYS_LIBS   += opencv_core opencv_imgproc
     ifeq ($(WITH_OPENCV_VIDEO), YES)
       PROD_SYS_LIBS += opencv_video opencv_videoio
     endif
