@@ -217,6 +217,7 @@ ifdef FFMPEGSERVER
   $(DBD_NAME)_DBD += ffmpegServer.dbd
   PROD_LIBS       += ffmpegServer
   PROD_LIBS       += avdevice avformat avcodec swresample swscale avutil
+  PROD_SYS_LIBS   += lzma
 endif
 
 ifdef RECCASTER
