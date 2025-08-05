@@ -17,6 +17,7 @@ ifeq ($(WITH_PVXS), YES)
 	INC += ntndArrayConverterPvxs.h
 	LIB_SRCS += ntndArrayConverterPvxs.cpp
 	LIB_LIBS += pvxs
+	ntndArrayConverterPvxs_CXXFLAGS += -std=c++11
 endif
 
 INC += ntndArrayConverterAPI.h

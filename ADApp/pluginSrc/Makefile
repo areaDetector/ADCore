@@ -200,6 +200,7 @@ ifeq ($(WITH_PVXS), YES)
   DBD += NDPluginPvxs.dbd
   INC += NDPluginPvxs.h
   LIB_SRCS += NDPluginPvxs.cpp
+  NDPluginPvxs_CXXFLAGS += -std=c++11
 endif
 
 ifeq ($(WITH_BLOSC), YES)
