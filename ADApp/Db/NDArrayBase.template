@@ -794,7 +794,7 @@ record(waveform, "$(P)$(R)NDAttributesFile")
     field(DTYP, "asynOctetWrite")
     field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))ND_ATTRIBUTES_FILE")
     field(FTVL, "CHAR")
-    field(NELM, "256")
+    field(NELM, "$(XMLSIZE=256)")
     info(autosaveFields, "VAL")
 }
 
