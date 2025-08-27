@@ -11,6 +11,12 @@ ifeq ($(WITH_PVA),YES)
   LIB_LIBS += pvData
 endif
 
+ifeq ($(WITH_PVXS),YES)
+  LIB_LIBS += ntndArrayConverterPvxs
+  LIB_LIBS += pvxs
+  LIB_LIBS += pvxsIoc
+endif
+
 ifeq ($(WITH_NETCDF),YES)
   ifeq ($(NETCDF_EXTERNAL),NO)
     LIB_LIBS += netCDF
