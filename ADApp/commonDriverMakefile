@@ -39,7 +39,9 @@ endif
 
 ifeq ($(WITH_PVXS),YES)
   $(DBD_NAME)_DBD += NDPluginPvxs.dbd
+  $(DBD_NAME)_DBD += pvxsIoc.dbd
   PROD_LIBS += pvxs
+  PROD_LIBS += pvxsIoc
   PROD_LIBS += ntndArrayConverterPvxs
 endif
 
