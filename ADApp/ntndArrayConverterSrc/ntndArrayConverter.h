@@ -1,25 +1,8 @@
 #include <math.h>
 
 #include <ntndArrayConverterAPI.h>
-#include <NDArray.h>
 #include <pv/ntndarray.h>
-
-typedef struct NTNDArrayInfo
-{
-    int ndims;
-    size_t dims[ND_ARRAY_MAX_DIMS];
-    size_t nElements, totalBytes;
-    int bytesPerElement;
-    NDColorMode_t colorMode;
-    NDDataType_t dataType;
-    std::string codec;
-
-    struct
-    {
-        int dim;
-        size_t size, stride;
-    }x, y, color;
-}NTNDArrayInfo_t;
+#include "ntndArrayConverterCommon.h"
 
 class NTNDARRAYCONVERTER_API NTNDArrayConverter
 {

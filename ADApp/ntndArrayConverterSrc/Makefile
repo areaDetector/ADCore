@@ -7,6 +7,7 @@ include $(TOP)/configure/CONFIG
 ifeq ($(WITH_PVA), YES)
 	LIBRARY_IOC += ntndArrayConverter
 	INC += ntndArrayConverter.h
+	INC += ntndArrayConverterCommon.h
 	LIB_SRCS += ntndArrayConverter.cpp
 	LIB_LIBS += pvData
 	LIB_LIBS += nt
@@ -15,6 +16,7 @@ endif
 ifeq ($(WITH_PVXS), YES)
 	LIBRARY_IOC += ntndArrayConverterPvxs
 	INC += ntndArrayConverterPvxs.h
+	INC += ntndArrayConverterCommon.h
 	LIB_SRCS += ntndArrayConverterPvxs.cpp
 	LIB_LIBS += pvxs
 	ntndArrayConverterPvxs_CXXFLAGS += -std=c++11
