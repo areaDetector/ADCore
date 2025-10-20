@@ -1,3 +1,5 @@
+#ifndef INC_ntndArrayConverter_H
+#define INC_ntndArrayConverter_H
 #include <math.h>
 
 #include <ntndArrayConverterAPI.h>
@@ -49,3 +51,5 @@ private:
 };
 
 typedef std::tr1::shared_ptr<NTNDArrayConverter> NTNDArrayConverterPtr;
+
+#endif // INC_ntndArrayConverter_H
