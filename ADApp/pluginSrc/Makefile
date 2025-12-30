@@ -196,6 +196,13 @@ ifeq ($(WITH_PVA), YES)
   LIB_SRCS += NDPluginPva.cpp
 endif
 
+ifeq ($(WITH_PVXS), YES)
+  DBD += NDPluginPvxs.dbd
+  INC += NDPluginPvxs.h
+  LIB_SRCS += NDPluginPvxs.cpp
+  NDPluginPvxs_CXXFLAGS += -std=c++11
+endif
+
 ifeq ($(WITH_BLOSC), YES)
   USR_CXXFLAGS += -DHAVE_BLOSC
 endif
