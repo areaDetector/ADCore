@@ -8,17 +8,29 @@
 #include <typeinfo>
 #include <unordered_map>
 #include "ntndArrayConverterCommon.h"
+using namespace pvxs;
 
 class NTNDARRAYCONVERTER_API NTNDArrayConverterPvxs
 {
 public:
-    NTNDArrayConverterPvxs(pvxs::Value value);
+    NTNDArrayConverterPvxs(Value value);
     NTNDArrayInfo_t getInfo (void);
     void toArray (NDArray *dest);
     void fromArray (NDArray *src);
 
 private:
-    pvxs::Value m_value;
+    Value m_value;
+    Value m_Int8Value;
+    Value m_UInt8Value;
+    Value m_Int16Value;
+    Value m_UInt16Value;
+    Value m_Int32Value;
+    Value m_UInt32Value;
+    Value m_Int64Value;
+    Value m_UInt64Value;
+    Value m_Float32Value;
+    Value m_Float64Value;
+    
     std::unordered_map<std::type_index, NDAttrDataType_t> m_typeMap;
     std::unordered_map<std::type_index, std::string> m_fieldNameMap;
     NDColorMode_t getColorMode (void);
@@ -32,9 +44,9 @@ private:
     void toDataTimeStamp (NDArray *dest);
 
     template <typename valueType>
-    void toAttribute (NDArray *dest, pvxs::Value attribute);
-    void toStringAttribute (NDArray *dest, pvxs::Value attribute);
-    void toUndefinedAttribute (NDArray *dest, pvxs::Value attribute);
+    void toAttribute (NDArray *dest, Value attribute);
+    void toStringAttribute (NDArray *dest, Value attribute);
+    void toUndefinedAttribute (NDArray *dest, Value attribute);
     void toAttributes (NDArray *dest);
 
     template <typename arrayType>
@@ -46,8 +58,8 @@ private:
     void fromDataTimeStamp (NDArray *src);
 
     template <typename valueType>
-    void fromAttribute (pvxs::Value destValue, NDAttribute *src);
-    void fromStringAttribute (pvxs::Value destValue, NDAttribute *src);
+    void fromAttribute (Value destValue, Value tempValue, NDAttribute *src);
+    void fromStringAttribute (Value destValue, NDAttribute *src);
     void fromAttributes (NDArray *src);
 };
 

@@ -20,7 +20,7 @@ static const enum ScalarType NDDataTypeToScalar[NDFloat64 + 1] = {
         pvDouble,   // 9:  NDFloat64
 };
 
-NTNDArrayConverterPvxs::NTNDArrayConverterPvxs (pvxs::Value value) : m_value(value) {
+NTNDArrayConverterPvxs::NTNDArrayConverterPvxs (Value value) : m_value(value) {
     m_typeMap = {
         {typeid(int8_t), NDAttrDataType_t::NDAttrInt8},
         {typeid(uint8_t), NDAttrDataType_t::NDAttrUInt8},
@@ -46,11 +46,21 @@ NTNDArrayConverterPvxs::NTNDArrayConverterPvxs (pvxs::Value value) : m_value(val
         {typeid(float_t), "value->floatValue"},
         {typeid(double_t), "value->doubleValue"}
     };
+    m_Int8Value    = TypeDef(TypeCode::Int8).create();
+    m_UInt8Value   = TypeDef(TypeCode::UInt8).create();
+    m_Int16Value   = TypeDef(TypeCode::Int16).create();
+    m_UInt16Value  = TypeDef(TypeCode::UInt16).create();
+    m_Int32Value   = TypeDef(TypeCode::Int32).create();
+    m_UInt32Value  = TypeDef(TypeCode::UInt32).create();
+    m_Int64Value   = TypeDef(TypeCode::Int64).create();
+    m_UInt64Value  = TypeDef(TypeCode::UInt64).create();
+    m_Float32Value = TypeDef(TypeCode::Float32).create();
+    m_Float64Value = TypeDef(TypeCode::Float64).create();
 }
 
 NDColorMode_t NTNDArrayConverterPvxs::getColorMode (void)
 {
-    auto attributes = m_value["attribute"].as<pvxs::shared_array<const pvxs::Value>>();
+    auto attributes = m_value["attribute"].as<shared_array<const Value>>();
     NDColorMode_t colorMode = NDColorMode_t::NDColorModeMono;
     for (auto &attribute : attributes) {
         if (attribute["name"].as<std::string>() == "ColorMode") {
@@ -65,7 +75,7 @@ NTNDArrayInfo_t NTNDArrayConverterPvxs::getInfo (void)
 {
     NTNDArrayInfo_t info = {0};
 
-    auto dims = m_value["dimension"].as<pvxs::shared_array<const pvxs::Value>>();
+    auto dims = m_value["dimension"].as<shared_array<const Value>>();
     info.ndims = (int) dims.size();
     info.nElements = 1;
 
@@ -83,16 +93,16 @@ NTNDArrayInfo_t NTNDArrayConverterPvxs::getInfo (void)
 
     if (info.codec.empty()) {
         switch (m_value["value->"].type().code) {
-            case pvxs::TypeCode::Int8A:      {dt = NDInt8;      break;}
-            case pvxs::TypeCode::UInt8A:     {dt = NDUInt8;     break;}
-            case pvxs::TypeCode::Int16A:     {dt = NDInt16;     break;}
-            case pvxs::TypeCode::UInt16A:    {dt = NDUInt16;    break;}
-            case pvxs::TypeCode::Int32A:     {dt = NDInt32;     break;}
-            case pvxs::TypeCode::UInt32A:    {dt = NDUInt32;    break;}
-            case pvxs::TypeCode::Int64A:     {dt = NDInt64;     break;}
-            case pvxs::TypeCode::UInt64A:    {dt = NDUInt64;    break;}
-            case pvxs::TypeCode::Float32A:   {dt = NDFloat32;   break;}
-            case pvxs::TypeCode::Float64A:   {dt = NDFloat64;   break;}
+            case TypeCode::Int8A:      {dt = NDInt8;      break;}
+            case TypeCode::UInt8A:     {dt = NDUInt8;     break;}
+            case TypeCode::Int16A:     {dt = NDInt16;     break;}
+            case TypeCode::UInt16A:    {dt = NDUInt16;    break;}
+            case TypeCode::Int32A:     {dt = NDInt32;     break;}
+            case TypeCode::UInt32A:    {dt = NDUInt32;    break;}
+            case TypeCode::Int64A:     {dt = NDInt64;     break;}
+            case TypeCode::UInt64A:    {dt = NDUInt64;    break;}
+            case TypeCode::Float32A:   {dt = NDFloat32;   break;}
+            case TypeCode::Float64A:   {dt = NDFloat64;   break;}
             default: throw std::runtime_error("invalid value data type");
         }
     } else dt = (NDDataType_t) m_value["codec.parameters"].as<int32_t>();
@@ -210,7 +220,7 @@ void NTNDArrayConverterPvxs::toValue (NDArray *dest)
 
     std::string fieldName = m_fieldNameMap[typeid(arrayType)];
 
-    auto value = m_value[fieldName].as<pvxs::shared_array<const arrayType>>();
+    auto value = m_value[fieldName].as<shared_array<const arrayType>>();
     memcpy(dest->pData, value.data(), info.totalBytes);
 
     if (!info.codec.empty())
@@ -220,23 +230,23 @@ void NTNDArrayConverterPvxs::toValue (NDArray *dest)
 void NTNDArrayConverterPvxs::toValue (NDArray *dest)
 {
     switch (m_value["value->"].type().code) {
-    case pvxs::TypeCode::Int8A:     {toValue<int8_t>(dest); break;}
-    case pvxs::TypeCode::UInt8A:    {toValue<uint8_t>(dest); break;}
-    case pvxs::TypeCode::Int16A:    {toValue<int16_t>(dest); break;}
-    case pvxs::TypeCode::UInt16A:   {toValue<uint16_t>(dest); break;}
-    case pvxs::TypeCode::Int32A:    {toValue<int32_t>(dest); break;}
-    case pvxs::TypeCode::UInt32A:   {toValue<uint32_t>(dest); break;}
-    case pvxs::TypeCode::Int64A:    {toValue<int64_t>(dest); break;}
-    case pvxs::TypeCode::UInt64A:   {toValue<uint64_t>(dest); break;}
-    case pvxs::TypeCode::Float32A:  {toValue<float_t>(dest); break;}
-    case pvxs::TypeCode::Float64A:  {toValue<double_t>(dest); break;}
+    case TypeCode::Int8A:     {toValue<int8_t>(dest); break;}
+    case TypeCode::UInt8A:    {toValue<uint8_t>(dest); break;}
+    case TypeCode::Int16A:    {toValue<int16_t>(dest); break;}
+    case TypeCode::UInt16A:   {toValue<uint16_t>(dest); break;}
+    case TypeCode::Int32A:    {toValue<int32_t>(dest); break;}
+    case TypeCode::UInt32A:   {toValue<uint32_t>(dest); break;}
+    case TypeCode::Int64A:    {toValue<int64_t>(dest); break;}
+    case TypeCode::UInt64A:   {toValue<uint64_t>(dest); break;}
+    case TypeCode::Float32A:  {toValue<float_t>(dest); break;}
+    case TypeCode::Float64A:  {toValue<double_t>(dest); break;}
     default: throw std::runtime_error("invalid value data type");
     }
 }
 
 void NTNDArrayConverterPvxs::toDimensions (NDArray *dest)
 {
-    auto dims = m_value["dimension"].as<pvxs::shared_array<const pvxs::Value>>();
+    auto dims = m_value["dimension"].as<shared_array<const Value>>();
     dest->ndims = (int)dims.size();
 
     for(int i = 0; i < dest->ndims; ++i)
@@ -268,7 +278,7 @@ void NTNDArrayConverterPvxs::toDataTimeStamp (NDArray *dest)
 }
 
 template <typename valueType>
-void NTNDArrayConverterPvxs::toAttribute (NDArray *dest, pvxs::Value attribute)
+void NTNDArrayConverterPvxs::toAttribute (NDArray *dest, Value attribute)
 {
     auto name = attribute["name"].as<std::string>();
     auto desc = attribute["descriptor"].as<std::string>();
@@ -281,7 +291,7 @@ void NTNDArrayConverterPvxs::toAttribute (NDArray *dest, pvxs::Value attribute)
     dest->pAttributeList->add(attr);
 }
 
-void NTNDArrayConverterPvxs::toStringAttribute (NDArray *dest, pvxs::Value attribute)
+void NTNDArrayConverterPvxs::toStringAttribute (NDArray *dest, Value attribute)
 {
     auto name = attribute["name"].as<std::string>();
     auto desc = attribute["descriptor"].as<std::string>();
@@ -293,7 +303,7 @@ void NTNDArrayConverterPvxs::toStringAttribute (NDArray *dest, pvxs::Value attri
     dest->pAttributeList->add(attr);
 }
 
-void NTNDArrayConverterPvxs::toUndefinedAttribute (NDArray *dest, pvxs::Value attribute)
+void NTNDArrayConverterPvxs::toUndefinedAttribute (NDArray *dest, Value attribute)
 {
     auto name = attribute["name"].as<std::string>();
     auto desc = attribute["descriptor"].as<std::string>();
@@ -306,23 +316,23 @@ void NTNDArrayConverterPvxs::toUndefinedAttribute (NDArray *dest, pvxs::Value at
 
 void NTNDArrayConverterPvxs::toAttributes (NDArray *dest)
 {
-    auto attributes = m_value["attribute"].as<pvxs::shared_array<const pvxs::Value>>();
+    auto attributes = m_value["attribute"].as<shared_array<const Value>>();
     for (size_t i=0; i < attributes.size(); i++) {
-        pvxs::Value value = attributes[i]["value"];
+        Value value = attributes[i]["value"];
         switch (attributes[i]["value->"].type().code) {
             // use indirection on Any container to get specified type
-            case pvxs::TypeCode::Int8:        toAttribute<int8_t>    (dest, attributes[i]); break;
-            case pvxs::TypeCode::UInt8:       toAttribute<uint8_t>   (dest, attributes[i]); break;
-            case pvxs::TypeCode::Int16:       toAttribute<int16_t>   (dest, attributes[i]); break;
-            case pvxs::TypeCode::UInt16:      toAttribute<uint16_t>  (dest, attributes[i]); break;
-            case pvxs::TypeCode::Int32:       toAttribute<int32_t>   (dest, attributes[i]); break;
-            case pvxs::TypeCode::UInt32:      toAttribute<uint32_t>  (dest, attributes[i]); break;
-            case pvxs::TypeCode::Int64:       toAttribute<int64_t>   (dest, attributes[i]); break;
-            case pvxs::TypeCode::UInt64:      toAttribute<uint64_t>  (dest, attributes[i]); break;
-            case pvxs::TypeCode::Float32:     toAttribute<float_t>   (dest, attributes[i]); break;
-            case pvxs::TypeCode::Float64:     toAttribute<double_t>  (dest, attributes[i]); break;
-            case pvxs::TypeCode::String:      toStringAttribute      (dest, attributes[i]); break;
-            case pvxs::TypeCode::Null:        toUndefinedAttribute   (dest, attributes[i]); break;
+            case TypeCode::Int8:        toAttribute<int8_t>    (dest, attributes[i]); break;
+            case TypeCode::UInt8:       toAttribute<uint8_t>   (dest, attributes[i]); break;
+            case TypeCode::Int16:       toAttribute<int16_t>   (dest, attributes[i]); break;
+            case TypeCode::UInt16:      toAttribute<uint16_t>  (dest, attributes[i]); break;
+            case TypeCode::Int32:       toAttribute<int32_t>   (dest, attributes[i]); break;
+            case TypeCode::UInt32:      toAttribute<uint32_t>  (dest, attributes[i]); break;
+            case TypeCode::Int64:       toAttribute<int64_t>   (dest, attributes[i]); break;
+            case TypeCode::UInt64:      toAttribute<uint64_t>  (dest, attributes[i]); break;
+            case TypeCode::Float32:     toAttribute<float_t>   (dest, attributes[i]); break;
+            case TypeCode::Float64:     toAttribute<double_t>  (dest, attributes[i]); break;
+            case TypeCode::String:      toStringAttribute      (dest, attributes[i]); break;
+            case TypeCode::Null:        toUndefinedAttribute   (dest, attributes[i]); break;
             default: throw std::runtime_error("invalid value data type");
         }
     }
@@ -348,7 +358,7 @@ void NTNDArrayConverterPvxs::fromValue(NDArray *src) {
     m_value["uncompressedSize"] = arrayInfo.totalBytes;
 
     std::string fieldName = m_fieldNameMap[typeid(dataType)];
-    auto val = pvxs::shared_array<dataType>(
+    auto val = shared_array<dataType>(
         (dataType*)src->pData,
         // custom deletor
         freeNDArray<dataType>(src),
@@ -358,7 +368,9 @@ void NTNDArrayConverterPvxs::fromValue(NDArray *src) {
     m_value["codec.name"] = src->codec.name; // compression codec
     // The uncompressed data type would be lost when converting to NTNDArray,
     // so we must store it somewhere. codec.parameters seems like a good place.
-    m_value["codec.parameters"] = (int32_t) NDDataTypeToScalar[src->dataType];
+    Value int32Value(m_Int32Value.cloneEmpty());
+    int32Value = NDDataTypeToScalar[src->dataType];
+    m_value["codec.parameters"].from(int32Value);
 }
 
 void NTNDArrayConverterPvxs::fromValue (NDArray *src) {
@@ -381,7 +393,7 @@ void NTNDArrayConverterPvxs::fromValue (NDArray *src) {
 }
 
 void NTNDArrayConverterPvxs::fromDimensions (NDArray *src) {
-    pvxs::shared_array<pvxs::Value> dims;
+    shared_array<Value> dims;
     dims.resize(src->ndims);
 
     for (int i = 0; i < src->ndims; i++) {
@@ -411,14 +423,15 @@ void NTNDArrayConverterPvxs::fromTimeStamp (NDArray *src) {
 }
 
 template <typename valueType>
-void NTNDArrayConverterPvxs::fromAttribute (pvxs::Value destValue, NDAttribute *src)
+void NTNDArrayConverterPvxs::fromAttribute (Value destValue, Value tempValue, NDAttribute *src)
 {
     valueType value;
     src->getValue(src->getDataType(), (void*)&value);
-    destValue["value"] = value;
+    tempValue = value;
+    destValue["value"].from(tempValue);
 }
 
-void NTNDArrayConverterPvxs::fromStringAttribute (pvxs::Value destValue, NDAttribute *src)
+void NTNDArrayConverterPvxs::fromStringAttribute (Value destValue, NDAttribute *src)
 {
     const char *value;
     src->getValue(src->getDataType(), (void*)&value);
@@ -430,7 +443,7 @@ void NTNDArrayConverterPvxs::fromAttributes (NDArray *src)
     NDAttributeList *srcList = src->pAttributeList;
     NDAttribute *attr = NULL;
     size_t i = 0;
-    pvxs::shared_array<pvxs::Value> attrs;
+    shared_array<Value> attrs;
     attrs.resize(src->pAttributeList->count());
     while((attr = srcList->next(attr)))
     {
@@ -444,17 +457,38 @@ void NTNDArrayConverterPvxs::fromAttributes (NDArray *src)
 
         switch(attr->getDataType())
         {
-        case NDAttrInt8:      fromAttribute<int8_t>(attrs[i], attr);       break;
-        case NDAttrUInt8:     fromAttribute<uint8_t>(attrs[i], attr);      break;
-        case NDAttrInt16:     fromAttribute<int16_t>(attrs[i], attr);      break;
-        case NDAttrUInt16:    fromAttribute<uint16_t>(attrs[i], attr);     break;
-        case NDAttrInt32:     fromAttribute<int32_t>(attrs[i], attr);      break;
-        case NDAttrUInt32:    fromAttribute<uint32_t>(attrs[i], attr);     break;
-        case NDAttrInt64:     fromAttribute<int64_t>(attrs[i], attr);      break;
-        case NDAttrUInt64:    fromAttribute<uint64_t>(attrs[i], attr);     break;
-        case NDAttrFloat32:   fromAttribute<float>(attrs[i], attr);        break;
-        case NDAttrFloat64:   fromAttribute<double>(attrs[i], attr);       break;
-        case NDAttrString:    fromStringAttribute(attrs[i], attr);         break;
+        case NDAttrInt8:      {Value valueInt8   (m_Int8Value.cloneEmpty());
+                              fromAttribute<int8_t>(attrs[i],   valueInt8,    attr);      
+                              break;}
+        case NDAttrUInt8:     {Value valueUInt8  (m_UInt8Value.cloneEmpty());
+                              fromAttribute<uint8_t>(attrs[i],  valueUInt8,   attr);      
+                              break;}
+        case NDAttrInt16:     {Value valueInt16  (m_Int16Value.cloneEmpty());
+                              fromAttribute<int16_t>(attrs[i],  valueInt16,   attr);
+                              break;}
+        case NDAttrUInt16:    {Value valueUInt16 (m_UInt16Value.cloneEmpty());
+                              fromAttribute<uint16_t>(attrs[i], valueUInt16,  attr);      
+                              break;}
+        case NDAttrInt32:     {Value valueInt32  (m_Int32Value.cloneEmpty());
+                              fromAttribute<int32_t>(attrs[i],  valueInt32,   attr);      
+                              break;}
+        case NDAttrUInt32:    {Value valueUInt32 (m_UInt32Value.cloneEmpty());
+                              fromAttribute<uint32_t>(attrs[i], valueUInt32,  attr);      
+                              break;}
+        case NDAttrInt64:     {Value valueInt64  (m_Int64Value.cloneEmpty());
+                              fromAttribute<int64_t>(attrs[i],  valueInt64,   attr);      
+                              break;}
+        case NDAttrUInt64:    {Value valueUInt64 (m_UInt64Value.cloneEmpty());
+                              fromAttribute<uint64_t>(attrs[i], valueUInt64,  attr);      
+                              break;}
+        case NDAttrFloat32:   {Value valueFloat32(m_Float32Value.cloneEmpty());
+                              fromAttribute<float>(attrs[i],    valueFloat32, attr);      
+                              break;}
+        case NDAttrFloat64:   {Value valueFloat64(m_Float64Value.cloneEmpty());
+                              fromAttribute<double>(attrs[i],   valueFloat64, attr);      
+                              break;}
+        case NDAttrString:    fromStringAttribute(attrs[i],                   attr);      
+                              break;
         case NDAttrUndefined: break;  // No need to assign value, leave as undefined
         default:              throw std::runtime_error("invalid attribute data type");
         }
