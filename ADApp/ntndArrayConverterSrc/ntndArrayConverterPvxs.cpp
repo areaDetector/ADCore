@@ -357,13 +357,23 @@ void NTNDArrayConverterPvxs::fromValue(NDArray *src) {
     m_value["compressedSize"] = src->compressedSize;
     m_value["uncompressedSize"] = arrayInfo.totalBytes;
 
-    std::string fieldName = m_fieldNameMap[typeid(dataType)];
-    auto val = shared_array<dataType>(
-        (dataType*)src->pData,
-        // custom deletor
-        freeNDArray<dataType>(src),
-        arrayInfo.nElements);
-    m_value[fieldName] = val.freeze();
+    if (src->codec.empty()) {
+        std::string fieldName = m_fieldNameMap[typeid(dataType)];
+        auto val = shared_array<dataType>(
+            (dataType*)src->pData,
+            // custom deletor
+            freeNDArray<dataType>(src),
+            arrayInfo.nElements);
+        m_value[fieldName] = val.freeze();
+    } else {
+        std::string fieldName = m_fieldNameMap[typeid(uint8_t)];
+        auto val = shared_array<uint8_t>(
+            (uint8_t*)src->pData,
+            // custom deletor
+            freeNDArray<uint8_t>(src),
+            (size_t)src->compressedSize);
+        m_value[fieldName] = val.freeze();
+    }
 
     m_value["codec.name"] = src->codec.name; // compression codec
     // The uncompressed data type would be lost when converting to NTNDArray,
