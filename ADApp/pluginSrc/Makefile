@@ -7,8 +7,8 @@ include $(TOP)/configure/CONFIG
 LIBRARY_IOC += NDPlugin
 DBD         += NDPluginSupport.dbd
 
-# Use HDF5 API V2
-USR_CXXFLAGS_Linux += -DH5Gopen_vers=2
+# Use HDF5 API circa v1.10
+USR_CXXFLAGS_Linux += -DH5_USE_110_API
 
 # json.hpp requires C++11
 NDPluginBadPixel_CXXFLAGS_Linux += -std=c++11

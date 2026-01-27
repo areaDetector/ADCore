@@ -8,8 +8,7 @@ include $(TOP)/configure/CONFIG
 SHARED_LIBRARIES=NO
 
 # Use HDF5 API V2
-USR_CXXFLAGS_Linux += -DH5Dopen_vers=2 -DH5Gcreate_vers=2
-USR_CFLAGS_Linux   += -DH5Dopen_vers=2 -DH5Gcreate_vers=2
+USR_CXXFLAGS_Linux += -DH5_USE_110_API
 
 ifeq ($(SHARED_LIBRARIES), YES)
    USR_CXXFLAGS_WIN32 += -DH5_BUILT_AS_DYNAMIC_LIB
