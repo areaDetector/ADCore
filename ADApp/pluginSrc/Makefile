@@ -224,7 +224,7 @@ ifdef HDF5_INCLUDE
 endif
 
 ifdef SZIP_INCLUDE
-  USR_INCLUDES += $(addprefix -I, $(HDF5_INCLUDE))
+  USR_INCLUDES += $(addprefix -I, $(SZIP_INCLUDE))
 endif
 
 ifdef XML2_INCLUDE
