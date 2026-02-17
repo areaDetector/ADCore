@@ -241,6 +241,7 @@ protected:
 
 private:
     asynStatus preAllocateBuffers();
+    int maxAddr_;
     NDArrayPool *pNDArrayPoolPvt_;
     epicsMutex *queuedArrayCountMutex_;
     epicsEventId queuedArrayEvent_;

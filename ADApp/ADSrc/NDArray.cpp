@@ -235,6 +235,11 @@ int NDArray::release()
     printf("%s: WARNING, no owner\n", functionName);
     return(ND_ERROR);
   }
+  /* No-op if pool was already destroyed (e.g. IOC exit: PVA tears down after driver). */
+  if (NDArrayPool::isPoolDestroyed(pNDArrayPool)) {
+    pNDArrayPool = NULL;
+    return(ND_ERROR);
+  }
   return(pNDArrayPool->release(this));
 }
 
