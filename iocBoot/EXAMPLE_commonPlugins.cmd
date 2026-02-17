@@ -204,11 +204,11 @@ startPVAServer
 
 # Optional: load scan records
 #dbLoadRecords("$(SSCAN)/db/scan.db", "P=$(PREFIX),MAXPTS1=2000,MAXPTS2=200,MAXPTS3=20,MAXPTS4=10,MAXPTSH=10")
-#set_requestfile_path("$(SSCAN)/db")
+#set_requestfile_path("$(SSCAN)/sscanApp/Db")
 
 # Optional: load sseq record for acquisition sequence
 #dbLoadRecords("$(CALC)/db/sseqRecord.db", "P=$(PREFIX), S=AcquireSequence")
-#set_requestfile_path("$(CALC)/db")
+#set_requestfile_path("$(CALC)/calcApp/Db")
 
 # Optional: load devIocStats records (requires DEVIOCSTATS module)
 #dbLoadRecords("$(DEVIOCSTATS)/db/iocAdminSoft.db", "IOC=$(PREFIX)")
