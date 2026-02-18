@@ -2,22 +2,19 @@
 #include <stdio.h>
 #include <string.h>
 #include <iostream>
-#include <pv/pvIntrospect.h>
-using namespace std;
-using namespace epics::pvData;
 
-// Maps NDDataType to ScalarType
-static const enum ScalarType NDDataTypeToScalar[NDFloat64 + 1] = {
-        pvByte,     // 0:  NDInt8
-        pvUByte,    // 1:  NDUInt8
-        pvShort,    // 2:  NDInt16
-        pvUShort,   // 3:  NDUInt16
-        pvInt,      // 4:  NDInt32
-        pvUInt,     // 5:  NDUInt32
-        pvLong,     // 6:  NDInt32
-        pvULong,    // 7:  NDUInt32
-        pvFloat,    // 8:  NDFloat32
-        pvDouble,   // 9:  NDFloat64
+// Maps NDDataType to ScalarType code
+static const int NDDataTypeToScalar[NDFloat64 + 1] = {
+        1,   // 0:  NDInt8
+        5,   // 1:  NDUInt8
+        2,   // 2:  NDInt16
+        6,   // 3:  NDUInt16
+        3,   // 4:  NDInt32
+        7,   // 5:  NDUInt32
+        4,   // 6:  NDInt32
+        8,   // 7:  NDUInt32
+        9,   // 8:  NDFloat32
+        10,  // 9:  NDFloat64
 };
 
 NTNDArrayConverterPvxs::NTNDArrayConverterPvxs (Value value) : m_value(value) {
