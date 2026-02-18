@@ -1,4 +1,5 @@
 #include "ntndArrayConverterPvxs.h"
+#include <dbDefs.h> /* for NELEMENTS() */
 #include <stdio.h>
 #include <string.h>
 #include <iostream>
@@ -376,6 +377,8 @@ void NTNDArrayConverterPvxs::fromValue(NDArray *src) {
     // The uncompressed data type would be lost when converting to NTNDArray,
     // so we must store it somewhere. codec.parameters seems like a good place.
     Value int32Value(m_Int32Value.cloneEmpty());
+    if(int(src->dataType)<0 || int(src->dataType)>=NELEMENTS(NDDataTypeToScalar))
+        throw std::logic_error("NDArray::dataType out of range");
     int32Value = NDDataTypeToScalar[src->dataType];
     m_value["codec.parameters"].from(int32Value);
 }
