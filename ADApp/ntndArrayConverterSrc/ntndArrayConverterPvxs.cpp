@@ -1,23 +1,21 @@
 #include "ntndArrayConverterPvxs.h"
+#include <dbDefs.h> /* for NELEMENTS() */
 #include <stdio.h>
 #include <string.h>
 #include <iostream>
-#include <pv/pvIntrospect.h>
-using namespace std;
-using namespace epics::pvData;
 
-// Maps NDDataType to ScalarType
-static const enum ScalarType NDDataTypeToScalar[NDFloat64 + 1] = {
-        pvByte,     // 0:  NDInt8
-        pvUByte,    // 1:  NDUInt8
-        pvShort,    // 2:  NDInt16
-        pvUShort,   // 3:  NDUInt16
-        pvInt,      // 4:  NDInt32
-        pvUInt,     // 5:  NDUInt32
-        pvLong,     // 6:  NDInt32
-        pvULong,    // 7:  NDUInt32
-        pvFloat,    // 8:  NDFloat32
-        pvDouble,   // 9:  NDFloat64
+// Maps NDDataType to ScalarType code
+static const int NDDataTypeToScalar[NDFloat64 + 1] = {
+        1,   // 0:  NDInt8
+        5,   // 1:  NDUInt8
+        2,   // 2:  NDInt16
+        6,   // 3:  NDUInt16
+        3,   // 4:  NDInt32
+        7,   // 5:  NDUInt32
+        4,   // 6:  NDInt32
+        8,   // 7:  NDUInt32
+        9,   // 8:  NDFloat32
+        10,  // 9:  NDFloat64
 };
 
 NTNDArrayConverterPvxs::NTNDArrayConverterPvxs (Value value) : m_value(value) {
@@ -379,6 +377,8 @@ void NTNDArrayConverterPvxs::fromValue(NDArray *src) {
     // The uncompressed data type would be lost when converting to NTNDArray,
     // so we must store it somewhere. codec.parameters seems like a good place.
     Value int32Value(m_Int32Value.cloneEmpty());
+    if(int(src->dataType)<0 || int(src->dataType)>=NELEMENTS(NDDataTypeToScalar))
+        throw std::logic_error("NDArray::dataType out of range");
     int32Value = NDDataTypeToScalar[src->dataType];
     m_value["codec.parameters"].from(int32Value);
 }
