@@ -1022,12 +1022,29 @@ asynNDArrayDriver::asynNDArrayDriver(const char *portName, int maxAddr, int maxB
 
 }
 
+// When the driver subclass is destructible, this function will be called at IOC
+// shutdown.
+void asynNDArrayDriver::shutdownPortDriver() {
+    asynPrint(pasynUserSelf, ASYN_TRACE_FLOW, "%s shutting down\n", driverName);
 
-asynNDArrayDriver::~asynNDArrayDriver()
-{
     queuedArrayUpdateRun_ = false;
     epicsEventSignal(queuedArrayEvent_);
     epicsEventWait(queuedArrayUpdateDone_);
+
+#ifdef ASYN_DESTRUCTIBLE
+    asynPortDriver::shutdownPortDriver();
+#endif
+}
+
+asynNDArrayDriver::~asynNDArrayDriver()
+{
+    // If the driver subclass is not destructible, or asyn is old, or we are not
+    // in an IOC (e.g. unit tests), we need to call shutdown ourselves.
+    // On newer versions of asyn, we could check with needsShutdown() to see if
+    // shutdown has already been done, be we don't want to rely on that.
+    if (queuedArrayUpdateRun_) {
+        shutdownPortDriver();
+    }
 
     delete this->pNDArrayPoolPvt_;
     free(this->pArrays);
