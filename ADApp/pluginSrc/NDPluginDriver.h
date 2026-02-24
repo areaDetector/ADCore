@@ -70,6 +70,7 @@ public:
                           size_t *nActual);
     virtual asynStatus readInt32Array(asynUser *pasynUser, epicsInt32 *value,
                                         size_t nElements, size_t *nIn);
+    virtual void shutdownPortDriver();
 
     /* These are the methods that are new to this class */
     virtual void driverCallback(asynUser *pasynUser, void *genericPointer);
