@@ -39,3 +39,4 @@ The following are guidelines and rules for writing areaDetector drivers
       defined for this driver to the current array.
    -  Call doCallbacksGenericPointer() so that registered clients can
       get the values of the new arrays.
+-  The driver shall :doc:`be destructible <destructible>`.
