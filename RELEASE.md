@@ -32,6 +32,14 @@ files respectively, in the configure/ directory of the appropriate release of th
   * Added ADHamammatsuDCAM and BlackflyS PGE 23S6C.
   * Reformatted into 2 columns.
 
+### Destructible drivers and cleanup on shutdown
+
+Base classes were extended with support for asyn port shutdown and driver
+destruction that is available since asyn R4-45. This functionality is optional:
+existing drivers do not change behavior unless they opt in. See the plugin and
+driver guidelines in the documentation for instructions on how to write a
+destructible driver.
+
 ## __R3-14 (December 1, 2024)__
 
 ### asynNDArrayDriver and NDPluginBase.template
