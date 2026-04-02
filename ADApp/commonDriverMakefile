@@ -153,6 +153,7 @@ ifeq ($(WITH_BITSHUFFLE),YES)
       PROD_SYS_LIBS += bitshuffle
     endif
   endif
+  PROD_LIBS += lz4hdf5
 endif
 
 ifeq ($(WITH_BLOSC),YES)

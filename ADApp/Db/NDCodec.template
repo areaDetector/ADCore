@@ -42,8 +42,10 @@ record(mbbo, "$(P)$(R)Compressor")
     field(TWVL, "2")
     field(THST, "LZ4")
     field(THVL, "3")
-    field(FRST, "BSLZ4")
+    field(FRST, "LZ4HDF5")
     field(FRVL, "4")
+    field(FVST, "BSLZ4")
+    field(FVVL, "5")
     info(autosaveFields, "VAL")
 }
 
@@ -59,8 +61,10 @@ record(mbbi, "$(P)$(R)Compressor_RBV")
     field(TWVL, "2")
     field(THST, "LZ4")
     field(THVL, "3")
-    field(FRST, "BSLZ4")
+    field(FRST, "LZ4HDF5")
     field(FRVL, "4")
+    field(FVST, "BSLZ4")
+    field(FVVL, "5")
     field(SCAN, "I/O Intr")
 }
 

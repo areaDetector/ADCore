@@ -33,6 +33,7 @@ typedef enum {
 typedef enum {
     NDCODEC_BLOSC_BLOSCLZ,
     NDCODEC_BLOSC_LZ4,
+    NDCODEC_BLOSC_LZ4HDF5,
     NDCODEC_BLOSC_LZ4HC,
     NDCODEC_BLOSC_SNAPPY,
     NDCODEC_BLOSC_ZLIB,
@@ -60,6 +61,8 @@ NDArray *compressBlosc(NDArray *input, int clevel, int shuffle, NDCodecBloscComp
 NDArray *decompressBlosc(NDArray *input, int numThreads, NDCodecStatus_t *status, char *errorMessage);
 NDArray *compressLZ4(NDArray *input, NDCodecStatus_t *status, char *errorMessage);
 NDArray *decompressLZ4(NDArray *input, NDCodecStatus_t *status, char *errorMessage);
+NDArray *compressLZ4HDF5(NDArray *input, NDCodecStatus_t *status, char *errorMessage);
+NDArray *decompressLZ4HDF5(NDArray *input, NDCodecStatus_t *status, char *errorMessage);
 NDArray *compressBSLZ4(NDArray *input, NDCodecStatus_t *status, char *errorMessage);
 NDArray *decompressBSLZ4(NDArray *input, NDCodecStatus_t *status, char *errorMessage);
 
