@@ -518,7 +518,7 @@ NDArray *decompressLZ4(NDArray *input, NDCodecStatus_t *status, char *errorMessa
         return NULL;
     }
 
-    int ret = LZ4_decompress_safe((const char*)input->pData, (char*)output->pData, (int)input->compressedSize, (int)info.totalBytes);
+    int ret = LZ4_decompress_fast((const char*)input->pData, (char*)output->pData, (int)info.totalBytes);
 
     if (ret <= 0){
         output->release();
