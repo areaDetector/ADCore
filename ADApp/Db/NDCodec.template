@@ -197,6 +197,23 @@ record(longin, "$(P)$(R)BloscNumThreads_RBV")
     field(SCAN, "I/O Intr")
 }
 
+record(longout, "$(P)$(R)LZ4HDF5BlockSize")
+{
+    field(PINI, "YES")
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))LZ4HDF5_BLOCKSIZE")
+    field(VAL,  "0")
+    field(DRVL, "0")
+    info(autosaveFields, "VAL")
+}
+
+record(longin, "$(P)$(R)LZ4HDF5BlockSize_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))LZ4HDF5_BLOCKSIZE")
+    field(SCAN, "I/O Intr")
+}
+
 record(mbbi, "$(P)$(R)CodecStatus")
 {
     field(DTYP, "asynInt32")
