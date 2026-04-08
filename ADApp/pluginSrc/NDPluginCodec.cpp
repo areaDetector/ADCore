@@ -53,6 +53,8 @@
 #define JPEG_MIN_QUALITY 1
 #define JPEG_MAX_QUALITY 100
 
+#define LZ4HDF5_DEFAULT_BLOCK_SIZE 1<<30; /* 1GB. LZ4 needs blocks < 1.9GB. */
+
 using std::string;
 
 static const char *driverName="NDPluginCodec";
@@ -532,7 +534,7 @@ NDArray *decompressLZ4(NDArray *input, NDCodecStatus_t *status, char *errorMessa
     return output;
 }
 
-NDArray *compressLZ4HDF5(NDArray *input, NDCodecStatus_t *status, char *errorMessage)
+NDArray *compressLZ4HDF5(NDArray *input, size_t blockSize, NDCodecStatus_t *status, char *errorMessage)
 {
     if (!input->codec.empty()) {
         sprintf(errorMessage, "Array is already compressed");
@@ -542,7 +544,10 @@ NDArray *compressLZ4HDF5(NDArray *input, NDCodecStatus_t *status, char *errorMes
 
     NDArrayInfo_t info;
     input->getInfo(&info);
-    int outputSize = LZ4_compressBound((int)info.totalBytes);
+    size_t nBlocks = (info.totalBytes-1)/blockSize +1;
+
+    int outputSize = LZ4_compressBound((int)info.totalBytes) + 4 + 8 + nBlocks*4;
+
     NDArray *output = allocArray(input, -1, outputSize);
 
     if (!output) {
@@ -551,7 +556,7 @@ NDArray *compressLZ4HDF5(NDArray *input, NDCodecStatus_t *status, char *errorMes
         return NULL;
     }
 
-    int compSize = compress_lz4hdf5((const char*)input->pData, (char*)output->pData, info.totalBytes, outputSize);
+    int compSize = compress_lz4hdf5((const char*)input->pData, (char*)output->pData, info.totalBytes, outputSize, blockSize);
 
     if (compSize <= 0) {
         output->release();
@@ -567,7 +572,7 @@ NDArray *compressLZ4HDF5(NDArray *input, NDCodecStatus_t *status, char *errorMes
 }
 
 
-NDArray *decompressLZ4HDF5(NDArray *input, NDCodecStatus_t *status, char *errorMessage)
+NDArray *decompressLZ4HDF5(NDArray *input, size_t *blockSize, NDCodecStatus_t *status, char *errorMessage)
 {
     // Sanity check
     if (input->codec.name != codecName[NDCODEC_LZ4HDF5]) {
@@ -588,7 +593,7 @@ NDArray *decompressLZ4HDF5(NDArray *input, NDCodecStatus_t *status, char *errorM
         return NULL;
     }
 
-    int ret = decompress_lz4hdf5((const char*)input->pData, (char*)output->pData, info.totalBytes);
+    int ret = decompress_lz4hdf5((const char*)input->pData, (char*)output->pData, info.totalBytes, blockSize);
 
     if (ret <= 0){
         output->release();
@@ -786,8 +791,13 @@ void NDPluginCodec::processCallbacks(NDArray *pArray)
         }
 
         case NDCODEC_LZ4HDF5: {
+            size_t blockSize;
+            int iTemp;
+            getIntegerParam(NDCodecLZ4HDF5BlockSize, &iTemp);
+            blockSize = iTemp;
+            if (blockSize == 0) blockSize = LZ4HDF5_DEFAULT_BLOCK_SIZE;
             unlock();
-            result = compressLZ4HDF5(pArray, &codecStatus, errorMessage);
+            result = compressLZ4HDF5(pArray, blockSize, &codecStatus, errorMessage);
             lock();
             break;
         }
@@ -829,9 +839,11 @@ void NDPluginCodec::processCallbacks(NDArray *pArray)
             lock();
             setIntegerParam(NDCodecCompressor, NDCODEC_LZ4);
         } else if (pArray->codec.name == codecName[NDCODEC_LZ4HDF5]) {
+            size_t blockSize;
             unlock();
-            result = decompressLZ4HDF5(pArray, &codecStatus, errorMessage);
+            result = decompressLZ4HDF5(pArray, &blockSize, &codecStatus, errorMessage);
             lock();
+            setIntegerParam(NDCodecLZ4HDF5BlockSize, (int) blockSize);
             setIntegerParam(NDCodecCompressor, NDCODEC_LZ4HDF5);
         } else if (pArray->codec.name == codecName[NDCODEC_BSLZ4]) {
             unlock();
@@ -954,28 +966,30 @@ NDPluginCodec::NDPluginCodec(const char *portName, int queueSize, int blockingCa
 {
     //static const char *functionName = "NDPluginCodec";
 
-    createParam(NDCodecModeString,            asynParamInt32,   &NDCodecMode);
-    createParam(NDCodecCompressorString,      asynParamInt32,   &NDCodecCompressor);
-    createParam(NDCodecCompFactorString,      asynParamFloat64, &NDCodecCompFactor);
-    createParam(NDCodecCodecStatusString,     asynParamInt32,   &NDCodecCodecStatus);
-    createParam(NDCodecCodecErrorString,      asynParamOctet,   &NDCodecCodecError);
-    createParam(NDCodecJPEGQualityString,     asynParamInt32,   &NDCodecJPEGQuality);
-    createParam(NDCodecBloscCompressorString, asynParamInt32,   &NDCodecBloscCompressor);
-    createParam(NDCodecBloscCLevelString,     asynParamInt32,   &NDCodecBloscCLevel);
-    createParam(NDCodecBloscShuffleString,    asynParamInt32,   &NDCodecBloscShuffle);
-    createParam(NDCodecBloscNumThreadsString, asynParamInt32,   &NDCodecBloscNumThreads);
+    createParam(NDCodecModeString,             asynParamInt32,   &NDCodecMode);
+    createParam(NDCodecCompressorString,       asynParamInt32,   &NDCodecCompressor);
+    createParam(NDCodecCompFactorString,       asynParamFloat64, &NDCodecCompFactor);
+    createParam(NDCodecCodecStatusString,      asynParamInt32,   &NDCodecCodecStatus);
+    createParam(NDCodecCodecErrorString,       asynParamOctet,   &NDCodecCodecError);
+    createParam(NDCodecJPEGQualityString,      asynParamInt32,   &NDCodecJPEGQuality);
+    createParam(NDCodecBloscCompressorString,  asynParamInt32,   &NDCodecBloscCompressor);
+    createParam(NDCodecBloscCLevelString,      asynParamInt32,   &NDCodecBloscCLevel);
+    createParam(NDCodecBloscShuffleString,     asynParamInt32,   &NDCodecBloscShuffle);
+    createParam(NDCodecBloscNumThreadsString,  asynParamInt32,   &NDCodecBloscNumThreads);
+    createParam(NDCodecLZ4HDF5BlockSizeString, asynParamInt32,   &NDCodecLZ4HDF5BlockSize);
 
     /* Set the plugin type string */
     setStringParam(NDPluginDriverPluginType, "NDPluginCodec");
 
-    setIntegerParam(NDCodecCompressor,      NDCODEC_NONE);
-    setDoubleParam (NDCodecCompFactor,      1.0);
-    setIntegerParam(NDCodecCodecStatus,     NDCODEC_SUCCESS);
+    setIntegerParam(NDCodecCompressor,       NDCODEC_NONE);
+    setDoubleParam (NDCodecCompFactor,       1.0);
+    setIntegerParam(NDCodecCodecStatus,      NDCODEC_SUCCESS);
     setStringParam(NDCodecCodecError,        "");
-    setIntegerParam(NDCodecJPEGQuality,     85);
-    setIntegerParam(NDCodecBloscCompressor, NDCODEC_BLOSC_BLOSCLZ);
-    setIntegerParam(NDCodecBloscCLevel,     5);
-    setIntegerParam(NDCodecBloscNumThreads, 1);
+    setIntegerParam(NDCodecJPEGQuality,      85);
+    setIntegerParam(NDCodecBloscCompressor,  NDCODEC_BLOSC_BLOSCLZ);
+    setIntegerParam(NDCodecBloscCLevel,      5);
+    setIntegerParam(NDCodecBloscNumThreads,  1);
+    setIntegerParam(NDCodecLZ4HDF5BlockSize, 0);
 
     // Enable ArrayCallbacks.
     // This plugin currently ignores this setting and always does callbacks, so make the setting reflect the behavior
