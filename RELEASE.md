@@ -19,14 +19,36 @@ the EXAMPLE_RELEASE_PATHS.local, EXAMPLE_RELEASE_LIBS.local, and EXAMPLE_RELEASE
 files respectively, in the configure/ directory of the appropriate release of the
 [top-level areaDetector](https://github.com/areaDetector/areaDetector) repository.
 
-## __R3-15 (July XXX 1, 2025)__
+## __R3-15 (April XXX, 2026)__
 
 ### Fixes for Github Actions
   * Fixed problem with TIRPC in asyn.
   * Updated from windows-2019 to windows-2022.
+  
+### New NDPluginPvxs plugin
+  * This is similar NDPluginPva except that it uses the external PVXS library
+    rather than the pvAccess library from EPICS base.
+    This support will be included if WITH_PVXS=YES.
+    Thanks to James Souter for this.
 
 ### NDPluginCodec
+  * Added support for the lz4hdf5 codec.  This does LZ4 compression in blocks.
+    It is the codec used for LZ4 compression on Dectris detectors with the Stream2 interface.
+    It is also the codec used for writing LZ4 compressed data to HDF5 files.
+    There are new records LZ4HDF5BlockSize and LZ4HDF5BlockSize_RBV for writing and
+    reading the blocksize for this codec.
+  * NOTE: The order of the enums in the Compressor mbbo record has changed so that
+    LZ4 and LZ4HDF5 are adjacent.
+    This breaks backwards compatibility for autosave files, and for scripts that use
+    the enum index rather than string for this record.
   * Fixed memory leaks in the JPEG compressor and decompressor. Thanks to Evan Daykin for this.
+
+### NDFileHDF
+  * Added support for direct chunk write for NDArrays compressed with the lz4hd5 codec.
+    
+### Database template files
+  * Fixed record names in NDROIStat.template to avoid record name duplication.
+  * Added optional default transform type macro (DFLTTRANSTYPE) in NDTransform.template.
 
 ### ADTop.adl
   * Added ADHamammatsuDCAM and BlackflyS PGE 23S6C.
