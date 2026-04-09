@@ -53,8 +53,6 @@
 #define JPEG_MIN_QUALITY 1
 #define JPEG_MAX_QUALITY 100
 
-#define LZ4HDF5_DEFAULT_BLOCK_SIZE 1<<30; /* 1GB. LZ4 needs blocks < 1.9GB. */
-
 using std::string;
 
 static const char *driverName="NDPluginCodec";
@@ -544,9 +542,9 @@ NDArray *compressLZ4HDF5(NDArray *input, size_t blockSize, NDCodecStatus_t *stat
 
     NDArrayInfo_t info;
     input->getInfo(&info);
-    size_t nBlocks = (info.totalBytes-1)/blockSize +1;
+    size_t nBlocks;
 
-    int outputSize = LZ4_compressBound((int)info.totalBytes) + 4 + 8 + nBlocks*4;
+    int outputSize = lz4hdf5_compressBound(info.totalBytes, &blockSize, &nBlocks);
 
     NDArray *output = allocArray(input, -1, outputSize);
 
@@ -795,7 +793,6 @@ void NDPluginCodec::processCallbacks(NDArray *pArray)
             int iTemp;
             getIntegerParam(NDCodecLZ4HDF5BlockSize, &iTemp);
             blockSize = iTemp;
-            if (blockSize == 0) blockSize = LZ4HDF5_DEFAULT_BLOCK_SIZE;
             unlock();
             result = compressLZ4HDF5(pArray, blockSize, &codecStatus, errorMessage);
             lock();
