@@ -69,7 +69,7 @@ release 0
 x 390
 y 40
 w 380
-h 260
+h 285
 lineColor rgb 0 0 0
 fillColor rgb 0 0 0
 lineWidth 0
@@ -105,7 +105,7 @@ beginObjectProperties
 major 4
 minor 7
 release 0
-x 676
+x 675
 y 51
 w 90
 h 18
@@ -129,7 +129,7 @@ beginObjectProperties
 major 4
 minor 7
 release 0
-x 666
+x 665
 y 76
 w 100
 h 18
@@ -153,7 +153,7 @@ beginObjectProperties
 major 4
 minor 1
 release 1
-x 525
+x 524
 y 50
 w 51
 h 20
@@ -173,7 +173,7 @@ beginObjectProperties
 major 4
 minor 1
 release 1
-x 476
+x 475
 y 75
 w 100
 h 20
@@ -193,7 +193,7 @@ beginObjectProperties
 major 4
 minor 7
 release 0
-x 666
+x 665
 y 126
 w 100
 h 18
@@ -217,7 +217,7 @@ beginObjectProperties
 major 4
 minor 7
 release 0
-x 581
+x 580
 y 125
 w 80
 h 20
@@ -243,7 +243,7 @@ beginObjectProperties
 major 4
 minor 1
 release 1
-x 456
+x 455
 y 125
 w 120
 h 20
@@ -263,7 +263,7 @@ beginObjectProperties
 major 4
 minor 7
 release 0
-x 666
+x 665
 y 151
 w 100
 h 18
@@ -287,7 +287,7 @@ beginObjectProperties
 major 4
 minor 7
 release 0
-x 666
+x 665
 y 176
 w 100
 h 18
@@ -311,7 +311,7 @@ beginObjectProperties
 major 4
 minor 7
 release 0
-x 666
+x 665
 y 201
 w 100
 h 18
@@ -329,13 +329,232 @@ newPos
 objType "controls"
 endObjectProperties
 
+# (Text Control)
+object activeXTextDspClass
+beginObjectProperties
+major 4
+minor 7
+release 0
+x 580
+y 175
+w 80
+h 20
+controlPv "$(P)$(R)BloscCLevel"
+format "decimal"
+font "helvetica-medium-r-12.0"
+fontAlign "left"
+fgColor rgb 0 0 0
+bgColor rgb 29440 57088 65280
+editable
+motifWidget
+limitsFromDb
+nullColor rgb 60928 46592 11008
+smartRefresh
+fastUpdate
+newPos
+objType "controls"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 415
+y 150
+w 160
+h 20
+font "helvetica-medium-r-14.0"
+fontAlign "right"
+fgColor rgb 0 0 0
+bgColor index 3
+useDisplayBg
+value {
+  "Blosc Compressor"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 405
+y 175
+w 170
+h 20
+font "helvetica-medium-r-14.0"
+fontAlign "right"
+fgColor rgb 0 0 0
+bgColor index 3
+useDisplayBg
+value {
+  "Blosc Comp. Level"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 445
+y 200
+w 130
+h 20
+font "helvetica-medium-r-14.0"
+fontAlign "right"
+fgColor rgb 0 0 0
+bgColor index 3
+useDisplayBg
+value {
+  "Blosc Shuffle"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 395
+y 100
+w 180
+h 20
+font "helvetica-medium-r-14.0"
+fontAlign "right"
+fgColor rgb 0 0 0
+bgColor index 3
+useDisplayBg
+value {
+  "Compression Factor"
+}
+endObjectProperties
+
 # (Text Monitor)
 object activeXTextDspClass:noedit
 beginObjectProperties
 major 4
 minor 7
 release 0
-x 666
+x 580
+y 101
+w 80
+h 18
+controlPv "$(P)$(R)CompFactor_RBV"
+format "decimal"
+font "helvetica-medium-r-14.0"
+fontAlign "left"
+fgColor rgb 2560 0 47104
+bgColor rgb 47872 47872 47872
+limitsFromDb
+nullColor rgb 60928 46592 11008
+smartRefresh
+fastUpdate
+newPos
+objType "controls"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 455
+y 275
+w 120
+h 20
+font "helvetica-medium-r-14.0"
+fontAlign "right"
+fgColor rgb 0 0 0
+bgColor index 3
+useDisplayBg
+value {
+  "Codec Status"
+}
+endObjectProperties
+
+# (Text Monitor)
+object activeXTextDspClass:noedit
+beginObjectProperties
+major 4
+minor 7
+release 0
+x 580
+y 276
+w 80
+h 18
+controlPv "$(P)$(R)CodecStatus"
+format "string"
+font "helvetica-medium-r-14.0"
+fontAlign "center"
+fgColor rgb 0 65535 0
+fgAlarm
+bgColor rgb 17920 17920 17920
+limitsFromDb
+nullColor rgb 60928 46592 11008
+smartRefresh
+fastUpdate
+newPos
+objType "controls"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 395
+y 300
+w 110
+h 20
+font "helvetica-medium-r-14.0"
+fontAlign "right"
+fgColor rgb 0 0 0
+bgColor index 3
+useDisplayBg
+value {
+  "Codec Error"
+}
+endObjectProperties
+
+# (Text Monitor)
+object activeXTextDspClass:noedit
+beginObjectProperties
+major 4
+minor 7
+release 0
+x 510
+y 303
+w 255
+h 14
+controlPv "$(P)$(R)CodecError"
+format "string"
+font "helvetica-medium-r-12.0"
+fontAlign "left"
+fgColor rgb 2560 0 47104
+bgColor rgb 47872 47872 47872
+limitsFromDb
+nullColor rgb 60928 46592 11008
+smartRefresh
+fastUpdate
+newPos
+objType "controls"
+endObjectProperties
+
+# (Text Monitor)
+object activeXTextDspClass:noedit
+beginObjectProperties
+major 4
+minor 7
+release 0
+x 665
 y 226
 w 100
 h 18
@@ -359,33 +578,7 @@ beginObjectProperties
 major 4
 minor 7
 release 0
-x 581
-y 175
-w 80
-h 20
-controlPv "$(P)$(R)BloscCLevel"
-format "decimal"
-font "helvetica-medium-r-12.0"
-fontAlign "left"
-fgColor rgb 0 0 0
-bgColor rgb 29440 57088 65280
-editable
-motifWidget
-limitsFromDb
-nullColor rgb 60928 46592 11008
-smartRefresh
-fastUpdate
-newPos
-objType "controls"
-endObjectProperties
-
-# (Text Control)
-object activeXTextDspClass
-beginObjectProperties
-major 4
-minor 7
-release 0
-x 581
+x 580
 y 225
 w 80
 h 20
@@ -411,67 +604,7 @@ beginObjectProperties
 major 4
 minor 1
 release 1
-x 416
-y 150
-w 160
-h 20
-font "helvetica-medium-r-14.0"
-fontAlign "right"
-fgColor rgb 0 0 0
-bgColor index 3
-useDisplayBg
-value {
-  "Blosc Compressor"
-}
-endObjectProperties
-
-# (Static Text)
-object activeXTextClass
-beginObjectProperties
-major 4
-minor 1
-release 1
-x 406
-y 175
-w 170
-h 20
-font "helvetica-medium-r-14.0"
-fontAlign "right"
-fgColor rgb 0 0 0
-bgColor index 3
-useDisplayBg
-value {
-  "Blosc Comp. Level"
-}
-endObjectProperties
-
-# (Static Text)
-object activeXTextClass
-beginObjectProperties
-major 4
-minor 1
-release 1
-x 446
-y 200
-w 130
-h 20
-font "helvetica-medium-r-14.0"
-fontAlign "right"
-fgColor rgb 0 0 0
-bgColor index 3
-useDisplayBg
-value {
-  "Blosc Shuffle"
-}
-endObjectProperties
-
-# (Static Text)
-object activeXTextClass
-beginObjectProperties
-major 4
-minor 1
-release 1
-x 406
+x 405
 y 225
 w 170
 h 20
@@ -485,37 +618,17 @@ value {
 }
 endObjectProperties
 
-# (Static Text)
-object activeXTextClass
-beginObjectProperties
-major 4
-minor 1
-release 1
-x 396
-y 100
-w 180
-h 20
-font "helvetica-medium-r-14.0"
-fontAlign "right"
-fgColor rgb 0 0 0
-bgColor index 3
-useDisplayBg
-value {
-  "Compression Factor"
-}
-endObjectProperties
-
 # (Text Monitor)
 object activeXTextDspClass:noedit
 beginObjectProperties
 major 4
 minor 7
 release 0
-x 581
-y 101
-w 80
+x 664
+y 251
+w 100
 h 18
-controlPv "$(P)$(R)CompFactor_RBV"
+controlPv "$(P)$(R)LZ4HDF5BlockSize_RBV"
 format "decimal"
 font "helvetica-medium-r-14.0"
 fontAlign "left"
@@ -529,93 +642,50 @@ newPos
 objType "controls"
 endObjectProperties
 
-# (Static Text)
-object activeXTextClass
+# (Text Control)
+object activeXTextDspClass
 beginObjectProperties
 major 4
-minor 1
-release 1
-x 456
+minor 7
+release 0
+x 579
 y 250
-w 120
-h 20
-font "helvetica-medium-r-14.0"
-fontAlign "right"
-fgColor rgb 0 0 0
-bgColor index 3
-useDisplayBg
-value {
-  "Codec Status"
-}
-endObjectProperties
-
-# (Text Monitor)
-object activeXTextDspClass:noedit
-beginObjectProperties
-major 4
-minor 7
-release 0
-x 581
-y 251
 w 80
-h 18
-controlPv "$(P)$(R)CodecStatus"
-format "string"
-font "helvetica-medium-r-14.0"
-fontAlign "center"
-fgColor rgb 0 65535 0
-fgAlarm
-bgColor rgb 17920 17920 17920
-limitsFromDb
-nullColor rgb 60928 46592 11008
-smartRefresh
-fastUpdate
-newPos
-objType "controls"
-endObjectProperties
-
-# (Static Text)
-object activeXTextClass
-beginObjectProperties
-major 4
-minor 1
-release 1
-x 396
-y 275
-w 110
 h 20
-font "helvetica-medium-r-14.0"
-fontAlign "right"
-fgColor rgb 0 0 0
-bgColor index 3
-useDisplayBg
-value {
-  "Codec Error"
-}
-endObjectProperties
-
-# (Text Monitor)
-object activeXTextDspClass:noedit
-beginObjectProperties
-major 4
-minor 7
-release 0
-x 511
-y 278
-w 255
-h 14
-controlPv "$(P)$(R)CodecError"
-format "string"
+controlPv "$(P)$(R)LZ4HDF5BlockSize"
+format "decimal"
 font "helvetica-medium-r-12.0"
 fontAlign "left"
-fgColor rgb 2560 0 47104
-bgColor rgb 47872 47872 47872
+fgColor rgb 0 0 0
+bgColor rgb 29440 57088 65280
+editable
+motifWidget
 limitsFromDb
 nullColor rgb 60928 46592 11008
 smartRefresh
 fastUpdate
 newPos
 objType "controls"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 394
+y 250
+w 180
+h 20
+font "helvetica-medium-r-14.0"
+fontAlign "right"
+fgColor rgb 0 0 0
+bgColor index 3
+useDisplayBg
+value {
+  "LZ4HDF5 Block Size"
+}
 endObjectProperties
 
 # (Menu Button)
@@ -624,7 +694,7 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 581
+x 580
 y 51
 w 90
 h 18
@@ -644,7 +714,7 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 581
+x 580
 y 76
 w 80
 h 18
@@ -664,7 +734,7 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 581
+x 580
 y 151
 w 80
 h 18
@@ -684,7 +754,7 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 581
+x 580
 y 201
 w 80
 h 18

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--Saved on 2024-03-25 15:22:23 by epics-->
+<!--Saved on 2026-04-07 18:02:36 by epics-->
 <display version="2.0.0">
   <name>NDCodec</name>
   <x>330</x>
@@ -46,7 +46,7 @@
     <x>390</x>
     <y>40</y>
     <width>380</width>
-    <height>260</height>
+    <height>285</height>
     <line_width>1</line_width>
     <line_color>
       <color red="0" green="0" blue="0">
@@ -69,7 +69,7 @@
   <widget type="textupdate" version="2.0.0">
     <name>text update #17</name>
     <pv_name>$(P)$(R)Mode_RBV</pv_name>
-    <x>676</x>
+    <x>675</x>
     <y>51</y>
     <width>90</width>
     <height>18</height>
@@ -92,7 +92,7 @@
   <widget type="textupdate" version="2.0.0">
     <name>text update #21</name>
     <pv_name>$(P)$(R)Compressor_RBV</pv_name>
-    <x>666</x>
+    <x>665</x>
     <y>76</y>
     <height>18</height>
     <font>
@@ -114,7 +114,7 @@
   <widget type="combo" version="2.0.0">
     <name>menu #25</name>
     <pv_name>$(P)$(R)Mode</pv_name>
-    <x>581</x>
+    <x>580</x>
     <y>51</y>
     <width>90</width>
     <height>18</height>
@@ -127,7 +127,7 @@
   <widget type="combo" version="2.0.0">
     <name>menu #28</name>
     <pv_name>$(P)$(R)Compressor</pv_name>
-    <x>581</x>
+    <x>580</x>
     <y>76</y>
     <width>80</width>
     <height>18</height>
@@ -140,7 +140,7 @@
   <widget type="label" version="2.0.0">
     <name>text #31</name>
     <text>Mode</text>
-    <x>536</x>
+    <x>535</x>
     <y>50</y>
     <width>40</width>
     <font>
@@ -152,7 +152,7 @@
   <widget type="label" version="2.0.0">
     <name>text #34</name>
     <text>Compressor</text>
-    <x>476</x>
+    <x>475</x>
     <y>75</y>
     <font>
       <font family="Liberation Sans" style="REGULAR" size="16.0">
@@ -163,7 +163,7 @@
   <widget type="textupdate" version="2.0.0">
     <name>text update #37</name>
     <pv_name>$(P)$(R)JPEGQuality_RBV</pv_name>
-    <x>666</x>
+    <x>665</x>
     <y>126</y>
     <height>18</height>
     <font>
@@ -185,7 +185,7 @@
   <widget type="textentry" version="3.0.0">
     <name>text entry #41</name>
     <pv_name>$(P)$(R)JPEGQuality</pv_name>
-    <x>581</x>
+    <x>580</x>
     <y>125</y>
     <width>80</width>
     <font>
@@ -203,7 +203,7 @@
   <widget type="label" version="2.0.0">
     <name>text #45</name>
     <text>JPEG Quality</text>
-    <x>456</x>
+    <x>455</x>
     <y>125</y>
     <width>120</width>
     <font>
@@ -215,7 +215,7 @@
   <widget type="textupdate" version="2.0.0">
     <name>text update #48</name>
     <pv_name>$(P)$(R)BloscCompressor_RBV</pv_name>
-    <x>666</x>
+    <x>665</x>
     <y>151</y>
     <height>18</height>
     <font>
@@ -237,7 +237,7 @@
   <widget type="textupdate" version="2.0.0">
     <name>text update #52</name>
     <pv_name>$(P)$(R)BloscCLevel_RBV</pv_name>
-    <x>666</x>
+    <x>665</x>
     <y>176</y>
     <height>18</height>
     <font>
@@ -259,7 +259,7 @@
   <widget type="textupdate" version="2.0.0">
     <name>text update #56</name>
     <pv_name>$(P)$(R)BloscShuffle_RBV</pv_name>
-    <x>666</x>
+    <x>665</x>
     <y>201</y>
     <height>18</height>
     <font>
@@ -278,32 +278,10 @@
     <show_units>false</show_units>
     <border_alarm_sensitive>false</border_alarm_sensitive>
   </widget>
-  <widget type="textupdate" version="2.0.0">
-    <name>text update #60</name>
-    <pv_name>$(P)$(R)BloscNumThreads_RBV</pv_name>
-    <x>666</x>
-    <y>226</y>
-    <height>18</height>
-    <font>
-      <font family="Liberation Sans" style="REGULAR" size="16.0">
-      </font>
-    </font>
-    <foreground_color>
-      <color red="10" green="0" blue="184">
-      </color>
-    </foreground_color>
-    <background_color>
-      <color red="187" green="187" blue="187">
-      </color>
-    </background_color>
-    <format>1</format>
-    <show_units>false</show_units>
-    <border_alarm_sensitive>false</border_alarm_sensitive>
-  </widget>
   <widget type="combo" version="2.0.0">
-    <name>menu #64</name>
+    <name>menu #60</name>
     <pv_name>$(P)$(R)BloscCompressor</pv_name>
-    <x>581</x>
+    <x>580</x>
     <y>151</y>
     <width>80</width>
     <height>18</height>
@@ -314,9 +292,9 @@
     <border_alarm_sensitive>false</border_alarm_sensitive>
   </widget>
   <widget type="textentry" version="3.0.0">
-    <name>text entry #67</name>
+    <name>text entry #63</name>
     <pv_name>$(P)$(R)BloscCLevel</pv_name>
-    <x>581</x>
+    <x>580</x>
     <y>175</y>
     <width>80</width>
     <font>
@@ -332,9 +310,9 @@
     <border_alarm_sensitive>false</border_alarm_sensitive>
   </widget>
   <widget type="combo" version="2.0.0">
-    <name>menu #71</name>
+    <name>menu #67</name>
     <pv_name>$(P)$(R)BloscShuffle</pv_name>
-    <x>581</x>
+    <x>580</x>
     <y>201</y>
     <width>80</width>
     <height>18</height>
@@ -344,28 +322,10 @@
     </background_color>
     <border_alarm_sensitive>false</border_alarm_sensitive>
   </widget>
-  <widget type="textentry" version="3.0.0">
-    <name>text entry #74</name>
-    <pv_name>$(P)$(R)BloscNumThreads</pv_name>
-    <x>581</x>
-    <y>225</y>
-    <width>80</width>
-    <font>
-      <font family="Liberation Sans" style="REGULAR" size="16.0">
-      </font>
-    </font>
-    <background_color>
-      <color red="115" green="223" blue="255">
-      </color>
-    </background_color>
-    <format>1</format>
-    <show_units>false</show_units>
-    <border_alarm_sensitive>false</border_alarm_sensitive>
-  </widget>
   <widget type="label" version="2.0.0">
-    <name>text #78</name>
+    <name>text #70</name>
     <text>Blosc Compressor</text>
-    <x>416</x>
+    <x>415</x>
     <y>150</y>
     <width>160</width>
     <font>
@@ -375,9 +335,9 @@
     <horizontal_alignment>2</horizontal_alignment>
   </widget>
   <widget type="label" version="2.0.0">
-    <name>text #81</name>
+    <name>text #73</name>
     <text>Blosc Comp. Level</text>
-    <x>406</x>
+    <x>405</x>
     <y>175</y>
     <width>170</width>
     <font>
@@ -387,9 +347,9 @@
     <horizontal_alignment>2</horizontal_alignment>
   </widget>
   <widget type="label" version="2.0.0">
-    <name>text #84</name>
+    <name>text #76</name>
     <text>Blosc Shuffle</text>
-    <x>446</x>
+    <x>445</x>
     <y>200</y>
     <width>130</width>
     <font>
@@ -399,21 +359,9 @@
     <horizontal_alignment>2</horizontal_alignment>
   </widget>
   <widget type="label" version="2.0.0">
-    <name>text #87</name>
-    <text>Blosc Num Threads</text>
-    <x>406</x>
-    <y>225</y>
-    <width>170</width>
-    <font>
-      <font family="Liberation Sans" style="REGULAR" size="16.0">
-      </font>
-    </font>
-    <horizontal_alignment>2</horizontal_alignment>
-  </widget>
-  <widget type="label" version="2.0.0">
-    <name>text #90</name>
+    <name>text #79</name>
     <text>Compression Factor</text>
-    <x>396</x>
+    <x>395</x>
     <y>100</y>
     <width>180</width>
     <font>
@@ -423,9 +371,9 @@
     <horizontal_alignment>2</horizontal_alignment>
   </widget>
   <widget type="textupdate" version="2.0.0">
-    <name>text update #93</name>
+    <name>text update #82</name>
     <pv_name>$(P)$(R)CompFactor_RBV</pv_name>
-    <x>581</x>
+    <x>580</x>
     <y>101</y>
     <width>80</width>
     <height>18</height>
@@ -446,10 +394,10 @@
     <border_alarm_sensitive>false</border_alarm_sensitive>
   </widget>
   <widget type="label" version="2.0.0">
-    <name>text #97</name>
+    <name>text #86</name>
     <text>Codec Status</text>
-    <x>456</x>
-    <y>250</y>
+    <x>455</x>
+    <y>275</y>
     <width>120</width>
     <font>
       <font family="Liberation Sans" style="REGULAR" size="16.0">
@@ -458,10 +406,10 @@
     <horizontal_alignment>2</horizontal_alignment>
   </widget>
   <widget type="textupdate" version="2.0.0">
-    <name>text update #100</name>
+    <name>text update #89</name>
     <pv_name>$(P)$(R)CodecStatus</pv_name>
-    <x>581</x>
-    <y>251</y>
+    <x>580</x>
+    <y>276</y>
     <width>80</width>
     <height>18</height>
     <font>
@@ -481,10 +429,10 @@
     <horizontal_alignment>1</horizontal_alignment>
   </widget>
   <widget type="label" version="2.0.0">
-    <name>text #104</name>
+    <name>text #93</name>
     <text>Codec Error</text>
-    <x>396</x>
-    <y>275</y>
+    <x>395</x>
+    <y>300</y>
     <width>110</width>
     <font>
       <font family="Liberation Sans" style="REGULAR" size="16.0">
@@ -493,10 +441,10 @@
     <horizontal_alignment>2</horizontal_alignment>
   </widget>
   <widget type="textupdate" version="2.0.0">
-    <name>text update #107</name>
+    <name>text update #96</name>
     <pv_name>$(P)$(R)CodecError</pv_name>
-    <x>511</x>
-    <y>278</y>
+    <x>510</x>
+    <y>303</y>
     <width>255</width>
     <height>14</height>
     <foreground_color>
@@ -510,5 +458,109 @@
     <format>6</format>
     <show_units>false</show_units>
     <border_alarm_sensitive>false</border_alarm_sensitive>
+  </widget>
+  <widget type="textupdate" version="2.0.0">
+    <name>text update #100</name>
+    <pv_name>$(P)$(R)BloscNumThreads_RBV</pv_name>
+    <x>665</x>
+    <y>226</y>
+    <height>18</height>
+    <font>
+      <font family="Liberation Sans" style="REGULAR" size="16.0">
+      </font>
+    </font>
+    <foreground_color>
+      <color red="10" green="0" blue="184">
+      </color>
+    </foreground_color>
+    <background_color>
+      <color red="187" green="187" blue="187">
+      </color>
+    </background_color>
+    <format>1</format>
+    <show_units>false</show_units>
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+  </widget>
+  <widget type="textentry" version="3.0.0">
+    <name>text entry #104</name>
+    <pv_name>$(P)$(R)BloscNumThreads</pv_name>
+    <x>580</x>
+    <y>225</y>
+    <width>80</width>
+    <font>
+      <font family="Liberation Sans" style="REGULAR" size="16.0">
+      </font>
+    </font>
+    <background_color>
+      <color red="115" green="223" blue="255">
+      </color>
+    </background_color>
+    <format>1</format>
+    <show_units>false</show_units>
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+  </widget>
+  <widget type="label" version="2.0.0">
+    <name>text #108</name>
+    <text>Blosc Num Threads</text>
+    <x>405</x>
+    <y>225</y>
+    <width>170</width>
+    <font>
+      <font family="Liberation Sans" style="REGULAR" size="16.0">
+      </font>
+    </font>
+    <horizontal_alignment>2</horizontal_alignment>
+  </widget>
+  <widget type="textupdate" version="2.0.0">
+    <name>text update #111</name>
+    <pv_name>$(P)$(R)LZ4HDF5BlockSize_RBV</pv_name>
+    <x>664</x>
+    <y>251</y>
+    <height>18</height>
+    <font>
+      <font family="Liberation Sans" style="REGULAR" size="16.0">
+      </font>
+    </font>
+    <foreground_color>
+      <color red="10" green="0" blue="184">
+      </color>
+    </foreground_color>
+    <background_color>
+      <color red="187" green="187" blue="187">
+      </color>
+    </background_color>
+    <format>1</format>
+    <show_units>false</show_units>
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+  </widget>
+  <widget type="textentry" version="3.0.0">
+    <name>text entry #115</name>
+    <pv_name>$(P)$(R)LZ4HDF5BlockSize</pv_name>
+    <x>579</x>
+    <y>250</y>
+    <width>80</width>
+    <font>
+      <font family="Liberation Sans" style="REGULAR" size="16.0">
+      </font>
+    </font>
+    <background_color>
+      <color red="115" green="223" blue="255">
+      </color>
+    </background_color>
+    <format>1</format>
+    <show_units>false</show_units>
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+  </widget>
+  <widget type="label" version="2.0.0">
+    <name>text #119</name>
+    <text>LZ4HDF5 Block Size</text>
+    <x>394</x>
+    <y>250</y>
+    <width>180</width>
+    <font>
+      <font family="Liberation Sans" style="REGULAR" size="16.0">
+      </font>
+    </font>
+    <horizontal_alignment>2</horizontal_alignment>
   </widget>
 </display>

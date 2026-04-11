@@ -40,6 +40,7 @@ enum HDF5Compression_t {HDF5CompressNone=0,
                         HDF5CompressBlosc,
                         HDF5CompressBshuf,
                         HDF5CompressLZ4,
+                        HDF5CompressLZ4HDF5,
                         HDF5CompressJPEG};
 /* Filter ID officially assigned to blosc */
 #define FILTER_BLOSC 32001
@@ -1940,6 +1941,7 @@ asynStatus NDFileHDF5::writeInt32(asynUser *pasynUser, epicsInt32 value)
         filterId = FILTER_BSHUF;
         break;
       case HDF5CompressLZ4:
+      case HDF5CompressLZ4HDF5:
         filterId = FILTER_LZ4;
         break;
       case HDF5CompressJPEG:
@@ -3325,6 +3327,8 @@ asynStatus NDFileHDF5::configureCompression(NDArray *pArray)
       setIntegerParam(NDFileHDF5_compressionType, HDF5CompressBshuf);
     } else if (pArray->codec.name == codecName[NDCODEC_LZ4]) {
       setIntegerParam(NDFileHDF5_compressionType, HDF5CompressLZ4);
+    } else if (pArray->codec.name == codecName[NDCODEC_LZ4HDF5]) {
+      setIntegerParam(NDFileHDF5_compressionType, HDF5CompressLZ4HDF5);
     } else if (pArray->codec.name == codecName[NDCODEC_JPEG]) {
       setIntegerParam(NDFileHDF5_compressionType, HDF5CompressJPEG);
     }
@@ -3411,7 +3415,8 @@ asynStatus NDFileHDF5::configureCompression(NDArray *pArray)
         this->codec.name = codecName[NDCODEC_BSLZ4];
       }
       break;
-    case HDF5CompressLZ4: {
+    case HDF5CompressLZ4:
+    case HDF5CompressLZ4HDF5: {
         unsigned int cds[2];
         cds[0] = 0; /* lz4 selects the block size automatically */
         cds[1] = 0; /* Number of threads (not implemented) */
@@ -3420,7 +3425,11 @@ asynStatus NDFileHDF5::configureCompression(NDArray *pArray)
           asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, "Failed to set h5 lz4 filter\n");
           break;
         }
-        this->codec.name = codecName[NDCODEC_LZ4];
+        if (compressionScheme == HDF5CompressLZ4) {
+          this->codec.name = codecName[NDCODEC_LZ4];
+        } else {
+          this->codec.name = codecName[NDCODEC_LZ4HDF5];
+        }
       }
       break;
     case HDF5CompressJPEG: {

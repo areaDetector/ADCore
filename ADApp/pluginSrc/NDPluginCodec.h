@@ -3,26 +3,21 @@
 
 #include "NDPluginDriver.h"
 
-#define NDCodecModeString             "MODE"             /* (NDCodecMode_t r/w) Mode: Compress/Decompress */
-#define NDCodecCompressorString       "COMPRESSOR"       /* (NDCodecCompressor_t r/w) Which codec to use */
-#define NDCodecCompFactorString       "COMP_FACTOR"      /* (double r/o) Compression percentage (0 = no compression) */
-#define NDCodecCodecStatusString      "CODEC_STATUS"     /* (int r/o) Compression status: success or failure */
-#define NDCodecCodecErrorString       "CODEC_ERROR"      /* (string r/o) Error message if compression fails */
-#define NDCodecJPEGQualityString      "JPEG_QUALITY"     /* (int r/w) JPEG Compression quality */
-#define NDCodecBloscCompressorString  "BLOSC_COMPRESSOR" /* (NDCodecBloscComp_t r/w) Which Blosc compressor to use */
-#define NDCodecBloscCLevelString      "BLOSC_CLEVEL"     /* (int r/w) Blosc compression level */
-#define NDCodecBloscShuffleString     "BLOSC_SHUFFLE"    /* (bool r/w) Should Blosc apply shuffling? */
-#define NDCodecBloscNumThreadsString  "BLOSC_NUMTHREADS" /* (int r/w) Number of threads to be used by Blosc */
+#define NDCodecModeString             "MODE"              /* (NDCodecMode_t r/w) Mode: Compress/Decompress */
+#define NDCodecCompressorString       "COMPRESSOR"        /* (NDCodecCompressor_t r/w) Which codec to use */
+#define NDCodecCompFactorString       "COMP_FACTOR"       /* (double r/o) Compression percentage (0 = no compression) */
+#define NDCodecCodecStatusString      "CODEC_STATUS"      /* (int r/o) Compression status: success or failure */
+#define NDCodecCodecErrorString       "CODEC_ERROR"       /* (string r/o) Error message if compression fails */
+#define NDCodecJPEGQualityString      "JPEG_QUALITY"      /* (int r/w) JPEG Compression quality */
+#define NDCodecBloscCompressorString  "BLOSC_COMPRESSOR"  /* (NDCodecBloscComp_t r/w) Which Blosc compressor to use */
+#define NDCodecBloscCLevelString      "BLOSC_CLEVEL"      /* (int r/w) Blosc compression level */
+#define NDCodecBloscShuffleString     "BLOSC_SHUFFLE"     /* (bool r/w) Should Blosc apply shuffling? */
+#define NDCodecBloscNumThreadsString  "BLOSC_NUMTHREADS"  /* (int r/w) Number of threads to be used by Blosc */
+#define NDCodecLZ4HDF5BlockSizeString "LZ4HDF5_BLOCKSIZE" /* (int r/w) Block size for lz4hdf5 compression */
 
 /** Compress/decompress NDArrays according to available codecs.
   * This plugin is a source of NDArray callbacks, passing the (possibly
   * compressed/decompressed) NDArray data to clients that register for callbacks.
-  * The plugin currently supports the following codecs (if available at compile
-  * time):
-  * <ul>
-  *  <li> JPEG</li>
-  *  <li> Blosc</li>
-  * </ul>
   */
 
 typedef enum {
@@ -33,6 +28,7 @@ typedef enum {
 typedef enum {
     NDCODEC_BLOSC_BLOSCLZ,
     NDCODEC_BLOSC_LZ4,
+    NDCODEC_BLOSC_LZ4HDF5,
     NDCODEC_BLOSC_LZ4HC,
     NDCODEC_BLOSC_SNAPPY,
     NDCODEC_BLOSC_ZLIB,
@@ -60,6 +56,8 @@ NDArray *compressBlosc(NDArray *input, int clevel, int shuffle, NDCodecBloscComp
 NDArray *decompressBlosc(NDArray *input, int numThreads, NDCodecStatus_t *status, char *errorMessage);
 NDArray *compressLZ4(NDArray *input, NDCodecStatus_t *status, char *errorMessage);
 NDArray *decompressLZ4(NDArray *input, NDCodecStatus_t *status, char *errorMessage);
+NDArray *compressLZ4HDF5(NDArray *input, size_t blockSize, NDCodecStatus_t *status, char *errorMessage);
+NDArray *decompressLZ4HDF5(NDArray *input, size_t *blockSize, NDCodecStatus_t *status, char *errorMessage);
 NDArray *compressBSLZ4(NDArray *input, NDCodecStatus_t *status, char *errorMessage);
 NDArray *decompressBSLZ4(NDArray *input, NDCodecStatus_t *status, char *errorMessage);
 
@@ -87,6 +85,7 @@ protected:
     int NDCodecBloscCLevel;
     int NDCodecBloscShuffle;
     int NDCodecBloscNumThreads;
+    int NDCodecLZ4HDF5BlockSize;
 
 };
 
