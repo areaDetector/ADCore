@@ -3323,6 +3323,9 @@ asynStatus NDFileHDF5::configureCompression(NDArray *pArray)
       setIntegerParam(NDFileHDF5_bloscCompressLevel, pArray->codec.level);
       setIntegerParam(NDFileHDF5_bloscShuffleType, pArray->codec.shuffle);
       setIntegerParam(NDFileHDF5_bloscCompressor, pArray->codec.compressor);
+    } else if (pArray->codec.name == codecName[NDCODEC_ZLIB]) {
+      setIntegerParam(NDFileHDF5_compressionType, HDF5CompressZlib);
+      setIntegerParam(NDFileHDF5_zCompressLevel, pArray->codec.level);
     } else if (pArray->codec.name == codecName[NDCODEC_BSLZ4]) {
       setIntegerParam(NDFileHDF5_compressionType, HDF5CompressBshuf);
     } else if (pArray->codec.name == codecName[NDCODEC_LZ4]) {
@@ -3381,7 +3384,8 @@ asynStatus NDFileHDF5::configureCompression(NDArray *pArray)
                 "%s::%s Setting zlib compression filter level=%d\n",
                 driverName, functionName, zLevel);
       H5Pset_deflate(this->cparms, zLevel);
-      this->codec.name = "zlib";
+      this->codec.name = codecName[NDCODEC_ZLIB];
+      this->codec.level = zLevel;
       break;
     case HDF5CompressBlosc: {
         asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW,
