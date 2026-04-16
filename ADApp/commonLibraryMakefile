@@ -12,6 +12,8 @@ ifeq ($(WITH_PVA),YES)
 endif
 
 ifeq ($(WITH_PVXS),YES)
+  LIB_LIBS += pvxsIoc
+  LIB_LIBS += pvxs
   LIB_LIBS += ntndArrayConverterPvxs
 endif
 
