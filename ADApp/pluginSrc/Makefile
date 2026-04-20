@@ -141,12 +141,6 @@ ifeq ($(WITH_HDF5),YES)
   LIB_SRCS += NDFileHDF5AttributeDataset.cpp
   LIB_SRCS += NDFileHDF5LayoutXML.cpp
   LIB_SRCS += NDFileHDF5Layout.cpp
-  ifdef HDF5_INCLUDE
-    USR_INCLUDES += $(addprefix -I, $(HDF5_INCLUDE))
-  endif
-  ifdef SZIP_INCLUDE
-    USR_INCLUDES += $(addprefix -I, $(SZIP_INCLUDE))
-  endif
 endif
 
 ifeq ($(WITH_JPEG),YES)
