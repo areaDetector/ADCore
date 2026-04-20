@@ -343,6 +343,103 @@ NDArray *decompressJPEG(NDArray*, NDCodecStatus_t *status, char *errorMessage)
 
 #endif // ifdef HAVE_JPEG
 
+#ifdef HAVE_ZLIB
+#include <zlib.h>
+
+NDArray *compressZlib(NDArray *input, int clevel, NDCodecStatus_t *status, char *errorMessage)
+{
+    if (!input->codec.empty()) {
+        sprintf(errorMessage, "Array is already compressed");
+        *status = NDCODEC_WARNING;
+        return NULL;
+    }
+
+    if (clevel < 0) clevel = 0;
+    if (clevel > 9) clevel = 9;
+
+    NDArrayInfo_t info;
+    input->getInfo(&info);
+
+    uLongf destLen = compressBound((uLong)info.totalBytes);
+    NDArray *output = allocArray(input, -1, destLen);
+
+    if (!output) {
+        sprintf(errorMessage, "Failed to allocate zlib output array");
+        *status = NDCODEC_ERROR;
+        return NULL;
+    }
+
+    int ret = compress2((Bytef*)output->pData, &destLen,
+                        (const Bytef*)input->pData, (uLong)info.totalBytes, clevel);
+
+    if (ret != Z_OK) {
+        output->release();
+        sprintf(errorMessage, "zlib compress2 failed with error %d", ret);
+        *status = NDCODEC_ERROR;
+        return NULL;
+    }
+
+    output->codec.name = codecName[NDCODEC_ZLIB];
+    output->codec.level = clevel;
+    output->compressedSize = (size_t)destLen;
+
+    return output;
+}
+
+NDArray *decompressZlib(NDArray *input, NDCodecStatus_t *status, char *errorMessage)
+{
+    if (input->codec.name != codecName[NDCODEC_ZLIB]) {
+        sprintf(errorMessage, "Invalid codec '%s', expected '%s'",
+                input->codec.name.c_str(), codecName[NDCODEC_ZLIB].c_str());
+        *status = NDCODEC_ERROR;
+        return NULL;
+    }
+
+    NDArrayInfo_t info;
+    input->getInfo(&info);
+
+    NDArray *output = allocArray(input);
+
+    if (!output) {
+        sprintf(errorMessage, "Failed to allocate zlib output array");
+        *status = NDCODEC_ERROR;
+        return NULL;
+    }
+
+    uLongf destLen = (uLongf)output->dataSize;
+    int ret = uncompress((Bytef*)output->pData, &destLen,
+                         (const Bytef*)input->pData, (uLong)input->compressedSize);
+
+    if (ret != Z_OK) {
+        output->release();
+        sprintf(errorMessage, "zlib uncompress failed with error %d", ret);
+        *status = NDCODEC_ERROR;
+        return NULL;
+    }
+
+    output->codec.clear();
+
+    return output;
+}
+
+#else
+
+NDArray *compressZlib(NDArray*, int, NDCodecStatus_t *status, char *errorMessage)
+{
+    sprintf(errorMessage, "No zlib support");
+    *status = NDCODEC_ERROR;
+    return NULL;
+}
+
+NDArray *decompressZlib(NDArray*, NDCodecStatus_t *status, char *errorMessage)
+{
+    sprintf(errorMessage, "No zlib support");
+    *status = NDCODEC_ERROR;
+    return NULL;
+}
+
+#endif // ifdef HAVE_ZLIB
+
 #ifdef HAVE_BLOSC
 #include <blosc.h>
 
@@ -780,6 +877,16 @@ void NDPluginCodec::processCallbacks(NDArray *pArray)
             break;
         }
 
+        case NDCODEC_ZLIB: {
+            int clevel;
+            getIntegerParam(NDCodecZlibCLevel, &clevel);
+
+            unlock();
+            result = compressZlib(pArray, clevel, &codecStatus, errorMessage);
+            lock();
+            break;
+        }
+
         case NDCODEC_BLOSC: {
             int numThreads, clevel, shuffle, compressor;
 
@@ -836,6 +943,11 @@ void NDPluginCodec::processCallbacks(NDArray *pArray)
             result = decompressJPEG(pArray, &codecStatus, errorMessage);
             lock();
             setIntegerParam(NDCodecCompressor, NDCODEC_JPEG);
+        } else if (pArray->codec.name == codecName[NDCODEC_ZLIB]) {
+            unlock();
+            result = decompressZlib(pArray, &codecStatus, errorMessage);
+            lock();
+            setIntegerParam(NDCodecCompressor, NDCODEC_ZLIB);
         } else if (pArray->codec.name == codecName[NDCODEC_BLOSC]) {
             int numThreads;
             getIntegerParam(NDCodecBloscNumThreads, &numThreads);
@@ -901,6 +1013,11 @@ asynStatus NDPluginCodec::writeInt32(asynUser *pasynUser, epicsInt32 value)
 
     if (function == NDCodecJPEGQuality) {
         value = jpeg_clamp_quality(value);
+    } else if (function == NDCodecZlibCLevel) {
+        if (value < 0)
+            value = 0;
+        else if (value > 9)
+            value = 9;
     } else if (function == NDCodecBloscCompressor) {
         if (value < NDCODEC_BLOSC_BLOSCLZ)
             value = NDCODEC_BLOSC_BLOSCLZ;
@@ -983,6 +1100,7 @@ NDPluginCodec::NDPluginCodec(const char *portName, int queueSize, int blockingCa
     createParam(NDCodecCodecStatusString,      asynParamInt32,   &NDCodecCodecStatus);
     createParam(NDCodecCodecErrorString,       asynParamOctet,   &NDCodecCodecError);
     createParam(NDCodecJPEGQualityString,      asynParamInt32,   &NDCodecJPEGQuality);
+    createParam(NDCodecZlibCLevelString,       asynParamInt32,   &NDCodecZlibCLevel);
     createParam(NDCodecBloscCompressorString,  asynParamInt32,   &NDCodecBloscCompressor);
     createParam(NDCodecBloscCLevelString,      asynParamInt32,   &NDCodecBloscCLevel);
     createParam(NDCodecBloscShuffleString,     asynParamInt32,   &NDCodecBloscShuffle);
@@ -997,6 +1115,7 @@ NDPluginCodec::NDPluginCodec(const char *portName, int queueSize, int blockingCa
     setIntegerParam(NDCodecCodecStatus,      NDCODEC_SUCCESS);
     setStringParam(NDCodecCodecError,        "");
     setIntegerParam(NDCodecJPEGQuality,      85);
+    setIntegerParam(NDCodecZlibCLevel,       6);
     setIntegerParam(NDCodecBloscCompressor,  NDCODEC_BLOSC_BLOSCLZ);
     setIntegerParam(NDCodecBloscCLevel,      5);
     setIntegerParam(NDCodecBloscNumThreads,  1);

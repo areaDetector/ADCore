@@ -1,5 +1,5 @@
 /*
- * TimeSeriesPluginWrapper.cpp
+ * FFTPluginWrapper.cpp
  *
  *  Created on: 21 Mar 2016
  *      Author: Ulrik Pedersen

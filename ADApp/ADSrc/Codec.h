@@ -1,9 +1,12 @@
 #ifndef Codec_H
 #define Codec_H
 
+#include <string>
+
 static std::string codecName[] = {
     "",
     "jpeg",
+    "zlib",
     "blosc",
     "lz4",
     "lz4hdf5",
@@ -13,6 +16,7 @@ static std::string codecName[] = {
 typedef enum {
   NDCODEC_NONE,
   NDCODEC_JPEG,
+  NDCODEC_ZLIB,
   NDCODEC_BLOSC,
   NDCODEC_LZ4,
   NDCODEC_LZ4HDF5,

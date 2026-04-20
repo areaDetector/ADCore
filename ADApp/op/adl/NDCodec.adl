@@ -1,12 +1,12 @@
 
 file {
-	name="/home/epics/devel/areaDetector-3-14/ADCore/ADApp/op/adl/NDCodec.adl"
-	version=030117
+	name="/home/jwlodek/Workspace/ADCore/ADApp/op/adl/NDCodec.adl"
+	version=030122
 }
 display {
 	object {
-		x=330
-		y=189
+		x=3193
+		y=313
 		width=775
 		height=600
 	}
@@ -116,7 +116,7 @@ rectangle {
 		x=390
 		y=40
 		width=380
-		height=285
+		height=310
 	}
 	"basic attribute" {
 		clr=14
@@ -263,7 +263,7 @@ text {
 "text update" {
 	object {
 		x=665
-		y=151
+		y=175
 		width=100
 		height=18
 	}
@@ -279,7 +279,7 @@ text {
 "text update" {
 	object {
 		x=665
-		y=176
+		y=200
 		width=100
 		height=18
 	}
@@ -294,7 +294,7 @@ text {
 "text update" {
 	object {
 		x=665
-		y=201
+		y=225
 		width=100
 		height=18
 	}
@@ -310,7 +310,7 @@ text {
 menu {
 	object {
 		x=580
-		y=151
+		y=175
 		width=80
 		height=18
 	}
@@ -323,7 +323,7 @@ menu {
 "text entry" {
 	object {
 		x=580
-		y=175
+		y=199
 		width=80
 		height=20
 	}
@@ -338,7 +338,7 @@ menu {
 menu {
 	object {
 		x=580
-		y=201
+		y=225
 		width=80
 		height=18
 	}
@@ -351,7 +351,7 @@ menu {
 text {
 	object {
 		x=415
-		y=150
+		y=174
 		width=160
 		height=20
 	}
@@ -364,7 +364,7 @@ text {
 text {
 	object {
 		x=405
-		y=175
+		y=199
 		width=170
 		height=20
 	}
@@ -377,7 +377,7 @@ text {
 text {
 	object {
 		x=445
-		y=200
+		y=224
 		width=130
 		height=20
 	}
@@ -418,7 +418,7 @@ text {
 text {
 	object {
 		x=455
-		y=275
+		y=299
 		width=120
 		height=20
 	}
@@ -431,7 +431,7 @@ text {
 "text update" {
 	object {
 		x=580
-		y=276
+		y=300
 		width=80
 		height=18
 	}
@@ -449,7 +449,7 @@ text {
 text {
 	object {
 		x=395
-		y=300
+		y=325
 		width=110
 		height=20
 	}
@@ -462,7 +462,7 @@ text {
 "text update" {
 	object {
 		x=510
-		y=303
+		y=328
 		width=255
 		height=14
 	}
@@ -478,7 +478,7 @@ text {
 "text update" {
 	object {
 		x=665
-		y=226
+		y=250
 		width=100
 		height=18
 	}
@@ -493,7 +493,7 @@ text {
 "text entry" {
 	object {
 		x=580
-		y=225
+		y=249
 		width=80
 		height=20
 	}
@@ -508,7 +508,7 @@ text {
 text {
 	object {
 		x=405
-		y=225
+		y=249
 		width=170
 		height=20
 	}
@@ -521,7 +521,7 @@ text {
 "text update" {
 	object {
 		x=664
-		y=251
+		y=275
 		width=100
 		height=18
 	}
@@ -536,7 +536,7 @@ text {
 "text entry" {
 	object {
 		x=579
-		y=250
+		y=274
 		width=80
 		height=20
 	}
@@ -551,7 +551,7 @@ text {
 text {
 	object {
 		x=394
-		y=250
+		y=274
 		width=180
 		height=20
 	}
@@ -560,4 +560,47 @@ text {
 	}
 	textix="LZ4HDF5 Block Size"
 	align="horiz. right"
+}
+text {
+	object {
+		x=455
+		y=150
+		width=120
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Zlib Comp. Level"
+	align="horiz. right"
+}
+"text entry" {
+	object {
+		x=580
+		y=150
+		width=80
+		height=20
+	}
+	control {
+		chan="$(P)$(R)ZlibCLevel"
+		clr=14
+		bclr=51
+	}
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=665
+		y=151
+		width=100
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)ZlibCLevel_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
 }

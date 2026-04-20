@@ -9,6 +9,7 @@
 #define NDCodecCodecStatusString      "CODEC_STATUS"      /* (int r/o) Compression status: success or failure */
 #define NDCodecCodecErrorString       "CODEC_ERROR"       /* (string r/o) Error message if compression fails */
 #define NDCodecJPEGQualityString      "JPEG_QUALITY"      /* (int r/w) JPEG Compression quality */
+#define NDCodecZlibCLevelString       "ZLIB_CLEVEL"       /* (int r/w) Zlib compression level */
 #define NDCodecBloscCompressorString  "BLOSC_COMPRESSOR"  /* (NDCodecBloscComp_t r/w) Which Blosc compressor to use */
 #define NDCodecBloscCLevelString      "BLOSC_CLEVEL"      /* (int r/w) Blosc compression level */
 #define NDCodecBloscShuffleString     "BLOSC_SHUFFLE"     /* (bool r/w) Should Blosc apply shuffling? */
@@ -51,6 +52,9 @@ typedef enum {
 NDArray *compressJPEG(NDArray *input, int quality, NDCodecStatus_t *status, char *errorMessage);
 NDArray *decompressJPEG(NDArray *input, NDCodecStatus_t *status, char *errorMessage);
 
+NDArray *compressZlib(NDArray *input, int clevel, NDCodecStatus_t *status, char *errorMessage);
+NDArray *decompressZlib(NDArray *input, NDCodecStatus_t *status, char *errorMessage);
+
 NDArray *compressBlosc(NDArray *input, int clevel, int shuffle, NDCodecBloscComp_t compressor,
                        int numThreads, NDCodecStatus_t *status, char *errorMessage);
 NDArray *decompressBlosc(NDArray *input, int numThreads, NDCodecStatus_t *status, char *errorMessage);
@@ -81,6 +85,7 @@ protected:
     int NDCodecCodecStatus;
     int NDCodecCodecError;
     int NDCodecJPEGQuality;
+    int NDCodecZlibCLevel;
     int NDCodecBloscCompressor;
     int NDCodecBloscCLevel;
     int NDCodecBloscShuffle;

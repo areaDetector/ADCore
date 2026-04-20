@@ -1,19 +1,19 @@
 /*
- * FFTPluginWrapper.cpp
+ * CodecPluginWrapper.cpp
  *
- *  Created on: 21 Mar 2016
- *      Author: Ulrik Pedersen
+ *  Created on: 20 Apr 2026
+ *      Author: Jakub Wlodek
  */
 
-#include "FFTPluginWrapper.h"
+#include "CodecPluginWrapper.h"
 
-FFTPluginWrapper::FFTPluginWrapper(const std::string& port, const std::string& detectorPort)
-  :  NDPluginFFT(port.c_str(), 50, 0, detectorPort.c_str(), 0, 0, 0, 0, 0, 1),
+CodecPluginWrapper::CodecPluginWrapper(const std::string& port, const std::string& detectorPort)
+  :  NDPluginCodec(port.c_str(), 50, 0, detectorPort.c_str(), 0, 0, 0, 0, 0, 1),
      AsynPortClientContainer(port)
 {
 }
 
-FFTPluginWrapper::FFTPluginWrapper(const std::string& port,
+CodecPluginWrapper::CodecPluginWrapper(const std::string& port,
                                    int queueSize,
                                    int blocking,
                                    const std::string& detectorPort,
@@ -22,14 +22,14 @@ FFTPluginWrapper::FFTPluginWrapper(const std::string& port,
                                    int priority,
                                    int stackSize,
                                    int maxThreads)
-  :  NDPluginFFT(port.c_str(), queueSize, blocking,
+  :  NDPluginCodec(port.c_str(), queueSize, blocking,
                         detectorPort.c_str(), address,
                         0, maxMemory, priority, stackSize, maxThreads),
      AsynPortClientContainer(port)
 {
 }
 
-FFTPluginWrapper::~FFTPluginWrapper ()
+CodecPluginWrapper::~CodecPluginWrapper ()
 {
   cleanup();
 }

@@ -205,12 +205,20 @@ ifeq ($(WITH_BITSHUFFLE), YES)
   USR_CXXFLAGS += -DHAVE_BITSHUFFLE
 endif
 
+ifeq ($(WITH_ZLIB), YES)
+  USR_CXXFLAGS += -DHAVE_ZLIB
+endif
+
 ifdef BLOSC_INCLUDE
   USR_INCLUDES += $(addprefix -I, $(BLOSC_INCLUDE))
 endif
 
 ifdef BITSHUFFLE_INCLUDE
   USR_INCLUDES += $(addprefix -I, $(BITSHUFFLE_INCLUDE))
+endif
+
+ifdef ZLIB_INCLUDE
+  USR_INCLUDES += $(addprefix -I, $(ZLIB_INCLUDE))
 endif
 
 ifdef HDF5_INCLUDE
