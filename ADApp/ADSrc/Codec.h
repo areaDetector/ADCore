@@ -1,6 +1,8 @@
 #ifndef Codec_H
 #define Codec_H
 
+#include <string>
+
 static std::string codecName[] = {
     "",
     "jpeg",
