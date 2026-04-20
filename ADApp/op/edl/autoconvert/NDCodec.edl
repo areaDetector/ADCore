@@ -3,8 +3,8 @@ beginScreenProperties
 major 4
 minor 0
 release 1
-x 330
-y 189
+x 500
+y 300
 w 775
 h 600
 font "helvetica-medium-r-18.0"
@@ -69,17 +69,30 @@ release 0
 x 390
 y 40
 w 380
-h 285
+h 310
 lineColor rgb 0 0 0
 fillColor rgb 0 0 0
 lineWidth 0
 endObjectProperties
 
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 5
+y 40
+w 380
+h 555
+
+beginGroup
+
 # (Embedded Window)
 object activePipClass
 beginObjectProperties
 major 4
-minor 0
+minor 1
 release 0
 x 5
 y 40
@@ -99,6 +112,12 @@ displayFileName {
 noScroll
 endObjectProperties
 
+endGroup
+
+visMin "A"
+visMax "1"
+endObjectProperties
+
 # (Text Monitor)
 object activeXTextDspClass:noedit
 beginObjectProperties
@@ -106,7 +125,7 @@ major 4
 minor 7
 release 0
 x 675
-y 51
+y 50
 w 90
 h 18
 controlPv "$(P)$(R)Mode_RBV"
@@ -130,7 +149,7 @@ major 4
 minor 7
 release 0
 x 665
-y 76
+y 75
 w 100
 h 18
 controlPv "$(P)$(R)Compressor_RBV"
@@ -194,7 +213,7 @@ major 4
 minor 7
 release 0
 x 665
-y 126
+y 125
 w 100
 h 18
 controlPv "$(P)$(R)JPEGQuality_RBV"
@@ -264,7 +283,7 @@ major 4
 minor 7
 release 0
 x 665
-y 151
+y 175
 w 100
 h 18
 controlPv "$(P)$(R)BloscCompressor_RBV"
@@ -288,7 +307,7 @@ major 4
 minor 7
 release 0
 x 665
-y 176
+y 200
 w 100
 h 18
 controlPv "$(P)$(R)BloscCLevel_RBV"
@@ -312,7 +331,7 @@ major 4
 minor 7
 release 0
 x 665
-y 201
+y 225
 w 100
 h 18
 controlPv "$(P)$(R)BloscShuffle_RBV"
@@ -335,8 +354,8 @@ beginObjectProperties
 major 4
 minor 7
 release 0
-x 580
-y 175
+x 578
+y 198
 w 80
 h 20
 controlPv "$(P)$(R)BloscCLevel"
@@ -362,7 +381,7 @@ major 4
 minor 1
 release 1
 x 415
-y 150
+y 174
 w 160
 h 20
 font "helvetica-medium-r-14.0"
@@ -382,7 +401,7 @@ major 4
 minor 1
 release 1
 x 405
-y 175
+y 200
 w 170
 h 20
 font "helvetica-medium-r-14.0"
@@ -402,7 +421,7 @@ major 4
 minor 1
 release 1
 x 445
-y 200
+y 225
 w 130
 h 20
 font "helvetica-medium-r-14.0"
@@ -442,7 +461,7 @@ major 4
 minor 7
 release 0
 x 580
-y 101
+y 100
 w 80
 h 18
 controlPv "$(P)$(R)CompFactor_RBV"
@@ -466,7 +485,7 @@ major 4
 minor 1
 release 1
 x 455
-y 275
+y 300
 w 120
 h 20
 font "helvetica-medium-r-14.0"
@@ -486,7 +505,7 @@ major 4
 minor 7
 release 0
 x 580
-y 276
+y 300
 w 80
 h 18
 controlPv "$(P)$(R)CodecStatus"
@@ -511,7 +530,7 @@ major 4
 minor 1
 release 1
 x 395
-y 300
+y 325
 w 110
 h 20
 font "helvetica-medium-r-14.0"
@@ -531,7 +550,7 @@ major 4
 minor 7
 release 0
 x 510
-y 303
+y 328
 w 255
 h 14
 controlPv "$(P)$(R)CodecError"
@@ -555,7 +574,7 @@ major 4
 minor 7
 release 0
 x 665
-y 226
+y 250
 w 100
 h 18
 controlPv "$(P)$(R)BloscNumThreads_RBV"
@@ -579,7 +598,7 @@ major 4
 minor 7
 release 0
 x 580
-y 225
+y 250
 w 80
 h 20
 controlPv "$(P)$(R)BloscNumThreads"
@@ -605,7 +624,7 @@ major 4
 minor 1
 release 1
 x 405
-y 225
+y 250
 w 170
 h 20
 font "helvetica-medium-r-14.0"
@@ -625,7 +644,7 @@ major 4
 minor 7
 release 0
 x 664
-y 251
+y 275
 w 100
 h 18
 controlPv "$(P)$(R)LZ4HDF5BlockSize_RBV"
@@ -649,7 +668,7 @@ major 4
 minor 7
 release 0
 x 579
-y 250
+y 275
 w 80
 h 20
 controlPv "$(P)$(R)LZ4HDF5BlockSize"
@@ -675,7 +694,7 @@ major 4
 minor 1
 release 1
 x 394
-y 250
+y 275
 w 180
 h 20
 font "helvetica-medium-r-14.0"
@@ -688,6 +707,76 @@ value {
 }
 endObjectProperties
 
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 455
+y 150
+w 120
+h 20
+font "helvetica-medium-r-14.0"
+fontAlign "right"
+fgColor rgb 0 0 0
+bgColor index 3
+useDisplayBg
+value {
+  "Zlib Comp. Level"
+}
+endObjectProperties
+
+# (Text Control)
+object activeXTextDspClass
+beginObjectProperties
+major 4
+minor 7
+release 0
+x 580
+y 150
+w 80
+h 20
+controlPv "$(P)$(R)ZlibCLevel"
+format "decimal"
+font "helvetica-medium-r-12.0"
+fontAlign "left"
+fgColor rgb 0 0 0
+bgColor rgb 29440 57088 65280
+editable
+motifWidget
+limitsFromDb
+nullColor rgb 60928 46592 11008
+smartRefresh
+fastUpdate
+newPos
+objType "controls"
+endObjectProperties
+
+# (Text Monitor)
+object activeXTextDspClass:noedit
+beginObjectProperties
+major 4
+minor 7
+release 0
+x 665
+y 150
+w 100
+h 18
+controlPv "$(P)$(R)ZlibCLevel_RBV"
+format "decimal"
+font "helvetica-medium-r-14.0"
+fontAlign "left"
+fgColor rgb 2560 0 47104
+bgColor rgb 47872 47872 47872
+limitsFromDb
+nullColor rgb 60928 46592 11008
+smartRefresh
+fastUpdate
+newPos
+objType "controls"
+endObjectProperties
+
 # (Menu Button)
 object activeMenuButtonClass
 beginObjectProperties
@@ -695,7 +784,7 @@ major 4
 minor 0
 release 0
 x 580
-y 51
+y 50
 w 90
 h 18
 fgColor rgb 0 0 0
@@ -715,7 +804,7 @@ major 4
 minor 0
 release 0
 x 580
-y 76
+y 75
 w 80
 h 18
 fgColor rgb 0 0 0
@@ -735,7 +824,7 @@ major 4
 minor 0
 release 0
 x 580
-y 151
+y 175
 w 80
 h 18
 fgColor rgb 0 0 0
@@ -755,7 +844,7 @@ major 4
 minor 0
 release 0
 x 580
-y 201
+y 225
 w 80
 h 18
 fgColor rgb 0 0 0
