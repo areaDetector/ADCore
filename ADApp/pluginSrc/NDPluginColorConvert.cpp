@@ -38,7 +38,6 @@ void NDPluginColorConvert::convertColor(NDArray *pArray)
     NDArray *pArrayOut=NULL;
     size_t imageSize, rowSize, numRows;
     size_t dims[3];
-    NDDimension_t tmpDim;
     enum Colour {red, green, blue};
     double value;
     int colorMode=NDColorModeMono, bayerPattern=NDBayerRGGB;
@@ -92,14 +91,9 @@ void NDPluginColorConvert::convertColor(NDArray *pArray)
                     dims[1] = rowSize;
                     dims[2] = numRows;
                     pArrayOut = this->pNDArrayPool->alloc(3, dims, pArray->dataType, 0, NULL);
-                    tmpDim = pArrayOut->dims[0];
-                    /* Copy everything except the data, e.g. uniqueId and timeStamp, attributes. */
-                    this->pNDArrayPool->copy(pArray, pArrayOut, 0);
-                    /* That replaced the dimensions in the output array, need to fix. */
-                    pArrayOut->ndims = 3;
-                    pArrayOut->dims[2] = pArrayOut->dims[1];
-                    pArrayOut->dims[1] = pArrayOut->dims[0];
-                    pArrayOut->dims[0] = tmpDim;
+                    /* Copy everything except the data and the dimensions,
+                     * e.g. uniqueId and timeStamp, attributes. */
+                    this->pNDArrayPool->copy(pArray, pArrayOut, 0, 0);
                     pDataOut = (epicsType *)pArrayOut->pData;
                     pOut = pDataOut;
                     pIn  = pDataIn;
@@ -123,13 +117,9 @@ void NDPluginColorConvert::convertColor(NDArray *pArray)
                     dims[1] = 3;
                     dims[2] = numRows;
                     pArrayOut = this->pNDArrayPool->alloc(3, dims, pArray->dataType, 0, NULL);
-                    tmpDim = pArrayOut->dims[1];
-                    /* Copy everything except the data, e.g. uniqueId and timeStamp, attributes. */
-                    this->pNDArrayPool->copy(pArray, pArrayOut, 0);
-                    /* That replaced the dimensions in the output array, need to fix. */
-                    pArrayOut->ndims = 3;
-                    pArrayOut->dims[2] = pArrayOut->dims[1];
-                    pArrayOut->dims[1] = tmpDim;
+                    /* Copy everything except the data and the dimensions,
+                     * e.g. uniqueId and timeStamp, attributes. */
+                    this->pNDArrayPool->copy(pArray, pArrayOut, 0, 0);
                     pDataOut = (epicsType *)pArrayOut->pData;
                     pIn  = pDataIn;
                     if (falseColor) {
@@ -163,12 +153,9 @@ void NDPluginColorConvert::convertColor(NDArray *pArray)
                     dims[1] = numRows;
                     dims[2] = 3;
                     pArrayOut = this->pNDArrayPool->alloc(3, dims, pArray->dataType, 0, NULL);
-                    tmpDim = pArrayOut->dims[2];
-                    /* Copy everything except the data, e.g. uniqueId and timeStamp, attributes. */
-                    this->pNDArrayPool->copy(pArray, pArrayOut, 0);
-                    /* That replaced the dimensions in the output array, need to fix. */
-                    pArrayOut->ndims = 3;
-                    pArrayOut->dims[2] = tmpDim;
+                    /* Copy everything except the data and the dimensions,
+                     * e.g. uniqueId and timeStamp, attributes. */
+                    this->pNDArrayPool->copy(pArray, pArrayOut, 0, 0);
                     pDataOut = (epicsType *)pArrayOut->pData;
                     pRedOut   = pDataOut;
                     pGreenOut = pDataOut + imageSize;
@@ -215,16 +202,10 @@ void NDPluginColorConvert::convertColor(NDArray *pArray)
                     dims[2] = numRows;
                     // There is a problem: the uniqueId and timeStamp are not preserved!
                     pArrayOut = this->pNDArrayPool->alloc(3, dims, pArray->dataType, 0, NULL);
-                    tmpDim = pArrayOut->dims[0];
-                    this->pNDArrayPool->copy(pArray, pArrayOut, 0);
+                    this->pNDArrayPool->copy(pArray, pArrayOut, 0, 0);
                     pArrayOut->uniqueId = pArray->uniqueId;
                     pArrayOut->epicsTS = pArray->epicsTS;
                     pArrayOut->timeStamp = pArray->timeStamp;
-                    pArrayOut->ndims = 3;
-                    pArrayOut->dims[2] = pArrayOut->dims[1];
-                    pArrayOut->dims[1] = pArrayOut->dims[0];
-                    pArrayOut->dims[0] = tmpDim;
-                    pArrayOut->dims[0].size = 3;
                     pDataOut = (epicsType *)pArrayOut->pData;
                     break;
 
@@ -233,15 +214,10 @@ void NDPluginColorConvert::convertColor(NDArray *pArray)
                     dims[1] = 3;
                     dims[2] = numRows;
                     pArrayOut = this->pNDArrayPool->alloc(3, dims, pArray->dataType, 0, NULL);
-                    tmpDim = pArrayOut->dims[1];
-                    this->pNDArrayPool->copy(pArray, pArrayOut, 0);
+                    this->pNDArrayPool->copy(pArray, pArrayOut, 0, 0);
                     pArrayOut->uniqueId = pArray->uniqueId;
                     pArrayOut->epicsTS = pArray->epicsTS;
                     pArrayOut->timeStamp = pArray->timeStamp;
-                    pArrayOut->ndims = 3;
-                    pArrayOut->dims[2] = pArrayOut->dims[1];
-                    pArrayOut->dims[1] = tmpDim;
-                    pArrayOut->dims[1].size = 3;
                     pDataOut = (epicsType *)pArrayOut->pData;
                     break;
 
@@ -250,14 +226,10 @@ void NDPluginColorConvert::convertColor(NDArray *pArray)
                     dims[1] = numRows;
                     dims[2] = 3;
                     pArrayOut = this->pNDArrayPool->alloc(3, dims, pArray->dataType, 0, NULL);
-                    tmpDim = pArrayOut->dims[2];
-                    this->pNDArrayPool->copy(pArray, pArrayOut, 0);
+                    this->pNDArrayPool->copy(pArray, pArrayOut, 0, 0);
                     pArrayOut->uniqueId = pArray->uniqueId;
                     pArrayOut->epicsTS = pArray->epicsTS;
                     pArrayOut->timeStamp = pArray->timeStamp;
-                    pArrayOut->ndims = 3;
-                    pArrayOut->dims[2] = tmpDim;
-                    pArrayOut->dims[2].size = 3;
                     pDataOut = (epicsType *)pArrayOut->pData;
                     pRedOut   = pDataOut;
                     pGreenOut = pDataOut + imageSize;
@@ -380,12 +352,9 @@ void NDPluginColorConvert::convertColor(NDArray *pArray)
                     dims[0] = rowSize;
                     dims[1] = numRows;
                     pArrayOut = this->pNDArrayPool->alloc(2, dims, pArray->dataType, 0, NULL);
-                    /* Copy everything except the data, e.g. uniqueId and timeStamp, attributes. */
-                    this->pNDArrayPool->copy(pArray, pArrayOut, 0);
-                    /* That replaced the dimensions in the output array, need to fix. */
-                    pArrayOut->ndims = 2;
-                    pArrayOut->dims[0] = pArrayOut->dims[1];
-                    pArrayOut->dims[1] = pArrayOut->dims[2];
+                    /* Copy everything except the data and the dimensions,
+                     * e.g. uniqueId and timeStamp, attributes. */
+                    this->pNDArrayPool->copy(pArray, pArrayOut, 0, 0);
                     pDataOut = (epicsType *)pArrayOut->pData;
                     pOut = pDataOut;
                     pIn = pDataIn;
@@ -397,7 +366,7 @@ void NDPluginColorConvert::convertColor(NDArray *pArray)
                     changedColorMode = 1;
                     break;
                 case NDColorModeRGB2:
-                    pArrayOut = this->pNDArrayPool->copy(pArray, NULL, 0);
+                    pArrayOut = this->pNDArrayPool->copy(pArray, NULL, 0, 0);
                     pDataOut = (epicsType *)pArrayOut->pData;
                     pIn = pDataIn;
                     for (i=0; i<numRows; i++) {
@@ -416,7 +385,7 @@ void NDPluginColorConvert::convertColor(NDArray *pArray)
                     changedColorMode = 1;
                     break;
                 case NDColorModeRGB3:
-                    pArrayOut = this->pNDArrayPool->copy(pArray, NULL, 0);
+                    pArrayOut = this->pNDArrayPool->copy(pArray, NULL, 0, 0);
                     pDataOut = (epicsType *)pArrayOut->pData;
                     pIn = pDataIn;
                     pRedOut   = pDataOut;
@@ -447,11 +416,9 @@ void NDPluginColorConvert::convertColor(NDArray *pArray)
                     dims[0] = rowSize;
                     dims[1] = numRows;
                     pArrayOut = this->pNDArrayPool->alloc(2, dims, pArray->dataType, 0, NULL);
-                    /* Copy everything except the data, e.g. uniqueId and timeStamp, attributes. */
-                    this->pNDArrayPool->copy(pArray, pArrayOut, 0);
-                    /* That replaced the dimensions in the output array, need to fix. */
-                    pArrayOut->ndims = 2;
-                    pArrayOut->dims[1] = pArrayOut->dims[2];
+                    /* Copy everything except the data and the dimensions,
+                     * e.g. uniqueId and timeStamp, attributes. */
+                    this->pNDArrayPool->copy(pArray, pArrayOut, 0, 0);
                     pDataOut = (epicsType *)pArrayOut->pData;
                     pOut = pDataOut;
                     for (i=0; i<numRows; i++) {
@@ -466,7 +433,7 @@ void NDPluginColorConvert::convertColor(NDArray *pArray)
                     changedColorMode = 1;
                     break;
                 case NDColorModeRGB1:
-                    pArrayOut = this->pNDArrayPool->copy(pArray, NULL, 0);
+                    pArrayOut = this->pNDArrayPool->copy(pArray, NULL, 0, 0);
                     pDataOut = (epicsType *)pArrayOut->pData;
                     pOut = pDataOut;
                     for (i=0; i<numRows; i++) {
@@ -485,7 +452,7 @@ void NDPluginColorConvert::convertColor(NDArray *pArray)
                     changedColorMode = 1;
                     break;
                 case NDColorModeRGB3:
-                    pArrayOut = this->pNDArrayPool->copy(pArray, NULL, 0);
+                    pArrayOut = this->pNDArrayPool->copy(pArray, NULL, 0, 0);
                     pDataOut = (epicsType *)pArrayOut->pData;
                     pRedOut   = pDataOut;
                     pGreenOut = pDataOut + imageSize;
@@ -520,10 +487,9 @@ void NDPluginColorConvert::convertColor(NDArray *pArray)
                     dims[0] = rowSize;
                     dims[1] = numRows;
                     pArrayOut = this->pNDArrayPool->alloc(2, dims, pArray->dataType, 0, NULL);
-                    /* Copy everything except the data, e.g. uniqueId and timeStamp, attributes. */
-                    this->pNDArrayPool->copy(pArray, pArrayOut, 0);
-                    /* That replaced the dimensions in the output array, need to fix. */
-                    pArrayOut->ndims = 2;
+                    /* Copy everything except the data and the dimensions,
+                     * e.g. uniqueId and timeStamp, attributes. */
+                    this->pNDArrayPool->copy(pArray, pArrayOut, 0, 0);
                     pDataOut = (epicsType *)pArrayOut->pData;
                     pOut = pDataOut;
                     pRedIn   = pDataIn;
@@ -536,7 +502,7 @@ void NDPluginColorConvert::convertColor(NDArray *pArray)
                     changedColorMode = 1;
                     break;
                 case NDColorModeRGB1:
-                    pArrayOut = this->pNDArrayPool->copy(pArray, NULL, 0);
+                    pArrayOut = this->pNDArrayPool->copy(pArray, NULL, 0, 0);
                     pDataOut = (epicsType *)pArrayOut->pData;
                     pRedIn   = pDataIn;
                     pGreenIn = pDataIn + imageSize;
@@ -553,7 +519,7 @@ void NDPluginColorConvert::convertColor(NDArray *pArray)
                     changedColorMode = 1;
                     break;
                 case NDColorModeRGB2:
-                    pArrayOut = this->pNDArrayPool->copy(pArray, NULL, 0);
+                    pArrayOut = this->pNDArrayPool->copy(pArray, NULL, 0, 0);
                     pDataOut = (epicsType *)pArrayOut->pData;
                     pRedIn   = pDataIn;
                     pGreenIn = pDataIn + imageSize;
