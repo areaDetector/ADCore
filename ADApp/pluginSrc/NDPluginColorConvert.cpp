@@ -200,12 +200,8 @@ void NDPluginColorConvert::convertColor(NDArray *pArray)
                     dims[0] = 3;
                     dims[1] = rowSize;
                     dims[2] = numRows;
-                    // There is a problem: the uniqueId and timeStamp are not preserved!
                     pArrayOut = this->pNDArrayPool->alloc(3, dims, pArray->dataType, 0, NULL);
                     this->pNDArrayPool->copy(pArray, pArrayOut, 0, 0);
-                    pArrayOut->uniqueId = pArray->uniqueId;
-                    pArrayOut->epicsTS = pArray->epicsTS;
-                    pArrayOut->timeStamp = pArray->timeStamp;
                     pDataOut = (epicsType *)pArrayOut->pData;
                     break;
 
@@ -215,9 +211,6 @@ void NDPluginColorConvert::convertColor(NDArray *pArray)
                     dims[2] = numRows;
                     pArrayOut = this->pNDArrayPool->alloc(3, dims, pArray->dataType, 0, NULL);
                     this->pNDArrayPool->copy(pArray, pArrayOut, 0, 0);
-                    pArrayOut->uniqueId = pArray->uniqueId;
-                    pArrayOut->epicsTS = pArray->epicsTS;
-                    pArrayOut->timeStamp = pArray->timeStamp;
                     pDataOut = (epicsType *)pArrayOut->pData;
                     break;
 
@@ -227,9 +220,6 @@ void NDPluginColorConvert::convertColor(NDArray *pArray)
                     dims[2] = 3;
                     pArrayOut = this->pNDArrayPool->alloc(3, dims, pArray->dataType, 0, NULL);
                     this->pNDArrayPool->copy(pArray, pArrayOut, 0, 0);
-                    pArrayOut->uniqueId = pArray->uniqueId;
-                    pArrayOut->epicsTS = pArray->epicsTS;
-                    pArrayOut->timeStamp = pArray->timeStamp;
                     pDataOut = (epicsType *)pArrayOut->pData;
                     pRedOut   = pDataOut;
                     pGreenOut = pDataOut + imageSize;
