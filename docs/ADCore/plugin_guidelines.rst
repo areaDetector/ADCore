@@ -49,3 +49,4 @@ The following are guidelines and rules for writing plugins
    near the beginning of their ``processCallbacks()`` method, and will call
    ``NDPluginDriver::endProcessCallbacks()`` near the end of their
    ``processCallbacks()`` function.
+-  Plugins shall :doc:`be destructible <destructible>`.
