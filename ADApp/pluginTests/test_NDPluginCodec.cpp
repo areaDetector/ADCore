@@ -281,6 +281,7 @@ BOOST_AUTO_TEST_CASE(test_blosc_compressors)
 
         NDArray *compressed = ds->arrays[0];
         BOOST_CHECK_EQUAL(compressed->codec.name, codecName[NDCODEC_BLOSC]);
+        BOOST_CHECK_EQUAL(compressed->codec.compressor, compressors[c]);
 
         codec->write(NDCodecModeString, NDCODEC_DECOMPRESS);
         ds->arrays.clear();
