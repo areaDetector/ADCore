@@ -261,6 +261,7 @@ BOOST_AUTO_TEST_CASE(test_blosc_compressors)
         NDCODEC_BLOSC_LZ4,
         NDCODEC_BLOSC_LZ4HC,
         NDCODEC_BLOSC_ZLIB,
+        NDCODEC_BLOSC_ZSTD,
     };
     int nCompressors = sizeof(compressors) / sizeof(compressors[0]);
 
