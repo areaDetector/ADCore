@@ -261,6 +261,7 @@ BOOST_AUTO_TEST_CASE(test_blosc_compressors)
         NDCODEC_BLOSC_LZ4,
         NDCODEC_BLOSC_LZ4HC,
         NDCODEC_BLOSC_ZLIB,
+        NDCODEC_BLOSC_ZSTD,
     };
     int nCompressors = sizeof(compressors) / sizeof(compressors[0]);
 
@@ -280,6 +281,7 @@ BOOST_AUTO_TEST_CASE(test_blosc_compressors)
 
         NDArray *compressed = ds->arrays[0];
         BOOST_CHECK_EQUAL(compressed->codec.name, codecName[NDCODEC_BLOSC]);
+        BOOST_CHECK_EQUAL(compressed->codec.compressor, compressors[c]);
 
         codec->write(NDCodecModeString, NDCODEC_DECOMPRESS);
         ds->arrays.clear();
