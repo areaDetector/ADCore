@@ -1,5 +1,9 @@
 name: ADCore
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 # Trigger on pushes and PRs to any branch
 on:
   push:
@@ -183,7 +187,10 @@ jobs:
       if: ${{ matrix.coverage }}
       run: |
         sudo apt-get -y install lcov
-        bash ci/coverage.sh
+        lcov --no-external --capture \
+             --directory ADApp/ADSrc/ \
+             --directory ADApp/pluginSrc/ \
+             --output-file ci/coverage.info
 
     - name: Upload to Coveralls
       if: ${{ matrix.coverage }}
