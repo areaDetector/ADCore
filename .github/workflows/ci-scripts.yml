@@ -98,13 +98,17 @@ jobs:
       if: runner.os == 'Linux'
       run: sudo apt-get install -y libtirpc-dev
 
+    - name: "Install boost packages for unit tests"
+      if: ${{ matrix.test && runner.os == 'Linux' }}
+      run: sudo apt-get install -y libboost-test-dev libboost-system-dev
+
     - name: "Install Linux OS Deps"
       if: ${{ matrix.deps == 'os' && runner.os == 'Linux' }}
       run: |
         sudo apt-get update
         sudo apt-get -y install \
           libgraphicsmagick++-dev libhdf5-dev libjpeg-dev libnetcdf-dev libtiff-dev libxml2-dev libz-dev \
-          libblosc-dev libnexus-dev libnetcdf-dev libusb-1.0-0-dev libboost-test-dev libboost-system-dev
+          libblosc-dev libnexus-dev libnetcdf-dev libusb-1.0-0-dev
 
         cat <<EOF > configure/CONFIG_SITE.linux-x86_64.Common
         WITH_PVA=YES
@@ -155,7 +159,8 @@ jobs:
       run: |
         cat <<EOF >> configure/CONFIG_SITE
         WITH_PVA=YES
-        WITH_BOOST=NO
+        WITH_BOOST=${{ (runner.os == 'Linux' && matrix.test) && 'YES' || 'NO' }}
+        BOOST_EXTERNAL=YES
         WITH_HDF5=YES
         HDF5_EXTERNAL=NO
         XML2_EXTERNAL=NO
