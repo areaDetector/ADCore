@@ -40,6 +40,7 @@ ifeq ($(WITH_BOOST),YES)
   ADTestUtility_SRCS += ROIPluginWrapper.cpp
   ADTestUtility_SRCS += OverlayPluginWrapper.cpp
   ADTestUtility_SRCS += CodecPluginWrapper.cpp
+  ADTestUtility_SRCS += AttributePluginWrapper.cpp
 
   PROD_IOC_Linux += plugin-test
   PROD_IOC_Darwin += plugin-test
@@ -55,6 +56,7 @@ ifeq ($(WITH_BOOST),YES)
   plugin-test_SRCS += test_NDPluginTimeSeries.cpp
   plugin-test_SRCS += test_NDPluginFFT.cpp
   plugin-test_SRCS += test_NDPluginCodec.cpp
+  plugin-test_SRCS += test_NDPluginAttribute.cpp
   plugin-test_SRCS += test_NDPluginAttrPlot.cpp
   plugin-test_SRCS += test_NDPluginROI.cpp
   plugin-test_SRCS += test_NDPluginOverlay.cpp
