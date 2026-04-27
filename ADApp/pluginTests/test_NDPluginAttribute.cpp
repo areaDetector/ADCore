@@ -17,6 +17,7 @@
 #include <asynDriver.h>
 #include <Codec.h>
 #include <NDPluginAttribute.h>
+#include <NDPluginCodec.h>
 
 #include "testingutilities.h"
 #include "AttributePluginWrapper.h"
@@ -55,7 +56,7 @@ struct AttributeTestFixture
         delete dummy_driver;
     }
 
-    NDArray *createTestArray()
+    NDArray *createTestArray(bool compress = false)
     {
         size_t dims[2] = {TEST_XSIZE, TEST_YSIZE};
         NDArray *arr = arrayPool->alloc(2, dims, NDUInt16, 0, NULL);
@@ -63,6 +64,17 @@ struct AttributeTestFixture
         for (int i = 0; i < TEST_NELEMENTS; i++) {
             pData[i] = (epicsUInt16)(i % 256);
         }
+#ifdef HAVE_ZLIB
+        if (compress) {
+            NDCodecStatus_t status;
+            char errorMessage[256] = "";
+            NDArray *compressed = compressZlib(arr, 6, &status, errorMessage);
+            arr->release();
+            return compressed;
+        }
+#else
+        (void)compress;
+#endif
         return arr;
     }
 
@@ -93,15 +105,13 @@ BOOST_AUTO_TEST_CASE(test_attribute_uncompressed)
     input->release();
 }
 
-/* Test that NDPluginAttribute accepts a compressed array and still reads attributes */
+#ifdef HAVE_ZLIB
+/* Test that NDPluginAttribute accepts a zlib-compressed array and still reads attributes */
 BOOST_AUTO_TEST_CASE(test_attribute_compressed_array)
 {
-    NDArray *input = createTestArray();
-
-    /* Simulate a compressed array by setting codec info */
-    input->codec.name = codecName[NDCODEC_ZLIB];
-    input->codec.level = 6;
-    input->compressedSize = 64;
+    NDArray *input = createTestArray(true);
+    BOOST_REQUIRE(input != NULL);
+    BOOST_CHECK_EQUAL(input->codec.name, codecName[NDCODEC_ZLIB]);
 
     double testVal = 99.0;
     input->pAttributeList->add("CompAttr", "", NDAttrFloat64, &testVal);
@@ -119,12 +129,9 @@ BOOST_AUTO_TEST_CASE(test_attribute_compressed_array)
 /* Test that uniqueId is readable from a compressed array */
 BOOST_AUTO_TEST_CASE(test_attribute_compressed_unique_id)
 {
-    NDArray *input = createTestArray();
+    NDArray *input = createTestArray(true);
+    BOOST_REQUIRE(input != NULL);
     input->uniqueId = 12345;
-
-    input->codec.name = codecName[NDCODEC_BLOSC];
-    input->codec.level = 5;
-    input->compressedSize = 32;
 
     attr->write(NDPluginAttributeAttrNameString, std::string("NDArrayUniqueId"), 0);
 
@@ -135,5 +142,6 @@ BOOST_AUTO_TEST_CASE(test_attribute_compressed_unique_id)
 
     input->release();
 }
+#endif /* HAVE_ZLIB */
 
 BOOST_AUTO_TEST_SUITE_END()
