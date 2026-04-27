@@ -2,6 +2,7 @@
 #define NDCodec_H
 
 #include <string>
+#include "ADCoreAPI.h"
 
 typedef enum {
   NDCODEC_NONE,
@@ -15,7 +16,7 @@ typedef enum {
 
 #define NDCODEC_NUM_CODECS 7
 
-extern const std::string NDCodecName[NDCODEC_NUM_CODECS];
+extern ADCORE_API const std::string NDCodecName[NDCODEC_NUM_CODECS];
 
 typedef enum {
     NDCODEC_BLOSC_BLOSCLZ,
@@ -28,7 +29,7 @@ typedef enum {
 
 #define NDCODEC_BLOSC_NUM_COMPRESSORS 6
 
-extern const std::string NDCodecBloscCompName[NDCODEC_BLOSC_NUM_COMPRESSORS];
+extern ADCORE_API const std::string NDCodecBloscCompName[NDCODEC_BLOSC_NUM_COMPRESSORS];
 
 typedef struct NDCodec_t {
   std::string name;       /**< Name of the codec used to compress the data. codecName[NDCODEC_NONE] if uncompressed. */
