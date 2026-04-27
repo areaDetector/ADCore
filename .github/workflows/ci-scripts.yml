@@ -99,7 +99,7 @@ jobs:
       run: sudo apt-get install -y libtirpc-dev
 
     - name: "Install boost packages for unit tests"
-      if: ${{ matrix.test && runner.os == 'Linux' }}
+      if: ${{ runner.os == 'Linux' }}
       run: sudo apt-get install -y libboost-test-dev libboost-system-dev
 
     - name: "Install Linux OS Deps"
