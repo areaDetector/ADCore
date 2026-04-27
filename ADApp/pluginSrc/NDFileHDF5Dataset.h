@@ -19,7 +19,7 @@ class NDPLUGIN_API NDFileHDF5Dataset
     asynStatus extendDataSet(int extradims);
     asynStatus extendDataSet(int extradims, hsize_t *offsets);
     asynStatus verifyChunking(NDArray *pArray);
-    void configureCompression(Codec_t codec);
+    void configureCompression(NDCodec_t codec);
     asynStatus writeFile(NDArray *pArray, hid_t datatype, hid_t dataspace, hsize_t *framesize);
     hid_t getHandle();
     asynStatus flushDataset();
@@ -44,7 +44,7 @@ class NDPLUGIN_API NDFileHDF5Dataset
                                // 0 offset but additional dimensions may grow as new frames are added.
     hsize_t     *virtualdims_; // The desired sizes of the extra (virtual) dimensions: {Y, X, n}
     hsize_t     *virtualchunkdims_;   // The chunk sizes of the extra (virtual) dimensions: {Y, X, n}
-    Codec_t codec;             // Definition of codec used to compress the data.
+    NDCodec_t codec;           // Definition of codec used to compress the data.
 };
 
 
