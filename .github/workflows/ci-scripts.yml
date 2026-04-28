@@ -208,13 +208,6 @@ jobs:
              --directory ADApp/pluginSrc/ \
              --output-file ci/coverage.info
 
-    - name: Remove any vendored dependencies from coverage report
-      if: ${{ matrix.coverage }}
-      run: |
-        lcov --remove ci/coverage.info \
-             '*/ADApp/pluginSrc/json.hpp' \
-             --output-file ci/coverage.info
-
     - name: Upload to Coveralls
       if: ${{ matrix.coverage }}
       uses: coverallsapp/github-action@v2
