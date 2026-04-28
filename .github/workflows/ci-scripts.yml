@@ -48,9 +48,10 @@ jobs:
             deps: os
             test: true
 
+          # Use linux/adsupport/shared case for coverage check
           - os: ubuntu-latest
             cmp: gcc
-            configuration: static
+            configuration: default
             base: "7.0"
             deps: adsupport
             extra: "CMD_CFLAGS='--coverage'
@@ -58,6 +59,12 @@ jobs:
                     CMD_LDFLAGS='--coverage'"
             test: true
             coverage: true
+
+          - os: ubuntu-latest
+            cmp: gcc
+            configuration: static
+            base: "7.0"
+            deps: adsupport
 
           - os: ubuntu-22.04
             cmp: gcc
@@ -199,6 +206,13 @@ jobs:
         lcov --no-external --capture \
              --directory ADApp/ADSrc/ \
              --directory ADApp/pluginSrc/ \
+             --output-file ci/coverage.info
+
+    - name: Remove any vendored dependencies from coverage report
+      if: ${{ matrix.coverage }}
+      run: |
+        lcov --remove ci/coverage.info \
+             '*/ADApp/pluginSrc/json.hpp' \
              --output-file ci/coverage.info
 
     - name: Upload to Coveralls
