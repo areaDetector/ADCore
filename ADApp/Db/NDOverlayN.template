@@ -392,6 +392,7 @@ record(waveform, "$(P)$(R)DisplayText")
     field(FTVL, "CHAR")
     field(NELM, "256")
     info(autosaveFields, "VAL")
+    info(Q:form, "String")
 }
 
 record(waveform, "$(P)$(R)DisplayText_RBV")
@@ -401,6 +402,7 @@ record(waveform, "$(P)$(R)DisplayText_RBV")
     field(FTVL, "CHAR")
     field(NELM, "256")
     field(SCAN, "I/O Intr")
+    info(Q:form, "String")
 }
 
 record(stringout, "$(P)$(R)TimeStampFormat")

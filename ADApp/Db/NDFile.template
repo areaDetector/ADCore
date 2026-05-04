@@ -17,6 +17,7 @@ record(waveform, "$(P)$(R)FilePath")
     field(FTVL, "CHAR")
     field(NELM, "256")
     info(autosaveFields, "VAL")
+    info(Q:form, "String")
 }
 
 record(waveform, "$(P)$(R)FilePath_RBV")
@@ -26,6 +27,7 @@ record(waveform, "$(P)$(R)FilePath_RBV")
     field(FTVL, "CHAR")
     field(NELM, "256")
     field(SCAN, "I/O Intr")
+    info(Q:form, "String")
 }
 
 record(bi, "$(P)$(R)FilePathExists_RBV")
@@ -65,6 +67,7 @@ record(waveform, "$(P)$(R)FileName")
     field(FTVL, "CHAR")
     field(NELM, "256")
     info(autosaveFields, "VAL")
+    info(Q:form, "String")
 }
 
 record(waveform, "$(P)$(R)FileName_RBV")
@@ -74,6 +77,7 @@ record(waveform, "$(P)$(R)FileName_RBV")
     field(FTVL, "CHAR")
     field(NELM, "256")
     field(SCAN, "I/O Intr")
+    info(Q:form, "String")
 }
 
 record(longout, "$(P)$(R)FileNumber")
@@ -123,6 +127,7 @@ record(waveform, "$(P)$(R)FileTemplate")
     field(FTVL, "CHAR")
     field(NELM, "256")
     info(autosaveFields, "VAL")
+    info(Q:form, "String")
 }
 
 record(waveform, "$(P)$(R)FileTemplate_RBV")
@@ -132,6 +137,7 @@ record(waveform, "$(P)$(R)FileTemplate_RBV")
     field(FTVL, "CHAR")
     field(NELM, "256")
     field(SCAN, "I/O Intr")
+    info(Q:form, "String")
 }
 
 # Full filename, including path
@@ -142,6 +148,7 @@ record(waveform, "$(P)$(R)FullFileName_RBV")
     field(FTVL, "CHAR")
     field(NELM, "512")
     field(SCAN, "I/O Intr")
+    info(Q:form, "String")
 }
 
 # Autosave flag
@@ -350,6 +357,7 @@ record(waveform, "$(P)$(R)WriteMessage")
     field(FTVL, "CHAR")
     field(NELM, "256")
     field(SCAN, "I/O Intr")
+    info(Q:form, "String")
 }
 
 record(bo, "$(P)$(R)LazyOpen")

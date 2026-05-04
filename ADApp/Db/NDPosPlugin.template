@@ -17,6 +17,7 @@ record(waveform, "$(P)$(R)Filename")
     field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))NDPos_Filename")
     field(FTVL, "CHAR")
     field(NELM, "1000000")
+    info(Q:form, "String")
 }
 
 record(waveform, "$(P)$(R)Filename_RBV")
@@ -26,6 +27,7 @@ record(waveform, "$(P)$(R)Filename_RBV")
     field(FTVL, "CHAR")
     field(NELM, "1000000")
     field(SCAN, "I/O Intr")
+    info(Q:form, "String")
 }
 
 record(bi, "$(P)$(R)FileValid_RBV")

@@ -34,6 +34,7 @@ record(waveform, "$(P)$(R)TemplateFilePath")
     field(FTVL, "CHAR")
     field(NELM, "256")
     info(autosaveFields, "VAL")
+    info(Q:form, "String")
 }
 
 record(waveform, "$(P)$(R)TemplateFilePath_RBV")
@@ -43,6 +44,7 @@ record(waveform, "$(P)$(R)TemplateFilePath_RBV")
     field(FTVL, "CHAR")
     field(NELM, "256")
     field(SCAN, "I/O Intr")
+    info(Q:form, "String")
 }
 
 # Template Filename
@@ -54,6 +56,7 @@ record(waveform, "$(P)$(R)TemplateFileName")
     field(FTVL, "CHAR")
     field(NELM, "256")
     info(autosaveFields, "VAL")
+    info(Q:form, "String")
 }
 
 record(waveform, "$(P)$(R)TemplateFileName_RBV")
@@ -63,6 +66,7 @@ record(waveform, "$(P)$(R)TemplateFileName_RBV")
     field(FTVL, "CHAR")
     field(NELM, "256")
     field(SCAN, "I/O Intr")
+    info(Q:form, "String")
 }
 
 record(bi, "$(P)$(R)FileTemplateValid")
