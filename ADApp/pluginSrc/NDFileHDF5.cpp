@@ -3318,21 +3318,21 @@ asynStatus NDFileHDF5::configureCompression(NDArray *pArray)
     asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW,
               "%s::%s Overriding compression settings from pre-compressed NDArray\n",
               driverName, functionName);
-    if (pArray->codec.name == codecName[NDCODEC_BLOSC]) {
+    if (pArray->codec.name == NDCodecName[NDCODEC_BLOSC]) {
       setIntegerParam(NDFileHDF5_compressionType, HDF5CompressBlosc);
       setIntegerParam(NDFileHDF5_bloscCompressLevel, pArray->codec.level);
       setIntegerParam(NDFileHDF5_bloscShuffleType, pArray->codec.shuffle);
       setIntegerParam(NDFileHDF5_bloscCompressor, pArray->codec.compressor);
-    } else if (pArray->codec.name == codecName[NDCODEC_ZLIB]) {
+    } else if (pArray->codec.name == NDCodecName[NDCODEC_ZLIB]) {
       setIntegerParam(NDFileHDF5_compressionType, HDF5CompressZlib);
       setIntegerParam(NDFileHDF5_zCompressLevel, pArray->codec.level);
-    } else if (pArray->codec.name == codecName[NDCODEC_BSLZ4]) {
+    } else if (pArray->codec.name == NDCodecName[NDCODEC_BSLZ4]) {
       setIntegerParam(NDFileHDF5_compressionType, HDF5CompressBshuf);
-    } else if (pArray->codec.name == codecName[NDCODEC_LZ4]) {
+    } else if (pArray->codec.name == NDCodecName[NDCODEC_LZ4]) {
       setIntegerParam(NDFileHDF5_compressionType, HDF5CompressLZ4);
-    } else if (pArray->codec.name == codecName[NDCODEC_LZ4HDF5]) {
+    } else if (pArray->codec.name == NDCodecName[NDCODEC_LZ4HDF5]) {
       setIntegerParam(NDFileHDF5_compressionType, HDF5CompressLZ4HDF5);
-    } else if (pArray->codec.name == codecName[NDCODEC_JPEG]) {
+    } else if (pArray->codec.name == NDCodecName[NDCODEC_JPEG]) {
       setIntegerParam(NDFileHDF5_compressionType, HDF5CompressJPEG);
     }
   }
@@ -3384,7 +3384,7 @@ asynStatus NDFileHDF5::configureCompression(NDArray *pArray)
                 "%s::%s Setting zlib compression filter level=%d\n",
                 driverName, functionName, zLevel);
       H5Pset_deflate(this->cparms, zLevel);
-      this->codec.name = codecName[NDCODEC_ZLIB];
+      this->codec.name = NDCodecName[NDCODEC_ZLIB];
       this->codec.level = zLevel;
       break;
     case HDF5CompressBlosc: {
@@ -3401,7 +3401,7 @@ asynStatus NDFileHDF5::configureCompression(NDArray *pArray)
           asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, "Failed to set h5 blosc filter\n");
           break;
         }
-        this->codec.name = codecName[NDCODEC_BLOSC];
+        this->codec.name = NDCodecName[NDCODEC_BLOSC];
         this->codec.level = bloscLevel;
         this->codec.shuffle = bloscShuffle;
         this->codec.compressor = bloscCompressor;
@@ -3416,7 +3416,7 @@ asynStatus NDFileHDF5::configureCompression(NDArray *pArray)
           asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, "Failed to set h5 bitshuffle filter\n");
           break;
         }
-        this->codec.name = codecName[NDCODEC_BSLZ4];
+        this->codec.name = NDCodecName[NDCODEC_BSLZ4];
       }
       break;
     case HDF5CompressLZ4:
@@ -3430,9 +3430,9 @@ asynStatus NDFileHDF5::configureCompression(NDArray *pArray)
           break;
         }
         if (compressionScheme == HDF5CompressLZ4) {
-          this->codec.name = codecName[NDCODEC_LZ4];
+          this->codec.name = NDCodecName[NDCODEC_LZ4];
         } else {
-          this->codec.name = codecName[NDCODEC_LZ4HDF5];
+          this->codec.name = NDCodecName[NDCODEC_LZ4HDF5];
         }
       }
       break;
@@ -3461,7 +3461,7 @@ asynStatus NDFileHDF5::configureCompression(NDArray *pArray)
           asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, "Failed to set h5 jpeg filter\n");
           break;
         }
-        this->codec.name = codecName[NDCODEC_JPEG];
+        this->codec.name = NDCodecName[NDCODEC_JPEG];
       }
       break;
   }

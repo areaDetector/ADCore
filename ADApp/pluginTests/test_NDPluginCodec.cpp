@@ -15,7 +15,7 @@
 #include <NDPluginDriver.h>
 #include <NDArray.h>
 #include <asynDriver.h>
-#include <Codec.h>
+#include <NDCodec.h>
 #include <NDPluginCodec.h>
 
 #include "testingutilities.h"
@@ -135,7 +135,7 @@ BOOST_AUTO_TEST_CASE(test_jpeg_compress_decompress)
     BOOST_REQUIRE_EQUAL(ds->arrays.size(), (size_t)1);
 
     NDArray *compressed = ds->arrays[0];
-    BOOST_CHECK_EQUAL(compressed->codec.name, codecName[NDCODEC_JPEG]);
+    BOOST_CHECK_EQUAL(compressed->codec.name, NDCodecName[NDCODEC_JPEG]);
     BOOST_CHECK(compressed->compressedSize > 0);
     BOOST_CHECK(compressed->compressedSize <= compressed->dataSize);
 
@@ -172,7 +172,7 @@ BOOST_AUTO_TEST_CASE(test_zlib_compress_decompress)
     BOOST_REQUIRE_EQUAL(ds->arrays.size(), (size_t)1);
 
     NDArray *compressed = ds->arrays[0];
-    BOOST_CHECK_EQUAL(compressed->codec.name, codecName[NDCODEC_ZLIB]);
+    BOOST_CHECK_EQUAL(compressed->codec.name, NDCodecName[NDCODEC_ZLIB]);
     BOOST_CHECK(compressed->compressedSize > 0);
     BOOST_CHECK(compressed->compressedSize <= compressed->dataSize);
 
@@ -204,7 +204,7 @@ BOOST_AUTO_TEST_CASE(test_zlib_compression_levels)
         BOOST_REQUIRE_EQUAL(ds->arrays.size(), (size_t)1);
 
         NDArray *compressed = ds->arrays[0];
-        BOOST_CHECK_EQUAL(compressed->codec.name, codecName[NDCODEC_ZLIB]);
+        BOOST_CHECK_EQUAL(compressed->codec.name, NDCodecName[NDCODEC_ZLIB]);
 
         codec->write(NDCodecModeString, NDCODEC_DECOMPRESS);
         ds->arrays.clear();
@@ -237,7 +237,7 @@ BOOST_AUTO_TEST_CASE(test_blosc_compress_decompress)
     BOOST_REQUIRE_EQUAL(ds->arrays.size(), (size_t)1);
 
     NDArray *compressed = ds->arrays[0];
-    BOOST_CHECK_EQUAL(compressed->codec.name, codecName[NDCODEC_BLOSC]);
+    BOOST_CHECK_EQUAL(compressed->codec.name, NDCodecName[NDCODEC_BLOSC]);
     BOOST_CHECK(compressed->compressedSize > 0);
 
     /* Decompress */
@@ -261,6 +261,7 @@ BOOST_AUTO_TEST_CASE(test_blosc_compressors)
         NDCODEC_BLOSC_LZ4,
         NDCODEC_BLOSC_LZ4HC,
         NDCODEC_BLOSC_ZLIB,
+        NDCODEC_BLOSC_ZSTD,
     };
     int nCompressors = sizeof(compressors) / sizeof(compressors[0]);
 
@@ -279,7 +280,8 @@ BOOST_AUTO_TEST_CASE(test_blosc_compressors)
         BOOST_REQUIRE_EQUAL(ds->arrays.size(), (size_t)1);
 
         NDArray *compressed = ds->arrays[0];
-        BOOST_CHECK_EQUAL(compressed->codec.name, codecName[NDCODEC_BLOSC]);
+        BOOST_CHECK_EQUAL(compressed->codec.name, NDCodecName[NDCODEC_BLOSC]);
+        BOOST_CHECK_EQUAL(compressed->codec.compressor, compressors[c]);
 
         codec->write(NDCodecModeString, NDCODEC_DECOMPRESS);
         ds->arrays.clear();
@@ -308,7 +310,7 @@ BOOST_AUTO_TEST_CASE(test_lz4_compress_decompress)
     BOOST_REQUIRE_EQUAL(ds->arrays.size(), (size_t)1);
 
     NDArray *compressed = ds->arrays[0];
-    BOOST_CHECK_EQUAL(compressed->codec.name, codecName[NDCODEC_LZ4]);
+    BOOST_CHECK_EQUAL(compressed->codec.name, NDCodecName[NDCODEC_LZ4]);
     BOOST_CHECK(compressed->compressedSize > 0);
 
     /* Decompress */
@@ -338,7 +340,7 @@ BOOST_AUTO_TEST_CASE(test_lz4hdf5_compress_decompress)
     BOOST_REQUIRE_EQUAL(ds->arrays.size(), (size_t)1);
 
     NDArray *compressed = ds->arrays[0];
-    BOOST_CHECK_EQUAL(compressed->codec.name, codecName[NDCODEC_LZ4HDF5]);
+    BOOST_CHECK_EQUAL(compressed->codec.name, NDCodecName[NDCODEC_LZ4HDF5]);
     BOOST_CHECK(compressed->compressedSize > 0);
 
     /* Decompress */
@@ -367,7 +369,7 @@ BOOST_AUTO_TEST_CASE(test_bslz4_compress_decompress)
     BOOST_REQUIRE_EQUAL(ds->arrays.size(), (size_t)1);
 
     NDArray *compressed = ds->arrays[0];
-    BOOST_CHECK_EQUAL(compressed->codec.name, codecName[NDCODEC_BSLZ4]);
+    BOOST_CHECK_EQUAL(compressed->codec.name, NDCodecName[NDCODEC_BSLZ4]);
     BOOST_CHECK(compressed->compressedSize > 0);
 
     /* Decompress */
@@ -388,7 +390,7 @@ BOOST_AUTO_TEST_CASE(test_bslz4_compress_decompress)
 BOOST_AUTO_TEST_CASE(test_double_compress_warning)
 {
     NDArray *input = createTestArray();
-    input->codec.name = codecName[NDCODEC_ZLIB];
+    input->codec.name = NDCodecName[NDCODEC_ZLIB];
     input->compressedSize = 10;
 
     codec->write(NDCodecModeString, NDCODEC_COMPRESS);

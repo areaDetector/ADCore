@@ -17,7 +17,7 @@
 #include "NDFileHDF5LayoutXML.h"
 #include "NDFileHDF5AttributeDataset.h"
 #include "NDFileHDF5VersionCheck.h"
-#include "Codec.h"
+#include "NDCodec.h"
 
 #define MAXEXTRADIMS 10
 #define MAX_CHUNK_DIMS ND_ARRAY_MAX_DIMS
@@ -127,7 +127,7 @@ class NDPLUGIN_API NDFileHDF5 : public NDPluginFile
     std::string                                ndDsetName;  // Name of NDAttribute that specifies the destination data set
     std::map<std::string, hdf5::Element *>     onOpenMap;   // Map of handles to elements with onOpen ndattributes, indexed by fullname
     std::map<std::string, hdf5::Element *>     onCloseMap;  // Map of handles to elements with onClose ndattributes, indexed by fullname
-    Codec_t                                    codec;       // Definition of codec used to compress the data.
+    NDCodec_t                                  codec;       // Definition of codec used to compress the data.
 
   protected:
     /* plugin parameters */

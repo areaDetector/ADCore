@@ -26,15 +26,6 @@ typedef enum {
     NDCODEC_DECOMPRESS,
 }NDCodecMode_t;
 
-typedef enum {
-    NDCODEC_BLOSC_BLOSCLZ,
-    NDCODEC_BLOSC_LZ4,
-    NDCODEC_BLOSC_LZ4HDF5,
-    NDCODEC_BLOSC_LZ4HC,
-    NDCODEC_BLOSC_SNAPPY,
-    NDCODEC_BLOSC_ZLIB,
-    NDCODEC_BLOSC_ZSTD,
-}NDCodecBloscComp_t;
 
 typedef enum {
   NDCODEC_SUCCESS,
