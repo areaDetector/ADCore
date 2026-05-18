@@ -340,7 +340,7 @@ asynStatus NDPluginCircularBuff::writeOctet(asynUser *pasynUser, const char *val
       strcpy(triggerCalcInfix_, DEFAULT_TRIGGER_CALC);
       setStringParam(NDCircBuffTriggerCalc, DEFAULT_TRIGGER_CALC);
     } else {
-      strncpy(triggerCalcInfix_, value, sizeof(triggerCalcInfix_));
+      strncpy(triggerCalcInfix_, value, sizeof(triggerCalcInfix_)-1);
     }
     status = (asynStatus)postfix(triggerCalcInfix_, triggerCalcPostfix_, &postfixError);
     if (status) {

@@ -37,7 +37,7 @@ asynStatus NDFileMagick::openFile(const char *fileName, NDFileOpenMode_t openMod
     /* We don't support opening an existing file for appending yet */
     if (openMode & NDFileModeAppend) return(asynError);
 
-    strncpy(this->fileName, fileName, sizeof(this->fileName));
+    strncpy(this->fileName, fileName, sizeof(this->fileName)-1);
     this->colorMode = NDColorModeMono;
 
     /* We do some special treatment based on colorMode */
