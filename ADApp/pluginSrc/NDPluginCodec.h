@@ -40,21 +40,21 @@ typedef enum {
  * thread-safe.
  */
 
-NDArray *compressJPEG(NDArray *input, int quality, NDCodecStatus_t *status, char *errorMessage);
-NDArray *decompressJPEG(NDArray *input, NDCodecStatus_t *status, char *errorMessage);
+NDPLUGIN_API NDArray *compressJPEG(NDArray *input, int quality, NDCodecStatus_t *status, char *errorMessage);
+NDPLUGIN_API NDArray *decompressJPEG(NDArray *input, NDCodecStatus_t *status, char *errorMessage);
 
-NDArray *compressZlib(NDArray *input, int clevel, NDCodecStatus_t *status, char *errorMessage);
-NDArray *decompressZlib(NDArray *input, NDCodecStatus_t *status, char *errorMessage);
+NDPLUGIN_API NDArray *compressZlib(NDArray *input, int clevel, NDCodecStatus_t *status, char *errorMessage);
+NDPLUGIN_API NDArray *decompressZlib(NDArray *input, NDCodecStatus_t *status, char *errorMessage);
 
-NDArray *compressBlosc(NDArray *input, int clevel, int shuffle, NDCodecBloscComp_t compressor,
+NDPLUGIN_API NDArray *compressBlosc(NDArray *input, int clevel, int shuffle, NDCodecBloscComp_t compressor,
                        int numThreads, NDCodecStatus_t *status, char *errorMessage);
-NDArray *decompressBlosc(NDArray *input, int numThreads, NDCodecStatus_t *status, char *errorMessage);
-NDArray *compressLZ4(NDArray *input, NDCodecStatus_t *status, char *errorMessage);
-NDArray *decompressLZ4(NDArray *input, NDCodecStatus_t *status, char *errorMessage);
-NDArray *compressLZ4HDF5(NDArray *input, size_t blockSize, NDCodecStatus_t *status, char *errorMessage);
-NDArray *decompressLZ4HDF5(NDArray *input, size_t *blockSize, NDCodecStatus_t *status, char *errorMessage);
-NDArray *compressBSLZ4(NDArray *input, NDCodecStatus_t *status, char *errorMessage);
-NDArray *decompressBSLZ4(NDArray *input, NDCodecStatus_t *status, char *errorMessage);
+NDPLUGIN_API NDArray *decompressBlosc(NDArray *input, int numThreads, NDCodecStatus_t *status, char *errorMessage);
+NDPLUGIN_API NDArray *compressLZ4(NDArray *input, NDCodecStatus_t *status, char *errorMessage);
+NDPLUGIN_API NDArray *decompressLZ4(NDArray *input, NDCodecStatus_t *status, char *errorMessage);
+NDPLUGIN_API NDArray *compressLZ4HDF5(NDArray *input, size_t blockSize, NDCodecStatus_t *status, char *errorMessage);
+NDPLUGIN_API NDArray *decompressLZ4HDF5(NDArray *input, size_t *blockSize, NDCodecStatus_t *status, char *errorMessage);
+NDPLUGIN_API NDArray *compressBSLZ4(NDArray *input, NDCodecStatus_t *status, char *errorMessage);
+NDPLUGIN_API NDArray *decompressBSLZ4(NDArray *input, NDCodecStatus_t *status, char *errorMessage);
 
 
 class NDPLUGIN_API NDPluginCodec : public NDPluginDriver {
