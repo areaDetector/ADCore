@@ -15,7 +15,7 @@
 #include <NDPluginDriver.h>
 #include <NDArray.h>
 #include <asynDriver.h>
-#include <Codec.h>
+#include <NDCodec.h>
 #include <NDPluginAttribute.h>
 #include <NDPluginCodec.h>
 
