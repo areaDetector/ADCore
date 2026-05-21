@@ -90,11 +90,11 @@ jobs:
       with:
         submodules: true
 
-    - name: "Install TIRPC Headers"
+    - name: Install TIRPC Headers
       if: runner.os == 'Linux'
       run: sudo apt-get install -y libtirpc-dev
 
-    - name: "Install Linux OS Deps"
+    - name: Install Linux OS Deps
       if: ${{ matrix.deps == 'os' && runner.os == 'Linux' }}
       run: |
         sudo apt-get update
@@ -145,7 +145,7 @@ jobs:
     - name: Prepare and compile EPICS dependencies
       run: python .ci/cue.py prepare
 
-    - name: "Configure ADSupport Deps"
+    - name: Configure ADSupport Deps
       if: ${{ matrix.deps == 'adsupport' }}
       shell: bash
       run: |
