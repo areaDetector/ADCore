@@ -1,5 +1,10 @@
 name: ADCore
 
+# Cancel in-progress runs of this workflow when a new run is triggered on the same pull request or branch
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 # Trigger on pushes and PRs to any branch
 on:
   push:
