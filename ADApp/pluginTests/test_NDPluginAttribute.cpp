@@ -15,7 +15,7 @@
 #include <NDPluginDriver.h>
 #include <NDArray.h>
 #include <asynDriver.h>
-#include <Codec.h>
+#include <NDCodec.h>
 #include <NDPluginAttribute.h>
 #include <NDPluginCodec.h>
 
@@ -111,7 +111,7 @@ BOOST_AUTO_TEST_CASE(test_attribute_compressed_array)
 {
     NDArray *input = createTestArray(true);
     BOOST_REQUIRE(input != NULL);
-    BOOST_CHECK_EQUAL(input->codec.name, codecName[NDCODEC_ZLIB]);
+    BOOST_CHECK_EQUAL(input->codec.name, NDCodecName[NDCODEC_ZLIB]);
 
     double testVal = 99.0;
     input->pAttributeList->add("CompAttr", "", NDAttrFloat64, &testVal);
