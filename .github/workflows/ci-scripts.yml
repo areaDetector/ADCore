@@ -48,6 +48,18 @@ jobs:
             deps: os
             test: true
 
+          # Use linux/adsupport/shared case for coverage check
+          - os: ubuntu-latest
+            cmp: gcc
+            configuration: default
+            base: "7.0"
+            deps: adsupport
+            extra: "CMD_CFLAGS='--coverage'
+                    CMD_CXXFLAGS='--coverage'
+                    CMD_LDFLAGS='--coverage'"
+            test: true
+            coverage: true
+
           - os: ubuntu-latest
             cmp: gcc
             configuration: static
@@ -186,3 +198,19 @@ jobs:
       if: ${{ matrix.test }}
       shell: bash
       run: ./bin/*/plugin-test
+
+    - name: Generate coverage report
+      if: ${{ matrix.coverage }}
+      run: |
+        sudo apt-get -y install lcov
+        lcov --no-external --capture \
+             --directory ADApp/ADSrc/ \
+             --directory ADApp/pluginSrc/ \
+             --output-file ci/coverage.info
+
+    - name: Upload to Coveralls
+      if: ${{ matrix.coverage }}
+      uses: coverallsapp/github-action@v2
+      with:
+        file: ci/coverage.info
+        format: lcov
