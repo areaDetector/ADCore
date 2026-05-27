@@ -1465,8 +1465,8 @@ asynStatus NDFileHDF5::writeFile(NDArray *pArray)
       } else {
         // Error, unable to get the value from the dataset destination attribute
         asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
-                  "%s::%s ERROR: could not retrieve destination from specified attribute\n",
-                  driverName, functionName);
+                  "%s::%s ERROR: could not retrieve destination from specified attribute %s\n",
+                  driverName, functionName, destAtt->getName());
         flushLock.unlock();
         return asynError;
       }
