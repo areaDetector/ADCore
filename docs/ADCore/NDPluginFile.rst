@@ -28,10 +28,10 @@ documentation <../areaDetectorDoxygenHTML/class_n_d_plugin_file.html>`__
 describes this class in detail. This class is designed to simplify the
 task of supporting a new file format. A derived class to support a new
 file format will typically need to implement only the pure virtual
-functions ``openFile()``, ``readFile()``, ``writeFile()``, and 
-``closeFile()``. Note that none of the current file plugins actually 
-support the ``readFile()`` function yet, but this is planned for future 
-releases.
+functions ``openFile()``, ``readFile()``, ``writeFile()``, and
+``closeFile()``. Note that out of the current file plugins, only
+:doc:`NDFileTIFF` actually supports the ``readFile()`` function, though
+further support is planned for future releases.
 
 The NDArray callback data can be written to disk in 1 of 3 modes:
 
