@@ -37,6 +37,14 @@ ifeq ($(WITH_PVA),YES)
   endif
 endif
 
+ifeq ($(WITH_PVXS),YES)
+  $(DBD_NAME)_DBD += NDPluginPvxs.dbd
+  $(DBD_NAME)_DBD += pvxsIoc.dbd
+  PROD_LIBS += pvxsIoc
+  PROD_LIBS += pvxs
+  PROD_LIBS += ntndArrayConverterPvxs
+endif
+
 ifeq ($(WITH_NETCDF),YES)
   $(DBD_NAME)_DBD += NDFileNetCDF.dbd
   ifeq ($(NETCDF_EXTERNAL),NO)
@@ -145,6 +153,7 @@ ifeq ($(WITH_BITSHUFFLE),YES)
       PROD_SYS_LIBS += bitshuffle
     endif
   endif
+  PROD_LIBS += lz4hdf5
 endif
 
 ifeq ($(WITH_BLOSC),YES)
@@ -216,7 +225,12 @@ endif
 ifdef FFMPEGSERVER
   $(DBD_NAME)_DBD += ffmpegServer.dbd
   PROD_LIBS       += ffmpegServer
-  PROD_LIBS       += avdevice avformat avcodec swresample swscale avutil
+  ifeq ($(FFMPEG_EXTERNAL), NO)
+    PROD_LIBS       += avdevice avformat avcodec swresample swscale avutil
+  else
+    PROD_SYS_LIBS += avdevice avformat avcodec swresample swscale avutil
+  endif
+  PROD_SYS_LIBS   += lzma
 endif
 
 ifdef RECCASTER
@@ -240,9 +254,9 @@ ifdef ADPLUGINBAR
   PROD_LIBS	  += NDPluginBar
   ifdef OPENCV_LIB
     opencv_core_DIR +=$(OPENCV_LIB)
-    PROD_LIBS       += opencv_core opencv_imgproc opencv_highgui zbar
+    PROD_LIBS       += opencv_core opencv_imgproc zbar
   else
-    PROD_SYS_LIBS   += opencv_core opencv_imgproc opencv_highgui zbar
+    PROD_SYS_LIBS   += opencv_core opencv_imgproc zbar
   endif
 endif
 
@@ -251,12 +265,12 @@ ifdef ADCOMPVISION
   PROD_LIBS     += NDPluginCV
   ifdef OPENCV_LIB
     opencv_core_DIR += $(OPENCV_LIB)
-    PROD_LIBS       += opencv_core opencv_imgproc opencv_highgui
+    PROD_LIBS       += opencv_core opencv_imgproc
     ifeq ($(WITH_OPENCV_VIDEO), YES)
       PROD_LIBS     += opencv_video opencv_videoio
     endif
   else
-    PROD_SYS_LIBS   += opencv_core opencv_imgproc opencv_highgui
+    PROD_SYS_LIBS   += opencv_core opencv_imgproc
     ifeq ($(WITH_OPENCV_VIDEO), YES)
       PROD_SYS_LIBS += opencv_video opencv_videoio
     endif

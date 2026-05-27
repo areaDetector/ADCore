@@ -43,7 +43,9 @@ record(mbbo, "$(P)$(R)TSControl")
    field(TWVL, "2")
    field(TWST, "Stop")
    field(THVL, "3")
-   field(THST, "Read") 
+   field(THST, "Read")
+   field(FRVL, "4")
+   field(FRST, "Erase")
 }
 
 # This record periodically pokes the TSControl record with 3 to read the time series

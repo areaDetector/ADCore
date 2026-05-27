@@ -40,3 +40,6 @@ ifdef T_A
   -include $(AREA_DETECTOR)/configure/CONFIG_SITE.Common.$(T_A)
   -include $(AREA_DETECTOR)/configure/CONFIG_SITE.$(EPICS_HOST_ARCH).$(T_A)
 endif
+
+# Get local settings which can override those from areaDetector
+-include $(TOP)/configure/CONFIG_SITE.local

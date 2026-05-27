@@ -8,8 +8,7 @@ include $(TOP)/configure/CONFIG
 SHARED_LIBRARIES=NO
 
 # Use HDF5 API V2
-USR_CXXFLAGS_Linux += -DH5Dopen_vers=2 -DH5Gcreate_vers=2
-USR_CFLAGS_Linux   += -DH5Dopen_vers=2 -DH5Gcreate_vers=2
+USR_CXXFLAGS_Linux += -DH5_USE_110_API
 
 ifeq ($(SHARED_LIBRARIES), YES)
    USR_CXXFLAGS_WIN32 += -DH5_BUILT_AS_DYNAMIC_LIB
@@ -40,6 +39,8 @@ ifeq ($(WITH_BOOST),YES)
   ADTestUtility_SRCS += AttrPlotPluginWrapper.cpp
   ADTestUtility_SRCS += ROIPluginWrapper.cpp
   ADTestUtility_SRCS += OverlayPluginWrapper.cpp
+  ADTestUtility_SRCS += CodecPluginWrapper.cpp
+  ADTestUtility_SRCS += AttributePluginWrapper.cpp
 
   PROD_IOC_Linux += plugin-test
   PROD_IOC_Darwin += plugin-test
@@ -54,6 +55,8 @@ ifeq ($(WITH_BOOST),YES)
   plugin-test_SRCS += test_NDPosPlugin.cpp
   plugin-test_SRCS += test_NDPluginTimeSeries.cpp
   plugin-test_SRCS += test_NDPluginFFT.cpp
+  plugin-test_SRCS += test_NDPluginCodec.cpp
+  plugin-test_SRCS += test_NDPluginAttribute.cpp
   plugin-test_SRCS += test_NDPluginAttrPlot.cpp
   plugin-test_SRCS += test_NDPluginROI.cpp
   plugin-test_SRCS += test_NDPluginOverlay.cpp
@@ -69,7 +72,7 @@ ifeq ($(WITH_BOOST),YES)
     boost_unit_test_framework_DIR=$(BOOST_LIB)
     plugin-test_LIBS_Linux += boost_unit_test_framework
     plugin-test_LIBS_Darwin += boost_unit_test_framework
-	USR_LDFLAGS_WIN32 += /LIBPATH:$(BOOST_LIB)
+    USR_LDFLAGS_WIN32 += /LIBPATH:$(BOOST_LIB)
     LIB_LIBS_WIN32 += libboost_unit_test_framework-vc141-mt-s-x64-1_69
   else
     plugin-test_SYS_LIBS += boost_unit_test_framework
@@ -77,7 +80,30 @@ ifeq ($(WITH_BOOST),YES)
 
   # Link order matters when doing a static build
   plugin-test_LIBS += ADTestUtility
-
+  ifeq ($(WITH_JPEG),YES)
+    USR_CXXFLAGS += -DHAVE_JPEG
+    ifdef JPEG_INCLUDE
+      USR_INCLUDES += $(addprefix -I, $(JPEG_INCLUDE))
+    endif
+  endif
+  ifeq ($(WITH_BLOSC), YES)
+    USR_CXXFLAGS += -DHAVE_BLOSC
+  endif
+  ifeq ($(WITH_BITSHUFFLE), YES)
+    USR_CXXFLAGS += -DHAVE_BITSHUFFLE
+  endif
+  ifeq ($(WITH_ZLIB), YES)
+    USR_CXXFLAGS += -DHAVE_ZLIB
+  endif
+  ifdef BLOSC_INCLUDE
+    USR_INCLUDES += $(addprefix -I, $(BLOSC_INCLUDE))
+  endif
+  ifdef BITSHUFFLE_INCLUDE
+    USR_INCLUDES += $(addprefix -I, $(BITSHUFFLE_INCLUDE))
+  endif
+  ifdef ZLIB_INCLUDE
+    USR_INCLUDES += $(addprefix -I, $(ZLIB_INCLUDE))
+  endif
   ifdef HDF5_INCLUDE
     USR_INCLUDES += $(addprefix -I, $(HDF5_INCLUDE))
   endif
@@ -91,10 +117,10 @@ ifeq ($(WITH_BOOST),YES)
     USR_INCLUDES += $(addprefix -I, $(BOOST_INCLUDE))
   endif
   ifeq ($(BOOST_USE_STATIC_LINK),YES)
-	USR_CXXFLAGS_Linux += -DBOOST_USE_STATIC_LINK
-	USR_CFLAGS_Linux += -DBOOST_USE_STATIC_LINK
-	USR_CXXFLAGS_WIN32 += -DBOOST_USE_STATIC_LINK
-	USR_CFLAGS_WIN32 += -DBOOST_USE_STATIC_LINK
+  USR_CXXFLAGS_Linux += -DBOOST_USE_STATIC_LINK
+  USR_CFLAGS_Linux += -DBOOST_USE_STATIC_LINK
+  USR_CXXFLAGS_WIN32 += -DBOOST_USE_STATIC_LINK
+  USR_CFLAGS_WIN32 += -DBOOST_USE_STATIC_LINK
   endif
 endif
 

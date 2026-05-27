@@ -20,7 +20,7 @@
 
 #include "NDAttribute.h"
 #include "NDAttributeList.h"
-#include "Codec.h"
+#include "NDCodec.h"
 
 /** The maximum number of dimensions in an NDArray */
 #define ND_ARRAY_MAX_DIMS 10
@@ -132,7 +132,7 @@ public:
                                   * The data is assumed to be stored in the order of dims[0] changing fastest, and
                                   * dims[ndims-1] changing slowest. */
     NDAttributeList *pAttributeList;  /**< Linked list of attributes */
-    Codec_t codec;              /**< Definition of codec used to compress the data. */
+    NDCodec_t codec;            /**< Definition of codec used to compress the data. */
     size_t compressedSize;      /**< Size of the compressed data. Should be equal to dataSize if pData is uncompressed. */
 };
 

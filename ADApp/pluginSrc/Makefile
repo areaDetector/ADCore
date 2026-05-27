@@ -7,8 +7,8 @@ include $(TOP)/configure/CONFIG
 LIBRARY_IOC += NDPlugin
 DBD         += NDPluginSupport.dbd
 
-# Use HDF5 API V2
-USR_CXXFLAGS_Linux += -DH5Gopen_vers=2
+# Use HDF5 API circa v1.10
+USR_CXXFLAGS_Linux += -DH5_USE_110_API
 
 # json.hpp requires C++11
 NDPluginBadPixel_CXXFLAGS_Linux += -std=c++11
@@ -141,12 +141,6 @@ ifeq ($(WITH_HDF5),YES)
   LIB_SRCS += NDFileHDF5AttributeDataset.cpp
   LIB_SRCS += NDFileHDF5LayoutXML.cpp
   LIB_SRCS += NDFileHDF5Layout.cpp
-  ifdef HDF5_INCLUDE
-    USR_INCLUDES += $(addprefix -I, $(HDF5_INCLUDE))
-  endif
-  ifdef SZIP_INCLUDE
-    USR_INCLUDES += $(addprefix -I, $(SZIP_INCLUDE))
-  endif
 endif
 
 ifeq ($(WITH_JPEG),YES)
@@ -196,12 +190,23 @@ ifeq ($(WITH_PVA), YES)
   LIB_SRCS += NDPluginPva.cpp
 endif
 
+ifeq ($(WITH_PVXS), YES)
+  DBD += NDPluginPvxs.dbd
+  INC += NDPluginPvxs.h
+  LIB_SRCS += NDPluginPvxs.cpp
+  NDPluginPvxs_CXXFLAGS_Linux += -std=c++11
+endif
+
 ifeq ($(WITH_BLOSC), YES)
   USR_CXXFLAGS += -DHAVE_BLOSC
 endif
 
 ifeq ($(WITH_BITSHUFFLE), YES)
   USR_CXXFLAGS += -DHAVE_BITSHUFFLE
+endif
+
+ifeq ($(WITH_ZLIB), YES)
+  USR_CXXFLAGS += -DHAVE_ZLIB
 endif
 
 ifdef BLOSC_INCLUDE
@@ -212,12 +217,16 @@ ifdef BITSHUFFLE_INCLUDE
   USR_INCLUDES += $(addprefix -I, $(BITSHUFFLE_INCLUDE))
 endif
 
+ifdef ZLIB_INCLUDE
+  USR_INCLUDES += $(addprefix -I, $(ZLIB_INCLUDE))
+endif
+
 ifdef HDF5_INCLUDE
   USR_INCLUDES += $(addprefix -I, $(HDF5_INCLUDE))
 endif
 
 ifdef SZIP_INCLUDE
-  USR_INCLUDES += $(addprefix -I, $(HDF5_INCLUDE))
+  USR_INCLUDES += $(addprefix -I, $(SZIP_INCLUDE))
 endif
 
 ifdef XML2_INCLUDE

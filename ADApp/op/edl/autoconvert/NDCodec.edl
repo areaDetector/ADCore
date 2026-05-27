@@ -3,8 +3,8 @@ beginScreenProperties
 major 4
 minor 0
 release 1
-x 330
-y 189
+x 500
+y 300
 w 775
 h 600
 font "helvetica-medium-r-18.0"
@@ -69,17 +69,30 @@ release 0
 x 390
 y 40
 w 380
-h 260
+h 310
 lineColor rgb 0 0 0
 fillColor rgb 0 0 0
 lineWidth 0
 endObjectProperties
 
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 5
+y 40
+w 380
+h 555
+
+beginGroup
+
 # (Embedded Window)
 object activePipClass
 beginObjectProperties
 major 4
-minor 0
+minor 1
 release 0
 x 5
 y 40
@@ -99,14 +112,20 @@ displayFileName {
 noScroll
 endObjectProperties
 
+endGroup
+
+visMin "A"
+visMax "1"
+endObjectProperties
+
 # (Text Monitor)
 object activeXTextDspClass:noedit
 beginObjectProperties
 major 4
 minor 7
 release 0
-x 676
-y 51
+x 675
+y 50
 w 90
 h 18
 controlPv "$(P)$(R)Mode_RBV"
@@ -129,8 +148,8 @@ beginObjectProperties
 major 4
 minor 7
 release 0
-x 666
-y 76
+x 665
+y 75
 w 100
 h 18
 controlPv "$(P)$(R)Compressor_RBV"
@@ -153,7 +172,7 @@ beginObjectProperties
 major 4
 minor 1
 release 1
-x 525
+x 524
 y 50
 w 51
 h 20
@@ -173,7 +192,7 @@ beginObjectProperties
 major 4
 minor 1
 release 1
-x 476
+x 475
 y 75
 w 100
 h 20
@@ -193,8 +212,8 @@ beginObjectProperties
 major 4
 minor 7
 release 0
-x 666
-y 126
+x 665
+y 125
 w 100
 h 18
 controlPv "$(P)$(R)JPEGQuality_RBV"
@@ -217,7 +236,7 @@ beginObjectProperties
 major 4
 minor 7
 release 0
-x 581
+x 580
 y 125
 w 80
 h 20
@@ -243,7 +262,7 @@ beginObjectProperties
 major 4
 minor 1
 release 1
-x 456
+x 455
 y 125
 w 120
 h 20
@@ -263,8 +282,8 @@ beginObjectProperties
 major 4
 minor 7
 release 0
-x 666
-y 151
+x 665
+y 175
 w 100
 h 18
 controlPv "$(P)$(R)BloscCompressor_RBV"
@@ -287,8 +306,8 @@ beginObjectProperties
 major 4
 minor 7
 release 0
-x 666
-y 176
+x 665
+y 200
 w 100
 h 18
 controlPv "$(P)$(R)BloscCLevel_RBV"
@@ -311,13 +330,232 @@ beginObjectProperties
 major 4
 minor 7
 release 0
-x 666
-y 201
+x 665
+y 225
 w 100
 h 18
 controlPv "$(P)$(R)BloscShuffle_RBV"
 format "string"
 font "helvetica-medium-r-14.0"
+fontAlign "left"
+fgColor rgb 2560 0 47104
+bgColor rgb 47872 47872 47872
+limitsFromDb
+nullColor rgb 60928 46592 11008
+smartRefresh
+fastUpdate
+newPos
+objType "controls"
+endObjectProperties
+
+# (Text Control)
+object activeXTextDspClass
+beginObjectProperties
+major 4
+minor 7
+release 0
+x 578
+y 198
+w 80
+h 20
+controlPv "$(P)$(R)BloscCLevel"
+format "decimal"
+font "helvetica-medium-r-12.0"
+fontAlign "left"
+fgColor rgb 0 0 0
+bgColor rgb 29440 57088 65280
+editable
+motifWidget
+limitsFromDb
+nullColor rgb 60928 46592 11008
+smartRefresh
+fastUpdate
+newPos
+objType "controls"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 415
+y 174
+w 160
+h 20
+font "helvetica-medium-r-14.0"
+fontAlign "right"
+fgColor rgb 0 0 0
+bgColor index 3
+useDisplayBg
+value {
+  "Blosc Compressor"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 405
+y 200
+w 170
+h 20
+font "helvetica-medium-r-14.0"
+fontAlign "right"
+fgColor rgb 0 0 0
+bgColor index 3
+useDisplayBg
+value {
+  "Blosc Comp. Level"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 445
+y 225
+w 130
+h 20
+font "helvetica-medium-r-14.0"
+fontAlign "right"
+fgColor rgb 0 0 0
+bgColor index 3
+useDisplayBg
+value {
+  "Blosc Shuffle"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 395
+y 100
+w 180
+h 20
+font "helvetica-medium-r-14.0"
+fontAlign "right"
+fgColor rgb 0 0 0
+bgColor index 3
+useDisplayBg
+value {
+  "Compression Factor"
+}
+endObjectProperties
+
+# (Text Monitor)
+object activeXTextDspClass:noedit
+beginObjectProperties
+major 4
+minor 7
+release 0
+x 580
+y 100
+w 80
+h 18
+controlPv "$(P)$(R)CompFactor_RBV"
+format "decimal"
+font "helvetica-medium-r-14.0"
+fontAlign "left"
+fgColor rgb 2560 0 47104
+bgColor rgb 47872 47872 47872
+limitsFromDb
+nullColor rgb 60928 46592 11008
+smartRefresh
+fastUpdate
+newPos
+objType "controls"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 455
+y 300
+w 120
+h 20
+font "helvetica-medium-r-14.0"
+fontAlign "right"
+fgColor rgb 0 0 0
+bgColor index 3
+useDisplayBg
+value {
+  "Codec Status"
+}
+endObjectProperties
+
+# (Text Monitor)
+object activeXTextDspClass:noedit
+beginObjectProperties
+major 4
+minor 7
+release 0
+x 580
+y 300
+w 80
+h 18
+controlPv "$(P)$(R)CodecStatus"
+format "string"
+font "helvetica-medium-r-14.0"
+fontAlign "center"
+fgColor rgb 0 65535 0
+fgAlarm
+bgColor rgb 17920 17920 17920
+limitsFromDb
+nullColor rgb 60928 46592 11008
+smartRefresh
+fastUpdate
+newPos
+objType "controls"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 395
+y 325
+w 110
+h 20
+font "helvetica-medium-r-14.0"
+fontAlign "right"
+fgColor rgb 0 0 0
+bgColor index 3
+useDisplayBg
+value {
+  "Codec Error"
+}
+endObjectProperties
+
+# (Text Monitor)
+object activeXTextDspClass:noedit
+beginObjectProperties
+major 4
+minor 7
+release 0
+x 510
+y 328
+w 255
+h 14
+controlPv "$(P)$(R)CodecError"
+format "string"
+font "helvetica-medium-r-12.0"
 fontAlign "left"
 fgColor rgb 2560 0 47104
 bgColor rgb 47872 47872 47872
@@ -335,8 +573,8 @@ beginObjectProperties
 major 4
 minor 7
 release 0
-x 666
-y 226
+x 665
+y 250
 w 100
 h 18
 controlPv "$(P)$(R)BloscNumThreads_RBV"
@@ -359,34 +597,8 @@ beginObjectProperties
 major 4
 minor 7
 release 0
-x 581
-y 175
-w 80
-h 20
-controlPv "$(P)$(R)BloscCLevel"
-format "decimal"
-font "helvetica-medium-r-12.0"
-fontAlign "left"
-fgColor rgb 0 0 0
-bgColor rgb 29440 57088 65280
-editable
-motifWidget
-limitsFromDb
-nullColor rgb 60928 46592 11008
-smartRefresh
-fastUpdate
-newPos
-objType "controls"
-endObjectProperties
-
-# (Text Control)
-object activeXTextDspClass
-beginObjectProperties
-major 4
-minor 7
-release 0
-x 581
-y 225
+x 580
+y 250
 w 80
 h 20
 controlPv "$(P)$(R)BloscNumThreads"
@@ -411,68 +623,8 @@ beginObjectProperties
 major 4
 minor 1
 release 1
-x 416
-y 150
-w 160
-h 20
-font "helvetica-medium-r-14.0"
-fontAlign "right"
-fgColor rgb 0 0 0
-bgColor index 3
-useDisplayBg
-value {
-  "Blosc Compressor"
-}
-endObjectProperties
-
-# (Static Text)
-object activeXTextClass
-beginObjectProperties
-major 4
-minor 1
-release 1
-x 406
-y 175
-w 170
-h 20
-font "helvetica-medium-r-14.0"
-fontAlign "right"
-fgColor rgb 0 0 0
-bgColor index 3
-useDisplayBg
-value {
-  "Blosc Comp. Level"
-}
-endObjectProperties
-
-# (Static Text)
-object activeXTextClass
-beginObjectProperties
-major 4
-minor 1
-release 1
-x 446
-y 200
-w 130
-h 20
-font "helvetica-medium-r-14.0"
-fontAlign "right"
-fgColor rgb 0 0 0
-bgColor index 3
-useDisplayBg
-value {
-  "Blosc Shuffle"
-}
-endObjectProperties
-
-# (Static Text)
-object activeXTextClass
-beginObjectProperties
-major 4
-minor 1
-release 1
-x 406
-y 225
+x 405
+y 250
 w 170
 h 20
 font "helvetica-medium-r-14.0"
@@ -485,37 +637,17 @@ value {
 }
 endObjectProperties
 
-# (Static Text)
-object activeXTextClass
-beginObjectProperties
-major 4
-minor 1
-release 1
-x 396
-y 100
-w 180
-h 20
-font "helvetica-medium-r-14.0"
-fontAlign "right"
-fgColor rgb 0 0 0
-bgColor index 3
-useDisplayBg
-value {
-  "Compression Factor"
-}
-endObjectProperties
-
 # (Text Monitor)
 object activeXTextDspClass:noedit
 beginObjectProperties
 major 4
 minor 7
 release 0
-x 581
-y 101
-w 80
+x 664
+y 275
+w 100
 h 18
-controlPv "$(P)$(R)CompFactor_RBV"
+controlPv "$(P)$(R)LZ4HDF5BlockSize_RBV"
 format "decimal"
 font "helvetica-medium-r-14.0"
 fontAlign "left"
@@ -529,43 +661,24 @@ newPos
 objType "controls"
 endObjectProperties
 
-# (Static Text)
-object activeXTextClass
-beginObjectProperties
-major 4
-minor 1
-release 1
-x 456
-y 250
-w 120
-h 20
-font "helvetica-medium-r-14.0"
-fontAlign "right"
-fgColor rgb 0 0 0
-bgColor index 3
-useDisplayBg
-value {
-  "Codec Status"
-}
-endObjectProperties
-
-# (Text Monitor)
-object activeXTextDspClass:noedit
+# (Text Control)
+object activeXTextDspClass
 beginObjectProperties
 major 4
 minor 7
 release 0
-x 581
-y 251
+x 579
+y 275
 w 80
-h 18
-controlPv "$(P)$(R)CodecStatus"
-format "string"
-font "helvetica-medium-r-14.0"
-fontAlign "center"
-fgColor rgb 0 65535 0
-fgAlarm
-bgColor rgb 17920 17920 17920
+h 20
+controlPv "$(P)$(R)LZ4HDF5BlockSize"
+format "decimal"
+font "helvetica-medium-r-12.0"
+fontAlign "left"
+fgColor rgb 0 0 0
+bgColor rgb 29440 57088 65280
+editable
+motifWidget
 limitsFromDb
 nullColor rgb 60928 46592 11008
 smartRefresh
@@ -580,9 +693,9 @@ beginObjectProperties
 major 4
 minor 1
 release 1
-x 396
+x 394
 y 275
-w 110
+w 180
 h 20
 font "helvetica-medium-r-14.0"
 fontAlign "right"
@@ -590,8 +703,54 @@ fgColor rgb 0 0 0
 bgColor index 3
 useDisplayBg
 value {
-  "Codec Error"
+  "LZ4HDF5 Block Size"
 }
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 455
+y 150
+w 120
+h 20
+font "helvetica-medium-r-14.0"
+fontAlign "right"
+fgColor rgb 0 0 0
+bgColor index 3
+useDisplayBg
+value {
+  "Zlib Comp. Level"
+}
+endObjectProperties
+
+# (Text Control)
+object activeXTextDspClass
+beginObjectProperties
+major 4
+minor 7
+release 0
+x 580
+y 150
+w 80
+h 20
+controlPv "$(P)$(R)ZlibCLevel"
+format "decimal"
+font "helvetica-medium-r-12.0"
+fontAlign "left"
+fgColor rgb 0 0 0
+bgColor rgb 29440 57088 65280
+editable
+motifWidget
+limitsFromDb
+nullColor rgb 60928 46592 11008
+smartRefresh
+fastUpdate
+newPos
+objType "controls"
 endObjectProperties
 
 # (Text Monitor)
@@ -600,13 +759,13 @@ beginObjectProperties
 major 4
 minor 7
 release 0
-x 511
-y 278
-w 255
-h 14
-controlPv "$(P)$(R)CodecError"
-format "string"
-font "helvetica-medium-r-12.0"
+x 665
+y 150
+w 100
+h 18
+controlPv "$(P)$(R)ZlibCLevel_RBV"
+format "decimal"
+font "helvetica-medium-r-14.0"
 fontAlign "left"
 fgColor rgb 2560 0 47104
 bgColor rgb 47872 47872 47872
@@ -624,8 +783,8 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 581
-y 51
+x 580
+y 50
 w 90
 h 18
 fgColor rgb 0 0 0
@@ -644,8 +803,8 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 581
-y 76
+x 580
+y 75
 w 80
 h 18
 fgColor rgb 0 0 0
@@ -664,8 +823,8 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 581
-y 151
+x 580
+y 175
 w 80
 h 18
 fgColor rgb 0 0 0
@@ -684,8 +843,8 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 581
-y 201
+x 580
+y 225
 w 80
 h 18
 fgColor rgb 0 0 0

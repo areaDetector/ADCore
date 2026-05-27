@@ -41,7 +41,7 @@ typedef enum
     ADStatusWaiting,      /**< Detector is waiting for something, typically for the acquire period to elapse */
     ADStatusInitializing, /**< Detector is initializing, typically at startup */
     ADStatusDisconnected, /**< Detector is not connected */
-    ADStatusAborted       /**< Detector aquisition has been aborted.*/
+    ADStatusAborted       /**< Detector acquisition has been aborted.*/
 } ADStatus_t;
 
 /** Enumeration of image collection modes */

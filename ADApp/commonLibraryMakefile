@@ -11,6 +11,12 @@ ifeq ($(WITH_PVA),YES)
   LIB_LIBS += pvData
 endif
 
+ifeq ($(WITH_PVXS),YES)
+  LIB_LIBS += pvxsIoc
+  LIB_LIBS += pvxs
+  LIB_LIBS += ntndArrayConverterPvxs
+endif
+
 ifeq ($(WITH_NETCDF),YES)
   ifeq ($(NETCDF_EXTERNAL),NO)
     LIB_LIBS += netCDF
@@ -81,8 +87,8 @@ endif
 
 ifeq ($(WITH_HDF5),YES)
   ifeq ($(HDF5_EXTERNAL),NO)
-    LIB_LIBS += hdf5
     LIB_LIBS += hdf5_hl
+    LIB_LIBS += hdf5
   else
     ifdef HDF5_LIB
       hdf5_DIR     = $(HDF5_LIB)
@@ -114,6 +120,7 @@ ifeq ($(WITH_BITSHUFFLE),YES)
       LIB_SYS_LIBS += bitshuffle
     endif
   endif
+  LIB_LIBS += lz4hdf5
 endif
 
 ifeq ($(WITH_BLOSC),YES)

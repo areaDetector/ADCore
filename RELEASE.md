@@ -9,7 +9,7 @@ https://github.com/areaDetector/ADCore.
 
 Tagged source code and pre-built binary releases prior to R2-0 are included
 in the areaDetector releases available via links at
-https://cars.uchicago.edu/software/epics/areaDetector.html.
+https://areadetector.github.io/areaDetector/legacy_versions.html.
 
 Tagged source code releases from R2-0 onward can be obtained at
 https://github.com/areaDetector/ADCore/releases.
@@ -19,7 +19,42 @@ the EXAMPLE_RELEASE_PATHS.local, EXAMPLE_RELEASE_LIBS.local, and EXAMPLE_RELEASE
 files respectively, in the configure/ directory of the appropriate release of the
 [top-level areaDetector](https://github.com/areaDetector/areaDetector) repository.
 
-## __R3-14 (April XXX, 2024)__
+## __R3-15 (April XXX, 2026)__
+
+### Fixes for Github Actions
+  * Fixed problem with TIRPC in asyn.
+  * Updated from windows-2019 to windows-2022.
+  
+### New NDPluginPvxs plugin
+  * This is similar NDPluginPva except that it uses the external PVXS library
+    rather than the pvAccess library from EPICS base.
+    This support will be included if WITH_PVXS=YES.
+    Thanks to James Souter for this.
+
+### NDPluginCodec
+  * Added support for the lz4hdf5 codec.  This does LZ4 compression in blocks.
+    It is the codec used for LZ4 compression on Dectris detectors with the Stream2 interface.
+    It is also the codec used for writing LZ4 compressed data to HDF5 files.
+    There are new records LZ4HDF5BlockSize and LZ4HDF5BlockSize_RBV for writing and
+    reading the blocksize for this codec.
+  * NOTE: The order of the enums in the Compressor mbbo record has changed so that
+    LZ4 and LZ4HDF5 are adjacent.
+    This breaks backwards compatibility for autosave files, and for scripts that use
+    the enum index rather than string for this record.
+  * Fixed memory leaks in the JPEG compressor and decompressor. Thanks to Evan Daykin for this.
+
+### NDFileHDF
+  * Added support for direct chunk write for NDArrays compressed with the lz4hd5 codec.
+    
+### Database template files
+  * Fixed record names in NDROIStat.template to avoid record name duplication.
+  * Added optional default transform type macro (DFLTTRANSTYPE) in NDTransform.template.
+
+### ADTop.adl
+  * Added ADHamammatsuDCAM and BlackflyS PGE 23S6C.
+  * Reformatted into 2 columns.
+
+## __R3-14 (December 1, 2024)__
 
 ### asynNDArrayDriver and NDPluginBase.template
   * Added support for pre-allocating NDArrays.
@@ -55,6 +90,7 @@ files respectively, in the configure/ directory of the appropriate release of th
     and the other records are I/O Intr scanned.
     This allows these records to be updated during the pre-allocation operation described above.
     PoolPollStats causes callbacks for the I/O Intr scanned records in asynNDArrayDriver.
+
 ### NDPluginFile
   * Improved the feedback on progress when saving a file in Capture mode.
     Previously the only indication that the file saving was in progress was the
@@ -68,29 +104,48 @@ files respectively, in the configure/ directory of the appropriate release of th
       - NumCaptured_RBV counts down from NumCaptured to 0, so the number
         of remaining frames is visible.
 
+### NDFileTIFF
+  * Fixed a bug introduced in R3-8.  
+    Integer attributes smaller than Int64 might not be correctly written to the file.
+
+### NDPluginROIStat
+  * Added the ability to clear the time series data without starting a new acquisition.
+
+### myAttributeFunctions.cpp
+  * Added code to create NDAttributes of all numeric data types.
+  * These were used to test the fix to NDFileTIFF, and can be generally useful.
+
+### Documentation
+  * Removed the documentation/ directory, which was obsolete.
 
 ## __R3-13 (February 9, 2024)__
 
 ### NDArrayPool
   * Provide a mechanism to override the default memory allocator for NDArrays.
     Thanks to Emilio PJ on Github for this.
+
 ### asynNDArrayDriver
   * Added UpdateTimeStamps method.
   * Added NDFileFreeCapture parameter to manually free the capture buffer.
   * Allow the filename in readNDAttributes file to be an XML string rather than a file name.
     This allows Channel Access clients to write the XML directly. Thanks to Marcell Nagy for this.
+
 ### NDAttribute
   * Added support for attribute type CONST, where the value is the "source" value specified in the XML file.
     Thanks to Keenan Lang for this.
+
 ### NDPluginFile
   * Change capture buffer to use std::vector which is simpler and cleaner.
   * Free capture buffer when capture or streaming start to prevent memory leak.
   * Added FreeCapture record to manually free the capture buffer.
   * Include the interface and interrupt masks passed to the constructor in the masks passed to NDPluginDriver.
+
 ### NDFileNexus
   * Set the plugin type.
+
 ### NDPluginBadPixel
   * Fix missing argument to constructor from configuration command.
+
 ### NDPluginProcess
   * Improved the logic for high and low clipping so that both the threshold
     and the replacement value can be independently specified.
@@ -99,13 +154,17 @@ files respectively, in the configure/ directory of the appropriate release of th
     - HighClip has been renamed to HighClipThresh.
     - LowClipValue and HighClipValue have been added.
     - **This change is not backwards compatible, the value of Low/HighClipValue must now be specified.**
+
 ### commonDriverMakefile, commonLibraryMakefile
   * Fix error in upper/lower case of NeXus_DIR.
   * Fix error with nanohttp_stream library.
+
 ### Continuous integration
   * Added Github Actions builds.  Thanks to Ralph Lange and Michael Davidsaver for this.
+
 ### validateXML.sh
   * Fix location of iocimDetector.
+
 ### EXAMPLE_commonPlugins.cmd
   * Load NDPluginPva by default.
   * Fix path to support module .template and .req files to be (MODULE)/db rather than (MODULE)/moduleApp/Db. 
@@ -114,8 +173,10 @@ files respectively, in the configure/ directory of the appropriate release of th
 
 ### ADCoreVersion.h
   * Changed to 3.12.1.  R3-12 neglected to change this, so it was still 3.11.
+
 ### test_NDFileHDF5AttributeDataset.cpp
   * Fixed this test for the changes in NDFileHDF5AttributeDataset.cpp made in R3-12.
+
 ### Documentation file NDFileHDF5.rst
  * Updated for the changes in NDFileHDF5AttributeDataset.cpp made in R3-12.
 
@@ -127,18 +188,24 @@ files respectively, in the configure/ directory of the appropriate release of th
     This allows manually saving and loading different configurations for different setups with the same IOC.
     It also allows saving and then loading the settings when a camera is reset or restarted,
     without restarting the IOC.
+
 ### ADPlugins OPI sub-screen.
   * Added a related display "Plugins/Other #2/AS configMenu" which allows manually saving and loading
     configurations that use ADAutoSaveMenu.req described above.
+
 ### ntndArrayConverter
   * Added conversion from Posix time to EPICS time when copying NTNDArray to NDArray.
+
 ### EXAMPLE_commonPlugins.cmd
   * Load configMenu.db.
   * Fixes to set_request_file_path to use the /db directory rather than the App/Db directory.
+
 ### commonDriverMakefile
   * Added optional reccaster support module.
+
 ### CCDMultiTrack.cpp
   * Corrected index error.
+
 ### NDFileHDF5AttributeDataset.cpp
   * Removed unnecessary creation of 1x1 dimensions.
 

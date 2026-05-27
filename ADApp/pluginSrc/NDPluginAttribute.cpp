@@ -175,7 +175,7 @@ NDPluginAttribute::NDPluginAttribute(const char *portName, int queueSize, int bl
                    NDArrayPort, NDArrayAddr, std::max<int>(maxAttributes,2), maxBuffers, maxMemory,
                    asynInt32ArrayMask | asynFloat64Mask | asynFloat64ArrayMask | asynGenericPointerMask,
                    asynInt32ArrayMask | asynFloat64Mask | asynFloat64ArrayMask | asynGenericPointerMask,
-                   ASYN_MULTIDEVICE, 1, priority, stackSize, 1)
+                   ASYN_MULTIDEVICE, 1, priority, stackSize, 1, true)
 {
   int i;
   // static const char *functionName = "NDPluginAttribute::NDPluginAttribute";

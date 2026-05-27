@@ -361,10 +361,8 @@ asynStatus NDPluginROIStat::writeInt32(asynUser *pasynUser, epicsInt32 value)
     } else if (function == NDPluginROIStatTSControl) {
         switch (value) {
           case TSEraseStart:
-            currentTSPoint_ = 0;
-            setIntegerParam(NDPluginROIStatTSCurrentPoint, currentTSPoint_);
+            clearTimeSeries();
             setIntegerParam(NDPluginROIStatTSAcquiring, 1);
-            memset(timeSeries_, 0, maxROIs_*MAX_TIME_SERIES_TYPES*numTSPoints_*sizeof(double));
             break;
           case TSStart:
             if (currentTSPoint_ < numTSPoints_) {
@@ -376,6 +374,10 @@ asynStatus NDPluginROIStat::writeInt32(asynUser *pasynUser, epicsInt32 value)
             doTimeSeriesCallbacks();
             break;
           case TSRead:
+            doTimeSeriesCallbacks();
+            break;
+          case TSErase:
+            clearTimeSeries();
             doTimeSeriesCallbacks();
             break;
         }
@@ -430,6 +432,19 @@ asynStatus NDPluginROIStat::clear(epicsUInt32 roi)
   }
 
   return status;
+}
+
+/**
+ * Reset the time series data.
+ * This is meant to be called in writeInt32.
+ */
+void NDPluginROIStat::clearTimeSeries()
+{
+  currentTSPoint_ = 0;
+  setIntegerParam(NDPluginROIStatTSCurrentPoint, currentTSPoint_);
+  if (timeSeries_) {
+    memset(timeSeries_, 0, maxROIs_*MAX_TIME_SERIES_TYPES*numTSPoints_*sizeof(double));
+  }
 }
 
 void NDPluginROIStat::doTimeSeriesCallbacks()

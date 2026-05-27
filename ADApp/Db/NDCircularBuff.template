@@ -91,6 +91,7 @@ record(waveform, "$(P)$(R)TriggerCalc") {
   field(FTVL, "CHAR")
   field(NELM, "256")
   field(PINI, "1")
+  info(Q:form, "String")
 }
 
 # # Trigger calculation readback
@@ -100,6 +101,7 @@ record(waveform, "$(P)$(R)TriggerCalc_RBV") {
   field(FTVL, "CHAR")
   field(NELM, "256")
   field(SCAN, "I/O Intr")
+  info(Q:form, "String")
 }
 
 # # Trigger calculation value

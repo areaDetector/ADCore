@@ -38,12 +38,16 @@ record(mbbo, "$(P)$(R)Compressor")
     field(ZRVL, "0")
     field(ONST, "JPEG")
     field(ONVL, "1")
-    field(TWST, "Blosc")
+    field(TWST, "Zlib")
     field(TWVL, "2")
-    field(THST, "LZ4")
+    field(THST, "Blosc")
     field(THVL, "3")
-    field(FRST, "BSLZ4")
+    field(FRST, "LZ4")
     field(FRVL, "4")
+    field(FVST, "LZ4HDF5")
+    field(FVVL, "5")
+    field(SXST, "BSLZ4")
+    field(SXVL, "6")
     info(autosaveFields, "VAL")
 }
 
@@ -55,12 +59,16 @@ record(mbbi, "$(P)$(R)Compressor_RBV")
     field(ZRVL, "0")
     field(ONST, "JPEG")
     field(ONVL, "1")
-    field(TWST, "Blosc")
+    field(TWST, "Zlib")
     field(TWVL, "2")
-    field(THST, "LZ4")
+    field(THST, "Blosc")
     field(THVL, "3")
-    field(FRST, "BSLZ4")
+    field(FRST, "LZ4")
     field(FRVL, "4")
+    field(FVST, "LZ4HDF5")
+    field(FVVL, "5")
+    field(SXST, "BSLZ4")
+    field(SXVL, "6")
     field(SCAN, "I/O Intr")
 }
 
@@ -88,6 +96,24 @@ record(longin, "$(P)$(R)JPEGQuality_RBV")
 {
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))JPEG_QUALITY")
+    field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)ZlibCLevel")
+{
+    field(PINI, "YES")
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))ZLIB_CLEVEL")
+    field(VAL,  "6")
+    field(DRVH, "9")
+    field(DRVL, "0")
+    info(autosaveFields, "VAL")
+}
+
+record(longin, "$(P)$(R)ZlibCLevel_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))ZLIB_CLEVEL")
     field(SCAN, "I/O Intr")
 }
 
@@ -193,6 +219,23 @@ record(longin, "$(P)$(R)BloscNumThreads_RBV")
     field(SCAN, "I/O Intr")
 }
 
+record(longout, "$(P)$(R)LZ4HDF5BlockSize")
+{
+    field(PINI, "YES")
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))LZ4HDF5_BLOCKSIZE")
+    field(VAL,  "0")
+    field(DRVL, "0")
+    info(autosaveFields, "VAL")
+}
+
+record(longin, "$(P)$(R)LZ4HDF5BlockSize_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))LZ4HDF5_BLOCKSIZE")
+    field(SCAN, "I/O Intr")
+}
+
 record(mbbi, "$(P)$(R)CodecStatus")
 {
     field(DTYP, "asynInt32")
@@ -216,4 +259,5 @@ record(waveform, "$(P)$(R)CodecError")
     field(SCAN, "I/O Intr")
     field(FTVL, "CHAR")
     field(NELM, "256")
+    info(Q:form, "String")
 }

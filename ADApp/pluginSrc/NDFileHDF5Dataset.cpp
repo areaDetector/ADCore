@@ -236,7 +236,7 @@ asynStatus NDFileHDF5Dataset::verifyChunking(NDArray *pArray)
  * Store codec definition
  * \param[in] codec - Codec definition.
  */
-void NDFileHDF5Dataset::configureCompression(Codec_t codec)
+void NDFileHDF5Dataset::configureCompression(NDCodec_t codec)
 {
   this->codec = codec;
 }
@@ -296,7 +296,7 @@ asynStatus NDFileHDF5Dataset::writeFile(NDArray *pArray, hid_t datatype, hid_t d
     if (pArray->codec.empty()) {
         size = info.totalBytes;
     }
-    else if (pArray->codec.name == codecName[NDCODEC_LZ4]) {
+    else if (pArray->codec.name == NDCodecName[NDCODEC_LZ4]) {
         // We need to add a 16-byte header to the lz4 compressed data
         temp = (char *)malloc(16 + size);
         // First 8 bytes is the uncompressed array size
@@ -313,7 +313,7 @@ asynStatus NDFileHDF5Dataset::writeFile(NDArray *pArray, hid_t datatype, hid_t d
         pData = temp;
         size += 16;
     }
-    else if (pArray->codec.name == codecName[NDCODEC_BSLZ4]) {
+    else if (pArray->codec.name == NDCodecName[NDCODEC_BSLZ4]) {
         // We need to add a 12-byte header to the bs/lz4 compressed data
         temp = (char *)malloc(12 + size);
         // First 8 bytes is the uncompressed array size
