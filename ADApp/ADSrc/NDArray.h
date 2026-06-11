@@ -187,6 +187,13 @@ public:
     size_t       getMemorySize();
     int          getNumFree();
     void         emptyFreeList();
+
+    /** Register a pool as being destroyed so late NDArray::release() calls no-op (avoids SIGSEGV
+     * when pvAccess tears down MonitorElements after the driver and pool are deleted). */
+    static void registerDestroyingPool(NDArrayPool *p);
+    /** Check if the given pool address was registered as destroyed (pointer not dereferenced). */
+    static bool isPoolDestroyed(NDArrayPool *p);
+
     static void  setDefaultFrameMemoryFunctions(MallocFunc_t newMalloc,
                                                 FreeFunc_t newFree);
     virtual void* frameMalloc(size_t size);

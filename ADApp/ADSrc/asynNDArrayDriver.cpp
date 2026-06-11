@@ -866,8 +866,8 @@ asynNDArrayDriver::asynNDArrayDriver(const char *portName, int maxAddr, int maxB
                      interfaceMask | asynInt32Mask | asynFloat64Mask | asynOctetMask | asynInt32ArrayMask | asynGenericPointerMask | asynDrvUserMask,
                      interruptMask | asynInt32Mask | asynFloat64Mask | asynOctetMask | asynInt32ArrayMask | asynGenericPointerMask,
                      asynFlags, autoConnect, priority, stackSize),
-      pNDArrayPool(NULL), queuedArrayCountMutex_(NULL), queuedArrayCount_(0),
-      queuedArrayUpdateRun_(true)
+      pNDArrayPool(NULL), maxAddr_(maxAddr), queuedArrayCountMutex_(NULL),
+      queuedArrayCount_(0), queuedArrayUpdateRun_(true)
 {
     char versionString[20];
     static const char *functionName = "asynNDArrayDriver";
@@ -1029,6 +1029,17 @@ asynNDArrayDriver::~asynNDArrayDriver()
     epicsEventSignal(queuedArrayEvent_);
     epicsEventWait(queuedArrayUpdateDone_);
 
+    /* Register pool as destroying so any late NDArray::release() (e.g. from pvAccess
+     * MonitorElement teardown) no-ops instead of touching the pool we are about to delete. */
+    NDArrayPool::registerDestroyingPool(this->pNDArrayPoolPvt_);
+
+    /* Null pNDArrayPool on driver-owned arrays as well (belt and braces). */
+    if (this->pArrays) {
+        for (int i = 0; i < this->maxAddr_; i++) {
+            if (this->pArrays[i])
+                this->pArrays[i]->pNDArrayPool = NULL;
+        }
+    }
     delete this->pNDArrayPoolPvt_;
     free(this->pArrays);
     delete this->pAttributeList;

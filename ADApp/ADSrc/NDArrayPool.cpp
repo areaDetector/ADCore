@@ -8,6 +8,7 @@
 
 #include <string.h>
 #include <stdlib.h>
+#include <set>
 #include <dbDefs.h>
 #include <stdint.h>
 
@@ -45,6 +46,33 @@ FreeFunc_t defaultFrameFree = free;
 
 volatile int eraseNDAttributes=0;
 extern "C" {epicsExportAddress(int, eraseNDAttributes);}
+
+/* Registry of pool addresses being destroyed so NDArray::release() can no-op (avoids SIGSEGV
+ * when pvAccess tears down after the driver). Only the address is used; the pointer is never
+ * dereferenced in isPoolDestroyed(). */
+static std::set<NDArrayPool *> *destroyedPools = NULL;
+static epicsMutexId destroyedPoolsMutex = NULL;
+
+void NDArrayPool::registerDestroyingPool(NDArrayPool *p)
+{
+    if (!p) return;
+    if (!destroyedPoolsMutex)
+        destroyedPoolsMutex = epicsMutexCreate();
+    if (!destroyedPools)
+        destroyedPools = new std::set<NDArrayPool *>();
+    epicsMutexLock(destroyedPoolsMutex);
+    destroyedPools->insert(p);
+    epicsMutexUnlock(destroyedPoolsMutex);
+}
+
+bool NDArrayPool::isPoolDestroyed(NDArrayPool *p)
+{
+    if (!p || !destroyedPoolsMutex || !destroyedPools) return false;
+    epicsMutexLock(destroyedPoolsMutex);
+    bool found = (destroyedPools->find(p) != destroyedPools->end());
+    epicsMutexUnlock(destroyedPoolsMutex);
+    return found;
+}
 
 /** NDArrayPool constructor
   * \param[in] pDriver Pointer to the asynNDArrayDriver that created this object.
