@@ -8,6 +8,7 @@ areaDetector Plugins
     plugin_overview
     NDPluginDriver
     plugin_guidelines
+    destructible
     plugin_medm
     common_plugins
     plugin_performance
