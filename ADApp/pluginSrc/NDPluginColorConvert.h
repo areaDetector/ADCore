@@ -35,7 +35,6 @@ public:
 
 protected:
     int NDPluginColorConvertColorModeOut;
-    #define FIRST_NDPLUGIN_COLOR_CONVERT_PARAM NDPluginColorConvertColorModeOut
     int NDPluginColorConvertFalseColor;
 
 private:
