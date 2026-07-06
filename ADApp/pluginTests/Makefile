@@ -42,7 +42,9 @@ ifeq ($(WITH_BOOST),YES)
   ADTestUtility_SRCS += CodecPluginWrapper.cpp
   ADTestUtility_SRCS += AttributePluginWrapper.cpp
   ADTestUtility_SRCS += ColorConvertPluginWrapper.cpp
-  ADTestUtility_SRCS += BadPixelPluginWrapper.cpp
+  ifeq ($(WITH_JSON), YES)
+    ADTestUtility_SRCS += BadPixelPluginWrapper.cpp
+  endif
 
   PROD_IOC_Linux += plugin-test
   PROD_IOC_Darwin += plugin-test
@@ -63,7 +65,9 @@ ifeq ($(WITH_BOOST),YES)
   plugin-test_SRCS += test_NDPluginAttrPlot.cpp
   plugin-test_SRCS += test_NDPluginROI.cpp
   plugin-test_SRCS += test_NDPluginOverlay.cpp
-  plugin-test_SRCS += test_NDPluginBadPixel.cpp
+  ifeq ($(WITH_JSON), YES)
+    plugin-test_SRCS += test_NDPluginBadPixel.cpp
+  endif
   plugin-test_SRCS += test_NDArrayPool.cpp
 
   # Add tests for new plugins like this:
