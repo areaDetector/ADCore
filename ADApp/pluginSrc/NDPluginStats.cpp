@@ -427,7 +427,15 @@ void NDPluginStats::processCallbacks(NDArray *pArray)
     size_t bgdPixels;
     int bgdWidth;
     int dim;
-    NDStats_t stats, *pStats=&stats, statsTemp, *pStatsTemp=&statsTemp;
+    // Value-initialise both stats structs.  NDStats_t is a POD with no
+    // constructor, and several fields (sigmaXY, skewX/Y, kurtosisX/Y,
+    // eccentricity, orientation) are assigned only inside the M00 > 0 block of
+    // doComputeCentroid.  A dark or below-threshold frame (M00 == 0), or
+    // ComputeCentroid disabled, leaves them unwritten while they are copied
+    // unconditionally into the broadcast time-series array and the _RBV
+    // parameters below.  Zero-init makes an unassigned field read as 0 instead
+    // of stack garbage.
+    NDStats_t stats={}, *pStats=&stats, statsTemp={}, *pStatsTemp=&statsTemp;
     double bgdCounts, avgBgd;
     NDArray *pBgdArray=NULL;
     int computeStatistics, computeCentroid, computeProfiles, computeHistogram;
