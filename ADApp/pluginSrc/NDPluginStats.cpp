@@ -39,6 +39,7 @@ asynStatus NDPluginStats::doComputeHistogramT(NDArray *pArray, NDStats_t *pStats
 
     pArray->getInfo(&arrayInfo);
     nElements = arrayInfo.nElements;
+    if (pStats->histMax <= pStats->histMin) pStats->histMax = pStats->histMin + 1;
     scale = (pStats->histSize - 1) / (pStats->histMax - pStats->histMin);
 
     pStats->histBelow = 0;
