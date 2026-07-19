@@ -267,14 +267,17 @@ asynStatus NDPluginCircularBuff::writeInt32(asynUser *pasynUser, epicsInt32 valu
         // Set the parameter in the parameter library.
         status = (asynStatus) setIntegerParam(function, value);
 
-        // Set a soft trigger
-        setIntegerParam(NDCircBuffTriggered, 1);
+        // Writing 0 disarms the soft trigger; only a non-zero write fires it.
+        if (value) {
+            // Set a soft trigger
+            setIntegerParam(NDCircBuffTriggered, 1);
 
-        epicsInt32 flushOn;
-        getIntegerParam(NDCircBuffFlushOnSoftTrig, &flushOn);
+            epicsInt32 flushOn;
+            getIntegerParam(NDCircBuffFlushOnSoftTrig, &flushOn);
 
-        if (flushOn > 0){
-            flushPreBuffer();
+            if (flushOn > 0){
+                flushPreBuffer();
+            }
         }
 
     }  else if (function == NDCircBuffPreTrigger){
