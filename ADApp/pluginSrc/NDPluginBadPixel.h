@@ -2,8 +2,22 @@
 #define NDPluginProcess_H
 
 #include <vector>
-
+#include <set>
+#include <initializer_list>
+#include <json.hpp>
+using nlohmann::json;
 #include "NDPluginDriver.h"
+
+/** Search for a key in a JSON object, trying multiple alternative names.
+  * Returns an iterator to the first matching key, or obj.end() if none match. */
+inline json::const_iterator findJsonKey(const json& obj, std::initializer_list<const char*> keys)
+{
+    for (auto key : keys) {
+        auto it = obj.find(key);
+        if (it != obj.end()) return it;
+    }
+    return obj.end();
+}
 
 // We use epicsInt64 rather than size_t in these structs because we need to do signed arithmetic on these values
 typedef struct {
@@ -47,6 +61,7 @@ typedef struct {
 } badPixDimInfo_t;
 
 typedef std::set<badPixel> badPixelList_t;
+
 /* Bad pixel file*/
 #define NDPluginBadPixelFileNameString "BAD_PIXEL_FILE_NAME"    /* (asynOctet,   r/w) Name of the bad pixel file */
 
@@ -60,18 +75,17 @@ public:
     void processCallbacks(NDArray *pArray);
     asynStatus writeOctet(asynUser *pasynUser, const char *value, size_t nChars, size_t *nActual);
     void report(FILE *fp, int details);
+    template <typename epicsType> void fixBadPixelsT(NDArray *pArray, badPixelList_t &badPixels, NDArrayInfo_t *pArrayInfo);
+    int fixBadPixels(NDArray *pArray, badPixelList_t &badPixels, NDArrayInfo_t *pArrayInfo);
+    badPixelList_t parseBadPixelList(json j);
+    asynStatus handleBadPixelFileUpdate(const char* fileName);
+    epicsInt64 computePixelOffset(pixelCoordinate coord, badPixDimInfo_t& dimInfo, NDArrayInfo_t *pArrayInfo);
+    badPixelList_t badPixelList;
 
 protected:
     /* Background array subtraction */
     int NDPluginBadPixelFileName;
     #define FIRST_NDPLUGIN_BAD_PIXEL_PARAM NDPluginBadPixelFileName
-
-private:
-    template <typename epicsType> void fixBadPixelsT(NDArray *pArray, badPixelList_t &badPixels, NDArrayInfo_t *pArrayInfo);
-    int fixBadPixels(NDArray *pArray, badPixelList_t &badPixels, NDArrayInfo_t *pArrayInfo);
-    asynStatus readBadPixelFile(const char* fileName);
-    epicsInt64 computePixelOffset(pixelCoordinate coord, badPixDimInfo_t& dimInfo, NDArrayInfo_t *pArrayInfo);
-    badPixelList_t badPixelList;
 };
 
 #endif
