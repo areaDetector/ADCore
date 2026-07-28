@@ -100,6 +100,21 @@ jobs:
             configuration: static
             base: "7.0"
             deps: adsupport
+
+          - name: Win2025 Base7.0 DLL
+            os: windows-2025
+            cmp: vs2026
+            configuration: default
+            base: "7.0"
+            deps: adsupport
+
+          - name: Win2025 Base7.0 static
+            os: windows-2025
+            cmp: vs2026
+            configuration: static
+            base: "7.0"
+            deps: adsupport
+
     steps:
     - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       with:
