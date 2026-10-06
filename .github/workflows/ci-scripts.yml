@@ -13,6 +13,9 @@ on:
       - '**/*.txt'
   pull_request:
 
+permissions:
+  contents: read
+
 env:
   SETUP_PATH: .ci-local:.ci
 
@@ -97,10 +100,26 @@ jobs:
             configuration: static
             base: "7.0"
             deps: adsupport
+
+          - name: Win2025 Base7.0 DLL
+            os: windows-2025
+            cmp: vs2026
+            configuration: default
+            base: "7.0"
+            deps: adsupport
+
+          - name: Win2025 Base7.0 static
+            os: windows-2025
+            cmp: vs2026
+            configuration: static
+            base: "7.0"
+            deps: adsupport
+
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       with:
         submodules: true
+        persist-credentials: false
 
     - name: Install TIRPC Headers
       if: runner.os == 'Linux'
@@ -210,7 +229,7 @@ jobs:
 
     - name: Upload to Coveralls
       if: ${{ matrix.coverage }}
-      uses: coverallsapp/github-action@v2
+      uses: coverallsapp/github-action@8d6379e14d29928660c4ba802d8e85393440b329 # v2.3.8
       with:
         file: ci/coverage.info
         format: lcov
