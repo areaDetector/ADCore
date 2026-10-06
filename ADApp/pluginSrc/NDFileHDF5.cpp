@@ -2384,12 +2384,13 @@ NDFileHDF5::NDFileHDF5(const char *portName, int queueSize, int blockingCallback
   }
 
   /* Set the plugin type string */
+  setStringParam(NDPluginDriverPluginType, "NDFileHDF5");
+  /* Report the HDF5 library version through the SDK version parameter */
   unsigned majnum=0, minnum=0, relnum=0;
   H5get_libversion( &majnum, &minnum, &relnum );
-  char* plugin_type = (char*)calloc(40, sizeof(char));
-  epicsSnprintf(plugin_type, 40, "NDFileHDF5 ver%d.%d.%d", majnum, minnum, relnum);
-  //printf("plugin type and version: %s\n", plugin_type );
-  setStringParam(NDPluginDriverPluginType, plugin_type);
+  char sdk_version[40] = {0};
+  epicsSnprintf(sdk_version, sizeof(sdk_version), "%d.%d.%d", majnum, minnum, relnum);
+  setStringParam(ADSDKVersion, sdk_version);
   this->supportsMultipleArrays = 1;
   this->pAttributeId = NULL;
   this->pFileAttributes = new NDAttributeList;

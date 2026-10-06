@@ -19,6 +19,27 @@ record(stringin, "$(P)$(R)PluginType_RBV")
 }
 
 ###################################################################
+#  This plugin's EPICS record prefix $(P)$(R), pushed into the     #
+#  driver at init so it can be advertised in the plugin inventory. #
+###################################################################
+record(stringout, "$(P)$(R)PvPrefix")
+{
+   field(PINI, "YES")
+   field(DTYP, "asynOctetWrite")
+   field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))PLUGIN_PV_PREFIX")
+   field(VAL,  "$(P)$(R)")
+   # Written once at init via PINI; reject external puts thereafter
+   field(DISP, "1")
+}
+
+record(stringin, "$(P)$(R)PvPrefix_RBV")
+{
+   field(DTYP, "asynOctetRead")
+   field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))PLUGIN_PV_PREFIX")
+   field(SCAN, "I/O Intr")
+}
+
+###################################################################
 #  These records control the connection of the server to          #
 #  an NDArray driver port and address                             #
 ###################################################################

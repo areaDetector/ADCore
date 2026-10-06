@@ -25,6 +25,13 @@ USR_CPPFLAGS += -DBUILDING_NDPlugin_API
 INC      += NDPluginAPI.h
 INC      += NDPluginDriver.h
 LIB_SRCS += NDPluginDriver.cpp
+ifeq ($(WITH_PLUGIN_INVENTORY), YES)
+  INC      += NDPluginInventory.h
+  LIB_SRCS += NDPluginInventory.cpp
+  NDPluginInventory_CXXFLAGS_Linux += -std=c++11
+  NDPluginSupport_DBD += NDPluginInventory.dbd
+  USR_CXXFLAGS += -DWITH_PLUGIN_INVENTORY
+endif
 LIB_SRCS += throttler.cpp
 
 NDPluginSupport_DBD += NDPluginAttribute.dbd
@@ -188,6 +195,7 @@ ifeq ($(WITH_PVA), YES)
   DBD += NDPluginPva.dbd
   INC += NDPluginPva.h
   LIB_SRCS += NDPluginPva.cpp
+  USR_CXXFLAGS += -DWITH_PVA
 endif
 
 ifeq ($(WITH_PVXS), YES)
@@ -195,6 +203,7 @@ ifeq ($(WITH_PVXS), YES)
   INC += NDPluginPvxs.h
   LIB_SRCS += NDPluginPvxs.cpp
   NDPluginPvxs_CXXFLAGS_Linux += -std=c++11
+  USR_CXXFLAGS += -DWITH_PVXS
 endif
 
 ifeq ($(WITH_BLOSC), YES)
