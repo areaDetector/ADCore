@@ -8,6 +8,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <string>
 #include <netcdf.h>
 
 #include <iocsh.h>
@@ -532,6 +533,10 @@ NDFileNetCDF::NDFileNetCDF(const char *portName, int queueSize, int blockingCall
 
     /* Set the plugin type string */
     setStringParam(NDPluginDriverPluginType, "NDFileNetCDF");
+
+    // nc_inq_libvers() returns e.g. "4.3.3.1 of Jan  1 2020 00:00:00 $"
+    std::string ncVersion(nc_inq_libvers());
+    setStringParam(ADSDKVersion, ncVersion.substr(0, ncVersion.find(' ')).c_str());
     this->supportsMultipleArrays = 1;
     this->pAttributeId = NULL;
     this->ncId = 0;

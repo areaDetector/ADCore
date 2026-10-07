@@ -7,6 +7,7 @@
 #include <pvxs/sharedpv.h>
 #include <pvxs/nt.h>
 #include <pvxs/iochooks.h>
+#include <pvxs/version.h>
 
 #include <iocsh.h>
 
@@ -137,6 +138,12 @@ NDPluginPvxs::NDPluginPvxs(const char *portName, int queueSize,
 
     /* Set the plugin type string */
     setStringParam(NDPluginDriverPluginType, "NDPluginPvxs");
+
+    unsigned long pvxsVersion = pvxs::version_int();
+    char sdkVersion[40];
+    epicsSnprintf(sdkVersion, sizeof(sdkVersion), "%lu.%lu.%lu",
+                  (pvxsVersion >> 24) & 0xff, (pvxsVersion >> 16) & 0xff, (pvxsVersion >> 8) & 0xff);
+    setStringParam(ADSDKVersion, sdkVersion);
 
     /* Set PvName */
     setStringParam(NDPluginPvxsPvName, pvName);

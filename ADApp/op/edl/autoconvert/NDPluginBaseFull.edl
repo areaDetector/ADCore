@@ -6,7 +6,7 @@ release 1
 x 399
 y 92
 w 775
-h 565
+h 590
 font "helvetica-medium-r-18.0"
 ctlFont "helvetica-bold-r-10.0"
 btnFont "helvetica-medium-r-18.0"
@@ -236,6 +236,50 @@ newPos
 objType "controls"
 endObjectProperties
 
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 20
+y 134
+w 140
+h 20
+font "helvetica-medium-r-14.0"
+fontAlign "right"
+fgColor rgb 0 0 0
+bgColor index 3
+useDisplayBg
+value {
+  "SDK version"
+}
+endObjectProperties
+
+# (Text Monitor)
+object activeXTextDspClass:noedit
+beginObjectProperties
+major 4
+minor 7
+release 0
+x 170
+y 135
+w 160
+h 18
+controlPv "$(P)$(R)SDKVersion_RBV"
+format "string"
+font "helvetica-medium-r-14.0"
+fontAlign "left"
+fgColor rgb 2560 0 47104
+bgColor rgb 47872 47872 47872
+limitsFromDb
+nullColor rgb 60928 46592 11008
+smartRefresh
+fastUpdate
+newPos
+objType "controls"
+endObjectProperties
+
 # (Text Control)
 object activeXTextDspClass
 beginObjectProperties
@@ -243,7 +287,7 @@ major 4
 minor 7
 release 0
 x 170
-y 160
+y 185
 w 100
 h 20
 controlPv "$(P)$(R)NDArrayAddress"
@@ -269,7 +313,7 @@ major 4
 minor 7
 release 0
 x 276
-y 161
+y 186
 w 100
 h 18
 controlPv "$(P)$(R)NDArrayAddress_RBV"
@@ -293,7 +337,7 @@ major 4
 minor 1
 release 1
 x 30
-y 160
+y 185
 w 130
 h 20
 font "helvetica-medium-r-14.0"
@@ -313,7 +357,7 @@ major 4
 minor 1
 release 1
 x 60
-y 135
+y 160
 w 100
 h 20
 font "helvetica-medium-r-14.0"
@@ -333,7 +377,7 @@ major 4
 minor 7
 release 0
 x 170
-y 135
+y 160
 w 100
 h 20
 controlPv "$(P)$(R)NDArrayPort"
@@ -359,7 +403,7 @@ major 4
 minor 7
 release 0
 x 276
-y 136
+y 161
 w 100
 h 18
 controlPv "$(P)$(R)NDArrayPort_RBV"
@@ -383,7 +427,7 @@ major 4
 minor 1
 release 1
 x 100
-y 185
+y 210
 w 60
 h 20
 font "helvetica-medium-r-14.0"
@@ -403,7 +447,7 @@ major 4
 minor 7
 release 0
 x 276
-y 186
+y 211
 w 100
 h 18
 controlPv "$(P)$(R)EnableCallbacks_RBV"
@@ -430,7 +474,7 @@ release 0
 x 5
 y 30
 w 380
-h 530
+h 555
 lineColor rgb 0 0 0
 fillColor rgb 0 0 0
 lineWidth 0
@@ -443,7 +487,7 @@ major 4
 minor 1
 release 1
 x 30
-y 335
+y 360
 w 130
 h 20
 font "helvetica-medium-r-14.0"
@@ -463,7 +507,7 @@ major 4
 minor 7
 release 0
 x 170
-y 336
+y 361
 w 100
 h 18
 controlPv "$(P)$(R)MaxThreads_RBV"
@@ -487,7 +531,7 @@ major 4
 minor 1
 release 1
 x 10
-y 285
+y 310
 w 150
 h 20
 font "helvetica-medium-r-14.0"
@@ -507,7 +551,7 @@ major 4
 minor 7
 release 0
 x 276
-y 286
+y 311
 w 100
 h 18
 controlPv "$(P)$(R)BlockingCallbacks_RBV"
@@ -531,7 +575,7 @@ major 4
 minor 1
 release 1
 x 70
-y 385
+y 410
 w 90
 h 20
 font "helvetica-medium-r-14.0"
@@ -551,7 +595,7 @@ major 4
 minor 7
 release 0
 x 276
-y 386
+y 411
 w 100
 h 18
 controlPv "$(P)$(R)SortMode_RBV"
@@ -575,7 +619,7 @@ major 4
 minor 7
 release 0
 x 170
-y 310
+y 335
 w 100
 h 20
 controlPv "$(P)$(R)NumThreads"
@@ -601,7 +645,7 @@ major 4
 minor 7
 release 0
 x 276
-y 311
+y 336
 w 100
 h 18
 controlPv "$(P)$(R)NumThreads_RBV"
@@ -625,7 +669,7 @@ major 4
 minor 1
 release 1
 x 70
-y 310
+y 335
 w 90
 h 20
 font "helvetica-medium-r-14.0"
@@ -645,7 +689,7 @@ major 4
 minor 7
 release 0
 x 170
-y 410
+y 435
 w 100
 h 20
 controlPv "$(P)$(R)SortTime"
@@ -671,7 +715,7 @@ major 4
 minor 7
 release 0
 x 276
-y 411
+y 436
 w 100
 h 18
 controlPv "$(P)$(R)SortTime_RBV"
@@ -695,7 +739,7 @@ major 4
 minor 1
 release 1
 x 70
-y 410
+y 435
 w 90
 h 20
 font "helvetica-medium-r-14.0"
@@ -715,7 +759,7 @@ major 4
 minor 1
 release 1
 x 10
-y 360
+y 385
 w 150
 h 20
 font "helvetica-medium-r-14.0"
@@ -735,7 +779,7 @@ major 4
 minor 7
 release 0
 x 276
-y 360
+y 385
 w 100
 h 18
 controlPv "$(P)$(R)QueueFree"
@@ -760,7 +804,7 @@ major 4
 minor 7
 release 0
 x 170
-y 360
+y 385
 w 100
 h 20
 controlPv "$(P)$(R)QueueSize"
@@ -786,7 +830,7 @@ major 4
 minor 1
 release 1
 x 20
-y 435
+y 460
 w 140
 h 20
 font "helvetica-medium-r-14.0"
@@ -806,7 +850,7 @@ major 4
 minor 7
 release 0
 x 276
-y 435
+y 460
 w 100
 h 18
 controlPv "$(P)$(R)SortFree"
@@ -831,7 +875,7 @@ major 4
 minor 7
 release 0
 x 170
-y 435
+y 460
 w 100
 h 20
 controlPv "$(P)$(R)SortSize"
@@ -857,7 +901,7 @@ major 4
 minor 7
 release 0
 x 276
-y 461
+y 486
 w 100
 h 18
 controlPv "$(P)$(R)DisorderedArrays_RBV"
@@ -881,7 +925,7 @@ major 4
 minor 1
 release 1
 x 40
-y 460
+y 485
 w 120
 h 20
 font "helvetica-medium-r-14.0"
@@ -901,7 +945,7 @@ major 4
 minor 1
 release 1
 x 20
-y 260
+y 285
 w 140
 h 20
 font "helvetica-medium-r-14.0"
@@ -921,7 +965,7 @@ major 4
 minor 7
 release 0
 x 170
-y 260
+y 285
 w 100
 h 20
 controlPv "$(P)$(R)MaxByteRate"
@@ -947,7 +991,7 @@ major 4
 minor 7
 release 0
 x 276
-y 261
+y 286
 w 100
 h 18
 controlPv "$(P)$(R)MaxByteRate_RBV"
@@ -971,7 +1015,7 @@ major 4
 minor 1
 release 1
 x 70
-y 210
+y 235
 w 90
 h 20
 font "helvetica-medium-r-14.0"
@@ -991,7 +1035,7 @@ major 4
 minor 7
 release 0
 x 170
-y 210
+y 235
 w 100
 h 20
 controlPv "$(P)$(R)MinCallbackTime"
@@ -1017,7 +1061,7 @@ major 4
 minor 7
 release 0
 x 276
-y 211
+y 236
 w 100
 h 18
 controlPv "$(P)$(R)MinCallbackTime_RBV"
@@ -1041,7 +1085,7 @@ major 4
 minor 1
 release 1
 x 10
-y 235
+y 260
 w 150
 h 20
 font "helvetica-medium-r-14.0"
@@ -1061,7 +1105,7 @@ major 4
 minor 7
 release 0
 x 170
-y 235
+y 260
 w 100
 h 20
 controlPv "$(P)$(R)MaxArrayRate"
@@ -1087,7 +1131,7 @@ major 4
 minor 7
 release 0
 x 276
-y 236
+y 261
 w 100
 h 18
 controlPv "$(P)$(R)MaxArrayRate_RBV"
@@ -1113,7 +1157,7 @@ release 0
 x 390
 y 30
 w 380
-h 530
+h 555
 lineColor rgb 0 0 0
 fillColor rgb 0 0 0
 lineWidth 0
@@ -1458,7 +1502,7 @@ major 4
 minor 1
 release 1
 x 10
-y 485
+y 510
 w 150
 h 20
 font "helvetica-medium-r-14.0"
@@ -1478,7 +1522,7 @@ major 4
 minor 0
 release 0
 x 50
-y 535
+y 560
 w 220
 h 20
 
@@ -1491,7 +1535,7 @@ major 4
 minor 1
 release 1
 x 50
-y 535
+y 560
 w 110
 h 20
 font "helvetica-medium-r-14.0"
@@ -1516,7 +1560,7 @@ major 4
 minor 7
 release 0
 x 276
-y 486
+y 511
 w 100
 h 18
 controlPv "$(P)$(R)ArrayCallbacks_RBV"
@@ -1541,7 +1585,7 @@ major 4
 minor 1
 release 1
 x 23
-y 510
+y 535
 w 140
 h 20
 font "helvetica-medium-r-14.0"
@@ -1956,7 +2000,7 @@ major 4
 minor 0
 release 0
 x 170
-y 185
+y 210
 w 100
 h 20
 fgColor rgb 0 0 0
@@ -1976,7 +2020,7 @@ major 4
 minor 0
 release 0
 x 170
-y 285
+y 310
 w 100
 h 20
 fgColor rgb 0 0 0
@@ -1996,7 +2040,7 @@ major 4
 minor 0
 release 0
 x 170
-y 385
+y 410
 w 100
 h 20
 fgColor rgb 0 0 0
@@ -2016,7 +2060,7 @@ major 4
 minor 0
 release 0
 x 170
-y 460
+y 485
 w 100
 h 20
 fgColor rgb 0 0 0
@@ -2115,7 +2159,7 @@ major 4
 minor 0
 release 0
 x 50
-y 535
+y 560
 w 220
 h 20
 
@@ -2128,7 +2172,7 @@ major 4
 minor 0
 release 0
 x 170
-y 535
+y 560
 w 100
 h 20
 fgColor rgb 0 0 0
@@ -2165,7 +2209,7 @@ major 4
 minor 0
 release 0
 x 170
-y 485
+y 510
 w 100
 h 20
 fgColor rgb 0 0 0
@@ -2185,7 +2229,7 @@ major 4
 minor 0
 release 0
 x 170
-y 510
+y 535
 w 100
 h 20
 fgColor rgb 0 0 0

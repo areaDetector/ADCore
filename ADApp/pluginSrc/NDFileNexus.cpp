@@ -884,6 +884,7 @@ NDFileNexus::NDFileNexus(const char *portName, int queueSize, int blockingCallba
 
   /* Set the plugin type string */
   setStringParam(NDPluginDriverPluginType, "NDFileNexus");
+  setStringParam(ADSDKVersion, NXgetversion());
   this->supportsMultipleArrays = 1;
 }
 
