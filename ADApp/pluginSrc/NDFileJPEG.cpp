@@ -323,6 +323,14 @@ NDFileJPEG::NDFileJPEG(const char *portName, int queueSize, int blockingCallback
 
     /* Set the plugin type string */
     setStringParam(NDPluginDriverPluginType, "NDFileJPEG");
+
+    char sdkVersion[40];
+#ifdef JPEG_LIB_VERSION_MAJOR
+    epicsSnprintf(sdkVersion, sizeof(sdkVersion), "%d.%d", JPEG_LIB_VERSION_MAJOR, JPEG_LIB_VERSION_MINOR);
+#else
+    epicsSnprintf(sdkVersion, sizeof(sdkVersion), "%d.%d", JPEG_LIB_VERSION / 10, JPEG_LIB_VERSION % 10);
+#endif
+    setStringParam(ADSDKVersion, sdkVersion);
     this->supportsMultipleArrays = 0;
     setIntegerParam(NDFileJPEGQuality, 50);
 }

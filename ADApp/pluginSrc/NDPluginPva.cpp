@@ -5,6 +5,7 @@
 #include <pv/pvDatabase.h>
 #include <pv/nt.h>
 #include <pv/channelProviderLocal.h>
+#include <pv/pvaVersion.h>
 
 #include <iocsh.h>
 
@@ -164,6 +165,11 @@ NDPluginPva::NDPluginPva(const char *portName, int queueSize,
 
     /* Set the plugin type string */
     setStringParam(NDPluginDriverPluginType, "NDPluginPva");
+
+    char sdkVersion[40];
+    epicsSnprintf(sdkVersion, sizeof(sdkVersion), "%d.%d.%d",
+                  EPICS_PVA_MAJOR_VERSION, EPICS_PVA_MINOR_VERSION, EPICS_PVA_MAINTENANCE_VERSION);
+    setStringParam(ADSDKVersion, sdkVersion);
 
     /* Set PvName */
     setStringParam(NDPluginPvaPvName, pvName);
