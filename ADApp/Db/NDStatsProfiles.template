@@ -1,0 +1,88 @@
+# NDStatsProfiles.template — pixel axis waveforms and profile enable for Phoebus xyplots
+# Load via EXAMPLE_stats_profiles.cmd after commonPlugins.cmd.
+# Substitutions: P, R (e.g. Stats1:), XNELM, YNELM (match XSIZE/YSIZE in NDStats.template)
+#
+# All records use $(P)$(R) so multiple cameras / Stats instances under the same PREFIX
+# do not collide (unlike some facility DBs that used $(P)Cal: only).
+
+record(seq, "$(P)$(R)StatsProfInit_"){
+   field(DESC, "Enable NDStats profiles for Phoebus")
+   field(DOL1, "1")
+   field(LNK1, "$(P)$(R)ComputeStatistics PP")
+   field(DOL2, "1")
+   field(LNK2, "$(P)$(R)ComputeCentroid PP")
+   field(DOL3, "1")
+   field(LNK3, "$(P)$(R)ComputeProfiles PP")
+   field(DOL4, "1")
+   field(LNK4, "$(P)$(R)EnableCallbacks PP")
+}
+
+record(bo, "$(P)$(R)Cal:PlotCalAxisC"){
+   field(DESC, "Profile plot axis: 0=pixel, 1=scaled")
+   field(PINI, "YES")
+   field(VAL, "0")
+   field(ZNAM, "Pixel")
+   field(ONAM, "Scaled")
+}
+
+record(ao, "$(P)$(R)Cal:xScalingM"){
+   field(DESC, "X axis scale factor (egu/pixel)")
+   field(PINI, "YES")
+   field(PREC, "6")
+   field(VAL, "1")
+}
+
+record(ao, "$(P)$(R)Cal:yScalingM"){
+   field(DESC, "Y axis scale factor (egu/pixel)")
+   field(PINI, "YES")
+   field(PREC, "6")
+   field(VAL, "1")
+}
+
+record(acalcout, "$(P)$(R)Cal:xPixelAxisM"){
+   field(DESC, "X pixel index 0..N-1")
+   field(PINI, "YES")
+   field(NELM, "$(XNELM)")
+   field(CALC, "IX")
+}
+
+record(acalcout, "$(P)$(R)Cal:yPixelAxisM"){
+   field(DESC, "Y pixel index 0..N-1")
+   field(PINI, "YES")
+   field(NELM, "$(YNELM)")
+   field(CALC, "IX")
+}
+
+record(acalcout, "$(P)$(R)Cal:xCalAxisM"){
+   field(DESC, "Scaled X axis")
+   field(NELM, "$(XNELM)")
+   field(INAA, "$(P)$(R)Cal:xPixelAxisM.AVAL CP")
+   field(INPB, "$(P)$(R)Cal:xScalingM CP")
+   field(CALC, "AA*B")
+}
+
+record(acalcout, "$(P)$(R)Cal:yCalAxisM"){
+   field(DESC, "Scaled Y axis")
+   field(NELM, "$(YNELM)")
+   field(INAA, "$(P)$(R)Cal:yPixelAxisM.AVAL CP")
+   field(INPB, "$(P)$(R)Cal:yScalingM CP")
+   field(CALC, "AA*B")
+}
+
+record(acalcout, "$(P)$(R)Cal:xSelAxisM"){
+   field(DESC, "X axis for horizontal profile plot")
+   field(NELM, "$(XNELM)")
+   field(INAA, "$(P)$(R)Cal:xPixelAxisM.AVAL")
+   field(INBB, "$(P)$(R)Cal:xCalAxisM.AVAL CP")
+   field(INPC, "$(P)$(R)Cal:PlotCalAxisC CP")
+   field(CALC, "C==0?AA:BB")
+}
+
+record(acalcout, "$(P)$(R)Cal:ySelAxisM"){
+   field(DESC, "Y axis for vertical profile plot")
+   field(NELM, "$(YNELM)")
+   field(INAA, "$(P)$(R)Cal:yPixelAxisM.AVAL")
+   field(INBB, "$(P)$(R)Cal:yCalAxisM.AVAL CP")
+   field(INPC, "$(P)$(R)Cal:PlotCalAxisC CP")
+   field(CALC, "C==0?AA:BB")
+}

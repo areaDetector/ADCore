@@ -49,6 +49,11 @@ files respectively, in the configure/ directory of the appropriate release of th
 ### Database template files
   * Fixed record names in NDROIStat.template to avoid record name duplication.
   * Added optional default transform type macro (DFLTTRANSTYPE) in NDTransform.template.
+  * Added optional ``NDStatsProfiles.template`` and ``EXAMPLE_stats_profiles.cmd``
+    for Phoebus NDStats row/column profile axis waveforms (requires synApps calc).
+    Records use ``$(P)$(R)`` so multiple cameras under one PREFIX remain unique.
+    Include ``stats_profiles.cmd`` after ``commonPlugins.cmd``; see NDPluginStats
+    and commonPlugins documentation.
 
 ### ADTop.adl
   * Added ADHamammatsuDCAM and BlackflyS PGE 23S6C.
