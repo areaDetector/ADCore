@@ -169,17 +169,33 @@ NDPluginDriver::NDPluginDriver(const char *portName, int queueSize, int blocking
     unlock();
 }
 
+// When the plugin subclass is destructible, this function will be called at IOC
+// shutdown.
+void NDPluginDriver::shutdownPortDriver() {
+    asynPrint(pasynUserSelf, ASYN_TRACE_FLOW, "%s shutting down\n", driverName);
+
+    // Most methods in NDPluginDriver expect to be called with the asynPortDriver mutex locked.
+    // Shutdown does not, the mutex should be unlocked before it is called.
+    // We lock the mutex because deleteCallbackThreads expects it to be held, but then
+    // unlocked it because the mutex is deleted in the asynPortDriver destructor and the
+    // mutex must be unlocked before deleting it.
+    this->lock();
+    deleteCallbackThreads();
+    this->unlock();
+
+    asynNDArrayDriver::shutdownPortDriver();
+}
+
 NDPluginDriver::~NDPluginDriver()
 {
-  // Most methods in NDPluginDriver expect to be called with the asynPortDriver mutex locked.
-  // The destructor does not, the mutex should be unlocked before calling the destructor.
-  // We lock the mutex because deleteCallbackThreads expects it to be held, but then
-  // unlocked it because the mutex is deleted in the asynPortDriver destructor and the
-  // mutex must be unlocked before deleting it.
-  delete throttler_;
-  this->lock();
-  deleteCallbackThreads();
-  this->unlock();
+    // If the driver subclass is not destructible, or asyn is old, or we are not
+    // in an IOC (e.g. unit tests), we need to call shutdown ourselves.
+    // On newer versions of asyn, we could check with needsShutdown() to see if
+    // shutdown has already been done, be we don't want to rely on that.
+    if (pToThreadMsgQ_)
+        shutdownPortDriver();
+
+    delete throttler_;
 }
 
 /** Method that is normally called at the beginning of the processCallbacks
@@ -1011,7 +1027,7 @@ asynStatus NDPluginDriver::createCallbackThreads()
 }
 
 /** Deletes the plugin threads.
-  * This method is called from the destructor and whenever QueueSize or NumThreads is changed. */
+  * This method is called on shutdown and whenever QueueSize or NumThreads is changed. */
 asynStatus NDPluginDriver::deleteCallbackThreads()
 {
     ToThreadMessage_t toMsg = {ToThreadMessageExit, 0};

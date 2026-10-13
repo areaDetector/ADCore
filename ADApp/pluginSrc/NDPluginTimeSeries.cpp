@@ -188,7 +188,7 @@ asynStatus NDPluginTimeSeries::doAddToTimeSeriesT(NDArray *pArray)
     if (numAveraged_ < numAverage_) continue;
     /* We have now collected the desired number of points to average */
     for (signal=0; signal<numSignals_; signal++) {
-      pTimeCircular[signal * numTimePoints_ + currentTimePoint_] = (epicsType)averageStore_[signal]/numAveraged_;
+      pTimeCircular[signal * numTimePoints_ + currentTimePoint_] = (epicsType)(averageStore_[signal]/numAveraged_);
       averageStore_[signal] = 0;
     }
     numAveraged_ = 0;

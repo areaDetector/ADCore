@@ -283,7 +283,6 @@ asynStatus NDPluginROI::writeInt32(asynUser *pasynUser, epicsInt32 value)
     return status;
 }
 
-
 /** Constructor for NDPluginROI; most parameters are simply passed to NDPluginDriver::NDPluginDriver.
   * After calling the base class constructor this method sets reasonable default values for all of the
   * ROI parameters.
@@ -307,13 +306,13 @@ asynStatus NDPluginROI::writeInt32(asynUser *pasynUser, epicsInt32 value)
 NDPluginROI::NDPluginROI(const char *portName, int queueSize, int blockingCallbacks,
                          const char *NDArrayPort, int NDArrayAddr,
                          int maxBuffers, size_t maxMemory,
-                         int priority, int stackSize, int maxThreads)
+                         int priority, int stackSize, int maxThreads, int asynFlags)
     /* Invoke the base class constructor */
     : NDPluginDriver(portName, queueSize, blockingCallbacks,
                    NDArrayPort, NDArrayAddr, 1, maxBuffers, maxMemory,
                    asynInt32ArrayMask | asynFloat64ArrayMask | asynGenericPointerMask,
                    asynInt32ArrayMask | asynFloat64ArrayMask | asynGenericPointerMask,
-                   ASYN_MULTIDEVICE, 1, priority, stackSize, maxThreads)
+                   asynFlags | ASYN_MULTIDEVICE, 1, priority, stackSize, maxThreads)
 {
     //static const char *functionName = "NDPluginROI";
 
@@ -360,8 +359,13 @@ extern "C" int NDROIConfigure(const char *portName, int queueSize, int blockingC
                                  int maxBuffers, size_t maxMemory,
                                  int priority, int stackSize, int maxThreads)
 {
+    int flags = 0;
+#ifdef ASYN_DESTRUCTIBLE
+    flags |= ASYN_DESTRUCTIBLE;
+#endif
+
     NDPluginROI *pPlugin = new NDPluginROI(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr,
-                                           maxBuffers, maxMemory, priority, stackSize, maxThreads);
+                                           maxBuffers, maxMemory, priority, stackSize, maxThreads, flags);
     return pPlugin->start();
 }
 

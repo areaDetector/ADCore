@@ -92,6 +92,7 @@ void NDPluginProcess::processCallbacks(NDArray *pArray)
     }
     if (enableFilter) {
         getIntegerParam(NDPluginProcessNumFilter,       &numFilter);
+        if (numFilter < 1) numFilter = 1;
         getDoubleParam (NDPluginProcessOOffset,         &oOffset);
         getDoubleParam (NDPluginProcessOScale,          &oScale);
         getDoubleParam (NDPluginProcessOC1,             &oc1);
@@ -235,7 +236,7 @@ void NDPluginProcess::processCallbacks(NDArray *pArray)
       this->pNDArrayPool->convert(pScratch, &pArrayOut, (NDDataType_t)dataType);
     }
 
-    if (autoOffsetScale && (NULL != pArrayOut)) {
+    if (autoOffsetScale && (NULL != pArrayOut) && (maxValue > minValue)) {
         pArrayOut->getInfo(&arrayInfo);
         double maxScale = pow(2., arrayInfo.bytesPerElement*8) - 1;
         scale = maxScale /(maxValue-minValue);

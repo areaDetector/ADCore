@@ -212,11 +212,16 @@ void NDPluginROIStat::processCallbacks(NDArray *pArray)
   /* Call the base class method */
   NDPluginDriver::beginProcessCallbacks(pArray);
 
-  // This plugin only works with 1-D or 2-D arrays
+  // This plugin only works with 1-D or 2-D arrays.  NDROI_t sizes offset[],
+  // size[] and arraySize[] to 2 elements, so a higher-rank array (e.g. any
+  // RGB1/2/3 colour frame, ndims==3) would drive the dim loop below past the
+  // end of those arrays.  Bail out here instead of merely warning.
   if ((pArray->ndims < 1) || (pArray->ndims > 2)) {
       asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
         "%s: error, number of array dimensions must be 1 or 2\n",
         functionName);
+      delete[] pROIs;
+      return;
   }
 
   //Set NDArraySize params to the input pArray, because this plugin doesn't change them

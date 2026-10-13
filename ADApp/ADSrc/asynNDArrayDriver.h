@@ -148,6 +148,7 @@ public:
     virtual asynStatus setIntegerParam(int index, int value);
     virtual asynStatus setIntegerParam(int list, int index, int value);
     virtual void report(FILE *fp, int details);
+    virtual void shutdownPortDriver();
 
     /* These are the methods that are new to this class */
     virtual asynStatus createFilePath(const char *path, int pathDepth);

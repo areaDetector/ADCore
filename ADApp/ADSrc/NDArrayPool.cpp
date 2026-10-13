@@ -291,10 +291,10 @@ NDArray* NDArrayPool::copy(NDArray *pIn, NDArray *pOut, bool copyData, bool copy
     pOut->dataType = pIn->dataType;
   }
   pOut->codec.name = pIn->codec.name;
-  pOut->compressedSize = pIn->compressedSize;
   if (copyData) {
     pIn->getInfo(&arrayInfo);
     numCopy = pIn->codec.empty() ? arrayInfo.totalBytes : pIn->compressedSize;
+    pOut->compressedSize = pIn->compressedSize;
     if (pOut->dataSize < numCopy) numCopy = pOut->dataSize;
     memcpy(pOut->pData, pIn->pData, numCopy);
   }

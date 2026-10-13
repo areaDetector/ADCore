@@ -183,4 +183,34 @@ BOOST_AUTO_TEST_CASE(test_PreBufferOrder)
     BOOST_CHECK_EQUAL(3, ((uint8_t *)ds->arrays[3]->pData)[0]);
 }
 
+BOOST_AUTO_TEST_CASE(test_SoftTriggerClearedAfterAcquisition)
+{
+    size_t gotbytes;
+    cbCalc->write("0", 2, &gotbytes);
+
+    const int postTrigger = 5;
+    cbPreTrigger->write(10);
+    cbPostTrigger->write(postTrigger);
+    cbControl->write(1);
+
+    size_t dims[2] = {2,5};
+    NDArray *testArray = arrayPool->alloc(2,dims,NDFloat64,0,NULL);
+
+    // Fill the pre-buffer
+    for (int i = 0; i < 10; i++)
+        cbProcess(testArray);
+
+    // Fire the soft trigger
+    cbSoftTrigger->write(1);
+
+    // Push through the post-trigger frames to complete the acquisition
+    for (int i = 0; i < postTrigger; i++)
+        cbProcess(testArray);
+
+    // Once the acquisition completes the soft trigger busy record must be cleared
+    epicsInt32 softTrigger;
+    cbSoftTrigger->read(&softTrigger);
+    BOOST_CHECK_EQUAL(softTrigger, 0);
+}
+
 BOOST_AUTO_TEST_SUITE_END()

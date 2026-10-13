@@ -160,7 +160,7 @@ void NDPluginAttrPlot::rebuild_attributes(NDAttributeList& attr_list) {
 
     attributes_.clear();
     for (NDAttribute * attr = attr_list.next(NULL);
-            attr != NULL && attributes_.size() <= n_attributes_;
+            attr != NULL && attributes_.size() < n_attributes_;
             attr = attr_list.next(attr)) {
         std::string name(attr->getName());
         NDAttrDataType_t type = attr->getDataType();
