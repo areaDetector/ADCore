@@ -522,7 +522,32 @@ are just a single name, for example ``NDPluginStatsComputeStatistics``.
     - $(P)$(R)HistogramX_RBV
     - waveform
 
+Phoebus profile axis helpers
+----------------------------
 
+``NDPluginStats`` already publishes profile waveforms (e.g.
+``$(P)$(R)ProfileAverageX_RBV`` / ``ProfileAverageY_RBV``). Phoebus XY plots
+also need matching X/Y axis arrays. Optional database support is provided in
+``NDStatsProfiles.template``, loaded by copying ``EXAMPLE_stats_profiles.cmd``
+to ``stats_profiles.cmd`` and including it after ``commonPlugins.cmd`` (see
+:doc:`common_plugins`).
+
+That template requires synApps **calc** (``acalcout``). All helper records use
+``$(P)$(R)`` (default ``R=Stats1:``) so multiple detectors that share a PREFIX
+remain unique, for example:
+
+* ``$(P)$(R)StatsProfInit_`` — sequence to enable statistics, centroid,
+  profiles, and callbacks
+* ``$(P)$(R)Cal:xSelAxisM`` / ``Cal:ySelAxisM`` — selected pixel or scaled
+  axis waveforms for horizontal / vertical profile plots
+
+After ``iocInit``, process ``StatsProfInit_`` once (or rely on autosave of
+``ComputeProfiles``)::
+
+    dbpf "$(PREFIX)Stats1:StatsProfInit_.PROC" 1
+
+Facility screens that previously bound axes to ``$(P)Cal:...`` (no ``Stats1:``)
+should be updated to ``$(P)$(R)Cal:...`` when adopting this ADCore template.
 
 If the values of CentroidThreshold, CursorX, or CursorY are changed then
 the centroid and profile calculations are performed again immediately on
