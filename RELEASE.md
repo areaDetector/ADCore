@@ -45,6 +45,12 @@ files respectively, in the configure/ directory of the appropriate release of th
 
 ### NDFileHDF
   * Added support for direct chunk write for NDArrays compressed with the lz4hd5 codec.
+
+### Plugin SDK versions
+  * Plugins that use third-party libraries (NDFileHDF5, NDFileJPEG, NDFileMagick, NDFileNetCDF,
+    NDFileNexus, NDFileTIFF, NDPluginPva, NDPluginPvxs) now report the library version in SDKVersion_RBV.
+  * NDFileHDF5 no longer includes the HDF5 library version in PluginType_RBV.
+  * Added SDKVersion_RBV to the NDPluginBaseFull screen.
     
 ### Database template files
   * Fixed record names in NDROIStat.template to avoid record name duplication.

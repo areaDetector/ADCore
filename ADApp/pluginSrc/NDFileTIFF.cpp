@@ -22,6 +22,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <string>
 
 #include <iocsh.h>
 
@@ -619,6 +620,12 @@ NDFileTIFF::NDFileTIFF(const char *portName, int queueSize, int blockingCallback
 
     /* Set the plugin type string */
     setStringParam(NDPluginDriverPluginType, "NDFileTIFF");
+
+    // TIFFGetVersion() returns e.g. "LIBTIFF, Version 4.0.6\nCopyright ..."
+    std::string tiffVersion(TIFFGetVersion());
+    size_t start = tiffVersion.find("Version ");
+    start = (start == std::string::npos) ? 0 : start + strlen("Version ");
+    setStringParam(ADSDKVersion, tiffVersion.substr(start, tiffVersion.find('\n', start) - start).c_str());
     this->supportsMultipleArrays = 0;
 
     this->pAttributeId = NULL;

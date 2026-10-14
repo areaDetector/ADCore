@@ -206,6 +206,7 @@ NDFileMagick::NDFileMagick(const char *portName, int queueSize, int blockingCall
 
     /* Set the plugin type string */
     setStringParam(NDPluginDriverPluginType, "NDFileMagick");
+    setStringParam(ADSDKVersion, MagickLibVersionText);
     this->supportsMultipleArrays = 0;
 
     createParam(NDFileMagickQualityString,       asynParamInt32, &NDFileMagickQuality);
