@@ -249,6 +249,7 @@ private:
 
     bool queuedArrayUpdateRun_;
     epicsEventId queuedArrayUpdateDone_;
+    int dimsPrev_[ND_ARRAY_MAX_DIMS];
 
     friend class NDArrayPool;
 
