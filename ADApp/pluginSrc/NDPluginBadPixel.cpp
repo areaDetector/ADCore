@@ -11,8 +11,7 @@
 #include <fstream>
 #include <iomanip>
 #include <algorithm>
-#include <json.hpp>
-using nlohmann::json;
+
 
 #include <iocsh.h>
 
@@ -89,6 +88,7 @@ epicsInt64 NDPluginBadPixel::computePixelOffset(pixelCoordinate coord, badPixDim
     }
     return offset;
 }
+
 template <typename epicsType>
 void NDPluginBadPixel::fixBadPixelsT(NDArray *pArray, badPixelList_t &badPixels, NDArrayInfo_t *pArrayInfo)
 {
@@ -219,7 +219,6 @@ void NDPluginBadPixel::processCallbacks(NDArray *pArray)
      * structures don't need to be protected.
      */
     NDArray *pArrayOut = NULL;
-    static const char* functionName = "processCallbacks";
 
     /* Call the base class method */
     NDPluginDriver::beginProcessCallbacks(pArray);
@@ -237,7 +236,7 @@ void NDPluginBadPixel::processCallbacks(NDArray *pArray)
     if (NULL == pArrayOut) {
         asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
             "%s:%s Processing aborted; cannot allocate an NDArray for storage of temporary data.\n",
-            driverName, functionName);
+            driverName, __func__);
         goto doCallbacks;
     }
     fixBadPixels(pArrayOut, badPixels, &arrayInfo);
@@ -253,47 +252,76 @@ void NDPluginBadPixel::processCallbacks(NDArray *pArray)
     callParamCallbacks();
 }
 
-asynStatus NDPluginBadPixel::readBadPixelFile(const char *fileName)
+badPixelList_t NDPluginBadPixel::parseBadPixelList(json j){
+    badPixelList_t badPixels;
+
+    // Support both "Bad pixels" and "bad_pixels" as top-level key
+    auto topIt = findJsonKey(j, {"Bad pixels", "BadPixels", "bad_pixels"});
+    if (topIt == j.end()) return badPixels;
+    auto badPixelsJSON = *topIt;
+
+    pixelCoordinate coord;
+    for (auto pixel : badPixelsJSON) {
+        // Support "Pixel" or "pixel"
+        auto pixelIt = findJsonKey(pixel, {"Pixel", "pixel"});
+        if (pixelIt == pixel.end()) continue;
+        coord.x = (*pixelIt)[0];
+        coord.y = (*pixelIt)[1];
+        badPixel bp(coord);
+
+        // Support "Median" or "median"
+        auto medianIt = findJsonKey(pixel, {"Median", "median"});
+        if (medianIt != pixel.end()) {
+            bp.mode = badPixelModeMedian;
+            bp.medianCoordinate.x = (*medianIt)[0];
+            bp.medianCoordinate.y = (*medianIt)[1];
+        }
+
+        // Support "Set" or "set"
+        auto setIt = findJsonKey(pixel, {"Set", "set"});
+        if (setIt != pixel.end()) {
+            bp.mode = badPixelModeSet;
+            bp.setValue = *setIt;
+        }
+
+        // Support "Replace" or "replace"
+        auto replaceIt = findJsonKey(pixel, {"Replace", "replace"});
+        if (replaceIt != pixel.end()) {
+            bp.mode = badPixelModeReplace;
+            bp.replaceCoordinate.x = (*replaceIt)[0];
+            bp.replaceCoordinate.y = (*replaceIt)[1];
+        }
+        badPixels.insert(bp);
+    }
+    return badPixels;
+}
+
+asynStatus NDPluginBadPixel::handleBadPixelFileUpdate(const char* fileName)
 {
     json j;
-    static const char *functionName = "readBadPixelFile";
+    std::ifstream file(fileName);
     try {
-        std::ifstream file(fileName);
-        file >> j;
-        auto badPixels = j["Bad pixels"];
-        badPixelList.clear();
-        pixelCoordinate coord;
-        for (auto pixel : badPixels) {
-            coord.x = pixel["Pixel"][0];
-            coord.y = pixel["Pixel"][1];
-            badPixel bp(coord);
-            if (pixel.find("Median") != pixel.end()) {
-                bp.mode = badPixelModeMedian;
-                bp.medianCoordinate.x = pixel["Median"][0];
-                bp.medianCoordinate.y = pixel["Median"][1];
-             }
-            if (pixel.find("Set") != pixel.end()) {
-                bp.mode = badPixelModeSet;
-                bp.setValue = pixel["Set"];
-            }
-            if (pixel.find("Replace") != pixel.end()) {
-                bp.mode = badPixelModeReplace;
-                bp.replaceCoordinate.x = pixel["Replace"][0];
-                bp.replaceCoordinate.y = pixel["Replace"][1];
-            }
-            badPixelList.insert(bp);
+        if (!file.is_open()) {
+            asynPrint(this->pasynUserSelf, ASYN_TRACE_WARNING,
+                "%s:%s: Bad pixel file not found. Checking if the value is valid JSON: %s\n",
+                driverName, __func__, fileName);
+            j = json::parse(fileName);
+        } else {
+            file >> j;
         }
-    }
-    catch (const json::parse_error& e) {
-        asynPrint(pasynUserSelf, ASYN_TRACE_ERROR, 
-            "%s::%s JSON error parsing bad pixel file: %s\n", driverName, functionName, e.what());
+    } catch (json::parse_error& e) {
+        asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
+            "%s:%s: error parsing bad pixel information file %s: %s\n",
+            driverName, __func__, fileName, e.what());
+        return asynError;
+    } catch (std::exception& e) {
+        asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
+            "%s:%s: error parsing bad pixel information file %s: %s\n",
+            driverName, __func__, fileName, e.what());
         return asynError;
     }
-    catch (std::exception& e) {
-        asynPrint(pasynUserSelf, ASYN_TRACE_ERROR, 
-            "%s::%s other error parsing bad pixel file: %s\n", driverName, functionName, e.what());
-        return asynError;
-    }
+    this->badPixelList.clear();
+    this->badPixelList = this->parseBadPixelList(j);
     return asynSuccess;
 }
 
@@ -309,7 +337,6 @@ asynStatus NDPluginBadPixel::writeOctet(asynUser *pasynUser, const char *value, 
   int addr=0;
   int function = pasynUser->reason;
   asynStatus status = asynSuccess;
-  const char *functionName = "writeOctet";
 
   status = getAddress(pasynUser, &addr); if (status != asynSuccess) return(status);
   // Set the parameter in the parameter library.
@@ -318,7 +345,7 @@ asynStatus NDPluginBadPixel::writeOctet(asynUser *pasynUser, const char *value, 
 
   if (function == NDPluginBadPixelFileName) {
       if ((nChars > 0) && (value[0] != 0)) {
-          status = this->readBadPixelFile(value);
+        status = handleBadPixelFileUpdate(value);
       }
   }
 
@@ -333,11 +360,11 @@ asynStatus NDPluginBadPixel::writeOctet(asynUser *pasynUser, const char *value, 
   if (status){
       epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize,
                     "%s:%s: status=%d, function=%d, value=%s",
-                    driverName, functionName, status, function, value);
+                    driverName, __func__, status, function, value);
   } else {
       asynPrint(pasynUser, ASYN_TRACEIO_DRIVER,
                 "%s:%s: function=%d, value=%s\n",
-                driverName, functionName, function, value);
+                driverName, __func__, function, value);
   }
   *nActual = nChars;
   return status;
