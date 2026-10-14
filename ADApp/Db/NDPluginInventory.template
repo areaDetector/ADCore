@@ -1,0 +1,16 @@
+#=================================================================#
+# Template file: NDPluginInventory.template
+# Configures the IOC-wide PVA channel that advertises all plugins.
+# Load once per IOC against the NDPluginInventoryConfigure() port.
+#=================================================================#
+
+# Name of the IOC-wide PVA channel that publishes the plugin inventory
+record(waveform, "$(P)PluginInventoryName_RBV")
+{
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))PV_NAME")
+    field(FTVL, "CHAR")
+    field(NELM, "256")
+    field(SCAN, "I/O Intr")
+    info(Q:form, "String")
+}

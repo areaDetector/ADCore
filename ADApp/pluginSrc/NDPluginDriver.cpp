@@ -17,6 +17,9 @@
 #include <cantProceed.h>
 
 #include "NDPluginDriver.h"
+#ifdef WITH_PLUGIN_INVENTORY
+#include "NDPluginInventory.h"
+#endif
 #include "throttler.h"
 
 #include <epicsExport.h>
@@ -142,6 +145,12 @@ NDPluginDriver::NDPluginDriver(const char *portName, int queueSize, int blocking
     createParam(NDPluginDriverExecutionTimeString,     asynParamFloat64, &NDPluginDriverExecutionTime);
     createParam(NDPluginDriverMinCallbackTimeString,   asynParamFloat64, &NDPluginDriverMinCallbackTime);
     createParam(NDPluginDriverMaxByteRateString,       asynParamFloat64, &NDPluginDriverMaxByteRate);
+    createParam(NDPluginDriverPvPrefixString,          asynParamOctet, &NDPluginDriverPvPrefix);
+
+#ifdef WITH_PLUGIN_INVENTORY
+    // If enabled, register this plugin in the process-wide inventory published over PVAccess.
+    NDPluginInventory::registerPlugin(portName);
+#endif
 
     /* Here we set the values of read-only parameters and of read/write parameters that cannot
      * or should not get their values from the database.  Note that values set here will override
@@ -194,6 +203,11 @@ NDPluginDriver::~NDPluginDriver()
     // shutdown has already been done, be we don't want to rely on that.
     if (pToThreadMsgQ_)
         shutdownPortDriver();
+
+#ifdef WITH_PLUGIN_INVENTORY
+    // Remove the plugin from the inventory on destruction.
+    NDPluginInventory::unregisterPlugin(portName);
+#endif
 
     delete throttler_;
 }
@@ -835,6 +849,11 @@ asynStatus NDPluginDriver::writeOctet(asynUser *pasynUser, const char *value,
         this->unlock();
         connectToArrayPort();
         this->lock();
+    } else if (function == NDPluginDriverPvPrefix) {
+#ifdef WITH_PLUGIN_INVENTORY
+        // If we are using the plugin inventory then set the PV prefix in it as well
+        NDPluginInventory::setPvPrefix(portName, value);
+#endif
     } else {
         /* If this parameter belongs to a base class call its method */
         if (function < FIRST_NDPLUGIN_PARAM)
@@ -901,6 +920,16 @@ asynStatus NDPluginDriver::start(void)
 {
     assert(!this->pluginStarted_);
     //static const char *functionName = "start";
+
+#ifdef WITH_PLUGIN_INVENTORY
+    // The derived class is now fully constructed, so its plugin type is set.
+    // Register the plugin type with the plugin inventory.
+    char pluginType[256] = {0};
+    this->lock();
+    getStringParam(NDPluginDriverPluginType, sizeof(pluginType), pluginType);
+    this->unlock();
+    NDPluginInventory::setPluginType(portName, pluginType);
+#endif
 
     this->pluginStarted_ = true;
     // If the plugin was started with BlockingCallbacks=Yes then pThreads_.size() will be 0
