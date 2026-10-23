@@ -83,6 +83,14 @@ following table.
     - QUEUE_FREE
     - $(P)$(R)QueueFree
     - longin
+  * - asynInt32
+    - r/w
+    - Writing 1 to this record releases all NDArrays waiting in the input queue without
+      processing them. Arrays currently being processed are not affected. The dropped
+      arrays are added to DroppedArrays.
+    - CLEAR_QUEUE
+    - $(P)$(R)ClearQueue
+    - bo
   * - N/A
     - r/o
     - The number of used queue elements.

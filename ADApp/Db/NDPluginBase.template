@@ -261,6 +261,13 @@ record(longin, "$(P)$(R)QueueFree")
     field(SCAN, "$(SCANRATE=I/O Intr)")
 }
 
+record(bo, "$(P)$(R)ClearQueue")
+{
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))CLEAR_QUEUE")
+    field(VAL,  "1")
+}
+
 # Display the fill level on the plugins input queue
 record(calc, "$(P)$(R)QueueUse") {
     field(CALC, "A-B")
