@@ -128,6 +128,7 @@ NDPluginDriver::NDPluginDriver(const char *portName, int queueSize, int blocking
     createParam(NDPluginDriverDroppedArraysString,     asynParamInt32, &NDPluginDriverDroppedArrays);
     createParam(NDPluginDriverQueueSizeString,         asynParamInt32, &NDPluginDriverQueueSize);
     createParam(NDPluginDriverQueueFreeString,         asynParamInt32, &NDPluginDriverQueueFree);
+    createParam(NDPluginDriverClearQueueString,        asynParamInt32, &NDPluginDriverClearQueue);
     createParam(NDPluginDriverMaxThreadsString,        asynParamInt32, &NDPluginDriverMaxThreads);
     createParam(NDPluginDriverNumThreadsString,        asynParamInt32, &NDPluginDriverNumThreads);
     createParam(NDPluginDriverSortModeString,          asynParamInt32, &NDPluginDriverSortMode);
@@ -155,6 +156,7 @@ NDPluginDriver::NDPluginDriver(const char *portName, int queueSize, int blocking
     setIntegerParam(NDPluginDriverDroppedOutputArrays, 0);
     setIntegerParam(NDPluginDriverQueueSize, queueSize);
     setIntegerParam(NDPluginDriverQueueFree, queueSize);
+    setIntegerParam(NDPluginDriverClearQueue, 0);
     setIntegerParam(NDPluginDriverMaxThreads, maxThreads);
     setIntegerParam(NDPluginDriverNumThreads, 1);
     setIntegerParam(NDPluginDriverBlockingCallbacks, blockingCallbacks);
@@ -732,6 +734,10 @@ asynStatus NDPluginDriver::writeInt32(asynUser *pasynUser, epicsInt32 value)
         if ((status = deleteCallbackThreads())) goto done;
         if ((status = createCallbackThreads())) goto done;
 
+    } else if ((function == NDPluginDriverClearQueue) && value) {
+        clearQueue();
+        setIntegerParam(addr, NDPluginDriverClearQueue, 0);
+
     } else if ((function == NDPluginDriverSortMode) &&
                (value == 1)) {
         status = createSortingThread();
@@ -1008,6 +1014,39 @@ asynStatus NDPluginDriver::createCallbackThreads()
     setIntegerParam(NDPluginDriverQueueFree, queueSize);
     if (enableCallbacks) this->setArrayInterrupt(1);
     return (asynStatus) status;
+}
+
+/** Releases all NDArrays waiting in the input queue without processing them.
+  * Arrays already being processed by a plugin thread are not affected.
+  * Must be called with the lock held. */
+void NDPluginDriver::clearQueue()
+{
+    ToThreadMessage_t msg;
+    int droppedArrays, queueSize;
+    int numCleared = 0;
+    static const char *functionName = "clearQueue";
+
+    if (!pToThreadMsgQ_) return;
+
+    while (pToThreadMsgQ_->tryReceive(&msg, sizeof(msg)) == sizeof(msg)) {
+        if (msg.messageType != ToThreadMessageData) {
+            // Put back the exit message from deleteCallbackThreads so a plugin thread still receives it
+            pToThreadMsgQ_->trySend(&msg, sizeof(msg));
+            break;
+        }
+        msg.pArray->pDriver->decrementQueuedArrayCount();
+        msg.pArray->release();
+        numCleared++;
+    }
+
+    getIntegerParam(NDPluginDriverDroppedArrays, &droppedArrays);
+    setIntegerParam(NDPluginDriverDroppedArrays, droppedArrays + numCleared);
+    getIntegerParam(NDPluginDriverQueueSize, &queueSize);
+    setIntegerParam(NDPluginDriverQueueFree, queueSize - pToThreadMsgQ_->pending());
+
+    asynPrint(pasynUserSelf, ASYN_TRACE_FLOW,
+        "%s::%s dropped %d arrays from input queue\n",
+        driverName, functionName, numCleared);
 }
 
 /** Deletes the plugin threads.

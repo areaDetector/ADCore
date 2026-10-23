@@ -38,6 +38,7 @@ class sortedListElement {
 #define NDPluginDriverDroppedArraysString       "DROPPED_ARRAYS"        /**< (asynInt32,    r/w) Number of dropped input arrays */
 #define NDPluginDriverQueueSizeString           "QUEUE_SIZE"            /**< (asynInt32,    r/w) Total queue elements */
 #define NDPluginDriverQueueFreeString           "QUEUE_FREE"            /**< (asynInt32,    r/w) Free queue elements */
+#define NDPluginDriverClearQueueString          "CLEAR_QUEUE"           /**< (asynInt32,    r/w) Drop all arrays in the input queue */
 #define NDPluginDriverMaxThreadsString          "MAX_THREADS"           /**< (asynInt32,    r/w) Maximum number of threads */
 #define NDPluginDriverNumThreadsString          "NUM_THREADS"           /**< (asynInt32,    r/w) Number of threads */
 #define NDPluginDriverSortModeString            "SORT_MODE"             /**< (asynInt32,    r/w) sorted callback mode */
@@ -92,6 +93,7 @@ protected:
     int NDPluginDriverDroppedArrays;
     int NDPluginDriverQueueSize;
     int NDPluginDriverQueueFree;
+    int NDPluginDriverClearQueue;
     int NDPluginDriverMaxThreads;
     int NDPluginDriverNumThreads;
     int NDPluginDriverSortMode;
@@ -116,6 +118,7 @@ private:
     asynStatus startCallbackThreads();
     asynStatus deleteCallbackThreads();
     asynStatus createSortingThread();
+    void clearQueue();
 
     /* The asyn interfaces we access as a client */
     void *asynGenericPointerInterruptPvt_;
