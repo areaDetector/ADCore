@@ -443,9 +443,9 @@ void NTNDArrayConverterPvxs::fromAttribute (Value destValue, Value tempValue, ND
 
 void NTNDArrayConverterPvxs::fromStringAttribute (Value destValue, NDAttribute *src)
 {
-    const char *value;
-    src->getValue(src->getDataType(), (void*)&value);
-    destValue["value"] = std::string(value);
+    std::string value;
+    src->getValue(value);
+    destValue["value"] = value;
 }
 
 void NTNDArrayConverterPvxs::fromAttributes (NDArray *src)
